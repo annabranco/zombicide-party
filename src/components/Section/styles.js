@@ -7,6 +7,7 @@ export const SoundArea = styled.section`
   justify-content: center;
   height: ${({ opened }) => (opened ? 'auto' : '50px')};
   width: 90%;
+  overflow: hidden;
 `;
 
 export const TitleBar = styled.div`

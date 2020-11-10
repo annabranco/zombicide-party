@@ -11,7 +11,7 @@ import { MainScreen } from './styles';
 const App = () => {
   const [showMusicArea, ToggleMusicArea] = useState(false);
   const [showActivationArea, ToggleActivationArea] = useState(true);
-  const [showAttackArea, ToggleAttackArea] = useState(false);
+  const [showAttackArea, ToggleAttackArea] = useState(true);
   const [showDeathArea, ToggleDeathArea] = useState(false);
 
   const openActivation = () => {
@@ -28,26 +28,16 @@ const App = () => {
     <>
       <MainScreen>
         <Global styles={globalStyles} />
-        {/* <Section
-          name="Background"
-          state={showMusicArea}
-          action={ToggleMusicArea}
-        >
-          {showMusicArea && <Background />}
-        </Section> */}
+        <Section name="Players" state={showAttackArea} action={openAttack}>
+          {showAttackArea && <Attack />}
+        </Section>
         <Section
-          name="Activation"
+          name="Zombies"
           state={showActivationArea}
           action={openActivation}
         >
           {showActivationArea && <Activation />}
         </Section>
-        <Section name="Attack" state={showAttackArea} action={openAttack}>
-          {showAttackArea && <Attack />}
-        </Section>
-        {/* <Section name="Death" state={showDeathArea} action={ToggleDeathArea}>
-          {showDeathArea && <Death />}
-        </Section> */}
       </MainScreen>
     </>
   );

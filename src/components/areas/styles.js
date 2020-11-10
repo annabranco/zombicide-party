@@ -2,6 +2,7 @@ import { css } from '@emotion/core';
 import styled from '@emotion/styled';
 
 export const SoundsSelectorArea = styled.div`
+  height: 90vh;
   width: 87%;
   background: #232222;
   display: grid;
@@ -35,13 +36,6 @@ export const PlayButton = styled.button`
 `;
 
 export const PlayIcon = styled.img`
-  height: 100px;
-  ${({ type }) => {
-    if (type === 'weapons') {
-      return css`
-        height: 150px;
-      `;
-    }
-    return null;
-  }}
+  height: auto;
+  width: 100%;
 `;

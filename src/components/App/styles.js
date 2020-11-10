@@ -5,7 +5,7 @@ export const MainScreen = styled.main`
   width: 100vw;
   background: black;
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   align-items: center;
   justify-content: center;
   overflow: hidden;
