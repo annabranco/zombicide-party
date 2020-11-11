@@ -102,4 +102,13 @@ export const globalStyles = css`
   #root {
     width: 100vw;
   }
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: 'Grandstander', cursive;
+  }
+  p. label {
+    font-family: 'Yanone Kaffeesatz', sans-serif;
+  }
 `;
