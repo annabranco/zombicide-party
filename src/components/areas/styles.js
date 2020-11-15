@@ -3,14 +3,13 @@ import styled from '@emotion/styled';
 
 export const SoundsSelectorArea = styled.div`
   margin-top: ${({ subSections }) => (subSections ? `-16px` : '0')};
-  height: ${({ subSections }) =>
-    subSections ? `${90 / subSections}vh` : '90vh'};
+  height: ${({ opened = true }) => (opened ? 'auto' : '50px')};
   width: 87%;
   background: #232222;
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
   grid-auto-rows: minmax(80px, 200px);
-  grid-gap: 5px;
+  grid-gap: 10px;
   padding: 40px 20px;
   overflow: hidden;
   ${({ columns }) => {
@@ -25,14 +24,6 @@ export const SoundsSelectorArea = styled.div`
   }}
 `;
 
-export const SubSectionTitle = styled.h3`
-  position: relative;
-  hbeight: 0;
-  left: 0;
-  transform: translate(0, 15px);
-  color: white;
-`;
-
 export const Block = styled.div`
   display: flex;
   flex-direction: column;
@@ -42,13 +33,13 @@ export const Block = styled.div`
   border-radius: 5px;
 `;
 
-export const PlayButton = styled.button`
+export const PlayImage = styled.button`
   background: ${({ isActive }) => (isActive ? 'yellow' : '#232222')};
   outline: none;
   border: none;
   height: 100%;
   width: 100%;
-  padding: 10px;
+  /* padding: 10px; */
   font-size: 1.3rem;
   font-weight: 900;
   color: black;
@@ -63,7 +54,7 @@ export const PlayIcon = styled.img`
   transition: transform ease 0.5s;
 
   &:hover {
-    transform: scale(1.6);
+    transform: scale(1.2);
     transition: all ease 0.8s;
   }
 
@@ -72,4 +63,13 @@ export const PlayIcon = styled.img`
     css`
       width: 50%;
     `}
+`;
+
+export const ZombiesArea = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  height: 100%;
+  width: 100%;
 `;

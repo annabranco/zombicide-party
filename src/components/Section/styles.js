@@ -1,32 +1,30 @@
 import styled from '@emotion/styled';
 
-export const SoundArea = styled.section`
+export const SectionWrapper = styled.section`
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  height: ${({ opened }) => (opened ? 'auto' : '50px')};
+  justify-content: flex-start;
+  height: 100vh;
   width: 90%;
   overflow: hidden;
 `;
 
 export const TitleBar = styled.div`
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: space-between;
   height: 50px;
   width: 90%;
   border: 1px solid white;
   border-radius: 5px;
   background: #730000;
   padding: 5px 50px;
+  text-align: center;
   color: white;
 `;
 
 export const Title = styled.h2`
   font-size: 2rem;
   font-weight: 900;
+  line-height: 1.4;
   color: white;
   text-shadow: 2px 2px 10px white;
 `;

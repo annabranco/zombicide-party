@@ -1,22 +1,19 @@
 import React from 'react';
-import { string, func, node, bool } from 'prop-types';
-import { OpenButton, SoundArea, TitleBar, Title } from './styles';
+import { string, node } from 'prop-types';
+import { SectionWrapper, TitleBar, Title } from './styles';
 
-const Section = ({ name, state, action, children }) => (
-  <SoundArea opened={state}>
+const Section = ({ name, children }) => (
+  <SectionWrapper>
     <TitleBar>
       <Title> {name}</Title>
-      <OpenButton onClick={action}>{state ? '🔺' : '🔻'}</OpenButton>
     </TitleBar>
     {children}
-  </SoundArea>
+  </SectionWrapper>
 );
 
 Section.propTypes = {
-  action: func.isRequired,
   children: node.isRequired,
-  name: string.isRequired,
-  state: bool.isRequired
+  name: string.isRequired
 };
 
 export default Section;

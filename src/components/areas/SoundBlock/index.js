@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { string, number, bool } from 'prop-types';
-import { Block, PlayButton, PlayIcon } from '../styles';
+import { Block, PlayImage, PlayIcon } from '../styles';
 
 const soundPath =
   'https://raw.githubusercontent.com/annabranco/zombie-mix/master/src/assets/sounds/';
@@ -27,9 +27,9 @@ const SoundBlock = ({ differentSounds, img, name, type, test }) => {
 
   return (
     <Block>
-      <PlayButton onClick={play} isActive={isActive}>
+      <PlayImage onClick={play} isActive={isActive}>
         {img ? <PlayIcon src={img} type={type} /> : <p>{name}</p>}
-      </PlayButton>
+      </PlayImage>
     </Block>
   );
 };
