@@ -1,11 +1,19 @@
 import React, { useEffect, useState } from 'react';
-import { string, number, bool } from 'prop-types';
+import { string, number, bool, func } from 'prop-types';
 import { Block, PlayImage, PlayIcon } from '../styles';
 
 const soundPath =
   'https://raw.githubusercontent.com/annabranco/zombie-mix/master/src/assets/sounds/';
 
-const SoundBlock = ({ differentSounds, img, name, type, test }) => {
+const SoundBlock = ({
+  differentSounds,
+  img,
+  label,
+  name,
+  onHover,
+  type,
+  test
+}) => {
   const [isActive, activate] = useState(false);
   const randomNumber = max => Math.floor(Math.random() * max + 1);
   const filename = `${soundPath}${type}/${name}${
@@ -28,7 +36,16 @@ const SoundBlock = ({ differentSounds, img, name, type, test }) => {
   return (
     <Block>
       <PlayImage onClick={play} isActive={isActive}>
-        {img ? <PlayIcon src={img} type={type} /> : <p>{name}</p>}
+        {img ? (
+          <PlayIcon
+            src={img}
+            type={type}
+            onMouseOver={() => onHover(label || name)}
+            onMouseOut={() => onHover()}
+          />
+        ) : (
+          <p>{label || name}</p>
+        )}
       </PlayImage>
     </Block>
   );
@@ -37,13 +54,17 @@ const SoundBlock = ({ differentSounds, img, name, type, test }) => {
 SoundBlock.propTypes = {
   differentSounds: number.isRequired,
   img: string,
+  label: string,
   name: string.isRequired,
+  onHover: func,
   type: string.isRequired,
   test: bool
 };
 
 SoundBlock.defaultProps = {
   img: null,
+  label: null,
+  onHover: () => null,
   test: false
 };
 

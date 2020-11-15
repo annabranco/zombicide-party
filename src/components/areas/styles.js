@@ -2,12 +2,11 @@ import { css } from '@emotion/core';
 import styled from '@emotion/styled';
 
 export const SoundsSelectorArea = styled.div`
-  margin-top: ${({ subSections }) => (subSections ? `-16px` : '0')};
-  height: ${({ opened = true }) => (opened ? 'auto' : '50px')};
+  height: calc(100vh - 80px);
   width: 87%;
   background: #232222;
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
   grid-auto-rows: minmax(80px, 200px);
   grid-gap: 10px;
   padding: 40px 20px;
@@ -15,6 +14,7 @@ export const SoundsSelectorArea = styled.div`
   ${({ columns }) => {
     if (columns === 'big') {
       return css`
+        height: calc(100vh - 70px);
         grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
       `;
     }
@@ -58,10 +58,11 @@ export const PlayIcon = styled.img`
     transition: all ease 0.8s;
   }
 
-  ${({ grid }) =>
-    grid &&
+  ${({ type }) =>
+    type === 'attacks' &&
     css`
-      width: 50%;
+      max-height: 90%;
+      max-width: 90%;
     `}
 `;
 

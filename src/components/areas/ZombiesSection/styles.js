@@ -1,6 +1,15 @@
 import { css } from '@emotion/core';
 import styled from '@emotion/styled';
 
+export const ZombieLabel = styled.h1`
+  /* position: absolute; */
+  height: 0;
+  font-size: 1.2rem;
+  color: lightgray;
+  transform: translate(0, 20px);
+`;
+ZombieLabel.displayName = 'ZombieLabel';
+
 export const SelectorWrapper = styled.div`
   position: relative;
   display: flex;
@@ -41,6 +50,7 @@ SelectorButton.displayName = 'SelectorButton';
 
 export const SubSectionTitle = styled.h3`
   z-index: 2;
+  width: 50%;
   line-height: 1.5;
   text-align: center;
   color: ${({ opened = true }) => (opened ? 'white' : 'gray')};
@@ -50,12 +60,11 @@ export const SubSectionTitle = styled.h3`
 `;
 
 export const SubSectionWrapper = styled.div`
-  position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: flex-start;
-  height: ${({ opened = true }) => (opened ? 'calc(100% - 70px)' : '20px')};
+  height: calc(100% - 70px);
   width: 90%;
   overflow: hidden;
 `;
