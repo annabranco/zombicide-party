@@ -14,7 +14,7 @@ import MaleWound from '../../../assets/images/attacks/male-hit.png';
 import MaleKill from '../../../assets/images/attacks/male-kill.png';
 import MaleInstantKill from '../../../assets/images/attacks/male-instant-kill.png';
 import MaleHordeKill from '../../../assets/images/attacks/male-horde-kill.png';
-import { SoundsSelectorArea, ZombiesArea } from '../styles';
+import { SelectorArea, ZombiesArea } from '../styles';
 import {
   SelectorButton,
   SelectorWrapper,
@@ -38,7 +38,7 @@ const ZombiesSection = () => {
       <ZombieLabel>{activeIcon}</ZombieLabel>
       {displayKills ? (
         <SubSectionWrapper>
-          <SoundsSelectorArea columns="big">
+          <SelectorArea columns="big">
             <SoundBlock
               name="female-hit"
               img={FemaleWound}
@@ -95,11 +95,11 @@ const ZombiesSection = () => {
               onHover={selectIcon}
               type="attacks"
             />
-          </SoundsSelectorArea>
+          </SelectorArea>
         </SubSectionWrapper>
       ) : (
         <SubSectionWrapper>
-          <SoundsSelectorArea columns="big">
+          <SelectorArea columns="big">
             <SoundBlock
               name="Walker"
               differentSounds={9}
@@ -135,7 +135,7 @@ const ZombiesSection = () => {
               onHover={selectIcon}
               type="activations"
             />
-          </SoundsSelectorArea>
+          </SelectorArea>
         </SubSectionWrapper>
       )}
     </ZombiesArea>

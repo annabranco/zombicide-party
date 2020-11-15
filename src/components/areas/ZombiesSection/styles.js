@@ -1,7 +1,7 @@
 import { css } from '@emotion/core';
 import styled from '@emotion/styled';
 
-export const ZombieLabel = styled.h1`
+export const ZombieLabel = styled.h3`
   /* position: absolute; */
   height: 0;
   font-size: 1.2rem;

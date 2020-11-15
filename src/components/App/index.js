@@ -2,7 +2,7 @@ import { Global } from '@emotion/core';
 import React, { useState } from 'react';
 import { globalStyles } from '../../styles';
 import ZombiesSection from '../areas/ZombiesSection';
-import Attack from '../areas/Attack';
+import PlayersSection from '../areas/PlayersSection';
 import Background from '../areas/Background';
 import Death from '../areas/Death';
 import Section from '../Section';
@@ -13,7 +13,7 @@ const App = () => {
     <MainScreen>
       <Global styles={globalStyles} />
       <Section name="Players">
-        <Attack />
+        <PlayersSection />
       </Section>
       <Section name="Zombies">
         <ZombiesSection />

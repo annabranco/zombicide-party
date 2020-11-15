@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { string, number, bool, func } from 'prop-types';
-import { Block, PlayImage, PlayIcon } from '../styles';
+import { Block, PlayImage, PlayIcon, PlayText } from '../styles';
 
 const soundPath =
   'https://raw.githubusercontent.com/annabranco/zombie-mix/master/src/assets/sounds/';
@@ -21,7 +21,7 @@ const SoundBlock = ({
   }.mp3`;
   const sound = !test && new Audio(filename);
 
-  console.log('$$$ filename', filename);
+  // console.log('$$$ filename', filename);
   const play = () => {
     if (sound) {
       activate(true);
@@ -44,7 +44,7 @@ const SoundBlock = ({
             onMouseOut={() => onHover()}
           />
         ) : (
-          <p>{label || name}</p>
+          <PlayText>{label || name}</PlayText>
         )}
       </PlayImage>
     </Block>
