@@ -54,7 +54,6 @@ export const PlayIcon = styled.img`
   transition: transform ease 0.5s;
 
   ${({ type }) => {
-    console.log(type);
     if (type === 'attacks') {
       return css`
         max-height: 90%;

@@ -27,7 +27,6 @@ const ZombiesSection = () => {
   const [displayKills, ToggleKills] = useState(false);
   const [activeIcon, selectIcon] = useState();
 
-  console.log('$$$ activeIcon', activeIcon);
   return (
     <ZombiesArea>
       <SelectorWrapper onClick={() => ToggleKills(!displayKills)}>

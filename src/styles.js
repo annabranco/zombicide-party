@@ -102,6 +102,9 @@ export const globalStyles = css`
   #root {
     width: 100vw;
   }
+  body {
+    background: #232222;
+  }
   h1,
   h2,
   h3,

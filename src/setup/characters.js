@@ -1,9 +1,9 @@
-import Amy from '../../../assets/images/survivors/amy.jpg';
-import Ned from '../../../assets/images/survivors/ned.jpg';
-import Phil from '../../../assets/images/survivors/phil.jpg';
-import Wanda from '../../../assets/images/survivors/wanda.jpg';
-import Josh from '../../../assets/images/survivors/josh.jpg';
-import Doug from '../../../assets/images/survivors/doug.jpg';
+import Amy from '../assets/images/survivors/amy.jpg';
+import Ned from '../assets/images/survivors/ned.jpg';
+import Phil from '../assets/images/survivors/phil.jpg';
+import Wanda from '../assets/images/survivors/wanda.jpg';
+import Josh from '../assets/images/survivors/josh.jpg';
+import Doug from '../assets/images/survivors/doug.jpg';
 
 const AMY = {
   img: Amy,

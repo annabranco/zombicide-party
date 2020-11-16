@@ -3,22 +3,37 @@ import React, { useState } from 'react';
 import { globalStyles } from '../../styles';
 import ZombiesSection from '../areas/ZombiesSection';
 import PlayersSection from '../areas/PlayersSection';
-import Background from '../areas/Background';
-import Death from '../areas/Death';
 import Section from '../Section';
 import { MainScreen } from './styles';
+import MainMenu from '../MainMenu';
 
 const App = () => {
+  const [isMainMenuOpen, toggleMainMenu] = useState(true);
+  const [loadedCharacters, loadCharacters] = useState(true);
+
+  const loadedGame = JSON.parse(localStorage.getItem('ZombicideParty'));
+
+  const onClickContinue = () => {
+    loadCharacters(loadedGame);
+    toggleMainMenu(false);
+  };
+
   return (
-    <MainScreen>
+    <>
       <Global styles={globalStyles} />
-      <Section name="Players">
-        <PlayersSection />
-      </Section>
-      <Section name="Zombies">
-        <ZombiesSection />
-      </Section>
-    </MainScreen>
+      {isMainMenuOpen ? (
+        <MainMenu onClickContinue={onClickContinue} />
+      ) : (
+        <MainScreen>
+          <Section name="Players">
+            <PlayersSection loadedCharacters={loadedCharacters} />
+          </Section>
+          <Section name="Zombies">
+            <ZombiesSection />
+          </Section>
+        </MainScreen>
+      )}
+    </>
   );
 };
 
