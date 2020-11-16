@@ -109,6 +109,6 @@ export const globalStyles = css`
     font-family: 'Grandstander', cursive;
   }
   p. label {
-    font-family: 'Yanone Kaffeesatz', sans-serif;
+    font-family: 'Cairo', sans-serif;
   }
 `;

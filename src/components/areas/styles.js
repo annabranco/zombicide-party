@@ -67,6 +67,8 @@ export const PlayIcon = styled.img`
     }
     if (type === 'weapons') {
       return css`
+        border: 1px solid black;
+        border-radius: 8px;
         &:hover {
           transform: scale(1.03);
           transition: all ease 0.8s;

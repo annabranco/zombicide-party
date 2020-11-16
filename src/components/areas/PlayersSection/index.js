@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import SoundBlock from '../SoundBlock';
 import { SelectorArea } from '../styles';
 import {
@@ -7,35 +7,88 @@ import {
   CharName,
   Item,
   SelectorModal,
-  ItemWrapper
+  ItemWrapper,
+  ItemBlank,
+  ActionButtonsWrapper,
+  ActionButton,
+  NextButton,
+  CharacterOverlay
 } from './styles';
 import SelectionItem from '../../ItemSelector';
 import { WEAPONS } from '../../../utils/itemsReference';
+import Blank01 from '../../../assets/images/in-hand-1.jpg';
+import Blank02 from '../../../assets/images/in-hand-2.jpg';
+import { MOCK_PLAYERS } from './mockPlayers';
 
 const PlayersSection = () => {
-  const [player, changePlayer] = useState('Amy');
-  const [items, updateItems] = useState(['Pistol', 'BaseballBat']);
-  const [slot, selectSlot] = useState();
+  const [player, changePlayer] = useState({});
+  const [playerIndex, changePlayerIndex] = useState(0);
 
-  const changeItems = selectedItem => {
+  const [items, updateItems] = useState(['', '']);
+  const [slot, selectSlot] = useState();
+  const [players, registerPlayers] = useState([]);
+
+  const changeItems = (selectedItem, activeSlot = slot - 1) => {
     const newItems = [...items];
-    newItems[slot - 1] = selectedItem;
+    newItems[activeSlot] = selectedItem;
     updateItems(newItems);
     selectSlot();
   };
 
+  const changeToNextPlayer = () => {
+    const nextPlayerIndex = playerIndex + 1 === 6 ? 0 : playerIndex + 1;
+    console.log('$$$ nextPlayerIndex', nextPlayerIndex);
+    changePlayerIndex(nextPlayerIndex);
+  };
+
+  useEffect(() => {
+    const nextPlayer = players[playerIndex];
+    const playerItems = [nextPlayer.items[0], nextPlayer.items[1]];
+    changePlayer(nextPlayer);
+    updateItems(playerItems);
+  }, [playerIndex, players]);
+
+  useEffect(() => {
+    registerPlayers(MOCK_PLAYERS);
+  }, []);
+
   return (
     <CharacterSheet>
-      <CharName>Amy</CharName>
+      <CharacterOverlay img={player.img} />
+      <CharName>{player.name}</CharName>
       <CharItems>
         {items.map((item, index) => (
           <ItemWrapper key={`${'BaseballBat'}-${index + 1}`}>
             <Item>
-              <SoundBlock name={item} img={WEAPONS[item].img} type="weapons" />
+              {item ? (
+                <SoundBlock
+                  name={item}
+                  img={WEAPONS[item].img}
+                  type="weapons"
+                />
+              ) : (
+                <ItemBlank onClick={() => selectSlot(index + 1)}>
+                  Item in hand
+                </ItemBlank>
+              )}
             </Item>
-            <button type="button" onClick={() => selectSlot(index + 1)}>
-              CHANGE
-            </button>
+            {item && (
+              <ActionButtonsWrapper>
+                <ActionButton
+                  type="button"
+                  onClick={() => selectSlot(index + 1)}
+                >
+                  CHANGE
+                </ActionButton>
+
+                <ActionButton
+                  type="button"
+                  onClick={() => changeItems('', index)}
+                >
+                  CLEAR
+                </ActionButton>
+              </ActionButtonsWrapper>
+            )}
           </ItemWrapper>
         ))}
       </CharItems>
@@ -153,6 +206,9 @@ const PlayersSection = () => {
         <SoundBlock name="Shotgun" img={Shotgun} type="weapons" />
         <SoundBlock name="SubMG" img={SubMG} type="weapons" />
       </SelectorArea> */}
+      <NextButton type="button" onClick={changeToNextPlayer}>
+        NEXT
+      </NextButton>
     </CharacterSheet>
   );
 };

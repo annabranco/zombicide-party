@@ -13,8 +13,7 @@ export const SectionWrapper = styled.section`
 export const TitleBar = styled.div`
   height: 50px;
   width: 90%;
-  border: 1px solid white;
-  border-radius: 5px;
+  border: 1px solid black;
   background: #730000;
   padding: 5px 50px;
   text-align: center;
@@ -22,11 +21,13 @@ export const TitleBar = styled.div`
 `;
 
 export const Title = styled.h2`
-  font-size: 2rem;
-  font-weight: 900;
+  font-size: 1.5rem;
+  font-weight: 700;
   line-height: 1.4;
-  color: white;
-  text-shadow: 2px 2px 10px white;
+  color: black;
+  font-family: 'Cairo', sans-serif;
+  text-shadow: 0 0 2px white;
+  text-transform: uppercase;
 `;
 
 export const OpenButton = styled.button`
