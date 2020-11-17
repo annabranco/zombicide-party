@@ -1,5 +1,71 @@
 import styled from '@emotion/styled';
 import { css, keyframes } from '@emotion/core';
+import { Link } from 'react-router-dom';
+
+const ThunderFlash = keyframes`
+  3% {
+   background: rgba(255, 255, 255, 0.4);
+  }
+  4% {
+   background: rgba(255, 255, 255, 0.6);
+  }
+  5% {
+    background: rgba(255, 255, 255, 0.4);
+  }
+  6% {
+   background: none;
+  }
+  7% {
+   background: rgba(255, 255, 255, 0.5);
+  }
+  8% {
+    background: rgba(255, 255, 255, 0.6);
+  }
+  9% {
+   background: rgba(255, 255, 255, 0.7);
+  }
+  11% {
+   background: rgba(255, 255, 255, 0.6);
+  }
+  12% {
+    background: rgba(255, 255, 255, 0.5);
+  }
+  13% {
+   background: none;
+  }
+  53% {
+   background: none;
+  }
+  54% {
+   background: rgba(255, 255, 255, 0.7);
+  }
+  55% {
+    background: rgba(255, 255, 255, 0.8);
+  }
+  56% {
+   background: rgba(255, 255, 255, 0.9);
+  }
+  57% {
+   background: rgba(255, 255, 255, 0.8);
+  }
+  58% {
+    background: rgba(255, 255, 255, 0.7);
+  }
+  59% {
+   background: none;
+  }
+`;
+
+export const ActionButton = styled.button`
+  margin: 20px auto;
+  width: 300px;
+  padding: 10px 25px;
+  font-family: 'Grandstander', cursive;
+  font-size: 2.5rem;
+  background: red;
+  cursor: pointer;
+`;
+ActionButton.displayName = 'ActionButton';
 
 export const MenuScreen = styled.div`
   position: relative;
@@ -29,83 +95,18 @@ export const MainTitle = styled.h1`
 `;
 MenuScreen.displayName = 'MenuScreen';
 
-export const ActionButton = styled.button`
+export const StyledLink = styled(Link)`
   z-index: 5;
-  margin: 20px auto;
-  width: 300px;
-  padding: 10px 25px;
-  font-family: 'Grandstander', cursive;
-  font-size: 2.5rem;
-  background: red;
-  cursor: pointer;
 `;
-ActionButton.displayName = 'ActionButton';
+StyledLink.displayName = 'Link';
 
-const ThunderFlash = keyframes`
-  5% {
-   background: rgba(255, 255, 255, 0.5);
-  }
-  6% {
-    background: rgba(255, 255, 255, 0.7);
-  }
-  7% {
-   background: rgba(255, 255, 255, 0.9);
-  }
-  8% {
-   background: rgba(255, 255, 255, 0.7);
-  }
-  9% {
-    background: rgba(255, 255, 255, 0.5);
-  }
-  10% {
-   background: none;
-  }
-  11% {
-   background: none;
-  }
-  12% {
-   background: rgba(255, 255, 255, 0.7);
-  }
-  13% {
-    background: rgba(255, 255, 255, 0.8);
-  }
-  14% {
-   background: rgba(255, 255, 255, 0.9);
-  }
-  15% {
-   background: rgba(255, 255, 255, 0.8);
-  }
-  16% {
-    background: rgba(255, 255, 255, 0.7);
-  }
-  17% {
-   background: none;
-  }
-  59% {
-   background: none;
-  }
-  60% {
-   background: rgba(255, 255, 255, 0.7);
-  }
-  61% {
-    background: rgba(255, 255, 255, 0.8);
-  }
-  62% {
-   background: rgba(255, 255, 255, 0.9);
-  }
-  63% {
-   background: rgba(255, 255, 255, 0.8);
-  }
-  64% {
-    background: rgba(255, 255, 255, 0.7);
-  }
-  65% {
-   background: none;
-  }
-
-
-
+export const TestButton = styled(ActionButton)`
+  z-index: 5;
+  font-size: 1rem;
+  padding: 5px;
+  background: white;
 `;
+TestButton.displayName = 'TestButton';
 
 export const ThunderOverlay = styled.div`
   position: absolute;
@@ -128,10 +129,3 @@ export const Version = styled.p`
   color: white;
 `;
 Version.displayName = 'Version';
-
-export const TestButton = styled(ActionButton)`
-  font-size: 1rem;
-  padding: 5px;
-  background: white;
-`;
-TestButton.displayName = 'TestButton';

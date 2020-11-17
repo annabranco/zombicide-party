@@ -4,6 +4,12 @@ import Phil from '../assets/images/survivors/phil.jpg';
 import Wanda from '../assets/images/survivors/wanda.jpg';
 import Josh from '../assets/images/survivors/josh.jpg';
 import Doug from '../assets/images/survivors/doug.jpg';
+import SelectorAmy from '../assets/images/selectors/selector-amy.png';
+import SelectorNed from '../assets/images/selectors/selector-ned.png';
+import SelectorPhil from '../assets/images/selectors/selector-phil.png';
+import SelectorWanda from '../assets/images/selectors/selector-wanda.png';
+import SelectorJosh from '../assets/images/selectors/selector-josh.png';
+import SelectorDoug from '../assets/images/selectors/selector-doug.png';
 
 const AMY = {
   img: Amy,
@@ -11,6 +17,7 @@ const AMY = {
   items: [],
   weapons: [],
   abilities: [],
+  selector: SelectorAmy,
   experience: 0
 };
 
@@ -20,6 +27,7 @@ const NED = {
   items: [],
   weapons: [],
   abilities: [],
+  selector: SelectorNed,
   experience: 0
 };
 
@@ -29,6 +37,7 @@ const PHIL = {
   items: [],
   weapons: ['Pistol'],
   abilities: [],
+  selector: SelectorPhil,
   experience: 0
 };
 
@@ -38,6 +47,7 @@ const WANDA = {
   items: [],
   weapons: [],
   abilities: [],
+  selector: SelectorWanda,
   experience: 0
 };
 
@@ -47,6 +57,7 @@ const JOSH = {
   items: [],
   weapons: [],
   abilities: [],
+  selector: SelectorJosh,
   experience: 0
 };
 
@@ -56,7 +67,8 @@ const DOUG = {
   items: [],
   weapons: [],
   abilities: [],
+  selector: SelectorDoug,
   experience: 0
 };
 
-export const MOCK_PLAYERS = [AMY, NED, PHIL, WANDA, JOSH, DOUG];
+export const CHARACTERS = [AMY, DOUG, JOSH, NED, PHIL, WANDA];

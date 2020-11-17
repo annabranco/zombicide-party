@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { func } from 'prop-types';
+import { Link } from 'react-router-dom';
+import { bool, func } from 'prop-types';
 import appInfo from '../../../package.json';
 import {
   ActionButton,
   MainTitle,
   MenuScreen,
+  StyledLink,
   TestButton,
   ThunderOverlay,
   Version
@@ -13,7 +15,7 @@ import BG from '../../assets/images/background/background.jpg';
 import Storm from '../../assets/sounds/intro/intro.mp3';
 import Horde from '../../assets/sounds/activations/Horde1.mp3';
 
-const MainMenu = ({ onClickContinue }) => {
+const MainMenu = ({ loadedGame }) => {
   const [testSound, toggleTestSound] = useState(false);
   const APP_VERSION = appInfo.version;
 
@@ -26,7 +28,7 @@ const MainMenu = ({ onClickContinue }) => {
       storm.loop = true;
       horde.loop = true;
       storm.volume = 1;
-      horde.volume = 0.6;
+      horde.volume = 0.7;
 
       storm.play();
       horde.play();
@@ -41,8 +43,14 @@ const MainMenu = ({ onClickContinue }) => {
     <MenuScreen img={BG}>
       <ThunderOverlay testSound={testSound} />
       <MainTitle>ZOMBICIDE PARTY</MainTitle>
-      <ActionButton>New Game</ActionButton>
-      <ActionButton onClick={onClickContinue}>Continue</ActionButton>
+      <StyledLink to="/new">
+        <ActionButton>New Game</ActionButton>
+      </StyledLink>
+      {loadedGame && (
+        <StyledLink to="/play">
+          <ActionButton>Continue</ActionButton>
+        </StyledLink>
+      )}
       <TestButton onClick={() => toggleTestSound(!testSound)}>
         {testSound ? 'Stop Sound' : 'Test Sound'}
       </TestButton>
@@ -53,7 +61,7 @@ const MainMenu = ({ onClickContinue }) => {
 };
 
 MainMenu.propTypes = {
-  onClickContinue: func.isRequired
+  loadedGame: bool.isRequired
 };
 
 export default MainMenu;

@@ -14,11 +14,11 @@ import {
   NextButton,
   CharacterOverlay
 } from './styles';
-import { MOCK_PLAYERS } from '../../../setup/characters';
+import { CHARACTERS } from '../../../setup/characters';
 import { getPlayerObject } from '../../../utils/players';
 import ItemsSelectorModal from '../../ItemsSelectorModal';
 
-const PlayersSection = ({ loadedCharacters }) => {
+const PlayersSection = ({ initialCharacters, loadedGame }) => {
   const [character, changeCharacter] = useState({});
   const [charIndex, changeCharIndex] = useState(0);
 
@@ -38,15 +38,23 @@ const PlayersSection = ({ loadedCharacters }) => {
   };
 
   const changeToNextPlayer = () => {
-    const nextPlayerIndex = charIndex + 1 === 6 ? 0 : charIndex + 1;
+    const nextPlayerIndex =
+      charIndex + 1 === characters.length ? 0 : charIndex + 1;
     changeCharIndex(nextPlayerIndex);
   };
 
+  console.log(
+    '$$$ initialCharacters, loadedGame',
+    initialCharacters,
+    loadedGame
+  );
+
   useEffect(() => {
     if (!dataLoaded) {
-      const updatedCharacters = loadedCharacters
-        ? [...loadedCharacters]
-        : [...MOCK_PLAYERS];
+      const updatedCharacters = (initialCharacters.length > 0 && [
+        ...initialCharacters
+      ]) ||
+        (loadedGame && [...loadedGame]) || [...CHARACTERS];
       updatedCharacters.forEach(char => {
         if (char.weapons.length === 0) {
           // eslint-disable-next-line no-param-reassign
@@ -59,7 +67,7 @@ const PlayersSection = ({ loadedCharacters }) => {
       updateCharacters(updatedCharacters);
       prevCharIndex.current = charIndex;
     }
-  }, [charIndex, dataLoaded, loadedCharacters]);
+  }, [charIndex, dataLoaded, initialCharacters, loadedGame]);
 
   useEffect(() => {
     if (characters) {
@@ -130,19 +138,23 @@ const PlayersSection = ({ loadedCharacters }) => {
         ))}
       </CharItems>
       {slot && <ItemsSelectorModal changeWeapon={changeWeapon} />}
-      <NextButton type="button" onClick={changeToNextPlayer}>
-        NEXT
-      </NextButton>
+      {characters.length > 1 && (
+        <NextButton type="button" onClick={changeToNextPlayer}>
+          NEXT
+        </NextButton>
+      )}
     </CharacterSheet>
   );
 };
 
 PlayersSection.propTypes = {
-  loadedCharacters: string
+  initialCharacters: string,
+  loadedGame: string
 };
 
 PlayersSection.defaultProps = {
-  loadedCharacters: null
+  initialCharacters: null,
+  loadedGame: null
 };
 
 export default PlayersSection;
