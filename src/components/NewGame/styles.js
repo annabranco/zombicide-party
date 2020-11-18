@@ -9,7 +9,6 @@ export const CharacterArea = styled.div`
   justify-content: center;
   height: 100%;
   width: 100%;
-  overflow: hidden;
 `;
 CharacterArea.displayName = 'CharacterArea';
 
@@ -43,6 +42,29 @@ export const CharName = styled.h1`
   text-transform: uppercase;
 `;
 CharName.displayName = 'CharName';
+
+export const PlayerTag = styled.div`
+  z-index: 6;
+  position: absolute;
+  top: 15px;
+  right: -3px;
+
+  height: 20px;
+  min-width: 40px;
+  border: 1px solid black;
+  box-shadow: 0 0 3px white;
+  border-radius: 10px;
+  padding: 2px 10px;
+  background: ${({ color }) => color || 'black'};
+  /* cursor: pointer; */
+  font-family: 'Grandstander', cursive;
+  text-align: center;
+  font-size: 1rem;
+  line-height: 1.1;
+  text-transform: uppercase;
+  color: white;
+`;
+PlayerTag.displayName = 'PlayerTag';
 
 export const Selector = styled.div`
   position: relative;

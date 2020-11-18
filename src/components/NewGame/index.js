@@ -1,13 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { bool, func } from 'prop-types';
-import {
-  MainTitle,
-  MenuScreen,
-  TestButton,
-  ThunderOverlay,
-  Version
-} from '../MainMenu/styles';
+import { MenuScreen } from '../MainMenu/styles';
 import BG from '../../assets/images/background/background.jpg';
 import { CHARACTERS } from '../../setup/characters';
 import {
@@ -16,27 +10,58 @@ import {
   SelectorTitle,
   SelectorButton,
   CharImage,
-  CharName
+  CharName,
+  PlayerTag
 } from './styles';
+import Modal from '../Modal';
+import { getCharacterColor } from '../../utils/players';
 
 const NewGame = ({ loadedGame, setInitialCharacters }) => {
-  const [charactersSelected, updateCharacters] = useState([]);
   const [characters, setCharacters] = useState(CHARACTERS);
+  const [charactersSelected, updateSelectedCharacters] = useState(new Map());
+  const [activePlayers, setActivePlayers] = useState(new Set());
 
-  console.log('$$$ characters', characters);
+  const onSelect = event => {
+    const character = event.currentTarget.getAttribute('name');
+    let updatedChars = new Map(charactersSelected);
 
-  const orderCharacters = selectedChars => {
+    if (updatedChars.has(character)) {
+      updatedChars = new Map(
+        [...updatedChars].filter(([name, player]) => name !== character)
+      );
+    } else {
+      const charWithPlayer = [character];
+      if (activePlayers.size >= 1) {
+        const orderedPlayers = new Set(activePlayers);
+        const currentPlayer = activePlayers.values().next().value;
+
+        orderedPlayers.delete(currentPlayer);
+        orderedPlayers.add(currentPlayer);
+        setActivePlayers(orderedPlayers);
+        charWithPlayer.push(currentPlayer);
+        updatedChars.set(...charWithPlayer);
+      }
+    }
+    updateSelectedCharacters(updatedChars);
+    orderCharacters(updatedChars);
+  };
+
+  const orderCharacters = updatedChars => {
     let allCharacters = [...characters];
-    const orderedSelected = new Set(selectedChars);
+    const orderedSelected = new Map(updatedChars);
     const orderedCharacters = [];
 
-    allCharacters.forEach(char => orderedSelected.add(char.name));
+    allCharacters.forEach(char =>
+      orderedSelected.set(char.name, orderedSelected.get(char.name))
+    );
 
-    orderedSelected.forEach(name => {
+    orderedSelected.forEach((player, name) => {
       let found = false;
       allCharacters = allCharacters.filter(char => {
         if (!found && char.name === name) {
-          orderedCharacters.push(char);
+          const newChar = { ...char };
+          newChar.player = player;
+          orderedCharacters.push(newChar);
           found = true;
           return false;
         }
@@ -46,21 +71,11 @@ const NewGame = ({ loadedGame, setInitialCharacters }) => {
     });
   };
 
-  const onSelect = event => {
-    const character = event.currentTarget.getAttribute('name');
-    let selectedChars = [...charactersSelected];
-    if (selectedChars.includes(character)) {
-      selectedChars = selectedChars.filter(name => name !== character);
-    } else {
-      selectedChars.push(character);
-    }
-    updateCharacters(selectedChars);
-    orderCharacters(selectedChars);
-  };
-
   const onClickConfirm = () => {
     const newgameCharacters = [];
-    charactersSelected.forEach(name => {
+    // eslint-disable-next-line no-debugger
+    debugger;
+    charactersSelected.forEach((player, name) => {
       newgameCharacters.push(characters.find(char => char.name === name));
     });
     setInitialCharacters(newgameCharacters);
@@ -68,24 +83,34 @@ const NewGame = ({ loadedGame, setInitialCharacters }) => {
 
   return (
     <MenuScreen img={BG}>
+      <Modal
+        loadedGame={loadedGame}
+        activePlayers={activePlayers}
+        setActivePlayers={setActivePlayers}
+      />
       <SelectorTitle>CHOOSE PLAYERS</SelectorTitle>
       <CharacterArea>
         {characters.map(char => (
           <Selector key={char.name} name={char.name} onClick={onSelect}>
             <CharImage
               src={char.selector}
-              active={charactersSelected.includes(char.name)}
+              active={charactersSelected.has(char.name)}
             />
-            {charactersSelected.includes(char.name) && (
+            {charactersSelected.has(char.name) && (
               <CharName>{char.name}</CharName>
+            )}
+            {charactersSelected.get(char.name) && (
+              <PlayerTag color={getCharacterColor(char.name)}>
+                {charactersSelected.get(char.name)}
+              </PlayerTag>
             )}
           </Selector>
         ))}
       </CharacterArea>
-      <Link to={charactersSelected.length > 0 && '/play'}>
+      <Link to={charactersSelected.size > 0 && '/play'}>
         <SelectorButton
-          active={charactersSelected.length > 0}
-          disabled={charactersSelected.length === 0}
+          active={charactersSelected.size > 0}
+          disabled={charactersSelected.size === 0}
           onClick={onClickConfirm}
         >
           Confirm

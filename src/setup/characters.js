@@ -18,7 +18,9 @@ const AMY = {
   weapons: [],
   abilities: [],
   selector: SelectorAmy,
-  experience: 0
+  experience: 0,
+  player: null,
+  color: '#a015a3'
 };
 
 const NED = {
@@ -28,7 +30,9 @@ const NED = {
   weapons: [],
   abilities: [],
   selector: SelectorNed,
-  experience: 0
+  experience: 0,
+  player: null,
+  color: '#b52929'
 };
 
 const PHIL = {
@@ -38,7 +42,9 @@ const PHIL = {
   weapons: ['Pistol'],
   abilities: [],
   selector: SelectorPhil,
-  experience: 0
+  experience: 0,
+  player: null,
+  color: '#565656'
 };
 
 const WANDA = {
@@ -48,7 +54,9 @@ const WANDA = {
   weapons: [],
   abilities: [],
   selector: SelectorWanda,
-  experience: 0
+  experience: 0,
+  player: null,
+  color: '#339b35'
 };
 
 const JOSH = {
@@ -58,7 +66,9 @@ const JOSH = {
   weapons: [],
   abilities: [],
   selector: SelectorJosh,
-  experience: 0
+  experience: 0,
+  player: null,
+  color: '#ba761d'
 };
 
 const DOUG = {
@@ -68,7 +78,9 @@ const DOUG = {
   weapons: [],
   abilities: [],
   selector: SelectorDoug,
-  experience: 0
+  experience: 0,
+  player: null,
+  color: '#3566c6'
 };
 
 export const CHARACTERS = [AMY, DOUG, JOSH, NED, PHIL, WANDA];

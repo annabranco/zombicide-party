@@ -12,10 +12,11 @@ import {
   ActionButtonsWrapper,
   ActionButton,
   NextButton,
-  CharacterOverlay
+  CharacterOverlay,
+  PlayerTag
 } from './styles';
 import { CHARACTERS } from '../../../setup/characters';
-import { getPlayerObject } from '../../../utils/players';
+import { getCharacterColor, getPlayerObject } from '../../../utils/players';
 import ItemsSelectorModal from '../../ItemsSelectorModal';
 
 const PlayersSection = ({ initialCharacters, loadedGame }) => {
@@ -42,12 +43,6 @@ const PlayersSection = ({ initialCharacters, loadedGame }) => {
       charIndex + 1 === characters.length ? 0 : charIndex + 1;
     changeCharIndex(nextPlayerIndex);
   };
-
-  console.log(
-    '$$$ initialCharacters, loadedGame',
-    initialCharacters,
-    loadedGame
-  );
 
   useEffect(() => {
     if (!dataLoaded) {
@@ -101,6 +96,9 @@ const PlayersSection = ({ initialCharacters, loadedGame }) => {
     <CharacterSheet>
       <CharacterOverlay img={character.img} />
       <CharName>{character.name}</CharName>
+      <PlayerTag color={getCharacterColor(character.name)}>
+        {character.player}
+      </PlayerTag>
       <CharItems>
         {weapons.map((item, index) => (
           <ItemWrapper key={`${'BaseballBat'}-${index + 1}`}>

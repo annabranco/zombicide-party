@@ -32,7 +32,8 @@ export const CharacterOverlay = styled.div`
   height: 100%;
   width: 100%;
   background: #232222;
-  opacity: 0.6;
+  opacity: 0.7;
+  filter: contrast(0.7) saturate(1.6);
 
   ${({ img, position = 'center top' }) => css`
     background-image: ${`url(${img})`};
@@ -130,3 +131,25 @@ export const NextButton = styled(ActionButton)`
   right: 20px;
 `;
 NextButton.displayName = 'NextButton';
+
+export const PlayerTag = styled.div`
+  z-index: 6;
+  position: absolute;
+  top: -50px;
+  left: 0;
+
+  height: 50px;
+  width: 100%;
+  border: 1px solid black;
+  padding: 5px 20px;
+  background: ${({ color }) => color || 'black'};
+  /* cursor: pointer; */
+  font-family: 'Grandstander', cursive;
+  text-align: center;
+  font-size: 2.3rem;
+  line-height: 1.1;
+  text-transform: uppercase;
+  color: black;
+  filter: brightness(0.8);
+`;
+PlayerTag.displayName = 'PlayerTag';
