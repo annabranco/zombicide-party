@@ -73,8 +73,6 @@ const NewGame = ({ loadedGame, setInitialCharacters }) => {
 
   const onClickConfirm = () => {
     const newgameCharacters = [];
-    // eslint-disable-next-line no-debugger
-    debugger;
     charactersSelected.forEach((player, name) => {
       newgameCharacters.push(characters.find(char => char.name === name));
     });

@@ -1,6 +1,7 @@
 import styled from '@emotion/styled';
 
 export const SelectorModal = styled.div`
+  label: SelectorModal;
   z-index: 4;
   position: absolute;
   top: 0;

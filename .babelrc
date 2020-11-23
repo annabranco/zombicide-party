@@ -1,9 +1,12 @@
 {
 	"plugins": [
 		[
-			"babel-plugin-styled-components",
+			"@emotion",
 			{
-				"fileName": false
+				"sourceMap": true,
+				"autoLabel": "dev-only",
+				"labelFormat": "[local]",
+				"cssPropOptimization": true
 			}
 		]
 	],

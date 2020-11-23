@@ -3,6 +3,7 @@ import { css } from '@emotion/core';
 import { ActionButton } from '../MainMenu/styles';
 
 export const ButtonsArea = styled.div`
+  label: ButtonsArea;
   position: absolute;
   bottom: 0;
   display: flex;
@@ -19,6 +20,7 @@ export const ButtonsArea = styled.div`
 ButtonsArea.displayName = 'ButtonsArea';
 
 export const ModalButton = styled(ActionButton)`
+  label: ModalButton;
   margin: 0 40px;
   width: 190px;
   background: gray;
@@ -43,6 +45,7 @@ export const ModalButton = styled(ActionButton)`
 ModalButton.displayName = 'ModalButton';
 
 export const ModalMessage = styled.p`
+  label: ModalMessage;
   font-size: 1.2rem;
   color: white;
   text-shadow: 0 0 2px white;
@@ -53,6 +56,7 @@ export const ModalMessage = styled.p`
 ModalMessage.displayName = 'ModalMessage';
 
 export const ModalMessageSecondary = styled.p`
+  label: ModalMessageSecondary;
   font-size: 1.3rem;
   font-style: italic;
   text-transform: none;
@@ -61,6 +65,7 @@ export const ModalMessageSecondary = styled.p`
 ModalMessageSecondary.displayName = 'ModalMessageSecondary';
 
 export const ModalTitle = styled.h1`
+  label: ModalTitle;
   position: absolute;
   top: 0;
   margin: 0 auto 50px;
@@ -76,6 +81,7 @@ export const ModalTitle = styled.h1`
 ModalTitle.displayName = 'ModalTitle';
 
 export const ModalWindow = styled.div`
+  label: ModalWindow;
   z-index: 10;
   display: none;
   position: absolute;
@@ -99,6 +105,7 @@ export const ModalWindow = styled.div`
 ModalWindow.displayName = 'ModalWindow';
 
 export const Player = styled.div`
+  label: Player;
   position: relative;
   margin: 20px;
   height: 40px;
@@ -133,6 +140,7 @@ export const Player = styled.div`
 Player.displayName = 'Player';
 
 export const PlayerActionButtonsArea = styled.div`
+  label: PlayerActionButtonsArea;
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -141,6 +149,7 @@ export const PlayerActionButtonsArea = styled.div`
 PlayerActionButtonsArea.displayName = 'PlayerActionButtonsArea';
 
 export const PlayerNew = styled.div`
+  label: PlayerNew;
   height: 30px;
   width: 30px;
   border: 1px solid black;
@@ -156,6 +165,7 @@ export const PlayerNew = styled.div`
 PlayerNew.displayName = 'PlayerNew';
 
 export const PlayerRemove = styled.div`
+  label: PlayerRemove;
   z-index: 10;
   position: absolute;
   top: -10px;
@@ -175,6 +185,7 @@ export const PlayerRemove = styled.div`
 PlayerRemove.displayName = 'PlayerRemove';
 
 export const PlayerRemoveToggle = styled(PlayerNew)`
+  label: PlayerRemoveToggle;
   margin-left: 20px;
   background: red;
   font-size: 1.3rem;
@@ -193,6 +204,7 @@ export const PlayerRemoveToggle = styled(PlayerNew)`
 PlayerRemoveToggle.displayName = 'PlayerRemoveToggle';
 
 export const PlayerNewInput = styled.input`
+  label: PlayerNewInput;
   height: 30px;
   width: 150px;
   border: 1px solid gray;
@@ -207,6 +219,7 @@ export const PlayerNewInput = styled.input`
 PlayerNew.displayName = 'PlayerNew';
 
 export const PlayersArea = styled.div`
+  label: PlayersArea;
   display: flex;
   flex-direction: row;
   align-items: center;

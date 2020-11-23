@@ -1,6 +1,7 @@
 import styled from '@emotion/styled';
 
 export const SectionWrapper = styled.section`
+  label: SectionWrapper;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -11,6 +12,7 @@ export const SectionWrapper = styled.section`
 `;
 
 export const TitleBar = styled.div`
+  label: TitleBar;
   height: 50px;
   width: 90%;
   border: 1px solid black;
@@ -21,6 +23,7 @@ export const TitleBar = styled.div`
 `;
 
 export const Title = styled.h2`
+  label: Title;
   font-size: 1.5rem;
   font-weight: 700;
   line-height: 1.4;
@@ -31,6 +34,7 @@ export const Title = styled.h2`
 `;
 
 export const OpenButton = styled.button`
+  label: OpenButton;
   outline: none;
   border: 2px solid black;
   border-radius: 50%;

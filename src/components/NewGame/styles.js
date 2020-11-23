@@ -1,8 +1,10 @@
 import styled from '@emotion/styled';
 import { css } from '@emotion/core';
 import { ActionButton } from '../MainMenu/styles';
+import { activeImage, inactiveImage } from '../../styles';
 
 export const CharacterArea = styled.div`
+  label: CharacterArea;
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -13,23 +15,20 @@ export const CharacterArea = styled.div`
 CharacterArea.displayName = 'CharacterArea';
 
 export const CharImage = styled.img`
-  filter: sepia(1) opacity(0.3);
+  label: CharImage;
+  ${inactiveImage}
   width: 100%;
 
   ${({ active }) =>
-    active
-      ? css`
-          filter: brightness(1.3);
-        `
-      : css`
-          &:hover {
-            filter: sepia(0.3) brightness(1.4) opacity(0.4);
-          }
-        `}
+    active &&
+    css`
+      ${activeImage}
+    `}
 `;
 CharImage.displayName = 'CharImage';
 
 export const CharName = styled.h1`
+  label: CharName;
   position: absolute;
   bottom: 0;
   left: -25px;
@@ -44,6 +43,7 @@ export const CharName = styled.h1`
 CharName.displayName = 'CharName';
 
 export const PlayerTag = styled.div`
+  label: PlayerTag;
   z-index: 6;
   position: absolute;
   top: 15px;
@@ -67,6 +67,7 @@ export const PlayerTag = styled.div`
 PlayerTag.displayName = 'PlayerTag';
 
 export const Selector = styled.div`
+  label: Selector;
   position: relative;
   width: calc(90vw / 6);
   margin: 0 -25px;
@@ -75,6 +76,7 @@ export const Selector = styled.div`
 Selector.displayName = 'Selector';
 
 export const SelectorButton = styled(ActionButton)`
+  label: SelectorButton;
   margin: 30px auto;
   width: 200px;
   padding: 5px 15px;
@@ -92,6 +94,7 @@ export const SelectorButton = styled(ActionButton)`
 SelectorButton.displayName = 'SelectorButton';
 
 export const SelectorTitle = styled.h1`
+  label: SelectorTitle;
   margin: 20px auto 30px;
   font-size: 2rem;
   color: white;

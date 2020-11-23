@@ -2,6 +2,7 @@ import styled from '@emotion/styled';
 import { css } from '@emotion/core';
 
 export const ActionButtonsWrapper = styled.div`
+  label: ActionButtonsWrapper;
   display: flex;
   flex-direction: rows;
   align-items: flex-start;
@@ -11,6 +12,7 @@ export const ActionButtonsWrapper = styled.div`
 ActionButtonsWrapper.displayName = 'ActionButtonsWrapper';
 
 export const ActionButton = styled.button`
+  label: ActionButton;
   z-index: 3;
   border: 1px solid black;
   border-radius: 5px;
@@ -25,6 +27,7 @@ export const ActionButton = styled.button`
 ActionButton.displayName = 'ActionButton';
 
 export const CharacterOverlay = styled.div`
+  label: CharacterOverlay;
   z-index: 2;
   position: absolute;
   top: 0;
@@ -44,6 +47,7 @@ export const CharacterOverlay = styled.div`
 `;
 
 export const CharacterSheet = styled.div`
+  label: CharacterSheet;
   z-index: 1;
   position: relative;
   display: flex;
@@ -57,6 +61,7 @@ export const CharacterSheet = styled.div`
 CharacterSheet.displayName = 'CharacterSheet';
 
 export const CharName = styled.h1`
+  label: CharName;
   z-index: 3;
   position: absolute;
   top: 0;
@@ -73,6 +78,7 @@ export const CharName = styled.h1`
 CharName.displayName = 'CharName';
 
 export const CharItems = styled.div`
+  label: CharItems;
   z-index: 3;
   position: absolute;
   display: flex;
@@ -84,6 +90,7 @@ export const CharItems = styled.div`
 CharItems.displayName = 'CharItems';
 
 export const Item = styled.div`
+  label: Item;
   border: 2px solid black;
   border-radius: 14px;
   margin: 10px 20px;
@@ -94,6 +101,7 @@ export const Item = styled.div`
 Item.displayName = 'Item';
 
 export const ItemBlank = styled.div`
+  label: ItemBlank;
   z-index: 3;
   display: flex;
   flex-direction: column;
@@ -116,6 +124,7 @@ export const ItemBlank = styled.div`
 ItemBlank.displayName = 'ItemBlank';
 
 export const ItemWrapper = styled.div`
+  label: ItemWrapper;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -125,6 +134,7 @@ export const ItemWrapper = styled.div`
 ItemWrapper.displayName = 'ItemWrapper';
 
 export const NextButton = styled(ActionButton)`
+  label: NextButton;
   z-index: 3;
   position: absolute;
   bottom: 20px;
@@ -133,6 +143,7 @@ export const NextButton = styled(ActionButton)`
 NextButton.displayName = 'NextButton';
 
 export const PlayerTag = styled.div`
+  label: PlayerTag;
   z-index: 6;
   position: absolute;
   top: -50px;

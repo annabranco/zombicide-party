@@ -1,4 +1,5 @@
 import { css } from '@emotion/core';
+import styled from '@emotion/styled';
 
 export const globalStyles = css`
   html,
@@ -113,5 +114,29 @@ export const globalStyles = css`
   }
   p. label {
     font-family: 'Cairo', sans-serif;
+  }
+`;
+
+export const activeImage = css`
+  filter: brightness(1.3);
+`;
+
+export const inactiveImage = css`
+  filter: sepia(1) opacity(0.3);
+
+  &:hover {
+    filter: sepia(0.3) brightness(1.8) opacity(0.4) contrast(1.1) saturate(2);
+  }
+`;
+
+export const activeZombie = css`
+  filter: brightness(1);
+`;
+
+export const inactiveZombie = css`
+  filter: sepia(1) opacity(0.3);
+
+  &:hover {
+    filter: sepia(0.3) brightness(1.6) opacity(0.6) contrast(1.1);
   }
 `;

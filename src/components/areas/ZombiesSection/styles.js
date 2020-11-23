@@ -1,16 +1,8 @@
 import { css } from '@emotion/core';
 import styled from '@emotion/styled';
 
-export const ZombieLabel = styled.h3`
-  /* position: absolute; */
-  height: 0;
-  font-size: 1.2rem;
-  color: lightgray;
-  transform: translate(0, 20px);
-`;
-ZombieLabel.displayName = 'ZombieLabel';
-
 export const SelectorWrapper = styled.div`
+  label: SelectorWrapper;
   position: relative;
   display: flex;
   flex-direction: row;
@@ -27,12 +19,14 @@ export const SelectorWrapper = styled.div`
 SelectorWrapper.displayName = 'SelectorWrapper';
 
 export const SelectorButton = styled.div`
+  label: SelectorButton;
   position: absolute;
   border-radius: 10px;
   height: 30px;
   width: 50%;
   background: red;
   transition: all ease 5s;
+
   ${({ displayKills }) => {
     if (displayKills) {
       return css`
@@ -49,6 +43,7 @@ export const SelectorButton = styled.div`
 SelectorButton.displayName = 'SelectorButton';
 
 export const SubSectionTitle = styled.h3`
+  label: SubSectionTitle;
   z-index: 2;
   width: 50%;
   line-height: 1.5;
@@ -60,6 +55,7 @@ export const SubSectionTitle = styled.h3`
 `;
 
 export const SubSectionWrapper = styled.div`
+  label: SubSectionWrapper;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -68,3 +64,23 @@ export const SubSectionWrapper = styled.div`
   width: 90%;
   overflow: hidden;
 `;
+
+export const ZombieLabel = styled.h3`
+  label: ZombieLabel;
+  z-index: 5;
+  position: absolute;
+  bottom: 10%;
+  left: 50%;
+  height: 40px;
+  width: 100%;
+  background: rgba(0, 0, 0, 0.4);
+  font-size: 4rem;
+  color: ${({ isActive }) => (isActive ? 'yellow' : 'white')};
+  text-shadow: 0 0 3px black;
+  transform: translate(-50%, 0);
+  text-align: center;
+  line-height: 0.7;
+  text-transform: uppercase;
+  transition: all ease 1s;
+`;
+ZombieLabel.displayName = 'ZombieLabel';

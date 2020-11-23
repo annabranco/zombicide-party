@@ -57,6 +57,7 @@ const ThunderFlash = keyframes`
 `;
 
 export const ActionButton = styled.button`
+  label: ActionButton;
   margin: 20px auto;
   width: 300px;
   padding: 10px 25px;
@@ -68,6 +69,7 @@ export const ActionButton = styled.button`
 ActionButton.displayName = 'ActionButton';
 
 export const MenuScreen = styled.div`
+  label: MenuScreen;
   position: relative;
   display: flex;
   flex-direction: column;
@@ -87,6 +89,7 @@ export const MenuScreen = styled.div`
 MenuScreen.displayName = 'MenuScreen';
 
 export const MainTitle = styled.h1`
+  label: MainTitle;
   z-index: 5;
   margin: 80px auto 30px;
   font-size: 5rem;
@@ -96,11 +99,13 @@ export const MainTitle = styled.h1`
 MenuScreen.displayName = 'MenuScreen';
 
 export const StyledLink = styled(Link)`
+  label: StyledLink;
   z-index: 5;
 `;
 StyledLink.displayName = 'Link';
 
 export const TestButton = styled(ActionButton)`
+  label: TestButton;
   z-index: 5;
   font-size: 1rem;
   padding: 5px;
@@ -109,6 +114,7 @@ export const TestButton = styled(ActionButton)`
 TestButton.displayName = 'TestButton';
 
 export const ThunderOverlay = styled.div`
+  label: ThunderOverlay;
   position: absolute;
   top: 0;
   left: 0;
@@ -122,6 +128,7 @@ export const ThunderOverlay = styled.div`
 ThunderOverlay.displayName = 'ThunderOverlay';
 
 export const Version = styled.p`
+  label: Version;
   position: absolute;
   bottom: 50px;
   right: 100px;
