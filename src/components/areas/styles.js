@@ -13,16 +13,21 @@ export const SelectorArea = styled.div`
   justify-content: center;
   overflow: hidden;
   padding-top: 20px;
+
   ${({ columns }) => {
     if (columns === 'big') {
       return css`
         height: calc(100vh - 70px);
-        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
       `;
     }
-    return css`
-      grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
-    `;
+    if (columns) {
+      return css`
+        display: grid;
+        width: 90%;
+        grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+      `;
+    }
+    return null;
   }}
 `;
 SelectorArea.displayName = 'SelectorArea';

@@ -2,20 +2,17 @@ import React, { useEffect, useState } from 'react';
 import { string, number, bool, func } from 'prop-types';
 import { Block, PlayImage, PlayIcon, PlayText } from '../styles';
 import { ZombieLabel } from '../ZombiesSection/styles';
-
-const soundPath =
-  'https://raw.githubusercontent.com/annabranco/zombie-mix/master/src/assets/sounds/';
+import { SOUNDS_PATH } from '../../../setup/endpoints';
 
 const SoundBlock = ({ differentSounds, img, label, name, type, test }) => {
   const [isActive, activate] = useState(false);
   const [isHighlighted, highlight] = useState(false);
   const randomNumber = max => Math.floor(Math.random() * max + 1);
-  const filename = `${soundPath}${type}/${name}${
+  const filename = `${SOUNDS_PATH}${type}/${name}${
     differentSounds ? randomNumber(differentSounds) : ''
   }.mp3`;
   const sound = !test && new Audio(filename);
 
-  // console.log('$$$ filename', filename);
   const play = () => {
     if (sound) {
       activate(true);
@@ -26,7 +23,7 @@ const SoundBlock = ({ differentSounds, img, label, name, type, test }) => {
       }, 4000);
     }
   };
-  console.log('$$$ render', name, type);
+
   return (
     <>
       <Block>
@@ -52,7 +49,7 @@ const SoundBlock = ({ differentSounds, img, label, name, type, test }) => {
 };
 
 SoundBlock.propTypes = {
-  differentSounds: number.isRequired,
+  differentSounds: number,
   img: string,
   label: string,
   name: string.isRequired,
@@ -61,6 +58,7 @@ SoundBlock.propTypes = {
 };
 
 SoundBlock.defaultProps = {
+  differentSounds: null,
   img: null,
   label: null,
   test: false

@@ -18,6 +18,7 @@ import {
 import { CHARACTERS } from '../../../setup/characters';
 import { getCharacterColor, getPlayerObject } from '../../../utils/players';
 import ItemsSelectorModal from '../../ItemsSelectorModal';
+import OpenDoor from '../../OpenDoor';
 
 const PlayersSection = ({ initialCharacters, loadedGame }) => {
   const [character, changeCharacter] = useState({});
@@ -27,6 +28,7 @@ const PlayersSection = ({ initialCharacters, loadedGame }) => {
   const [slot, selectSlot] = useState();
   const [characters, updateCharacters] = useState([]);
   const [dataLoaded, setDataLoaded] = useState(false);
+  const [canOpenDoor, setCanOpenDoor] = useState(false);
 
   const prevCharIndex = useRef();
   const prevWeapons = useRef();
@@ -35,7 +37,20 @@ const PlayersSection = ({ initialCharacters, loadedGame }) => {
     const newItems = [...weapons];
     newItems[activeSlot] = selectedItem;
     updateWeapons(newItems);
+    checkIfCanOpenDoors(newItems);
     selectSlot();
+  };
+
+  const checkIfCanOpenDoors = currentWeapons => {
+    if (currentWeapons.some(x => WEAPONS[x] && WEAPONS[x].canOpenDoor)) {
+      currentWeapons.forEach(weapon => {
+        if (WEAPONS[weapon] && WEAPONS[weapon].canOpenDoor) {
+          setCanOpenDoor(WEAPONS[weapon].name);
+        }
+      });
+    } else {
+      setCanOpenDoor(false);
+    }
   };
 
   const changeToNextPlayer = () => {
@@ -71,6 +86,7 @@ const PlayersSection = ({ initialCharacters, loadedGame }) => {
         const playerItems = [nextChar.weapons[0], nextChar.weapons[1]];
         changeCharacter(nextChar);
         updateWeapons(playerItems);
+        checkIfCanOpenDoors(playerItems);
         prevCharIndex.current = charIndex;
         prevWeapons.current = nextChar.weapons.join('-');
 
@@ -89,6 +105,7 @@ const PlayersSection = ({ initialCharacters, loadedGame }) => {
       allCharacters[charIndex] = currentCharacter;
       updateCharacters(allCharacters);
       localStorage.setItem('ZombicideParty', JSON.stringify(allCharacters));
+      checkIfCanOpenDoors(weapons);
     }
   }, [weapons]);
 
@@ -99,6 +116,7 @@ const PlayersSection = ({ initialCharacters, loadedGame }) => {
       <PlayerTag color={getCharacterColor(character.name)}>
         {character.player}
       </PlayerTag>
+      {canOpenDoor && <OpenDoor type={canOpenDoor} />}
       <CharItems>
         {weapons.map((item, index) => (
           <ItemWrapper key={`${'BaseballBat'}-${index + 1}`}>
