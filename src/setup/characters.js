@@ -15,72 +15,84 @@ const AMY = {
   img: Amy,
   name: 'Amy',
   items: [],
-  weapons: [],
+  inHand: [],
+  inBackpack: [],
   abilities: [],
   selector: SelectorAmy,
   experience: 0,
   player: null,
-  color: '#a015a3'
+  color: '#a015a3',
+  voice: 'female'
 };
 
 const NED = {
   img: Ned,
   name: 'Ned',
   items: [],
-  weapons: [],
+  inHand: [],
+  inBackpack: [],
   abilities: [],
   selector: SelectorNed,
   experience: 0,
   player: null,
-  color: '#b52929'
+  color: '#b52929',
+  voice: 'male'
 };
 
 const PHIL = {
   img: Phil,
   name: 'Phil',
   items: [],
-  weapons: ['Pistol'],
+  inHand: ['Pistol'],
+  inBackpack: [],
   abilities: [],
   selector: SelectorPhil,
   experience: 0,
   player: null,
-  color: '#565656'
+  color: '#565656',
+  voice: 'male'
 };
 
 const WANDA = {
   img: Wanda,
   name: 'Wanda',
   items: [],
-  weapons: [],
+  inHand: [],
+  inBackpack: [],
   abilities: [],
   selector: SelectorWanda,
   experience: 0,
   player: null,
-  color: '#339b35'
+  color: '#339b35',
+  voice: 'female'
 };
 
 const JOSH = {
   img: Josh,
   name: 'Josh',
   items: [],
-  weapons: [],
+  inHand: [],
+  inBackpack: [],
   abilities: [],
   selector: SelectorJosh,
   experience: 0,
   player: null,
-  color: '#ba761d'
+  color: '#ba761d',
+  voice: 'male'
 };
 
 const DOUG = {
   img: Doug,
   name: 'Doug',
   items: [],
-  weapons: [],
+  inHand: [],
+  inBackpack: [],
   abilities: [],
   selector: SelectorDoug,
   experience: 0,
   player: null,
-  color: '#3566c6'
+  color: '#3566c6',
+  voice: 'male'
 };
 
 export const CHARACTERS = [AMY, DOUG, JOSH, NED, PHIL, WANDA];

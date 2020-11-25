@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import SoundBlock from '../SoundBlock';
 import { ZOMBIES_S1 } from '../../../setup/zombies';
 import FemaleWound from '../../../assets/images/attacks/female-hit.png';
@@ -16,10 +16,11 @@ import {
   SubSectionTitle,
   SubSectionWrapper
 } from './styles';
+import { useStateWithLabel } from '../../../utils/hooks';
 
 const ZombiesSection = () => {
-  const [displayKills, ToggleKills] = useState(false);
-  const [zombies, changeZombies] = useState(ZOMBIES_S1);
+  const [displayKills, ToggleKills] = useStateWithLabel(false, 'displayKills');
+  const [zombies, changeZombies] = useStateWithLabel(ZOMBIES_S1, 'zombies');
 
   return (
     <ZombiesArea>

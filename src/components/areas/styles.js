@@ -56,13 +56,12 @@ SelectorArea.displayName = 'SelectorArea';
 
 export const Block = styled.div`
   label: Block;
-  /* position: relative; */
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  /* border: 1px solid gray; */
   border-radius: 5px;
+  box-shadow: 0 0 5px 0 black;
 `;
 Block.displayName = 'Block';
 
@@ -75,7 +74,9 @@ export const PlayImage = styled.button`
   line-height: 0;
   width: 100%;
   padding: 0;
-  cursor: pointer;
+  cursor: ${({ type, slotType }) =>
+    type === 'weapons' && slotType === 'inHand' && 'pointer'};
+
   transition: background ease 1.5s;
 `;
 PlayImage.displayName = 'PlayImage';
@@ -97,13 +98,14 @@ export const PlayIcon = styled.img`
         }
       `;
     }
-    if (type === 'weapons') {
+    if (type === 'weapons' || type === 'items') {
       return css`
         border: 1px solid black;
         border-radius: 8px;
+
         &:hover {
-          transform: scale(1.03);
-          transition: all ease 0.8s;
+          transform: scale(1.01);
+          transition: all ease 0.4s;
         }
       `;
     }

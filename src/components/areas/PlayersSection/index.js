@@ -1,56 +1,58 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { string } from 'prop-types';
-import SoundBlock from '../SoundBlock';
-import { WEAPONS } from '../../../utils/itemsReference';
 import {
   CharacterSheet,
   CharItems,
   CharName,
-  Item,
-  ItemWrapper,
-  ItemBlank,
-  ActionButtonsWrapper,
-  ActionButton,
   NextButton,
   CharacterOverlay,
   PlayerTag
 } from './styles';
 import { CHARACTERS } from '../../../setup/characters';
-import { getCharacterColor, getPlayerObject } from '../../../utils/players';
+import { getCharacterColor, updatePlayerObject } from '../../../utils/players';
+import { characterCanOpenDoors } from '../../../utils/items';
 import ItemsSelectorModal from '../../ItemsSelectorModal';
 import OpenDoor from '../../OpenDoor';
+import { useStateWithLabel } from '../../../utils/hooks';
+import ItemsArea from '../../ItemWrapper';
 
 const PlayersSection = ({ initialCharacters, loadedGame }) => {
-  const [character, changeCharacter] = useState({});
-  const [charIndex, changeCharIndex] = useState(0);
+  const [character, changeCharacter] = useStateWithLabel({}, 'character');
+  const [charIndex, changeCharIndex] = useStateWithLabel(0, 'charIndex');
 
-  const [weapons, updateWeapons] = useState(['', '']);
-  const [slot, selectSlot] = useState();
-  const [characters, updateCharacters] = useState([]);
-  const [dataLoaded, setDataLoaded] = useState(false);
-  const [canOpenDoor, setCanOpenDoor] = useState(false);
+  const [inHand, updateInHand] = useStateWithLabel(['', ''], 'inHand');
+  const [inBackpack, updateInBackpack] = useStateWithLabel(
+    ['', '', ''],
+    'inBackpack'
+  );
+
+  const [slot, selectSlot] = useStateWithLabel(null, 'slot');
+  const [characters, updateCharacters] = useStateWithLabel([], 'characters');
+  const [dataLoaded, setDataLoaded] = useStateWithLabel(false, 'dataLoaded');
+  const [canOpenDoor, setCanOpenDoor] = useStateWithLabel(false, 'canOpenDoor');
 
   const prevCharIndex = useRef();
-  const prevWeapons = useRef();
+  const prevInHand = useRef();
+  const prevInBackpack = useRef();
 
-  const changeWeapon = (selectedItem, activeSlot = slot - 1) => {
-    const newItems = [...weapons];
-    newItems[activeSlot] = selectedItem;
-    updateWeapons(newItems);
-    checkIfCanOpenDoors(newItems);
+  const changeInHand = (name, currentSlot = slot - 1) => {
+    const newItems = [...inHand];
+    const openDoors = characterCanOpenDoors(newItems);
+    console.log('$$$ openDoors', newItems, openDoors);
+    newItems[currentSlot] = name;
+    updateInHand(newItems);
+    setCanOpenDoor(openDoors);
     selectSlot();
   };
 
-  const checkIfCanOpenDoors = currentWeapons => {
-    if (currentWeapons.some(x => WEAPONS[x] && WEAPONS[x].canOpenDoor)) {
-      currentWeapons.forEach(weapon => {
-        if (WEAPONS[weapon] && WEAPONS[weapon].canOpenDoor) {
-          setCanOpenDoor(WEAPONS[weapon].name);
-        }
-      });
-    } else {
-      setCanOpenDoor(false);
-    }
+  const changeInBackpack = (name, currentSlot = slot - 3) => {
+    const newItems = [...inBackpack];
+    const openDoors = characterCanOpenDoors(newItems);
+
+    newItems[currentSlot] = name;
+    updateInBackpack(newItems);
+    setCanOpenDoor(openDoors);
+    selectSlot();
   };
 
   const changeToNextPlayer = () => {
@@ -66,12 +68,21 @@ const PlayersSection = ({ initialCharacters, loadedGame }) => {
       ]) ||
         (loadedGame && [...loadedGame]) || [...CHARACTERS];
       updatedCharacters.forEach(char => {
-        if (char.weapons.length === 0) {
-          // eslint-disable-next-line no-param-reassign
-          char.weapons = [undefined, undefined];
-        } else if (char.weapons.length === 1) {
-          // eslint-disable-next-line no-param-reassign
-          char.weapons = [undefined, ...char.weapons];
+        // Keeps initial items on the right side of the card, for viewing purposes (makes the character image completely seen on the begining)
+        const inHandItems = char.inHand.filter(item => item);
+        const inBackpackItems = char.inBackpack.filter(item => item);
+
+        if (inHandItems.length === 0) {
+          char.inHand = [null, null]; // eslint-disable-line no-param-reassign
+        } else if (inHandItems.length === 1) {
+          char.inHand = [null, ...char.inHand]; // eslint-disable-line no-param-reassign
+        }
+        if (inBackpackItems.length === 0) {
+          char.inBackpack = [null, null, null]; // eslint-disable-line no-param-reassign
+        } else if (inBackpackItems.length === 1) {
+          char.inBackpack = [null, null, ...inBackpackItems]; // eslint-disable-line no-param-reassign
+        } else if (inBackpackItems.length === 2) {
+          char.inBackpack = [null, ...inBackpackItems]; // eslint-disable-line no-param-reassign
         }
       });
       updateCharacters(updatedCharacters);
@@ -83,31 +94,55 @@ const PlayersSection = ({ initialCharacters, loadedGame }) => {
     if (characters) {
       const nextChar = characters[charIndex];
       if (nextChar && (charIndex !== prevCharIndex.current || !dataLoaded)) {
-        const playerItems = [nextChar.weapons[0], nextChar.weapons[1]];
+        const charInHand = [nextChar.inHand[0], nextChar.inHand[1]];
+        const charInBackpack = [
+          nextChar.inBackpack[0],
+          nextChar.inBackpack[1],
+          nextChar.inBackpack[2]
+        ];
+        const openDoors =
+          characterCanOpenDoors(charInHand) ||
+          characterCanOpenDoors(charInBackpack);
+
         changeCharacter(nextChar);
-        updateWeapons(playerItems);
-        checkIfCanOpenDoors(playerItems);
+        updateInHand(charInHand);
+        updateInBackpack(charInBackpack);
+        setCanOpenDoor(openDoors);
+
         prevCharIndex.current = charIndex;
-        prevWeapons.current = nextChar.weapons.join('-');
+        prevInHand.current = nextChar.inHand.join('-');
+        prevInBackpack.current = nextChar.inBackpack.join('-');
 
         if (!dataLoaded) {
           setDataLoaded(true);
-          prevWeapons.current = weapons.join('-');
+          prevInHand.current = inHand.join('-');
+          prevInBackpack.current = inBackpack.join('-');
         }
       }
     }
-  }, [charIndex, characters, dataLoaded, weapons]);
+  }, [charIndex, characters, dataLoaded, inHand]);
 
   useEffect(() => {
-    if (dataLoaded && weapons.join('-') !== prevWeapons.current) {
+    if (
+      dataLoaded &&
+      (inHand.join('-') !== prevInHand.current ||
+        inBackpack.join('-') !== prevInBackpack.current)
+    ) {
       const allCharacters = [...characters];
-      const currentCharacter = getPlayerObject(character, weapons);
+      const currentCharacter = updatePlayerObject(
+        character,
+        inHand,
+        inBackpack
+      );
+      const openDoors =
+        characterCanOpenDoors(inHand) || characterCanOpenDoors(inBackpack);
+
+      setCanOpenDoor(openDoors);
       allCharacters[charIndex] = currentCharacter;
       updateCharacters(allCharacters);
       localStorage.setItem('ZombicideParty', JSON.stringify(allCharacters));
-      checkIfCanOpenDoors(weapons);
     }
-  }, [weapons]);
+  }, [inHand, inBackpack]);
 
   return (
     <CharacterSheet>
@@ -117,43 +152,37 @@ const PlayersSection = ({ initialCharacters, loadedGame }) => {
         {character.player}
       </PlayerTag>
       {canOpenDoor && <OpenDoor type={canOpenDoor} />}
-      <CharItems>
-        {weapons.map((item, index) => (
-          <ItemWrapper key={`${'BaseballBat'}-${index + 1}`}>
-            <Item>
-              {item ? (
-                <SoundBlock
-                  name={item}
-                  img={WEAPONS[item].img}
-                  type="weapons"
-                />
-              ) : (
-                <ItemBlank onClick={() => selectSlot(index + 1)}>
-                  Item in hand
-                </ItemBlank>
-              )}
-            </Item>
-            {item && (
-              <ActionButtonsWrapper>
-                <ActionButton
-                  type="button"
-                  onClick={() => selectSlot(index + 1)}
-                >
-                  CHANGE
-                </ActionButton>
-
-                <ActionButton
-                  type="button"
-                  onClick={() => changeWeapon('', index)}
-                >
-                  CLEAR
-                </ActionButton>
-              </ActionButtonsWrapper>
-            )}
-          </ItemWrapper>
+      <CharItems slotType="inHand">
+        {inHand.map((item, index) => (
+          <ItemsArea
+            slotType="inHand"
+            key={`${item}-${index + 1}`}
+            item={item}
+            index={index}
+            selectSlot={selectSlot}
+            onClickDrop={changeInHand}
+          />
         ))}
       </CharItems>
-      {slot && <ItemsSelectorModal changeWeapon={changeWeapon} />}
+      <CharItems slotType="inBackpack">
+        {inBackpack.map((item, index) => (
+          <ItemsArea
+            slotType="inBackpack"
+            key={`${item}-${index + 3}`}
+            item={item}
+            index={index}
+            selectSlot={selectSlot}
+            onClickDrop={changeInBackpack}
+            noAudio
+          />
+        ))}
+      </CharItems>
+      {slot && slot <= 2 && (
+        <ItemsSelectorModal slotType="inHand" onSelect={changeInHand} />
+      )}
+      {slot && slot >= 3 && (
+        <ItemsSelectorModal slotType="inBackpack" onSelect={changeInBackpack} />
+      )}
       {characters.length > 1 && (
         <NextButton type="button" onClick={changeToNextPlayer}>
           NEXT

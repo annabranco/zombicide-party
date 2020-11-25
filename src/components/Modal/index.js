@@ -1,7 +1,6 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
-
-import { bool, func, instanceOf, node } from 'prop-types';
+import { bool, func, instanceOf } from 'prop-types';
 import {
   ModalWindow,
   ModalMessage,
@@ -17,13 +16,20 @@ import {
   PlayerActionButtonsArea,
   ModalMessageSecondary
 } from './styles';
+import { useStateWithLabel } from '../../utils/hooks';
 
 const Modal = ({ loadedGame, activePlayers, setActivePlayers }) => {
-  const [visible, toggleVisible] = useState(false);
-  const [message, setMessage] = useState({ buttons: [] });
-  const [players, updatePlayers] = useState(new Set(['Anya', 'Cris']));
-  const [showInput, toggleInput] = useState(false);
-  const [showRemovePlayer, toggleRemovePlayer] = useState(false);
+  const [visible, toggleVisible] = useStateWithLabel(false, 'visible');
+  const [message, setMessage] = useStateWithLabel({ buttons: [] }, 'message');
+  const [players, updatePlayers] = useStateWithLabel(
+    new Set(['Anya', 'Cris']),
+    'players'
+  );
+  const [showInput, toggleInput] = useStateWithLabel(false, 'showInput');
+  const [showRemovePlayer, toggleRemovePlayer] = useStateWithLabel(
+    false,
+    'showRemovePlayer'
+  );
 
   const history = useHistory();
 

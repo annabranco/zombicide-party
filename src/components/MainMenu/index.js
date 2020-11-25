@@ -1,6 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
-import { bool, func } from 'prop-types';
+import React, { useEffect } from 'react';
+import { bool } from 'prop-types';
 import appInfo from '../../../package.json';
 import {
   ActionButton,
@@ -14,9 +13,10 @@ import {
 import BG from '../../assets/images/background/background.jpg';
 import Storm from '../../assets/sounds/intro/intro.mp3';
 import Horde from '../../assets/sounds/activations/Horde1.mp3';
+import { useStateWithLabel } from '../../utils/hooks';
 
 const MainMenu = ({ loadedGame }) => {
-  const [testSound, toggleTestSound] = useState(false);
+  const [testSound, toggleTestSound] = useStateWithLabel(false, 'testSound');
   const APP_VERSION = appInfo.version;
 
   useEffect(() => {

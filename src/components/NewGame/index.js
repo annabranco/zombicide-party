@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
 import { bool, func } from 'prop-types';
 import { MenuScreen } from '../MainMenu/styles';
@@ -15,11 +15,21 @@ import {
 } from './styles';
 import Modal from '../Modal';
 import { getCharacterColor } from '../../utils/players';
+import { useStateWithLabel } from '../../utils/hooks';
 
 const NewGame = ({ loadedGame, setInitialCharacters }) => {
-  const [characters, setCharacters] = useState(CHARACTERS);
-  const [charactersSelected, updateSelectedCharacters] = useState(new Map());
-  const [activePlayers, setActivePlayers] = useState(new Set());
+  const [characters, setCharacters] = useStateWithLabel(
+    CHARACTERS,
+    'characters'
+  );
+  const [charactersSelected, updateSelectedCharacters] = useStateWithLabel(
+    new Map(),
+    'charactersSelected'
+  );
+  const [activePlayers, setActivePlayers] = useStateWithLabel(
+    new Set(),
+    'activePlayers'
+  );
 
   const onSelect = event => {
     const character = event.currentTarget.getAttribute('name');

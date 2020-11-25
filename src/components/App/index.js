@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom';
+import React from 'react';
+import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import { Global } from '@emotion/core';
 import { globalStyles } from '../../styles';
 import ZombiesSection from '../areas/ZombiesSection';
@@ -8,9 +8,13 @@ import Section from '../Section';
 import { MainScreen } from './styles';
 import MainMenu from '../MainMenu';
 import NewGame from '../NewGame';
+import { useStateWithLabel } from '../../utils/hooks';
 
 const App = () => {
-  const [initialCharacters, setInitialCharacters] = useState([]);
+  const [initialCharacters, setInitialCharacters] = useStateWithLabel(
+    [],
+    'initialCharacters'
+  );
   const loadedGame = JSON.parse(localStorage.getItem('ZombicideParty'));
 
   return (

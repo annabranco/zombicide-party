@@ -1,19 +1,10 @@
 import styled from '@emotion/styled';
 import { css } from '@emotion/core';
 
-export const ActionButtonsWrapper = styled.div`
-  label: ActionButtonsWrapper;
-  display: flex;
-  flex-direction: rows;
-  align-items: flex-start;
-  justify-content: space-around;
-  width: 80%;
-`;
-ActionButtonsWrapper.displayName = 'ActionButtonsWrapper';
-
 export const ActionButton = styled.button`
   label: ActionButton;
   z-index: 3;
+  top: 0;
   border: 1px solid black;
   border-radius: 5px;
   padding: 2px 10px;
@@ -23,6 +14,11 @@ export const ActionButton = styled.button`
   font-weight: 700;
   font-size: 0.7rem;
   line-height: 1.5;
+  cursor: pointer;
+
+  &:hover {
+    color: yellow;
+  }
 `;
 ActionButton.displayName = 'ActionButton';
 
@@ -73,72 +69,35 @@ export const CharName = styled.h1`
   text-shadow: 0 0 4px black;
   line-height: 1.2;
   text-transform: uppercase;
-  /* transform: translate(200px, -100px); */
 `;
 CharName.displayName = 'CharName';
 
 export const CharItems = styled.div`
   label: CharItems;
-  z-index: 3;
   position: absolute;
   display: flex;
   flex-direction: row;
   align-items: center;
   justify-content: center;
+  margin-top: 65px;
   width: 90%;
+
+  ${({ slotType }) =>
+    slotType === 'inBackpack' &&
+    css`
+      margin-top: -10px;
+    `}
 `;
 CharItems.displayName = 'CharItems';
-
-export const Item = styled.div`
-  label: Item;
-  border: 2px solid black;
-  border-radius: 14px;
-  margin: 10px 20px;
-  height: 273px;
-  width: 200px;
-  overflow: hidden;
-`;
-Item.displayName = 'Item';
-
-export const ItemBlank = styled.div`
-  label: ItemBlank;
-  z-index: 3;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: flex-start;
-  background: rgba(255, 255, 255, 0.2);
-  height: 273px;
-  width: 200px;
-  padding-top: 50px;
-  font-family: 'Grandstander', cursive;
-  font-size: 1.1rem;
-  font-weight: 500;
-  text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.5);
-  text-shadow: 0 0 12px black;
-  cursor: pointer;
-
-  /* opacity: 0.2; */
-`;
-ItemBlank.displayName = 'ItemBlank';
-
-export const ItemWrapper = styled.div`
-  label: ItemWrapper;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  margin-top: 50px;
-`;
-ItemWrapper.displayName = 'ItemWrapper';
 
 export const NextButton = styled(ActionButton)`
   label: NextButton;
   z-index: 3;
   position: absolute;
+  top: unset;
   bottom: 20px;
   right: 20px;
+  height: 20px;
 `;
 NextButton.displayName = 'NextButton';
 

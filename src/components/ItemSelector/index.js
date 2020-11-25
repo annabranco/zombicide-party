@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { string, number, bool, func } from 'prop-types';
+import React from 'react';
+import { string, func } from 'prop-types';
 import { Block, PlayImage, PlayIcon, PlayText } from '../areas/styles';
 
 const SelectionItem = ({ img, label, name, onHover, onSelect, type }) => {

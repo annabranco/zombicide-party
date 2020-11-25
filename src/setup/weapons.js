@@ -14,7 +14,7 @@ import SawedOff from '../assets/images/weapons/sawed-off.jpg';
 import Shotgun from '../assets/images/weapons/shotgun.jpg';
 import SubMG from '../assets/images/weapons/sub-mg.jpg';
 
-export const WEAPONS = {
+export const WEAPONS_S1 = {
   BaseballBat: {
     img: BaseballBat,
     name: 'BaseballBat',

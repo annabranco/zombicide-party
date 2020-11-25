@@ -1,11 +1,12 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { oneOf } from 'prop-types';
 import OpeningDoor from '../../assets/images/OpeningDoor.png';
 import { OpenDoorIcon } from './styles';
 import { SOUNDS_PATH } from '../../setup/endpoints';
+import { useStateWithLabel } from '../../utils/hooks';
 
 const OpenDoor = ({ type }) => {
-  const [isActive, activate] = useState(false);
+  const [isActive, activate] = useStateWithLabel(false, 'isActive');
 
   const filename = `${SOUNDS_PATH}/actions/${type}.mp3`;
   const sound = new Audio(filename);

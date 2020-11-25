@@ -1,27 +1,23 @@
-import React, { useEffect, useState } from 'react';
-
 import React from 'react';
 import { string } from 'prop-types';
+import { useStateWithLabel } from '../utils/hooks';
 
 const usePlayersHandler = (player, order) => {
-  const [player, changePlayer] = useState();
-  const [playerIndex, changePlayerIndex] = useState();
-
-
-
-  return (
-
-    <p>usePlayersHandler working!</p>
-
+  const [player, changePlayer] = useStateWithLabel(null, 'player');
+  const [playerIndex, changePlayerIndex] = useStateWithLabel(
+    null,
+    'playerIndex'
   );
-}
+
+  return <p>usePlayersHandler working!</p>;
+};
 
 usePlayersHandler.propTypes = {
-  key : string
+  key: string
 };
 
 usePlayersHandler.defaultProps = {
-  key : undefined
+  key: undefined
 };
 
 export default usePlayersHandler;

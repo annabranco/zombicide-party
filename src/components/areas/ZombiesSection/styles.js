@@ -3,6 +3,7 @@ import styled from '@emotion/styled';
 
 export const SelectorWrapper = styled.div`
   label: SelectorWrapper;
+  z-index: 10;
   position: relative;
   display: flex;
   flex-direction: row;
@@ -15,6 +16,13 @@ export const SelectorWrapper = styled.div`
   overflow: hidden;
   background: black;
   cursor: pointer;
+
+  ${({ selectorType }) =>
+    selectorType === 'itemsSelector' &&
+    css`
+      position: absolute;
+      top: -40px;
+    `}
 `;
 SelectorWrapper.displayName = 'SelectorWrapper';
 
@@ -69,7 +77,7 @@ export const ZombieLabel = styled.h3`
   label: ZombieLabel;
   z-index: 5;
   position: absolute;
-  bottom: 10%;
+  bottom: 30%;
   left: 50%;
   height: 40px;
   width: 100%;

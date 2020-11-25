@@ -1,3 +1,4 @@
+import { css } from '@emotion/core';
 import styled from '@emotion/styled';
 
 export const SelectorModal = styled.div`
@@ -9,7 +10,7 @@ export const SelectorModal = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: flex-start;
+  justify-content: space-between;
   transform: translate(-50%, 0);
   height: 100%;
   width: 100%;
