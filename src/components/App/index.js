@@ -1,14 +1,14 @@
 import React from 'react';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import { Global } from '@emotion/core';
-import { globalStyles } from '../../styles';
-import ZombiesSection from '../areas/ZombiesSection';
-import PlayersSection from '../areas/PlayersSection';
-import Section from '../Section';
-import { MainScreen } from './styles';
+import { useStateWithLabel } from '../../utils/hooks';
 import MainMenu from '../MainMenu';
 import NewGame from '../NewGame';
-import { useStateWithLabel } from '../../utils/hooks';
+import PlayersSection from '../Sections/PlayersSection';
+import Section from '../Sections';
+import ZombiesSection from '../Sections/ZombiesSection';
+import { MainScreen } from './styles';
+import { globalStyles } from '../../styles';
 
 const App = () => {
   const [initialCharacters, setInitialCharacters] = useStateWithLabel(

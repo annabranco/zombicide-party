@@ -1,18 +1,18 @@
 import React from 'react';
 import { string, number, bool } from 'prop-types';
-import { Block, PlayImage, PlayIcon, PlayText } from '../styles';
-import { ZombieLabel } from '../ZombiesSection/styles';
-import { SOUNDS_PATH } from '../../../setup/endpoints';
-import { useStateWithLabel } from '../../../utils/hooks';
+import { useStateWithLabel } from '../../utils/hooks';
+import { SOUNDS_PATH } from '../../setup/endpoints';
+import { Block, PlayImage, PlayIcon, PlayText } from './styles';
+import { ZombieLabel } from '../Sections/ZombiesSection/styles';
 
 const SoundBlock = ({
   differentSounds,
   img,
   label,
   name,
-  type,
+  noAudio,
   slotType,
-  noAudio
+  type
 }) => {
   const [isActive, activate] = useStateWithLabel(false, 'isActive');
   const [isHighlighted, highlight] = useStateWithLabel(false, 'isHighlighted');
@@ -45,18 +45,18 @@ const SoundBlock = ({
           <ZombieLabel isActive={isActive}>{name || label}</ZombieLabel>
         )}
         <PlayImage
-          onClick={play}
           isActive={isActive}
-          type={type}
+          onClick={play}
           slotType={slotType}
+          type={type}
         >
           {img ? (
             <PlayIcon
               active={isActive}
+              onMouseOut={() => highlight(false)}
+              onMouseOver={() => highlight(true)}
               src={img}
               type={type}
-              onMouseOver={() => highlight(true)}
-              onMouseOut={() => highlight(false)}
             />
           ) : (
             <PlayText>{label || name}</PlayText>
@@ -72,16 +72,17 @@ SoundBlock.propTypes = {
   img: string,
   label: string,
   name: string.isRequired,
-  type: string.isRequired,
-  slotType: string.isRequired,
-  noAudio: bool
+  noAudio: bool,
+  slotType: string,
+  type: string.isRequired
 };
 
 SoundBlock.defaultProps = {
   differentSounds: null,
   img: null,
   label: null,
-  noAudio: false
+  noAudio: false,
+  slotType: null
 };
 
 export default SoundBlock;

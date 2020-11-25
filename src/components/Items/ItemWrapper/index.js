@@ -1,12 +1,12 @@
 import React, { useEffect } from 'react';
 import { number, string, func } from 'prop-types';
-import SoundBlock from '../areas/SoundBlock';
-import { ActionButtonsWrapper, Item, ItemBlank, ItemWrapper } from './styles';
-import { useStateWithLabel } from '../../utils/hooks';
-import { ActionButton } from '../areas/PlayersSection/styles';
-import { getItemPhoto, getItemType } from '../../utils/items';
+import { useStateWithLabel } from '../../../utils/hooks';
+import { getItemPhoto, getItemType } from '../../../utils/items';
+import SoundBlock from '../../SoundBlock';
+import { ActionButton } from '../../Sections/PlayersSection/styles';
+import { ItemWrapper, ItemBlank, Item, ActionButtonsWrapper } from './styles';
 
-const ItemsArea = ({ item, index, selectSlot, onClickDrop, slotType }) => {
+const ItemsArea = ({ index, item, onClickDrop, selectSlot, slotType }) => {
   const [isActive, toggleActive] = useStateWithLabel(false, 'isActive');
   const [itemsType, changeItemsType] = useStateWithLabel(
     'weapons',
@@ -25,18 +25,18 @@ const ItemsArea = ({ item, index, selectSlot, onClickDrop, slotType }) => {
 
   return (
     <ItemWrapper
-      onMouseOver={() => toggleActive(true)}
-      onMouseOut={() => toggleActive(false)}
-      slotType={slotType}
-      key={`${item}-${index + 1}`}
       id={`${item}-${index + 1}`}
       isActive={item && isActive}
+      key={`${item}-${index + 1}`}
+      onMouseOut={() => toggleActive(false)}
+      onMouseOver={() => toggleActive(true)}
+      slotType={slotType}
     >
       <Item>
         {item ? (
           <SoundBlock
-            name={item}
             img={getItemPhoto(item)}
+            name={item}
             slotType={slotType}
             type={itemsType}
           />
@@ -50,11 +50,11 @@ const ItemsArea = ({ item, index, selectSlot, onClickDrop, slotType }) => {
       </Item>
       {item && (
         <ActionButtonsWrapper>
-          <ActionButton type="button" onClick={onClickChange}>
+          <ActionButton onClick={onClickChange} type="button">
             CHANGE
           </ActionButton>
 
-          <ActionButton type="button" onClick={() => onClickDrop('', index)}>
+          <ActionButton onClick={() => onClickDrop('', index)} type="button">
             DROP
           </ActionButton>
         </ActionButtonsWrapper>
@@ -64,11 +64,15 @@ const ItemsArea = ({ item, index, selectSlot, onClickDrop, slotType }) => {
 };
 
 ItemsArea.propTypes = {
-  item: string.isRequired,
   index: number.isRequired,
-  selectSlot: func.isRequired,
+  item: string,
   onClickDrop: func.isRequired,
+  selectSlot: func.isRequired,
   slotType: string.isRequired
+};
+
+ItemsArea.defaultProps = {
+  item: null
 };
 
 export default ItemsArea;

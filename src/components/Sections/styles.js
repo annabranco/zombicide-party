@@ -1,5 +1,22 @@
 import styled from '@emotion/styled';
 
+export const OpenButton = styled.button`
+  label: OpenButton;
+  outline: none;
+  border: 2px solid black;
+  border-radius: 50%;
+  box-shadow: 0 0 5px black;
+  font-size: 1rem;
+  font-weight: 900;
+  color: white;
+  cursor: pointer;
+
+  &:hover {
+    transform: translate(0, 1px);
+    box-shadow: inset 0 2px 5px 1px rgba(black, 0.4);
+  }
+`;
+
 export const SectionWrapper = styled.section`
   label: SectionWrapper;
   display: flex;
@@ -31,21 +48,4 @@ export const Title = styled.h2`
   font-family: 'Cairo', sans-serif;
   text-shadow: 0 0 2px white;
   text-transform: uppercase;
-`;
-
-export const OpenButton = styled.button`
-  label: OpenButton;
-  outline: none;
-  border: 2px solid black;
-  border-radius: 50%;
-  box-shadow: 0 0 5px black;
-  font-size: 1rem;
-  font-weight: 900;
-  color: white;
-  cursor: pointer;
-
-  &:hover {
-    transform: translate(0, 1px);
-    box-shadow: inset 0 2px 5px 1px rgba(black, 0.4);
-  }
 `;

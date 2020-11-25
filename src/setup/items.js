@@ -18,14 +18,12 @@ export const ITEMS_S1 = {
   CannedFood: {
     img: CannedFood,
     name: 'CannedFood',
-    type: 'items',
-    canOpenDoor: true
+    type: 'items'
   },
   FlashLight: {
     img: FlashLight,
     name: 'FlashLight',
-    type: 'items',
-    canOpenDoor: true
+    type: 'items'
   },
   Gasoline: {
     img: Gasoline,
@@ -35,8 +33,7 @@ export const ITEMS_S1 = {
   GlassBottle: {
     img: GlassBottle,
     name: 'GlassBottle',
-    type: 'items',
-    canOpenDoor: true
+    type: 'items'
   },
   GoalieMask: {
     img: GoalieMask,

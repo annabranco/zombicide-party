@@ -2,58 +2,6 @@ import styled from '@emotion/styled';
 import { css } from '@emotion/core';
 import { inactiveZombie, activeZombie } from '../../styles';
 
-export const SelectorArea = styled.div`
-  label: SelectorArea;
-  position: relative;
-  height: calc(100vh - 80px);
-  background: #232222;
-  display: flex;
-  flex-direction: row;
-  align-items: flex-start;
-  justify-content: center;
-  overflow: hidden;
-  padding-top: 20px;
-
-  ${({ columns }) => {
-    if (columns === 'big') {
-      return css`
-        height: calc(100vh - 70px);
-      `;
-    }
-    if (columns) {
-      return css`
-        display: grid;
-        width: 90%;
-        grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
-      `;
-    }
-    return null;
-  }}
-`;
-SelectorArea.displayName = 'SelectorArea';
-
-//   height: calc(100vh - 80px);
-//   width: 87%;
-//   background: #232222;
-//   display: grid;
-//   grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
-//   grid-auto-rows: minmax(80px, 200px);
-//   grid-gap: 10px;
-//   padding: 40px 20px;
-//   overflow: hidden;
-//   ${({ columns }) => {
-//     if (columns === 'big') {
-//       return css`
-//         height: calc(100vh - 70px);
-//         grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-//       `;
-//     }
-//     return css`
-//       grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
-//     `;
-//   }}
-// `;
-
 export const Block = styled.div`
   label: Block;
   display: flex;
@@ -64,22 +12,6 @@ export const Block = styled.div`
   box-shadow: 0 0 5px 0 black;
 `;
 Block.displayName = 'Block';
-
-export const PlayImage = styled.button`
-  label: PlayImage;
-  background: ${({ isActive }) => (isActive ? 'yellow' : '#232222')};
-  outline: none;
-  border: none;
-  height: 100%;
-  line-height: 0;
-  width: 100%;
-  padding: 0;
-  cursor: ${({ type, slotType }) =>
-    type === 'weapons' && slotType === 'inHand' && 'pointer'};
-
-  transition: background ease 1.5s;
-`;
-PlayImage.displayName = 'PlayImage';
 
 export const PlayIcon = styled.img`
   label: PlayIcon;
@@ -133,6 +65,23 @@ export const PlayIcon = styled.img`
 `;
 PlayIcon.displayName = 'PlayIcon';
 
+export const PlayImage = styled.button`
+  label: PlayImage;
+  background: ${({ isActive }) => (isActive ? 'yellow' : '#232222')};
+  outline: none;
+  border: none;
+  height: 100%;
+  line-height: 0;
+  width: 100%;
+  padding: 0;
+  cursor: ${({ type, slotType }) =>
+    ((type === 'weapons' && slotType === 'inHand') || type === 'activations') &&
+    'pointer'};
+
+  transition: background ease 1.5s;
+`;
+PlayImage.displayName = 'PlayImage';
+
 export const PlayText = styled.p`
   label: PlayText;
   height: 100%;
@@ -144,6 +93,36 @@ export const PlayText = styled.p`
   text-shadow: 1px 1px 4px gray;
 `;
 PlayText.displayName = 'PlayText';
+
+export const SelectorArea = styled.div`
+  label: SelectorArea;
+  position: relative;
+  height: calc(100vh - 80px);
+  background: #232222;
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  justify-content: center;
+  overflow: hidden;
+  padding-top: 20px;
+
+  ${({ columns }) => {
+    if (columns === 'big') {
+      return css`
+        height: calc(100vh - 70px);
+      `;
+    }
+    if (columns) {
+      return css`
+        display: grid;
+        width: 90%;
+        grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+      `;
+    }
+    return null;
+  }}
+`;
+SelectorArea.displayName = 'SelectorArea';
 
 export const ZombiesArea = styled.div`
   label: ZombiesArea;

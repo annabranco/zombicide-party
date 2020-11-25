@@ -12,86 +12,86 @@ import SelectorJosh from '../assets/images/selectors/selector-josh.png';
 import SelectorDoug from '../assets/images/selectors/selector-doug.png';
 
 const AMY = {
-  img: Amy,
-  name: 'Amy',
-  items: [],
-  inHand: [],
-  inBackpack: [],
   abilities: [],
-  selector: SelectorAmy,
-  experience: 0,
-  player: null,
   color: '#a015a3',
+  experience: 0,
+  img: Amy,
+  inBackpack: [],
+  inHand: [],
+  items: [],
+  name: 'Amy',
+  player: null,
+  selector: SelectorAmy,
   voice: 'female'
 };
 
 const NED = {
-  img: Ned,
-  name: 'Ned',
-  items: [],
-  inHand: [],
-  inBackpack: [],
   abilities: [],
-  selector: SelectorNed,
-  experience: 0,
-  player: null,
   color: '#b52929',
+  experience: 0,
+  img: Ned,
+  inBackpack: [],
+  inHand: [],
+  items: [],
+  name: 'Ned',
+  player: null,
+  selector: SelectorNed,
   voice: 'male'
 };
 
 const PHIL = {
-  img: Phil,
-  name: 'Phil',
-  items: [],
-  inHand: ['Pistol'],
-  inBackpack: [],
   abilities: [],
-  selector: SelectorPhil,
-  experience: 0,
-  player: null,
   color: '#565656',
+  experience: 0,
+  img: Phil,
+  inBackpack: [],
+  inHand: ['Pistol'],
+  items: [],
+  name: 'Phil',
+  player: null,
+  selector: SelectorPhil,
   voice: 'male'
 };
 
 const WANDA = {
-  img: Wanda,
-  name: 'Wanda',
-  items: [],
-  inHand: [],
-  inBackpack: [],
   abilities: [],
-  selector: SelectorWanda,
-  experience: 0,
-  player: null,
   color: '#339b35',
+  experience: 0,
+  img: Wanda,
+  inBackpack: [],
+  inHand: [],
+  items: [],
+  name: 'Wanda',
+  player: null,
+  selector: SelectorWanda,
   voice: 'female'
 };
 
 const JOSH = {
-  img: Josh,
-  name: 'Josh',
-  items: [],
-  inHand: [],
-  inBackpack: [],
   abilities: [],
-  selector: SelectorJosh,
-  experience: 0,
-  player: null,
   color: '#ba761d',
+  experience: 0,
+  img: Josh,
+  inBackpack: [],
+  inHand: [],
+  items: [],
+  name: 'Josh',
+  player: null,
+  selector: SelectorJosh,
   voice: 'male'
 };
 
 const DOUG = {
-  img: Doug,
-  name: 'Doug',
-  items: [],
-  inHand: [],
-  inBackpack: [],
   abilities: [],
-  selector: SelectorDoug,
-  experience: 0,
-  player: null,
   color: '#3566c6',
+  experience: 0,
+  img: Doug,
+  inBackpack: [],
+  inHand: [],
+  items: [],
+  name: 'Doug',
+  player: null,
+  selector: SelectorDoug,
   voice: 'male'
 };
 

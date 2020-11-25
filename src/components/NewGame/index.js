@@ -1,21 +1,21 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { bool, func } from 'prop-types';
-import { MenuScreen } from '../MainMenu/styles';
+import { getCharacterColor } from '../../utils/players';
+import { useStateWithLabel } from '../../utils/hooks';
+import Modal from '../Modal';
 import BG from '../../assets/images/background/background.jpg';
 import { CHARACTERS } from '../../setup/characters';
 import {
-  CharacterArea,
-  Selector,
-  SelectorTitle,
-  SelectorButton,
   CharImage,
   CharName,
-  PlayerTag
+  CharacterArea,
+  PlayerTag,
+  Selector,
+  SelectorButton,
+  SelectorTitle
 } from './styles';
-import Modal from '../Modal';
-import { getCharacterColor } from '../../utils/players';
-import { useStateWithLabel } from '../../utils/hooks';
+import { MenuScreen } from '../MainMenu/styles';
 
 const NewGame = ({ loadedGame, setInitialCharacters }) => {
   const [characters, setCharacters] = useStateWithLabel(
@@ -115,7 +115,7 @@ const NewGame = ({ loadedGame, setInitialCharacters }) => {
           </Selector>
         ))}
       </CharacterArea>
-      <Link to={charactersSelected.size > 0 && '/play'}>
+      <Link to={charactersSelected.size > 0 ? '/play' : ''}>
         <SelectorButton
           active={charactersSelected.size > 0}
           disabled={charactersSelected.size === 0}

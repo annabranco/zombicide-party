@@ -1,6 +1,7 @@
 import React from 'react';
-import SoundBlock from '../SoundBlock';
 import { ZOMBIES_S1 } from '../../../setup/zombies';
+import { useStateWithLabel } from '../../../utils/hooks';
+import SoundBlock from '../../SoundBlock';
 import FemaleWound from '../../../assets/images/attacks/female-hit.png';
 import FemaleKill from '../../../assets/images/attacks/female-kill.png';
 import FemaleInstantKill from '../../../assets/images/attacks/female-instant-kill.png';
@@ -9,14 +10,13 @@ import MaleWound from '../../../assets/images/attacks/male-hit.png';
 import MaleKill from '../../../assets/images/attacks/male-kill.png';
 import MaleInstantKill from '../../../assets/images/attacks/male-instant-kill.png';
 import MaleHordeKill from '../../../assets/images/attacks/male-horde-kill.png';
-import { SelectorArea, ZombiesArea } from '../styles';
+import { SelectorArea, ZombiesArea } from '../../SoundBlock/styles';
 import {
   SelectorButton,
   SelectorWrapper,
   SubSectionTitle,
   SubSectionWrapper
 } from './styles';
-import { useStateWithLabel } from '../../../utils/hooks';
 
 const ZombiesSection = () => {
   const [displayKills, ToggleKills] = useStateWithLabel(false, 'displayKills');
@@ -87,10 +87,10 @@ const ZombiesSection = () => {
           <SelectorArea columns="big">
             {zombies.map(zombie => (
               <SoundBlock
-                key={zombie.name}
-                name={zombie.name}
                 differentSounds={zombie.sounds}
                 img={zombie.img}
+                key={zombie.name}
+                name={zombie.name}
                 type="activations"
               />
             ))}

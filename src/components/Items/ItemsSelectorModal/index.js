@@ -1,16 +1,16 @@
 import React, { useEffect } from 'react';
 import { func, string } from 'prop-types';
+import { WEAPONS_S1 } from '../../../setup/weapons';
+import { ITEMS_S1 } from '../../../setup/items';
+import { useStateWithLabel } from '../../../utils/hooks';
 import SelectionItem from '../ItemSelector';
-import { WEAPONS_S1 } from '../../setup/weapons';
-import { SelectorArea } from '../areas/styles';
+import { SelectorArea } from '../../SoundBlock/styles';
 import { SelectorModal } from './styles';
-import { ITEMS_S1 } from '../../setup/items';
-import { useStateWithLabel } from '../../utils/hooks';
 import {
   SelectorButton,
   SelectorWrapper,
   SubSectionTitle
-} from '../areas/ZombiesSection/styles';
+} from '../../Sections/ZombiesSection/styles';
 
 const ItemsSelectorModal = ({ onSelect, slotType }) => {
   const [items, changeItems] = useStateWithLabel(ITEMS_S1, 'items');
@@ -46,9 +46,9 @@ const ItemsSelectorModal = ({ onSelect, slotType }) => {
         <SelectorArea columns={6}>
           {Object.keys(items).map(name => (
             <SelectionItem
+              img={items[name].img}
               key={items[name].name}
               name={items[name].name}
-              img={items[name].img}
               onSelect={() => onSelect(items[name].name)}
               type={items[name].type}
             />

@@ -1,14 +1,14 @@
 import React from 'react';
 import { oneOf } from 'prop-types';
-import OpeningDoor from '../../assets/images/OpeningDoor.png';
+import { SOUNDS_PATH } from '../../../../setup/endpoints';
+import { useStateWithLabel } from '../../../../utils/hooks';
+import OpeningDoor from '../../../../assets/images/OpeningDoor.png';
 import { OpenDoorIcon } from './styles';
-import { SOUNDS_PATH } from '../../setup/endpoints';
-import { useStateWithLabel } from '../../utils/hooks';
 
 const OpenDoor = ({ type }) => {
   const [isActive, activate] = useStateWithLabel(false, 'isActive');
 
-  const filename = `${SOUNDS_PATH}/actions/${type}.mp3`;
+  const filename = `${SOUNDS_PATH}/actions/openDoors/${type}.mp3`;
   const sound = new Audio(filename);
 
   const openDoorSound = () => {
@@ -23,10 +23,10 @@ const OpenDoor = ({ type }) => {
 
   return (
     <OpenDoorIcon
-      isActive={isActive}
-      src={OpeningDoor}
       alt="Open Door"
+      isActive={isActive}
       onClick={isActive ? () => null : openDoorSound}
+      src={OpeningDoor}
     />
   );
 };

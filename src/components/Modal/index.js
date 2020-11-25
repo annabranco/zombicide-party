@@ -1,24 +1,24 @@
 import React, { useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
 import { bool, func, instanceOf } from 'prop-types';
+import { useStateWithLabel } from '../../utils/hooks';
 import {
-  ModalWindow,
-  ModalMessage,
-  ModalButton,
   ButtonsArea,
+  ModalButton,
+  ModalMessage,
+  ModalMessageSecondary,
   ModalTitle,
+  ModalWindow,
   Player,
-  PlayersArea,
+  PlayerActionButtonsArea,
   PlayerNew,
   PlayerNewInput,
   PlayerRemove,
   PlayerRemoveToggle,
-  PlayerActionButtonsArea,
-  ModalMessageSecondary
+  PlayersArea
 } from './styles';
-import { useStateWithLabel } from '../../utils/hooks';
 
-const Modal = ({ loadedGame, activePlayers, setActivePlayers }) => {
+const Modal = ({ activePlayers, loadedGame, setActivePlayers }) => {
   const [visible, toggleVisible] = useStateWithLabel(false, 'visible');
   const [message, setMessage] = useStateWithLabel({ buttons: [] }, 'message');
   const [players, updatePlayers] = useStateWithLabel(
@@ -136,24 +136,20 @@ const Modal = ({ loadedGame, activePlayers, setActivePlayers }) => {
           <PlayersArea>
             {players.size > 0 ? (
               [...players].map(player => (
-                <>
-                  <Player
-                    key={player}
-                    name={player}
-                    active={activePlayers.has(player)}
-                    onClick={
-                      showRemovePlayer ? onClickRemovePlayer : onSelectPlayer
-                    }
-                    showRemovePlayer={showRemovePlayer}
-                  >
-                    {player}
-                    {showRemovePlayer && (
-                      <PlayerRemove onClick={onClickRemovePlayer}>
-                        x
-                      </PlayerRemove>
-                    )}
-                  </Player>
-                </>
+                <Player
+                  active={activePlayers.has(player)}
+                  key={player}
+                  name={player}
+                  onClick={
+                    showRemovePlayer ? onClickRemovePlayer : onSelectPlayer
+                  }
+                  showRemovePlayer={showRemovePlayer}
+                >
+                  {player}
+                  {showRemovePlayer && (
+                    <PlayerRemove onClick={onClickRemovePlayer}>x</PlayerRemove>
+                  )}
+                </Player>
               ))
             ) : (
               <ModalMessageSecondary>
@@ -181,17 +177,17 @@ const Modal = ({ loadedGame, activePlayers, setActivePlayers }) => {
       <ButtonsArea>
         {message.buttons.map(button => (
           <ModalButton
-            key={`modal_button_${button.type}`}
-            onClick={button.onClick}
-            type={button.type}
-            inactive={
-              (button.type === 'accept' && activePlayers.size === 0) ||
-              showInput
-            }
             disabled={
               (button.type === 'accept' && activePlayers.size === 0) ||
               showInput
             }
+            inactive={
+              (button.type === 'accept' && activePlayers.size === 0) ||
+              showInput
+            }
+            key={`modal_button_${button.type}`}
+            onClick={button.onClick}
+            type={button.type}
           >
             {button.text}
           </ModalButton>
@@ -202,8 +198,8 @@ const Modal = ({ loadedGame, activePlayers, setActivePlayers }) => {
 };
 
 Modal.propTypes = {
-  loadedGame: bool.isRequired,
   activePlayers: instanceOf(Set).isRequired,
+  loadedGame: bool.isRequired,
   setActivePlayers: func.isRequired
 };
 

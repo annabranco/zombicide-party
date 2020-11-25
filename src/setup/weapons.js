@@ -18,24 +18,24 @@ export const WEAPONS_S1 = {
   BaseballBat: {
     img: BaseballBat,
     name: 'BaseballBat',
-    type: 'weapons',
     noise: {
       melee: false,
       range: false,
       openDoors: false
-    }
+    },
+    type: 'weapons'
   },
   Chainsaw: {
+    canOpenDoor: true,
     img: Chainsaw,
     name: 'Chainsaw',
-    type: 'weapons',
-    canOpenDoor: true
+    type: 'weapons'
   },
   Crowbar: {
+    canOpenDoor: true,
     img: Crowbar,
     name: 'Crowbar',
-    type: 'weapons',
-    canOpenDoor: true
+    type: 'weapons'
   },
   EvilTwins: {
     img: EvilTwins,
@@ -43,10 +43,10 @@ export const WEAPONS_S1 = {
     type: 'weapons'
   },
   FireAxe: {
+    canOpenDoor: true,
     img: FireAxe,
     name: 'FireAxe',
-    type: 'weapons',
-    canOpenDoor: true
+    type: 'weapons'
   },
   Katana: {
     img: Katana,

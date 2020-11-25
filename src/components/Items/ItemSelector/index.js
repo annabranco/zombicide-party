@@ -1,8 +1,8 @@
 import React from 'react';
-import { string, func } from 'prop-types';
-import { Block, PlayImage, PlayIcon, PlayText } from '../areas/styles';
+import { func, string } from 'prop-types';
+import { Block, PlayIcon, PlayImage, PlayText } from '../../SoundBlock/styles';
 
-const SelectionItem = ({ img, label, name, onHover, onSelect, type }) => {
+const SelectionItem = ({ type, onSelect, onHover, name, label, img }) => {
   return (
     <Block>
       <PlayImage onClick={() => onSelect(name)}>

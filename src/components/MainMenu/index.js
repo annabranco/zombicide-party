@@ -1,6 +1,10 @@
 import React, { useEffect } from 'react';
 import { bool } from 'prop-types';
 import appInfo from '../../../package.json';
+import { useStateWithLabel } from '../../utils/hooks';
+import BG from '../../assets/images/background/background.jpg';
+import Storm from '../../assets/sounds/intro/intro.mp3';
+import Horde from '../../assets/sounds/activations/Horde1.mp3';
 import {
   ActionButton,
   MainTitle,
@@ -10,10 +14,6 @@ import {
   ThunderOverlay,
   Version
 } from './styles';
-import BG from '../../assets/images/background/background.jpg';
-import Storm from '../../assets/sounds/intro/intro.mp3';
-import Horde from '../../assets/sounds/activations/Horde1.mp3';
-import { useStateWithLabel } from '../../utils/hooks';
 
 const MainMenu = ({ loadedGame }) => {
   const [testSound, toggleTestSound] = useStateWithLabel(false, 'testSound');

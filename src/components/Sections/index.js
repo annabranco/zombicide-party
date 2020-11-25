@@ -1,6 +1,6 @@
 import React from 'react';
-import { string, node } from 'prop-types';
-import { SectionWrapper, TitleBar, Title } from './styles';
+import { node, string } from 'prop-types';
+import { SectionWrapper, Title, TitleBar } from './styles';
 
 const Section = ({ name, children }) => (
   <SectionWrapper>

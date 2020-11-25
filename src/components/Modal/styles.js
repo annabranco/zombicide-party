@@ -164,6 +164,21 @@ export const PlayerNew = styled.div`
 `;
 PlayerNew.displayName = 'PlayerNew';
 
+export const PlayerNewInput = styled.input`
+  label: PlayerNewInput;
+  height: 30px;
+  width: 150px;
+  border: 1px solid gray;
+  background: white;
+  font-family: 'Grandstander', cursive;
+  text-align: center;
+  font-size: 1rem;
+  line-height: 1.1;
+  color: black;
+  text-transform: uppercase;
+`;
+PlayerNew.displayName = 'PlayerNew';
+
 export const PlayerRemove = styled.div`
   label: PlayerRemove;
   z-index: 10;
@@ -202,21 +217,6 @@ export const PlayerRemoveToggle = styled(PlayerNew)`
     `}
 `;
 PlayerRemoveToggle.displayName = 'PlayerRemoveToggle';
-
-export const PlayerNewInput = styled.input`
-  label: PlayerNewInput;
-  height: 30px;
-  width: 150px;
-  border: 1px solid gray;
-  background: white;
-  font-family: 'Grandstander', cursive;
-  text-align: center;
-  font-size: 1rem;
-  line-height: 1.1;
-  color: black;
-  text-transform: uppercase;
-`;
-PlayerNew.displayName = 'PlayerNew';
 
 export const PlayersArea = styled.div`
   label: PlayersArea;

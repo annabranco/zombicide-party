@@ -1,20 +1,21 @@
 import React, { useEffect, useRef } from 'react';
-import { string } from 'prop-types';
-import {
-  CharacterSheet,
-  CharItems,
-  CharName,
-  NextButton,
-  CharacterOverlay,
-  PlayerTag
-} from './styles';
+import { arrayOf, string } from 'prop-types';
 import { CHARACTERS } from '../../../setup/characters';
 import { getCharacterColor, updatePlayerObject } from '../../../utils/players';
 import { characterCanOpenDoors } from '../../../utils/items';
-import ItemsSelectorModal from '../../ItemsSelectorModal';
-import OpenDoor from '../../OpenDoor';
 import { useStateWithLabel } from '../../../utils/hooks';
-import ItemsArea from '../../ItemWrapper';
+import ItemsSelectorModal from '../../Items/ItemsSelectorModal';
+import OpenDoor from './OpenDoor';
+import ItemsArea from '../../Items/ItemWrapper';
+import {
+  CharItems,
+  CharName,
+  CharacterOverlay,
+  CharacterSheet,
+  NextButton,
+  PlayerTag
+} from './styles';
+import { characterTypes } from '../../../interfaces/types';
 
 const PlayersSection = ({ initialCharacters, loadedGame }) => {
   const [character, changeCharacter] = useStateWithLabel({}, 'character');
@@ -38,7 +39,6 @@ const PlayersSection = ({ initialCharacters, loadedGame }) => {
   const changeInHand = (name, currentSlot = slot - 1) => {
     const newItems = [...inHand];
     const openDoors = characterCanOpenDoors(newItems);
-    console.log('$$$ openDoors', newItems, openDoors);
     newItems[currentSlot] = name;
     updateInHand(newItems);
     setCanOpenDoor(openDoors);
@@ -155,36 +155,36 @@ const PlayersSection = ({ initialCharacters, loadedGame }) => {
       <CharItems slotType="inHand">
         {inHand.map((item, index) => (
           <ItemsArea
-            slotType="inHand"
-            key={`${item}-${index + 1}`}
-            item={item}
             index={index}
-            selectSlot={selectSlot}
+            item={item}
+            key={`${item}-${index + 1}`}
             onClickDrop={changeInHand}
+            selectSlot={selectSlot}
+            slotType="inHand"
           />
         ))}
       </CharItems>
       <CharItems slotType="inBackpack">
         {inBackpack.map((item, index) => (
           <ItemsArea
-            slotType="inBackpack"
-            key={`${item}-${index + 3}`}
-            item={item}
             index={index}
-            selectSlot={selectSlot}
-            onClickDrop={changeInBackpack}
+            item={item}
+            key={`${item}-${index + 3}`}
             noAudio
+            onClickDrop={changeInBackpack}
+            selectSlot={selectSlot}
+            slotType="inBackpack"
           />
         ))}
       </CharItems>
       {slot && slot <= 2 && (
-        <ItemsSelectorModal slotType="inHand" onSelect={changeInHand} />
+        <ItemsSelectorModal onSelect={changeInHand} slotType="inHand" />
       )}
       {slot && slot >= 3 && (
-        <ItemsSelectorModal slotType="inBackpack" onSelect={changeInBackpack} />
+        <ItemsSelectorModal onSelect={changeInBackpack} slotType="inBackpack" />
       )}
       {characters.length > 1 && (
-        <NextButton type="button" onClick={changeToNextPlayer}>
+        <NextButton onClick={changeToNextPlayer} type="button">
           NEXT
         </NextButton>
       )}
@@ -193,8 +193,8 @@ const PlayersSection = ({ initialCharacters, loadedGame }) => {
 };
 
 PlayersSection.propTypes = {
-  initialCharacters: string,
-  loadedGame: string
+  initialCharacters: arrayOf(characterTypes),
+  loadedGame: arrayOf(characterTypes)
 };
 
 PlayersSection.defaultProps = {
