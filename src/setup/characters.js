@@ -18,11 +18,11 @@ const AMY = {
   img: Amy,
   inBackpack: [],
   inHand: [],
-  items: [],
   name: 'Amy',
   player: null,
   selector: SelectorAmy,
-  voice: 'female'
+  voice: 'female',
+  wounded: false
 };
 
 const NED = {
@@ -32,11 +32,11 @@ const NED = {
   img: Ned,
   inBackpack: [],
   inHand: [],
-  items: [],
   name: 'Ned',
   player: null,
   selector: SelectorNed,
-  voice: 'male'
+  voice: 'male',
+  wounded: false
 };
 
 const PHIL = {
@@ -46,11 +46,11 @@ const PHIL = {
   img: Phil,
   inBackpack: [],
   inHand: ['Pistol'],
-  items: [],
   name: 'Phil',
   player: null,
   selector: SelectorPhil,
-  voice: 'male'
+  voice: 'male',
+  wounded: false
 };
 
 const WANDA = {
@@ -60,11 +60,11 @@ const WANDA = {
   img: Wanda,
   inBackpack: [],
   inHand: [],
-  items: [],
   name: 'Wanda',
   player: null,
   selector: SelectorWanda,
-  voice: 'female'
+  voice: 'female',
+  wounded: false
 };
 
 const JOSH = {
@@ -74,11 +74,11 @@ const JOSH = {
   img: Josh,
   inBackpack: [],
   inHand: [],
-  items: [],
   name: 'Josh',
   player: null,
   selector: SelectorJosh,
-  voice: 'male'
+  voice: 'male',
+  wounded: false
 };
 
 const DOUG = {
@@ -88,11 +88,11 @@ const DOUG = {
   img: Doug,
   inBackpack: [],
   inHand: [],
-  items: [],
   name: 'Doug',
   player: null,
   selector: SelectorDoug,
-  voice: 'male'
+  voice: 'male',
+  wounded: false
 };
 
 export const CHARACTERS = [AMY, DOUG, JOSH, NED, PHIL, WANDA];

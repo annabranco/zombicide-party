@@ -2,14 +2,55 @@ import styled from '@emotion/styled';
 import { css } from '@emotion/core';
 import { inactiveZombie, activeZombie } from '../../styles';
 
+export const Action = styled.p`
+  label: Action;
+  z-index: 6;
+  display: none;
+  margin: 10px auto;
+  width: 95%;
+  border: 2px solid black;
+  border-radius: 5px;
+  padding: 5px 0;
+  font-size: 1.3rem;
+  font-weight: 900;
+  line-height: 1;
+  color: black;
+  text-shadow: 1px 1px 4px gray;
+  text-align: center;
+  opacity: 1;
+  text-transform: uppercase;
+  font-family: 'Grandstander', cursive;
+
+  ${({ action }) => {
+    if (action === 'activate') {
+      return css`
+        background: rgba(11, 196, 33, 0.8);
+      `;
+    }
+    if (action === 'attack') {
+      return css`
+        background: rgba(209, 90, 0, 0.8);
+      `;
+    }
+    if (action === 'kill') {
+      return css`
+        background: rgba(214, 6, 6, 0.8);
+      `;
+    }
+    return null;
+  }}
+`;
+Action.displayName = 'Action';
+
 export const Block = styled.div`
   label: Block;
-  display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   border-radius: 5px;
   box-shadow: 0 0 5px 0 black;
+  display: ${({ damageMode, type, wounded }) =>
+    damageMode && type !== 'wound' && wounded ? 'none' : 'flex'};
 `;
 Block.displayName = 'Block';
 
@@ -20,6 +61,15 @@ export const PlayIcon = styled.img`
   transition: transform ease 0.5s;
 
   ${({ type, active }) => {
+    if (type === 'wound') {
+      return css`
+        width: 100%;
+        &:hover {
+          transform: scale(1.01);
+          transition: all ease 0.4s;
+        }
+      `;
+    }
     if (type === 'attacks') {
       return css`
         max-height: 90%;
@@ -65,8 +115,9 @@ export const PlayIcon = styled.img`
 `;
 PlayIcon.displayName = 'PlayIcon';
 
-export const PlayImage = styled.button`
-  label: PlayImage;
+export const PlayImageButton = styled.button`
+  label: PlayImageButton;
+  position: relative;
   background: ${({ isActive }) => (isActive ? 'yellow' : '#232222')};
   outline: none;
   border: none;
@@ -74,13 +125,23 @@ export const PlayImage = styled.button`
   line-height: 0;
   width: 100%;
   padding: 0;
-  cursor: ${({ type, slotType }) =>
-    ((type === 'weapons' && slotType === 'inHand') || type === 'activations') &&
+  cursor: ${({ damageMode, slotType, type }) =>
+    ((type === 'weapons' && slotType === 'inHand') ||
+      damageMode ||
+      type === 'activations') &&
     'pointer'};
+
+  &:hover {
+    filter: ${({ damageMode, type }) =>
+      damageMode && type !== 'wound' && 'sepia(0.8) brightness(0.6)'};
+    & > div > p {
+      display: block;
+    }
+  }
 
   transition: background ease 1.5s;
 `;
-PlayImage.displayName = 'PlayImage';
+PlayImageButton.displayName = 'PlayImageButton';
 
 export const PlayText = styled.p`
   label: PlayText;
@@ -109,7 +170,7 @@ export const SelectorArea = styled.div`
   ${({ columns }) => {
     if (columns === 'big') {
       return css`
-        height: calc(100vh - 70px);
+        height: calc(100vh - 30px);
       `;
     }
     if (columns) {
@@ -126,6 +187,7 @@ SelectorArea.displayName = 'SelectorArea';
 
 export const ZombiesArea = styled.div`
   label: ZombiesArea;
+  position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -134,3 +196,18 @@ export const ZombiesArea = styled.div`
   width: 100%;
 `;
 ZombiesArea.displayName = 'ZombiesArea';
+
+export const ZombieActions = styled.div`
+  label: ZombieActions;
+  z-index: 6;
+  position: absolute;
+  bottom: 5px;
+  left: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: auto;
+  width: 100%;
+`;
+ZombieActions.displayName = 'ZombieActions';

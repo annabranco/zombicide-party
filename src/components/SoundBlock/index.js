@@ -1,18 +1,29 @@
 import React from 'react';
-import { string, number, bool } from 'prop-types';
+import { bool, func, number, string } from 'prop-types';
 import { useStateWithLabel } from '../../utils/hooks';
 import { SOUNDS_PATH } from '../../setup/endpoints';
-import { Block, PlayImage, PlayIcon, PlayText } from './styles';
+import {
+  Action,
+  Block,
+  PlayImageButton,
+  PlayIcon,
+  PlayText,
+  ZombieActions
+} from './styles';
 import { ZombieLabel } from '../Sections/ZombiesSection/styles';
 
 const SoundBlock = ({
+  damageMode,
   differentSounds,
   img,
   label,
   name,
   noAudio,
+  onClickCard,
   slotType,
-  type
+  toggleDamageMode,
+  type,
+  wounded
 }) => {
   const [isActive, activate] = useStateWithLabel(false, 'isActive');
   const [isHighlighted, highlight] = useStateWithLabel(false, 'isHighlighted');
@@ -25,6 +36,7 @@ const SoundBlock = ({
     !noAudio &&
     slotType !== 'inBackpack' &&
     type !== 'items' &&
+    type !== 'wound' &&
     new Audio(filename);
 
   const play = () => {
@@ -40,16 +52,42 @@ const SoundBlock = ({
 
   return (
     <>
-      <Block>
+      <Block damageMode={damageMode} type={type} wounded={wounded}>
         {(isActive || isHighlighted) && type === 'activations' && (
           <ZombieLabel isActive={isActive}>{name || label}</ZombieLabel>
         )}
-        <PlayImage
+        <PlayImageButton
           isActive={isActive}
-          onClick={play}
+          damageMode={damageMode}
+          onClick={damageMode ? onClickCard : play}
           slotType={slotType}
           type={type}
         >
+          {type === 'activations' && (
+            <ZombieActions>
+              <Action action="activate">Activate</Action>
+              <Action action="attack" onClick={() => toggleDamageMode(true)}>
+                Attack survivor!
+              </Action>
+              {name === 'Runner' && (
+                <Action
+                  action="kill"
+                  onClick={() => toggleDamageMode('instant-kill')}
+                >
+                  Instant Kill
+                </Action>
+              )}
+              {name === 'Horde' && (
+                <Action
+                  action="kill"
+                  onClick={() => toggleDamageMode('horde-kill')}
+                >
+                  Feast on survivor
+                </Action>
+              )}
+            </ZombieActions>
+          )}
+
           {img ? (
             <PlayIcon
               active={isActive}
@@ -61,23 +99,28 @@ const SoundBlock = ({
           ) : (
             <PlayText>{label || name}</PlayText>
           )}
-        </PlayImage>
+        </PlayImageButton>
       </Block>
     </>
   );
 };
 
 SoundBlock.propTypes = {
+  damageMode: bool,
   differentSounds: number,
   img: string,
   label: string,
   name: string.isRequired,
   noAudio: bool,
+  onClickCard: func.isRequired,
   slotType: string,
-  type: string.isRequired
+  toggleDamageMode: func.isRequired,
+  type: string.isRequired,
+  wounded: bool.isRequired
 };
 
 SoundBlock.defaultProps = {
+  damageMode: false,
   differentSounds: null,
   img: null,
   label: null,

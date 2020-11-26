@@ -1,6 +1,39 @@
 import { css } from '@emotion/core';
 import styled from '@emotion/styled';
 
+export const AttackInstructions = styled.p`
+  label: AttackInstructions;
+  z-index: 10;
+  position: absolute;
+  top: 30%;
+  left: 0;
+  height: auto;
+  width: 100%;
+  font-size: 3rem;
+  font-weight: 900;
+  line-height: 1.5;
+  color: red;
+  background: rgba(255, 255, 255, 0.2);
+  text-shadow: 0 0 2px black;
+  text-align: center;
+  text-transform: uppercase;
+  font-family: 'Grandstander', cursive;
+`;
+AttackInstructions.displayName = 'AttackInstructions';
+
+export const NoSelectOverlay = styled.div`
+  label: NoSelectOverlay;
+  position: absolute;
+  left: 0;
+  z-index: 10;
+
+  height: 100%;
+  width: 100%;
+  background: rgba(0, 0, 0, 0.6);
+  filter: brightness(0.1);
+`;
+NoSelectOverlay.displayName = 'NoSelectOverlay';
+
 export const SelectorWrapper = styled.div`
   label: SelectorWrapper;
   z-index: 10;

@@ -1,11 +1,16 @@
 import React from 'react';
 import { func, string } from 'prop-types';
-import { Block, PlayIcon, PlayImage, PlayText } from '../../SoundBlock/styles';
+import {
+  Block,
+  PlayIcon,
+  PlayImageButton,
+  PlayText
+} from '../../SoundBlock/styles';
 
 const SelectionItem = ({ type, onSelect, onHover, name, label, img }) => {
   return (
     <Block>
-      <PlayImage onClick={() => onSelect(name)}>
+      <PlayImageButton onClick={() => onSelect(name)}>
         {img ? (
           <PlayIcon
             src={img}
@@ -16,7 +21,7 @@ const SelectionItem = ({ type, onSelect, onHover, name, label, img }) => {
         ) : (
           <PlayText>{label || name}</PlayText>
         )}
-      </PlayImage>
+      </PlayImageButton>
     </Block>
   );
 };

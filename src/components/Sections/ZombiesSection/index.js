@@ -1,4 +1,5 @@
 import React from 'react';
+import { bool, func } from 'prop-types';
 import { ZOMBIES_S1 } from '../../../setup/zombies';
 import { useStateWithLabel } from '../../../utils/hooks';
 import SoundBlock from '../../SoundBlock';
@@ -12,19 +13,28 @@ import MaleInstantKill from '../../../assets/images/attacks/male-instant-kill.pn
 import MaleHordeKill from '../../../assets/images/attacks/male-horde-kill.png';
 import { SelectorArea, ZombiesArea } from '../../SoundBlock/styles';
 import {
+  AttackInstructions,
+  NoSelectOverlay,
   SelectorButton,
   SelectorWrapper,
   SubSectionTitle,
   SubSectionWrapper
 } from './styles';
 
-const ZombiesSection = () => {
+const ZombiesSection = ({ damageMode, toggleDamageMode }) => {
   const [displayKills, ToggleKills] = useStateWithLabel(false, 'displayKills');
   const [zombies, changeZombies] = useStateWithLabel(ZOMBIES_S1, 'zombies');
 
   return (
     <ZombiesArea>
-      <SelectorWrapper onClick={() => ToggleKills(!displayKills)}>
+      {damageMode && <NoSelectOverlay />}
+      {damageMode && (
+        <AttackInstructions>
+          Select character and slot to inflict damage
+        </AttackInstructions>
+      )}
+
+      {/* <SelectorWrapper onClick={() => ToggleKills(!displayKills)}>
         <SelectorButton displayKills={displayKills} />
         <SubSectionTitle opened={!displayKills}>Activations</SubSectionTitle>
         <SubSectionTitle opened={displayKills}>Attacks</SubSectionTitle>
@@ -82,23 +92,30 @@ const ZombiesSection = () => {
             />
           </SelectorArea>
         </SubSectionWrapper>
-      ) : (
-        <SubSectionWrapper>
-          <SelectorArea columns="big">
-            {zombies.map(zombie => (
+      ) : ( */}
+      <SubSectionWrapper>
+        <SelectorArea columns="big">
+          {zombies.map(zombie => (
+            <div key={zombie.name}>
               <SoundBlock
                 differentSounds={zombie.sounds}
                 img={zombie.img}
-                key={zombie.name}
                 name={zombie.name}
+                toggleDamageMode={toggleDamageMode}
                 type="activations"
               />
-            ))}
-          </SelectorArea>
-        </SubSectionWrapper>
-      )}
+            </div>
+          ))}
+        </SelectorArea>
+      </SubSectionWrapper>
+      {/* )} */}
     </ZombiesArea>
   );
+};
+
+ZombiesSection.propTypes = {
+  damageMode: bool.isRequired,
+  toggleDamageMode: func.isRequired
 };
 
 export default ZombiesSection;

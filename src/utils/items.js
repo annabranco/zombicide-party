@@ -1,5 +1,12 @@
-import { WEAPONS_S1 } from '../setup/weapons';
 import { ITEMS_S1 } from '../setup/items';
+import { SPECIALS_CARDS } from '../setup/specials';
+import { WEAPONS_S1 } from '../setup/weapons';
+
+const ALL_ITEMS = {
+  ...ITEMS_S1,
+  ...SPECIALS_CARDS,
+  ...WEAPONS_S1
+};
 
 export const characterCanOpenDoors = currentItems => {
   let openDoor;
@@ -12,6 +19,9 @@ export const characterCanOpenDoors = currentItems => {
 };
 
 export const getItemPhoto = item => {
+  if (Object.keys(SPECIALS_CARDS).find(name => item === name)) {
+    return SPECIALS_CARDS[item].img;
+  }
   if (Object.keys(WEAPONS_S1).find(name => item === name)) {
     return WEAPONS_S1[item].img;
   }
@@ -22,11 +32,8 @@ export const getItemPhoto = item => {
 };
 
 export const getItemType = item => {
-  if (Object.keys(WEAPONS_S1).find(name => item === name)) {
-    return 'weapons';
-  }
-  if (Object.keys(ITEMS_S1).find(name => item === name)) {
-    return 'items';
+  if (Object.keys(ALL_ITEMS).find(name => item === name)) {
+    return ALL_ITEMS[item].type;
   }
   return null;
 };

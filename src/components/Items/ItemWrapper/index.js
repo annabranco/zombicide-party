@@ -1,12 +1,22 @@
 import React, { useEffect } from 'react';
-import { number, string, func } from 'prop-types';
+import { bool, func, number, string } from 'prop-types';
 import { useStateWithLabel } from '../../../utils/hooks';
 import { getItemPhoto, getItemType } from '../../../utils/items';
 import SoundBlock from '../../SoundBlock';
 import { ActionButton } from '../../Sections/PlayersSection/styles';
 import { ItemWrapper, ItemBlank, Item, ActionButtonsWrapper } from './styles';
 
-const ItemsArea = ({ index, item, onClickDrop, selectSlot, slotType }) => {
+const ItemsArea = ({
+  allSlotsAreEmpty,
+  causeDamage,
+  damageMode,
+  index,
+  item,
+  onClickDrop,
+  selectSlot,
+  slotType,
+  wounded
+}) => {
   const [isActive, toggleActive] = useStateWithLabel(false, 'isActive');
   const [itemsType, changeItemsType] = useStateWithLabel(
     'weapons',
@@ -16,6 +26,24 @@ const ItemsArea = ({ index, item, onClickDrop, selectSlot, slotType }) => {
   const onClickChange = () => {
     toggleActive(false);
     selectSlot(index + (itemsType === 'weapons' ? 1 : 3));
+  };
+
+  const onClickCard = () => {
+    if (damageMode) {
+      causeDamage(index + (slotType === 'inHand' ? 1 : 3));
+    } else {
+      onClickChange();
+    }
+  };
+
+  const onClickEmptyCard = () => {
+    if (damageMode) {
+      if (allSlotsAreEmpty) {
+        causeDamage(index + (slotType === 'inHand' ? 1 : 3));
+      }
+    } else {
+      selectSlot(index + (slotType === 'inHand' ? 1 : 3));
+    }
   };
 
   useEffect(() => {
@@ -31,24 +59,30 @@ const ItemsArea = ({ index, item, onClickDrop, selectSlot, slotType }) => {
       onMouseOut={() => toggleActive(false)}
       onMouseOver={() => toggleActive(true)}
       slotType={slotType}
+      type={itemsType}
     >
-      <Item>
+      <Item damageMode={damageMode}>
         {item ? (
           <SoundBlock
+            damageMode={damageMode}
             img={getItemPhoto(item)}
             name={item}
+            onClickCard={onClickCard}
             slotType={slotType}
             type={itemsType}
+            wounded={wounded}
           />
         ) : (
           <ItemBlank
-            onClick={() => selectSlot(index + (slotType === 'inHand' ? 1 : 3))}
+            allSlotsAreEmpty={allSlotsAreEmpty}
+            damageMode={damageMode}
+            onClick={onClickEmptyCard}
           >
             {slotType === 'inHand' ? 'Item in hand' : 'Item in backpack'}
           </ItemBlank>
         )}
       </Item>
-      {item && (
+      {item && !damageMode && (
         <ActionButtonsWrapper>
           <ActionButton onClick={onClickChange} type="button">
             CHANGE
@@ -64,14 +98,19 @@ const ItemsArea = ({ index, item, onClickDrop, selectSlot, slotType }) => {
 };
 
 ItemsArea.propTypes = {
+  allSlotsAreEmpty: bool,
+  causeDamage: func.isRequired,
+  damageMode: bool.isRequired,
   index: number.isRequired,
   item: string,
   onClickDrop: func.isRequired,
   selectSlot: func.isRequired,
-  slotType: string.isRequired
+  slotType: string.isRequired,
+  wounded: bool.isRequired
 };
 
 ItemsArea.defaultProps = {
+  allSlotsAreEmpty: false,
   item: null
 };
 

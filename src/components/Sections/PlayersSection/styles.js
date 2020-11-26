@@ -1,5 +1,6 @@
 import styled from '@emotion/styled';
 import { css } from '@emotion/core';
+import { AttackInstructions } from '../ZombiesSection/styles';
 
 export const ActionButton = styled.button`
   label: ActionButton;
@@ -32,7 +33,10 @@ export const CharacterOverlay = styled.div`
   width: 100%;
   background: #232222;
   opacity: 0.7;
-  filter: contrast(0.7) saturate(1.6);
+  filter: ${({ damageMode }) =>
+    damageMode
+      ? 'contrast(2.5) brightness(0.7)'
+      : 'contrast(0.7) saturate(1.6)'};
 
   ${({ img, position = 'center top' }) => css`
     background-image: ${`url(${img})`};
@@ -53,6 +57,7 @@ export const CharacterSheet = styled.div`
   height: calc(100vh - 80px);
   width: 90%;
   background: black;
+  overflow: hidden;
 `;
 CharacterSheet.displayName = 'CharacterSheet';
 
@@ -90,14 +95,27 @@ export const CharItems = styled.div`
 `;
 CharItems.displayName = 'CharItems';
 
+export const KilledSign = styled(AttackInstructions)`
+  label: KilledSign;
+  position: absolute;
+  top: 0;
+  padding: 30% 0;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6);
+`;
+KilledSign.displayName = 'KilledSign';
+
 export const NextButton = styled(ActionButton)`
   label: NextButton;
-  z-index: 3;
+  z-index: 11;
   position: absolute;
   top: unset;
   bottom: 20px;
   right: 20px;
   height: 20px;
+  background: ${({ damageMode }) => damageMode && 'red'};
+  color: ${({ damageMode }) => damageMode && 'black'};
+  box-shadow: ${({ damageMode }) => damageMode && '0 0 5px white'};
 `;
 NextButton.displayName = 'NextButton';
 
@@ -123,3 +141,31 @@ export const PlayerTag = styled.div`
   filter: brightness(0.8);
 `;
 PlayerTag.displayName = 'PlayerTag';
+
+export const PreviousButton = styled(NextButton)`
+  label: PreviousButton;
+  left: 20px;
+`;
+PreviousButton.displayName = 'PreviousButton';
+
+export const SelectButton = styled(NextButton)`
+  label: SelectButton;
+  bottom: 10px;
+  left: 50%;
+  transform: translate(-50%, 0);
+  border: 3px solid black;
+  box-shadow: 0 3px 3px 1px rgba(0, 0, 0, 0.4), inset 0 0 2px white;
+  height: 40px;
+  width: 90px;
+  background: rgba(139, 0, 0, 0.95);
+`;
+SelectButton.displayName = 'SelectButton';
+
+export const WoundedSign = styled.img`
+  z-index: 2;
+  width: 160%;
+  filter: brightness(0.4) saturate(2.3);
+  label: WoundedSign;
+  transform: translate(20px, 0);
+`;
+WoundedSign.displayName = 'WoundedSign';

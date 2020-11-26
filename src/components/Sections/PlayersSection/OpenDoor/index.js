@@ -2,7 +2,7 @@ import React from 'react';
 import { oneOf } from 'prop-types';
 import { SOUNDS_PATH } from '../../../../setup/endpoints';
 import { useStateWithLabel } from '../../../../utils/hooks';
-import OpeningDoor from '../../../../assets/images/OpeningDoor.png';
+import OpeningDoor from '../../../../assets/images/actions/OpeningDoor.png';
 import { OpenDoorIcon } from './styles';
 
 const OpenDoor = ({ type }) => {

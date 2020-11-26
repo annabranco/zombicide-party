@@ -15,6 +15,8 @@ const App = () => {
     [],
     'initialCharacters'
   );
+  const [damageMode, toggleDamageMode] = useStateWithLabel(false, 'damageMode');
+
   const loadedGame = JSON.parse(localStorage.getItem('ZombicideParty'));
 
   return (
@@ -41,12 +43,17 @@ const App = () => {
             <MainScreen>
               <Section name="Players">
                 <PlayersSection
+                  damageMode={damageMode}
                   initialCharacters={initialCharacters}
                   loadedGame={loadedGame}
+                  toggleDamageMode={toggleDamageMode}
                 />
               </Section>
               <Section name="Zombies">
-                <ZombiesSection />
+                <ZombiesSection
+                  damageMode={damageMode}
+                  toggleDamageMode={toggleDamageMode}
+                />
               </Section>
             </MainScreen>
           )}
