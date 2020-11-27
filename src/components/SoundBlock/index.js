@@ -21,6 +21,7 @@ const SoundBlock = ({
   noAudio,
   onClickCard,
   slotType,
+  special,
   toggleDamageMode,
   type,
   wounded
@@ -66,23 +67,15 @@ const SoundBlock = ({
           {type === 'activations' && (
             <ZombieActions>
               <Action action="activate">Activate</Action>
-              <Action action="attack" onClick={() => toggleDamageMode(true)}>
+              <Action action="attack" onClick={() => toggleDamageMode(name)}>
                 Attack survivor!
               </Action>
-              {name === 'Runner' && (
+              {special && (
                 <Action
                   action="kill"
-                  onClick={() => toggleDamageMode('instant-kill')}
+                  onClick={() => toggleDamageMode(`${name}-instant`)}
                 >
-                  Instant Kill
-                </Action>
-              )}
-              {name === 'Horde' && (
-                <Action
-                  action="kill"
-                  onClick={() => toggleDamageMode('horde-kill')}
-                >
-                  Feast on survivor
+                  {special}
                 </Action>
               )}
             </ZombieActions>
@@ -114,6 +107,7 @@ SoundBlock.propTypes = {
   noAudio: bool,
   onClickCard: func.isRequired,
   slotType: string,
+  special: string,
   toggleDamageMode: func.isRequired,
   type: string.isRequired,
   wounded: bool.isRequired
@@ -125,6 +119,7 @@ SoundBlock.defaultProps = {
   img: null,
   label: null,
   noAudio: false,
+  special: null,
   slotType: null
 };
 

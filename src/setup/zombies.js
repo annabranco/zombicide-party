@@ -28,7 +28,8 @@ const RUNNER = {
   img: Runner,
   imgSmall: RunnerSmall,
   name: 'Runner',
-  sounds: 5
+  sounds: 5,
+  special: 'Instant kill'
 };
 
 const FATTY = {
@@ -49,7 +50,8 @@ const HORDE = {
   img: Horde,
   imgSmall: HordeSmall,
   name: 'Horde',
-  sounds: 2
+  sounds: 2,
+  special: 'Feast on survivor'
 };
 
 export const ZOMBIES_S1 = [WALKER, RUNNER, FATTY, ABOMINATION, HORDE];
@@ -58,7 +60,8 @@ export const DOGZ = {
   img: Dogz,
   imgSmall: DogzSmall,
   name: 'Dogz',
-  sounds: 5
+  sounds: 5,
+  special: 'Instant kill'
 };
 
 export const ZOMBIES_INTRO = [

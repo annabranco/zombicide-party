@@ -33,6 +33,7 @@ const ZombiesSection = ({ damageMode, toggleDamageMode }) => {
                 differentSounds={zombie.sounds}
                 img={zombie.img}
                 name={zombie.name}
+                special={zombie.special}
                 toggleDamageMode={toggleDamageMode}
                 type="activations"
               />

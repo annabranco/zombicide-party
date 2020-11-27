@@ -89,8 +89,7 @@ const PlayersSection = ({
   const causeDamage = selectedSlot => {
     const woundedCharacter = { ...character };
     let updatedCharacters = { ...characters };
-    const oneActionKill =
-      damageMode === 'horde-kill' || damageMode === 'instant-kill';
+    const [attacker, oneActionKill] = damageMode.split('-');
 
     let damage = 'hit';
 
@@ -99,17 +98,11 @@ const PlayersSection = ({
         char => char.name !== woundedCharacter.name
       );
       woundedCharacter.wounded = 'killed';
-      if (oneActionKill) {
-        damage = damageMode;
-      } else {
-        damage = 'kill';
-      }
+      damage = 'kill';
       if (updatedCharacters.length === 1) {
         prevCharIndex.current = null;
       }
-      // if (updatedCharacters.length === 0) {
-      //   localStorage.removeItem('ZombicideParty');
-      // }
+
       updateCharacters(updatedCharacters);
     } else if (selectedSlot <= 2) {
       changeInHand('Wounded', selectedSlot - 1);
@@ -119,7 +112,9 @@ const PlayersSection = ({
       woundedCharacter.wounded = true;
     }
 
-    const filename = `${SOUNDS_PATH}/attacks/${character.voice}-${damage}.mp3`;
+    const filename = `${SOUNDS_PATH}/attacks/${
+      character.voice
+    }-${damage}-${attacker.toLowerCase()}.mp3`;
     const sound = new Audio(filename);
     sound.currentTime = 0;
     sound.play();
@@ -238,11 +233,13 @@ const PlayersSection = ({
       {character.wounded === 'killed' && (
         <>
           <KilledSign>
-            {characters.length === 0
+            {!characters || characters.length === 0
               ? 'All characters are dead'
               : `${character.name} has been killed`}
           </KilledSign>
-          <ExitSign onClick={exitGame} src={Exit} />
+          {characters.length === 0 && (
+            <ExitSign onClick={exitGame} src={Exit} />
+          )}
         </>
       )}
       <CharItems slotType="inHand">
