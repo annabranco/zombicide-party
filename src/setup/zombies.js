@@ -9,6 +9,11 @@ import AbominationSmall from '../assets/images/zombies/abomination-small.jpg';
 import Horde from '../assets/images/zombies/horde.jpg';
 import HordeSmall from '../assets/images/zombies/horde-small.jpg';
 
+import WalkerIntro from '../assets/images/zombies/Walker.png';
+import RunnerIntro from '../assets/images/zombies/Runner.png';
+import FattyIntro from '../assets/images/zombies/Fatty.png';
+import AbominationIntro from '../assets/images/zombies/Abomination.png';
+
 const WALKER = {
   img: Walker,
   imgSmall: WalkerSmall,
@@ -45,3 +50,10 @@ const HORDE = {
 };
 
 export const ZOMBIES_S1 = [WALKER, RUNNER, FATTY, ABOMINATION, HORDE];
+
+export const ZOMBIES_INTRO = [
+  WalkerIntro,
+  RunnerIntro,
+  FattyIntro,
+  AbominationIntro
+];

@@ -1,5 +1,4 @@
-import { css } from '@emotion/core';
-import styled from '@emotion/styled';
+import { css, keyframes } from '@emotion/core';
 
 export const globalStyles = css`
   html,
@@ -110,7 +109,7 @@ export const globalStyles = css`
   h2,
   h3,
   h4 {
-    font-family: 'Grandstander', cursive;
+    font-family: Crackhouse, 'Grandstander', cursive;
   }
   p. label {
     font-family: 'Cairo', sans-serif;
@@ -138,5 +137,14 @@ export const inactiveZombie = css`
 
   &:hover {
     filter: sepia(0.3) brightness(1.6) opacity(0.6) contrast(1.1);
+  }
+`;
+
+export const Appear = keyframes`
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
   }
 `;

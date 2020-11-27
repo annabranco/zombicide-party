@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import { Global } from '@emotion/core';
 import { useStateWithLabel } from '../../utils/hooks';
@@ -16,8 +16,17 @@ const App = () => {
     'initialCharacters'
   );
   const [damageMode, toggleDamageMode] = useStateWithLabel(false, 'damageMode');
+  const [loadedGame, loadGame] = useStateWithLabel(null, 'damageMode');
 
-  const loadedGame = JSON.parse(localStorage.getItem('ZombicideParty'));
+  useEffect(() => {
+    const game = JSON.parse(localStorage.getItem('ZombicideParty'));
+
+    if (game && game.length !== 0) {
+      loadGame(game);
+    } else {
+      localStorage.removeItem('ZombicideParty');
+    }
+  }, []);
 
   return (
     <Router>

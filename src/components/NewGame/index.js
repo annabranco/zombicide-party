@@ -90,7 +90,7 @@ const NewGame = ({ loadedGame, setInitialCharacters }) => {
   };
 
   return (
-    <MenuScreen img={BG}>
+    <MenuScreen img={BG} type="new">
       <Modal
         loadedGame={loadedGame}
         activePlayers={activePlayers}

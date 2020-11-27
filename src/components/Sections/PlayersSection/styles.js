@@ -1,6 +1,7 @@
 import styled from '@emotion/styled';
 import { css } from '@emotion/core';
 import { AttackInstructions } from '../ZombiesSection/styles';
+import { Appear } from '../../../styles';
 
 export const ActionButton = styled.button`
   label: ActionButton;
@@ -94,6 +95,21 @@ export const CharItems = styled.div`
     `}
 `;
 CharItems.displayName = 'CharItems';
+
+export const ExitSign = styled.img`
+  label: ExitSign;
+  z-index: 10;
+  position: absolute;
+  bottom: 52%;
+  width: 80px;
+  cursor: pointer;
+  box-shadow: 0 0 6px 0 white;
+  animation-name: ${Appear};
+  animation-duration: 10s;
+  animation-iteration-count: 1;
+  animation-fill-mode: forwards;
+`;
+ExitSign.displayName = 'ExitSign';
 
 export const KilledSign = styled(AttackInstructions)`
   label: KilledSign;

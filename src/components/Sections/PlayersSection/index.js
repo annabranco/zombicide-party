@@ -9,11 +9,13 @@ import ItemsSelectorModal from '../../Items/ItemsSelectorModal';
 import OpenDoor from './OpenDoor';
 import ItemsArea from '../../Items/ItemWrapper';
 import Blood from '../../../assets/images/blood.png';
+import Exit from '../../../assets/images/exit.png';
 import {
   CharItems,
   CharName,
   CharacterOverlay,
   CharacterSheet,
+  ExitSign,
   NextButton,
   PlayerTag,
   PreviousButton,
@@ -134,6 +136,11 @@ const PlayersSection = ({
   const allSlotsAreEmpty = () =>
     inHand.every(item => !item) && inBackpack.every(item => !item);
 
+  const exitGame = () => {
+    localStorage.removeItem('ZombicideParty');
+    history.push('/');
+  };
+
   useEffect(() => {
     if (!dataLoaded) {
       const updatedCharacters = (initialCharacters.length > 0 && [
@@ -218,14 +225,6 @@ const PlayersSection = ({
     }
   }, [inHand, inBackpack]);
 
-  // useEffect(() => {
-  //   if (characters.length === 0) {
-  //     localStorage.removeItem('ZombicideParty');
-  //     history.push('/');
-  //     document.location.reload();
-  //   }
-  // }, []);
-
   return (
     <CharacterSheet>
       <CharacterOverlay damageMode={damageMode} img={character.img} />
@@ -237,11 +236,14 @@ const PlayersSection = ({
       {canOpenDoor && !damageMode && <OpenDoor type={canOpenDoor} />}
       {character.wounded && <WoundedSign src={Blood} />}
       {character.wounded === 'killed' && (
-        <KilledSign>
-          {characters.length === 0
-            ? 'All characters are dead'
-            : `${character.name} has been killed`}
-        </KilledSign>
+        <>
+          <KilledSign>
+            {characters.length === 0
+              ? 'All characters are dead'
+              : `${character.name} has been killed`}
+          </KilledSign>
+          <ExitSign onClick={exitGame} src={Exit} />
+        </>
       )}
       <CharItems slotType="inHand">
         {inHand.map((item, index) => (
