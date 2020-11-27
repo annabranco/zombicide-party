@@ -8,7 +8,10 @@ import Abomination from '../assets/images/zombies/abomination.jpg';
 import AbominationSmall from '../assets/images/zombies/abomination-small.jpg';
 import Horde from '../assets/images/zombies/horde.jpg';
 import HordeSmall from '../assets/images/zombies/horde-small.jpg';
+import Dogz from '../assets/images/zombies/dogz.jpg';
+import DogzSmall from '../assets/images/zombies/dogz-small.jpg';
 
+import DogzIntro from '../assets/images/zombies/Dogz.png';
 import WalkerIntro from '../assets/images/zombies/Walker.png';
 import RunnerIntro from '../assets/images/zombies/Runner.png';
 import FattyIntro from '../assets/images/zombies/Fatty.png';
@@ -51,9 +54,17 @@ const HORDE = {
 
 export const ZOMBIES_S1 = [WALKER, RUNNER, FATTY, ABOMINATION, HORDE];
 
+export const DOGZ = {
+  img: Dogz,
+  imgSmall: DogzSmall,
+  name: 'Dogz',
+  sounds: 5
+};
+
 export const ZOMBIES_INTRO = [
   WalkerIntro,
   RunnerIntro,
   FattyIntro,
-  AbominationIntro
+  AbominationIntro,
+  DogzIntro
 ];
