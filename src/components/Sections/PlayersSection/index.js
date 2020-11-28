@@ -29,6 +29,7 @@ import { SOUNDS_PATH } from '../../../setup/endpoints';
 const PlayersSection = ({
   damageMode,
   initialCharacters,
+  loadGame,
   loadedGame,
   toggleDamageMode
 }) => {
@@ -75,35 +76,49 @@ const PlayersSection = ({
   };
 
   const changeToNextPlayer = () => {
+    const remainingCharacters = characters.filter(
+      char => char.wounded !== 'killed'
+    );
     const nextPlayerIndex =
-      charIndex + 1 >= characters.length ? 0 : charIndex + 1;
+      charIndex + 1 >= remainingCharacters.length ? 0 : charIndex + 1;
+    updateCharacters(remainingCharacters);
     changeCharIndex(nextPlayerIndex);
   };
 
   const changeToPreviousPlayer = () => {
+    const remainingCharacters = characters.filter(
+      char => char.wounded !== 'killed'
+    );
     const nextPlayerIndex =
-      charIndex - 1 < 0 ? characters.length - 1 : charIndex - 1;
-    changeCharIndex(nextPlayerIndex);
+      charIndex - 1 < 0 ? remainingCharacters.length - 1 : charIndex - 1;
+    updateCharacters(remainingCharacters);
+    setTimeout(() => changeCharIndex(nextPlayerIndex), 2000);
   };
 
   const causeDamage = selectedSlot => {
     const woundedCharacter = { ...character };
-    let updatedCharacters = { ...characters };
+    const updatedCharacters = [...characters];
     const [attacker, oneActionKill] = damageMode.split('-');
 
     let damage = 'hit';
 
     if (woundedCharacter.wounded || oneActionKill) {
-      updatedCharacters = characters.filter(
+      const remainingCharacters = characters.filter(
         char => char.name !== woundedCharacter.name
       );
+      updatedCharacters.forEach(char => {
+        if (char.name === woundedCharacter.name) {
+          char.wounded = 'killed'; // eslint-disable-line no-param-reassign
+        }
+      });
       woundedCharacter.wounded = 'killed';
       damage = 'kill';
-      if (updatedCharacters.length === 1) {
-        prevCharIndex.current = null;
+      console.log('$$$ remainingCharacters', remainingCharacters);
+      if (remainingCharacters.length === 0) {
+        updateCharacters(remainingCharacters);
+      } else {
+        updateCharacters(updatedCharacters);
       }
-
-      updateCharacters(updatedCharacters);
     } else if (selectedSlot <= 2) {
       changeInHand('Wounded', selectedSlot - 1);
       woundedCharacter.wounded = true;
@@ -133,6 +148,7 @@ const PlayersSection = ({
 
   const exitGame = () => {
     localStorage.removeItem('ZombicideParty');
+    loadGame();
     history.push('/');
   };
 
@@ -168,8 +184,12 @@ const PlayersSection = ({
   useEffect(() => {
     if (characters) {
       const nextChar = characters[charIndex];
-      console.log('$$$ nextChar', nextChar);
-      if (nextChar && (charIndex !== prevCharIndex.current || !dataLoaded)) {
+      if (
+        nextChar &&
+        (charIndex !== prevCharIndex.current ||
+          !dataLoaded ||
+          nextChar.name !== character.name)
+      ) {
         const charInHand = [nextChar.inHand[0], nextChar.inHand[1]];
         const charInBackpack = [
           nextChar.inBackpack[0],
@@ -282,7 +302,7 @@ const PlayersSection = ({
         <ItemsSelectorModal onSelect={changeInBackpack} slotType="inBackpack" />
       )}
 
-      {characters.length > 1 && (
+      {(characters.length > 1 || prevCharIndex.current === null) && (
         <>
           <PreviousButton
             damageMode={damageMode}
@@ -312,6 +332,7 @@ const PlayersSection = ({
 PlayersSection.propTypes = {
   damageMode: bool.isRequired,
   initialCharacters: arrayOf(characterTypes),
+  loadGame: func.isRequired,
   loadedGame: arrayOf(characterTypes),
   toggleDamageMode: func.isRequired
 };

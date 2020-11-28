@@ -54,6 +54,7 @@ const App = () => {
                 <PlayersSection
                   damageMode={damageMode}
                   initialCharacters={initialCharacters}
+                  loadGame={loadGame}
                   loadedGame={loadedGame}
                   toggleDamageMode={toggleDamageMode}
                 />
