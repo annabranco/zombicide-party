@@ -25,7 +25,7 @@ const MainMenu = ({ loadedGame }) => {
   const [testSound, toggleTestSound] = useStateWithLabel(false, 'testSound');
   const APP_VERSION = appInfo.version;
   const zombieImage = useRef(
-    ZOMBIES_INTRO[Math.ceil(Math.random() * ZOMBIES_INTRO.length)]
+    ZOMBIES_INTRO[Math.floor(Math.random() * ZOMBIES_INTRO.length)]
   );
 
   useEffect(() => {

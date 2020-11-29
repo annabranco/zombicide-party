@@ -9,7 +9,6 @@ import {
   ModalMessageSecondary,
   ModalTitle,
   ModalWindow,
-  OverlayScreen,
   Player,
   PlayerActionButtonsArea,
   PlayerNew,
