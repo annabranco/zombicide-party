@@ -10,7 +10,7 @@ import {
 const SelectionItem = ({ type, onSelect, onHover, name, label, img }) => {
   return (
     <Block>
-      <PlayImageButton onClick={() => onSelect(name)}>
+      <PlayImageButton onClick={() => onSelect(name)} slotType="selection">
         {img ? (
           <PlayIcon
             src={img}

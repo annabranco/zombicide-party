@@ -5,12 +5,12 @@ import { ITEMS_S1 } from '../../../setup/items';
 import { useStateWithLabel } from '../../../utils/hooks';
 import SelectionItem from '../ItemSelector';
 import { SelectorArea } from '../../SoundBlock/styles';
-import { SelectorModal } from './styles';
 import {
   SelectorButton,
+  SelectorModal,
   SelectorWrapper,
   SubSectionTitle
-} from '../../Sections/ZombiesSection/styles';
+} from './styles';
 
 const ItemsSelectorModal = ({ onSelect, slotType }) => {
   const [items, changeItems] = useStateWithLabel(ITEMS_S1, 'items');

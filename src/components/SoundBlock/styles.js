@@ -128,7 +128,8 @@ export const PlayImageButton = styled.button`
   cursor: ${({ damageMode, slotType, type }) =>
     ((type === 'weapons' && slotType === 'inHand') ||
       damageMode ||
-      type === 'activations') &&
+      type === 'activations' ||
+      slotType === 'selection') &&
     'pointer'};
 
   &:hover {
