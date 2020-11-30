@@ -6,11 +6,12 @@ import { getCharacterColor, updatePlayerObject } from '../../../utils/players';
 import { characterCanOpenDoors } from '../../../utils/items';
 import { useStateWithLabel } from '../../../utils/hooks';
 import ItemsSelectorModal from '../../Items/ItemsSelectorModal';
-import OpenDoor from './OpenDoor';
+import ActionButton from './actions';
 import ItemsArea from '../../Items/ItemWrapper';
 import Blood from '../../../assets/images/blood.png';
 import Exit from '../../../assets/images/exit.png';
 import {
+  ActionsWrapper,
   CharItems,
   CharName,
   CharacterOverlay,
@@ -50,11 +51,27 @@ const PlayersSection = ({
   const [dataLoaded, setDataLoaded] = useStateWithLabel(false, 'dataLoaded');
   const [canOpenDoor, setCanOpenDoor] = useStateWithLabel(false, 'canOpenDoor');
 
+  const [car, startCar] = useStateWithLabel(false, 'car');
+
   const history = useHistory();
 
   const prevCharIndex = useRef();
   const prevInHand = useRef();
   const prevInBackpack = useRef();
+
+  const enterCar = enter => {
+    const updatedCharacter = { ...character };
+    const updatedCharacters = [...characters];
+    if (enter) {
+      updatedCharacter.location = 'car';
+    } else {
+      updatedCharacter.location = null;
+    }
+    console.log('$$$ updatedCharacter', updatedCharacter);
+    updatedCharacters[updatedCharacter.name] = updatedCharacter;
+    changeCharacter(updatedCharacter);
+    updateCharacters(updatedCharacters);
+  };
 
   const changeInHand = (name, currentSlot = slot - 1) => {
     const newItems = [...inHand];
@@ -240,6 +257,7 @@ const PlayersSection = ({
     }
   }, [inHand, inBackpack]);
 
+  console.log('$$$ character.movement', character.movement);
   return (
     <CharacterSheet>
       <CharacterOverlay damageMode={damageMode} img={character.img} />
@@ -247,8 +265,26 @@ const PlayersSection = ({
       <PlayerTag color={getCharacterColor(character.name)}>
         {character.player}
       </PlayerTag>
-
-      {canOpenDoor && !damageMode && <OpenDoor type={canOpenDoor} />}
+      <ActionsWrapper>
+        <ActionButton
+          actionType={
+            // eslint-disable-next-line no-nested-ternary
+            character.location === 'car' ? 'car-exit' : 'car-enter'
+          }
+          car={car}
+          enterCar={enterCar}
+          startCar={startCar}
+          type={character.location !== 'car' && !car && 'start'}
+        />
+        {car ? (
+          <ActionButton actionType="car-move" />
+        ) : (
+          <ActionButton actionType="move" type={character.movement} />
+        )}
+        {canOpenDoor && !damageMode && (
+          <ActionButton actionType="open-door" type={canOpenDoor} />
+        )}
+      </ActionsWrapper>
       {character.wounded && <WoundedSign src={Blood} />}
       {character.wounded === 'killed' && (
         <>

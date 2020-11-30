@@ -24,6 +24,20 @@ export const ActionButton = styled.button`
 `;
 ActionButton.displayName = 'ActionButton';
 
+export const ActionsWrapper = styled.div`
+  label: ActionsWrapper;
+  z-index: 4;
+  position: absolute;
+  top: 15%;
+  right: 30px;
+  display: flex;
+  flex-direction: row;
+  align-items: flex-end;
+  justify-content: flex-end;
+  width: 90%;
+`;
+ActionsWrapper.displayName = 'ActionsWrapper';
+
 export const CharacterOverlay = styled.div`
   label: CharacterOverlay;
   z-index: 2;
