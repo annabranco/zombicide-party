@@ -68,7 +68,12 @@ const PlayersSection = ({
       updatedCharacter.location = null;
     }
     console.log('$$$ updatedCharacter', updatedCharacter);
-    updatedCharacters[updatedCharacter.name] = updatedCharacter;
+    updatedCharacters.forEach(char => {
+      if (char.name === updatedCharacter.name) {
+        // eslint-disable-next-line no-param-reassign
+        char.location = updatedCharacter.location;
+      }
+    });
     changeCharacter(updatedCharacter);
     updateCharacters(updatedCharacters);
   };
@@ -276,7 +281,7 @@ const PlayersSection = ({
           startCar={startCar}
           type={character.location !== 'car' && !car && 'start'}
         />
-        {car ? (
+        {character.location === 'car' ? (
           <ActionButton actionType="car-move" />
         ) : (
           <ActionButton actionType="move" type={character.movement} />
