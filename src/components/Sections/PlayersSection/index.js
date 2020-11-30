@@ -281,6 +281,7 @@ const PlayersSection = ({
         ) : (
           <ActionButton actionType="move" type={character.movement} />
         )}
+        <ActionButton actionType="search" type={character.voice} />
         {canOpenDoor && !damageMode && (
           <ActionButton actionType="open-door" type={canOpenDoor} />
         )}

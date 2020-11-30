@@ -38,6 +38,7 @@ const ActionButton = ({ actionType, carStarted, enterCar, startCar, type }) => {
         `${path}/${actionType}${Math.ceil(Math.random() * 1)}.mp3`;
       break;
     case 'search':
+      iconSize = 'medium';
       iconType = 'fas fa-search';
       soundName = actionType && type && `${path}/${actionType}-${type}.mp3`;
       break;
