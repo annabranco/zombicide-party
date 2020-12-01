@@ -281,7 +281,10 @@ const PlayersSection = ({
           type={character.location !== 'car' && !car && 'start'}
         />
         {character.location === 'car' ? (
-          <ActionButton actionType="car-move" />
+          <>
+            <ActionButton actionType="car-move" />
+            <ActionButton actionType="car-attack" />
+          </>
         ) : (
           <ActionButton actionType="move" type={character.movement} />
         )}

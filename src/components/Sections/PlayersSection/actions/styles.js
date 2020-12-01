@@ -27,14 +27,17 @@ ActionIcon.displayName = 'ActionIcon';
 export const CarActionIcon = styled.i`
   label: CarActionIcon;
   margin-top: 5px;
-  font-size: 2rem;
+  font-size: 1.8rem;
   line-height: 0.3;
+  transform: ${({ actionType }) =>
+    actionType === 'car-enter' && 'rotateY(180deg)'};
 `;
 CarActionIcon.displayName = 'CarActionIcon';
 
 export const CarIcon = styled.i`
   label: CarIcon;
-  font-size: 3rem;
+  margin-left: 2px;
+  font-size: 2.5rem;
   line-height: 1;
   text-align: center;
 `;
@@ -53,7 +56,7 @@ export const CarIconWrapper = styled.div`
   transition: all ease 5s;
   opacity: ${({ isActive }) => (isActive ? 0.2 : 1)};
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   align-items: center;
   justify-content: center;
   text-align: center;

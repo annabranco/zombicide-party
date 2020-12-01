@@ -25,7 +25,7 @@ const ActionButton = ({ actionType, carStarted, enterCar, startCar, type }) => {
       break;
     case 'car-enter':
     case 'car-exit':
-      iconType = `fas fa-caret-${actionType === 'car-enter' ? 'down' : 'up'}`;
+      iconType = 'fas fa-walking';
       iconType2 = 'fas fa-car';
       soundName = type
         ? `${path}/car-enter-${type}.mp3`
@@ -34,9 +34,12 @@ const ActionButton = ({ actionType, carStarted, enterCar, startCar, type }) => {
     case 'car-move':
       iconSize = 'medium';
       iconType = 'fas fa-car-side';
-      soundName =
-        actionType &&
-        `${path}/${actionType}${Math.ceil(Math.random() * 1)}.mp3`;
+      soundName = actionType && `${path}/${actionType}.mp3`;
+      break;
+    case 'car-attack':
+      iconSize = 'medium';
+      iconType = 'fas fa-car-crash';
+      soundName = actionType && `${path}/${actionType}.mp3`;
       break;
     case 'search':
       iconSize = 'medium';
@@ -87,8 +90,8 @@ const ActionButton = ({ actionType, carStarted, enterCar, startCar, type }) => {
           isActive={isActive}
           onClick={isActive ? () => null : onClickIcon}
         >
-          <CarActionIcon className={iconType} />
           <CarIcon className={iconType2} />
+          <CarActionIcon actionType={actionType} className={iconType} />
         </CarIconWrapper>
       ) : (
         <ActionIcon
