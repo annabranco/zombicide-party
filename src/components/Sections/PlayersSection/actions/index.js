@@ -10,6 +10,7 @@ const ActionButton = ({ actionType, carStarted, enterCar, startCar, type }) => {
   let iconType;
   let iconType2;
   let soundName;
+  let sound2Name;
   let iconSize;
 
   switch (actionType) {
@@ -40,15 +41,22 @@ const ActionButton = ({ actionType, carStarted, enterCar, startCar, type }) => {
     case 'search':
       iconSize = 'medium';
       iconType = 'fas fa-search';
-      soundName = actionType && type && `${path}/${actionType}-${type}.mp3`;
+      soundName =
+        actionType &&
+        type &&
+        `${path}/${actionType}${Math.floor(Math.random() * 10)}.mp3`;
+      sound2Name =
+        actionType &&
+        type &&
+        `${path}/found-${type}${Math.ceil(Math.random() * 6)}.mp3`;
+
       break;
     default:
       break;
   }
 
   const sound = soundName && new Audio(soundName);
-
-  console.log('$$$ actionType', actionType);
+  const sound2 = sound2Name && new Audio(sound2Name);
 
   const onClickIcon = () => {
     activate(true);
@@ -60,6 +68,10 @@ const ActionButton = ({ actionType, carStarted, enterCar, startCar, type }) => {
     }
     sound.currentTime = 0;
     sound.play();
+    if (sound2) {
+      sound2.currentTime = 0;
+      setTimeout(() => sound2.play(), 3100);
+    }
     setTimeout(
       () => {
         activate(false);

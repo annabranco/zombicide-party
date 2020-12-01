@@ -67,7 +67,7 @@ const PlayersSection = ({
     } else {
       updatedCharacter.location = null;
     }
-    console.log('$$$ updatedCharacter', updatedCharacter);
+
     updatedCharacters.forEach(char => {
       if (char.name === updatedCharacter.name) {
         // eslint-disable-next-line no-param-reassign
@@ -135,7 +135,7 @@ const PlayersSection = ({
       });
       woundedCharacter.wounded = 'killed';
       damage = 'kill';
-      console.log('$$$ remainingCharacters', remainingCharacters);
+
       if (remainingCharacters.length === 0) {
         updateCharacters(remainingCharacters);
       } else {
@@ -262,7 +262,6 @@ const PlayersSection = ({
     }
   }, [inHand, inBackpack]);
 
-  console.log('$$$ character.movement', character.movement);
   return (
     <CharacterSheet>
       <CharacterOverlay damageMode={damageMode} img={character.img} />
