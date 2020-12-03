@@ -31,7 +31,7 @@ export const SelectorModal = styled.div`
   position: absolute;
   top: 0;
   left: 50%;
-  padding-top: 30px;
+  padding-top: 60px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -45,7 +45,7 @@ SelectorModal.displayName = 'SelectorModal';
 
 export const SelectorWrapper = styled.div`
   label: SelectorWrapper;
-  z-index: 10;
+  z-index: 20;
   position: relative;
   display: flex;
   flex-direction: row;
@@ -63,7 +63,7 @@ export const SelectorWrapper = styled.div`
     selectorType === 'itemsSelector' &&
     css`
       position: absolute;
-      top: -40px;
+      top: 10px;
     `}
 `;
 SelectorWrapper.displayName = 'SelectorWrapper';
@@ -74,6 +74,8 @@ export const SubSectionTitle = styled.h3`
   width: 50%;
   line-height: 1.5;
   text-align: center;
+  font-family: 'Grandstander', cursive;
+
   color: ${({ opened = true }) => (opened ? 'white' : 'gray')};
   cursor: pointer;
   filter: ${({ opened = true }) =>

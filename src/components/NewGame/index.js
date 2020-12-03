@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { bool, func } from 'prop-types';
 import { getCharacterColor } from '../../utils/players';
@@ -82,6 +82,7 @@ const NewGame = ({ loadedGame, setInitialCharacters }) => {
   };
 
   const onClickConfirm = () => {
+    localStorage.removeItem('ZombicideParty');
     const newgameCharacters = [];
     charactersSelected.forEach((player, name) => {
       newgameCharacters.push(characters.find(char => char.name === name));

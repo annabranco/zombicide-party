@@ -15,13 +15,16 @@ const ItemsArea = ({
   onClickDrop,
   selectSlot,
   slotType,
+  startTrade,
+  trade,
   wounded
 }) => {
   const [isActive, toggleActive] = useStateWithLabel(false, 'isActive');
-  const [itemsType, changeItemsType] = useStateWithLabel(
-    'weapons',
-    'itemsType'
-  );
+  const itemsType = getItemType(item);
+  // const [itemsType, changeItemsType] = useStateWithLabel(
+  //   getItemType(item),
+  //   'itemsType'
+  // );
 
   const onClickChange = () => {
     toggleActive(false);
@@ -46,11 +49,6 @@ const ItemsArea = ({
     }
   };
 
-  useEffect(() => {
-    const type = getItemType(item);
-    changeItemsType(type);
-  }, [item, changeItemsType]);
-
   return (
     <ItemWrapper
       id={`${item}-${index + 1}`}
@@ -61,7 +59,7 @@ const ItemsArea = ({
       slotType={slotType}
       type={itemsType}
     >
-      <Item damageMode={damageMode}>
+      <Item damageMode={damageMode} trade={trade}>
         {item ? (
           <SoundBlock
             damageMode={damageMode}
@@ -69,6 +67,7 @@ const ItemsArea = ({
             name={item}
             onClickCard={onClickCard}
             slotType={slotType}
+            trade={trade}
             type={itemsType}
             wounded={wounded}
           />
@@ -78,14 +77,15 @@ const ItemsArea = ({
             damageMode={damageMode}
             onClick={onClickEmptyCard}
           >
-            {slotType === 'inHand' ? 'Item in hand' : 'Item in backpack'}
+            {!trade &&
+              (slotType === 'inHand' ? 'Item in hand' : 'Item in backpack')}
           </ItemBlank>
         )}
       </Item>
       {item && !damageMode && (
         <ActionButtonsWrapper>
-          <ActionButton onClick={onClickChange} type="button">
-            CHANGE
+          <ActionButton onClick={() => startTrade(true)} type="button">
+            TRADE
           </ActionButton>
 
           <ActionButton onClick={() => onClickDrop('', index)} type="button">
@@ -106,6 +106,8 @@ ItemsArea.propTypes = {
   onClickDrop: func.isRequired,
   selectSlot: func.isRequired,
   slotType: string.isRequired,
+  startTrade: func.isRequired,
+  trade: bool.isRequired,
   wounded: bool.isRequired
 };
 

@@ -8,7 +8,8 @@ import {
   PlayImageButton,
   PlayIcon,
   PlayText,
-  ZombieActions
+  ZombieActions,
+  ItemIcon
 } from './styles';
 import { ZombieLabel } from '../Sections/ZombiesSection/styles';
 
@@ -23,6 +24,7 @@ const SoundBlock = ({
   slotType,
   special,
   toggleDamageMode,
+  trade,
   type,
   wounded
 }) => {
@@ -49,6 +51,33 @@ const SoundBlock = ({
         activate(false);
       }, 4000);
     }
+  };
+
+  const getImage = () => {
+    if (trade) {
+      return (
+        <ItemIcon
+          active={isActive}
+          onMouseOut={() => highlight(false)}
+          onMouseOver={() => highlight(true)}
+          img={img}
+          name={name}
+          type={type}
+        />
+      );
+    }
+    if (img) {
+      return (
+        <PlayIcon
+          active={isActive}
+          onMouseOut={() => highlight(false)}
+          onMouseOver={() => highlight(true)}
+          src={img}
+          type={type}
+        />
+      );
+    }
+    return <PlayText>{label || name}</PlayText>;
   };
 
   return (
@@ -81,17 +110,7 @@ const SoundBlock = ({
             </ZombieActions>
           )}
 
-          {img ? (
-            <PlayIcon
-              active={isActive}
-              onMouseOut={() => highlight(false)}
-              onMouseOver={() => highlight(true)}
-              src={img}
-              type={type}
-            />
-          ) : (
-            <PlayText>{label || name}</PlayText>
-          )}
+          {getImage()}
         </PlayImageButton>
       </Block>
     </>
@@ -109,6 +128,7 @@ SoundBlock.propTypes = {
   slotType: string,
   special: string,
   toggleDamageMode: func.isRequired,
+  trade: bool.isRequired,
   type: string.isRequired,
   wounded: bool.isRequired
 };

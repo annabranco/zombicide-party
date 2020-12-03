@@ -54,6 +54,60 @@ export const Block = styled.div`
 `;
 Block.displayName = 'Block';
 
+export const ItemIcon = styled.div`
+  label: ItemIcon;
+  height: 120px;
+  width: 120px;
+  max-height: 100%;
+  max-width: 100%;
+  transition: transform ease 0.5s;
+  background-image: ${({ img }) => img && `url(${img})`};
+  background-position: center center;
+  background-size: 150%;
+  background-repeat: no-repeat;
+  cursor: pointer;
+
+  ${({ active, name }) => {
+    if (name === 'Rifle') {
+      return css`
+        background-size: 130%;
+        background-position: center 42%;
+      `;
+    }
+    if (name === 'Flashlight') {
+      return css`
+        background-size: 165%;
+      `;
+    }
+    if (name === 'EvilTwins' || name === 'MasShotgun' || name === 'SawedOff') {
+      return css`
+        background-position: center 51%;
+        background-size: 165%;
+      `;
+    }
+    if (name === 'PlentyOfAmmo') {
+      return css`
+        background-position: center 45%;
+        background-size: 165%;
+      `;
+    }
+    if (name === 'Scope') {
+      return css`
+        background-position: center 35%;
+        background-size: 140%;
+      `;
+    }
+    if (name === 'PlentyOfAmmoShotgun') {
+      return css`
+        background-position: center 45%;
+        background-size: 190%;
+      `;
+    }
+    return null;
+  }}
+`;
+ItemIcon.displayName = 'ItemIcon';
+
 export const PlayIcon = styled.img`
   label: PlayIcon;
   max-height: 100%;

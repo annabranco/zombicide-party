@@ -22,6 +22,14 @@ export const Item = styled.div`
   height: 273px;
   width: 200px;
   overflow: hidden;
+
+  ${({ trade }) =>
+    trade &&
+    css`
+      margin: -30px 0 0;
+      height: 120px;
+      width: 120px;
+    `}
 `;
 Item.displayName = 'Item';
 

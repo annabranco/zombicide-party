@@ -1,6 +1,6 @@
 import BagOfRice from '../assets/images/items/bag-of-rice.jpg';
 import CannedFood from '../assets/images/items/canned-food.jpg';
-import FlashLight from '../assets/images/items/flash-light.jpg';
+import Flashlight from '../assets/images/items/flash-light.jpg';
 import Gasoline from '../assets/images/items/gasoline.jpg';
 import GlassBottle from '../assets/images/items/glass-bottle.jpg';
 import GoalieMask from '../assets/images/items/goalie-mask.jpg';
@@ -20,9 +20,9 @@ export const ITEMS_S1 = {
     name: 'CannedFood',
     type: 'items'
   },
-  FlashLight: {
-    img: FlashLight,
-    name: 'FlashLight',
+  Flashlight: {
+    img: Flashlight,
+    name: 'Flashlight',
     type: 'items'
   },
   Gasoline: {

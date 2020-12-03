@@ -82,7 +82,7 @@ export const CharName = styled.h1`
   position: absolute;
   top: 0;
   right: 80px;
-  margin: 20px auto;
+  margin: 10px auto 20px;
   border-radius: 50px;
   font-size: 3rem;
   color: rgba(255, 255, 255, 0.8);
@@ -106,6 +106,11 @@ export const CharItems = styled.div`
     slotType === 'inBackpack' &&
     css`
       margin-top: -10px;
+    `}
+  ${({ trade }) =>
+    trade &&
+    css`
+      top: 80px;
     `}
 `;
 CharItems.displayName = 'CharItems';
@@ -146,6 +151,26 @@ export const NextButton = styled(ActionButton)`
   background: ${({ damageMode }) => damageMode && 'red'};
   color: ${({ damageMode }) => damageMode && 'black'};
   box-shadow: ${({ damageMode }) => damageMode && '0 0 5px white'};
+
+  ${({ trade }) =>
+    trade &&
+    css`
+      bottom: 6px;
+      height: 45px;
+      width: 45px;
+      text-align: center;
+      font-size: 2rem;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.6);
+      color: black;
+      line-height: 0.6;
+      right: 10px;
+      padding: 2px 0 0 6px;
+
+      &:hover {
+        background: rgba(255, 255, 255, 0.4);
+      }
+    `}
 `;
 NextButton.displayName = 'NextButton';
 
@@ -153,21 +178,24 @@ export const PlayerTag = styled.div`
   label: PlayerTag;
   z-index: 6;
   position: absolute;
-  top: -50px;
-  left: 0;
-
-  height: 50px;
-  width: 100%;
+  top: 70px;
+  right: -10px;
+  height: 20px;
+  width: 32%;
   border: 1px solid black;
+  border-radius: 20px;
   padding: 5px 20px;
   background: ${({ color }) => color || 'black'};
   /* cursor: pointer; */
   font-family: 'Grandstander', cursive;
   text-align: center;
-  font-size: 2.3rem;
-  line-height: 1.1;
+  font-size: 1.1rem;
+  text-shadow: 0 0 2px black;
+  letter-spacing: 0.6rem;
+  font-weight: 900;
+  line-height: 0.6;
   text-transform: uppercase;
-  color: black;
+  color: white;
   filter: brightness(0.8);
 `;
 PlayerTag.displayName = 'PlayerTag';
@@ -175,6 +203,14 @@ PlayerTag.displayName = 'PlayerTag';
 export const PreviousButton = styled(NextButton)`
   label: PreviousButton;
   left: 20px;
+
+  ${({ trade }) =>
+    trade &&
+    css`
+      left: 10px;
+      padding-left: 0;
+      padding-right: 6px;
+    `}
 `;
 PreviousButton.displayName = 'PreviousButton';
 
