@@ -2,6 +2,7 @@ import styled from '@emotion/styled';
 import { css } from '@emotion/core';
 import { AttackInstructions } from '../ZombiesSection/styles';
 import { Appear } from '../../../styles';
+import { ActionButtonIcon } from '../../Items/ItemWrapper/styles';
 
 export const ActionButton = styled.button`
   label: ActionButton;
@@ -19,8 +20,14 @@ export const ActionButton = styled.button`
   cursor: pointer;
 
   &:hover {
-    color: yellow;
+    color: ${({ trade }) => (trade ? 'white' : 'yellow')};
   }
+
+  ${({ trade }) =>
+    trade &&
+    css`
+      background: rgba(0, 0, 0, 0.9);
+    `}
 `;
 ActionButton.displayName = 'ActionButton';
 

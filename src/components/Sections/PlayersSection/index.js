@@ -84,8 +84,8 @@ const PlayersSection = ({
     const updatedCharacter = { ...character };
     const updatedCharacters = [...characters];
     const newItems = [...updatedCharacter.inHand];
-    const openDoors = characterCanOpenDoors(newItems);
     newItems[currentSlot] = name;
+    const openDoors = characterCanOpenDoors(newItems);
     // updateInHand(newItems);
     setCanOpenDoor(openDoors);
     updatedCharacter.inHand = newItems;

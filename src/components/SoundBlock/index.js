@@ -17,6 +17,7 @@ const SoundBlock = ({
   damageMode,
   differentSounds,
   img,
+  isSelected,
   label,
   name,
   noAudio,
@@ -61,6 +62,7 @@ const SoundBlock = ({
           onMouseOut={() => highlight(false)}
           onMouseOver={() => highlight(true)}
           img={img}
+          isSelected={isSelected}
           name={name}
           type={type}
         />
@@ -89,7 +91,7 @@ const SoundBlock = ({
         <PlayImageButton
           isActive={isActive}
           damageMode={damageMode}
-          onClick={damageMode ? onClickCard : play}
+          onClick={damageMode || trade ? onClickCard : play}
           slotType={slotType}
           type={type}
         >
@@ -121,6 +123,7 @@ SoundBlock.propTypes = {
   damageMode: bool,
   differentSounds: number,
   img: string,
+  isSelected: bool,
   label: string,
   name: string.isRequired,
   noAudio: bool,
@@ -137,6 +140,7 @@ SoundBlock.defaultProps = {
   damageMode: false,
   differentSounds: null,
   img: null,
+  isSelected: false,
   label: null,
   noAudio: false,
   special: null,

@@ -9,6 +9,7 @@ const ALL_ITEMS = {
 };
 
 export const characterCanOpenDoors = currentItems => {
+  console.log('$$$ currentItems', currentItems);
   let openDoor;
   currentItems.forEach(item => {
     if (WEAPONS_S1[item] && WEAPONS_S1[item].canOpenDoor) {

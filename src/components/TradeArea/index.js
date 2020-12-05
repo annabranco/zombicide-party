@@ -48,29 +48,7 @@ const TradeArea = ({
     'partnerIndex'
   );
 
-  const [inHand, updateInHand] = useStateWithLabel(['', ''], 'inHand');
-  const [inBackpack, updateInBackpack] = useStateWithLabel(
-    ['', '', ''],
-    'inBackpack'
-  );
-  const [inPartnersHand, updatePartnersInHand] = useStateWithLabel(
-    ['', ''],
-    'inPartnersHand'
-  );
-  const [inPartnersBackpack, updatePartnersInBackpack] = useStateWithLabel(
-    ['', '', ''],
-    'inPartnersBackpack'
-  );
-
-  const [selectedItem1, selectItem1] = useStateWithLabel(
-    ['', '', ''],
-    'selectedItem1'
-  );
-
-  const [selectedItem2, selectItem2] = useStateWithLabel(
-    ['', '', ''],
-    'selectedItem2'
-  );
+  const [selectedItem1, selectItem1] = useStateWithLabel(null, 'selectedItem1');
 
   const changeToNextPlayer = () => {
     const nextPlayerIndex =
@@ -88,49 +66,72 @@ const TradeArea = ({
   const prevPartnerIndex = useRef();
 
   useEffect(() => {
-    const updChar = characters.filter(char => char.name !== character.name);
-
-    updateCharacter({ ...character });
+    const mainChar = { ...character };
+    const updChar = characters.filter(char => char.name !== mainChar.name);
+    updateCharacter(mainChar);
     updateCharacters(updChar);
     changeTradePartner(updChar[0]);
-    updateInHand([...character.inHand]);
-    updateInBackpack([...character.inBackpack]);
-    updatePartnersInHand([...updChar[0].inHand]);
-    updatePartnersInBackpack([...updChar[0].inBackpack]);
-
-    console.log('$$$ currentInHand', currentInHand);
   }, [
     changeTradePartner,
     character,
     characters,
-    currentInHand,
-    currentInBackpack,
     updateCharacter,
-    updateCharacters,
-    updateInHand,
-    updateInBackpack,
-    updatePartnersInHand,
-    updatePartnersInBackpack
+    updateCharacters
   ]);
 
   useEffect(() => {
-    // eslint-disable-next-line no-debugger
-    debugger;
     if (updatedCharacters && partnerIndex !== prevPartnerIndex.current) {
       const nextPartner = updatedCharacters[partnerIndex];
       changeTradePartner(nextPartner);
-      updatePartnersInHand([...nextPartner.inHand]);
-      updatePartnersInBackpack([...nextPartner.inBackpack]);
       prevPartnerIndex.current = partnerIndex;
     }
   }, [partnerIndex]);
 
-  const onSelectSlot = (name, slot) => {
+  const onTrade = ({ item, slot, char }) => {
     if (selectedItem1) {
-      console.log('$$$ selectedItem2', name, slot);
+      if (!item) {
+        selectItem1();
+      } else {
+        console.log('$$$ ITEM2', char, slot, item);
+        const updChar = { ...updatedCharacter };
+        const updPartn = { ...tradePartner };
+        const typeItem1 = selectedItem1.slot <= 2 ? 'inHand' : 'inBackpack';
+        const typeItem2 = slot <= 2 ? 'inHand' : 'inBackpack';
+        const index1 =
+          selectedItem1.slot <= 2
+            ? selectedItem1.slot - 1
+            : selectedItem1.slot - 3;
+        const index2 = slot <= 2 ? slot - 1 : slot - 3;
+
+        if (selectedItem1.char === char) {
+          if (updChar.name === char) {
+            updChar[typeItem1][index1] = item === 'none' ? null : item;
+            updChar[typeItem2][index2] =
+              selectedItem1.item === 'none' ? null : selectedItem1.item;
+            // updateCharacter(updChar);
+          } else {
+            updPartn[typeItem1][index1] = item === 'none' ? null : item;
+            updPartn[typeItem2][index2] =
+              selectedItem1.item === 'none' ? null : selectedItem1.item;
+          }
+          selectItem1();
+        } else if (selectedItem1.item === 'Wounded' || item === 'Wounded') {
+          console.log('NOT');
+        } else if (selectedItem1.char === updChar.name) {
+          updChar[typeItem1][index1] = item === 'none' ? null : item;
+          updPartn[typeItem2][index2] =
+            selectedItem1.item === 'none' ? null : selectedItem1.item;
+          selectItem1();
+        } else {
+          updPartn[typeItem1][index1] = item === 'none' ? null : item;
+          updChar[typeItem2][index2] =
+            selectedItem1.item === 'none' ? null : selectedItem1.item;
+          selectItem1();
+        }
+      }
     } else {
-      console.log('$$$ selectedItem1', name, slot);
-      selectItem1([name, slot]);
+      console.log('$$$ ITEM1', char, slot, item);
+      selectItem1({ item, slot, char });
     }
   };
 
@@ -146,31 +147,35 @@ const TradeArea = ({
             {tradePartner.player}
           </PlayerName>
           <CharItems slotType="inHand" trade>
-            {inPartnersHand.map((item, index) => (
+            {tradePartner.inHand.map((item, index) => (
               <ItemsArea
+                character={tradePartner.name}
                 index={index}
                 item={item}
+                itemSelected={Boolean(selectedItem1)}
                 key={`${item}-${index + 1}`}
                 onClickDrop={() => null}
-                selectSlot={onSelectSlot}
                 slotType="inHand"
                 trade
-                wounded={character.wounded}
+                tradeItem={onTrade}
+                wounded={tradePartner.wounded}
               />
             ))}
           </CharItems>
           <CharItems slotType="inBackpack" trade>
-            {inPartnersBackpack.map((item, index) => (
+            {tradePartner.inBackpack.map((item, index) => (
               <ItemsArea
+                character={tradePartner.name}
                 index={index}
                 item={item}
+                itemSelected={Boolean(selectedItem1)}
                 key={`${item}-${index + 3}`}
                 noAudio
                 onClickDrop={() => null}
-                selectSlot={onSelectSlot}
                 slotType="inBackpack"
                 trade
-                wounded={character.wounded}
+                tradeItem={onTrade}
+                wounded={tradePartner.wounded}
               />
             ))}
           </CharItems>
@@ -183,48 +188,53 @@ const TradeArea = ({
           </NextButton>
         </CharacterTrading>
       )}
-
-      <CharacterTrading>
-        <CharacterId>
-          <Face src={character.face} alt="" />
-          <CharacterName trade>{character.name}</CharacterName>
-          <PlayerName color={getCharacterColor(character.name)}>
-            {character.player}
-          </PlayerName>
-        </CharacterId>
-        <CharItems slotType="inHand" trade>
-          {inHand.map((item, index) => (
-            <ItemsArea
-              index={index}
-              item={item}
-              key={`${item}-${index + 1}`}
-              onClickDrop={() => null}
-              selectSlot={() => null}
-              slotType="inHand"
-              trade
-              wounded={character.wounded}
-            />
-          ))}
-        </CharItems>
-        <CharItems slotType="inBackpack" trade>
-          {inBackpack.map((item, index) => (
-            <ItemsArea
-              index={index}
-              item={item}
-              key={`${item}-${index + 3}`}
-              noAudio
-              onClickDrop={() => null}
-              selectSlot={() => null}
-              slotType="inBackpack"
-              trade
-              wounded={character.wounded}
-            />
-          ))}
-        </CharItems>
-        <CurrentCharacterTag color={getCharacterColor(character.name)}>
-          Current Character
-        </CurrentCharacterTag>
-      </CharacterTrading>
+      {updatedCharacter && (
+        <CharacterTrading>
+          <CharacterId>
+            <Face src={updatedCharacter.face} alt="" />
+            <CharacterName trade>{updatedCharacter.name}</CharacterName>
+            <PlayerName color={getCharacterColor(updatedCharacter.name)}>
+              {updatedCharacter.player}
+            </PlayerName>
+          </CharacterId>
+          <CharItems slotType="inHand" trade>
+            {updatedCharacter.inHand.map((item, index) => (
+              <ItemsArea
+                character={updatedCharacter.name}
+                index={index}
+                item={item}
+                itemSelected={Boolean(selectedItem1)}
+                key={`${item}-${index + 1}`}
+                onClickDrop={() => null}
+                slotType="inHand"
+                trade
+                tradeItem={onTrade}
+                wounded={updatedCharacter.wounded}
+              />
+            ))}
+          </CharItems>
+          <CharItems slotType="inBackpack" trade>
+            {updatedCharacter.inBackpack.map((item, index) => (
+              <ItemsArea
+                character={updatedCharacter.name}
+                index={index}
+                item={item}
+                itemSelected={Boolean(selectedItem1)}
+                key={`${item}-${index + 3}`}
+                noAudio
+                onClickDrop={() => null}
+                slotType="inBackpack"
+                trade
+                tradeItem={onTrade}
+                wounded={updatedCharacter.wounded}
+              />
+            ))}
+          </CharItems>
+          <CurrentCharacterTag color={getCharacterColor(updatedCharacter.name)}>
+            Current Character
+          </CurrentCharacterTag>
+        </CharacterTrading>
+      )}
       <ButtonsWrapper>
         <CancelButton type="button" onClick={() => startTrade(false)}>
           CANCEL
