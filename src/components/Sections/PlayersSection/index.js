@@ -149,7 +149,8 @@ const PlayersSection = ({
     );
 
     let damage = 'hit';
-
+    // eslint-disable-next-line no-debugger
+    debugger;
     if (woundedCharacter.wounded || oneActionKill) {
       remainingCharacters = characters.filter(
         char => char.name !== woundedCharacter.name
@@ -196,6 +197,7 @@ const PlayersSection = ({
     const sound = new Audio(filename);
     sound.currentTime = 0;
     sound.play();
+    updateCharacters(updatedCharacters);
     changeCharacter(woundedCharacter);
     toggleDamageMode(false);
     localStorage.setItem('ZombicideParty', JSON.stringify(updatedCharacters));
