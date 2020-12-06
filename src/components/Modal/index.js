@@ -18,7 +18,13 @@ import {
   PlayersArea
 } from './styles';
 
-const Modal = ({ activePlayers, loadedGame, setActivePlayers }) => {
+const Modal = ({
+  addPlayer,
+  activePlayers,
+  dynamic,
+  loadedGame,
+  setActivePlayers
+}) => {
   const [visible, toggleVisible] = useStateWithLabel(false, 'visible');
   const [message, setMessage] = useStateWithLabel({ buttons: [] }, 'message');
   const [players, updatePlayers] = useStateWithLabel(
@@ -61,15 +67,19 @@ const Modal = ({ activePlayers, loadedGame, setActivePlayers }) => {
 
   const openPlayerWindow = () => {
     setMessage({
-      title: 'Manage Players',
-      text: 'Who is gonna play?',
-      buttons: [
-        {
-          text: 'OK',
-          onClick: onClickOkButton,
-          type: 'accept'
-        }
-      ]
+      title: !dynamic && 'Manage Players',
+      text: dynamic
+        ? 'Who is gonna play the new character?'
+        : 'Who is gonna play?',
+      buttons: dynamic
+        ? []
+        : [
+            {
+              text: 'OK',
+              onClick: onClickOkButton,
+              type: 'accept'
+            }
+          ]
     });
     toggleVisible(true);
   };
@@ -127,22 +137,32 @@ const Modal = ({ activePlayers, loadedGame, setActivePlayers }) => {
     setActivePlayers(activePlayerSet);
   };
 
+  const onClickName = (player, event) => {
+    if (dynamic) {
+      addPlayer(player);
+      toggleVisible(false);
+    } else if (showRemovePlayer) {
+      onClickRemovePlayer(event);
+    } else {
+      onSelectPlayer(event);
+    }
+  };
+
   return (
     <ModalWindow visible={visible}>
       <ModalTitle>{message.title}</ModalTitle>
       <ModalMessage>{message.text}</ModalMessage>
-      {message.title === 'Manage Players' && (
+      {(message.title === 'Manage Players' || !message.title) && (
         <>
           <PlayersArea>
             {players.size > 0 ? (
               [...players].map(player => (
                 <Player
                   active={activePlayers.has(player)}
+                  dynamic={dynamic}
                   key={player}
                   name={player}
-                  onClick={
-                    showRemovePlayer ? onClickRemovePlayer : onSelectPlayer
-                  }
+                  onClick={event => onClickName(player, event)}
                   showRemovePlayer={showRemovePlayer}
                 >
                   {player}
@@ -162,7 +182,7 @@ const Modal = ({ activePlayers, loadedGame, setActivePlayers }) => {
           ) : (
             <PlayerActionButtonsArea>
               <PlayerNew onClick={onAddPlayer}>+</PlayerNew>
-              {players.size > 0 && (
+              {players.size > 0 && !dynamic && (
                 <PlayerRemoveToggle
                   active={showRemovePlayer}
                   onClick={() => toggleRemovePlayer(!showRemovePlayer)}
@@ -198,9 +218,16 @@ const Modal = ({ activePlayers, loadedGame, setActivePlayers }) => {
 };
 
 Modal.propTypes = {
+  addPlayer: func,
   activePlayers: instanceOf(Set).isRequired,
+  dynamic: bool,
   loadedGame: bool.isRequired,
   setActivePlayers: func.isRequired
+};
+
+Modal.defaultProps = {
+  addPlayer: () => null,
+  dynamic: false
 };
 
 export default Modal;

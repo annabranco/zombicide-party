@@ -122,13 +122,25 @@ export const Player = styled.div`
   text-transform: uppercase;
   color: white;
 
-  ${({ active }) =>
-    !active &&
-    css`
-      border: 1px solid #707070;
-      background: gray;
-      color: #707070;
-    `}
+  ${({ active, dynamic }) => {
+    if (dynamic) {
+      return css`
+        background: gray;
+        color: black;
+        &:hover {
+          background: yellow;
+        }
+      `;
+    }
+    if (!active) {
+      return css`
+        border: 1px solid #707070;
+        background: gray;
+        color: #707070;
+      `;
+    }
+    return null;
+  }}
 
   ${({ showRemovePlayer }) =>
     showRemovePlayer &&

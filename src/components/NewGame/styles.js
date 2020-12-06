@@ -19,6 +19,16 @@ export const CharImage = styled.img`
   ${inactiveImage}
   width: 100%;
 
+  ${({ dynamic }) =>
+    dynamic &&
+    css`
+      filter: sepia(1) opacity(0.7);
+      &:hover {
+        filter: sepia(0.3) brightness(1.4) opacity(0.7) contrast(1.1)
+          saturate(2);
+      }
+    `}
+
   ${({ active }) =>
     active &&
     css`
@@ -35,10 +45,16 @@ export const CharName = styled.h1`
   margin: 20px auto 30px;
   width: calc(90vw / 6);
   font-size: 1.5rem;
-  color: white;
+  color: rgba(255, 255, 255, 0.5);
   text-shadow: 0 0 3px black;
   text-align: center;
   text-transform: uppercase;
+
+  ${({ active }) =>
+    active &&
+    css`
+      color: white;
+    `}
 `;
 CharName.displayName = 'CharName';
 

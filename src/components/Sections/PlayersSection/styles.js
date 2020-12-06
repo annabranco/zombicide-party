@@ -2,7 +2,6 @@ import styled from '@emotion/styled';
 import { css } from '@emotion/core';
 import { AttackInstructions } from '../ZombiesSection/styles';
 import { Appear } from '../../../styles';
-import { ActionButtonIcon } from '../../Items/ItemWrapper/styles';
 
 export const ActionButton = styled.button`
   label: ActionButton;
@@ -44,6 +43,22 @@ export const ActionsWrapper = styled.div`
   width: 90%;
 `;
 ActionsWrapper.displayName = 'ActionsWrapper';
+
+export const AddNewChar = styled(ActionButton)`
+  label: AddNewChar;
+  z-index: 11;
+  position: absolute;
+  top: 10px;
+  height: 20px;
+  background: ${({ damageMode }) => damageMode && 'red'};
+  color: ${({ damageMode }) => damageMode && 'black'};
+  box-shadow: ${({ damageMode }) => damageMode && '0 0 5px white'};
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.4);
+  }
+`;
+AddNewChar.displayName = 'AddNewChar';
 
 export const CharacterOverlay = styled.div`
   label: CharacterOverlay;

@@ -23,11 +23,13 @@ import {
   PreviousButton,
   SelectButton,
   WoundedSign,
-  KilledSign
+  KilledSign,
+  AddNewChar
 } from './styles';
 import { characterTypes } from '../../../interfaces/types';
 import { SOUNDS_PATH } from '../../../setup/endpoints';
 import TradeArea from '../../TradeArea';
+import NewGame from '../../NewGame';
 
 const PlayersSection = ({
   damageMode,
@@ -47,6 +49,7 @@ const PlayersSection = ({
   const [dataLoaded, setDataLoaded] = useStateWithLabel(false, 'dataLoaded');
   const [canOpenDoor, setCanOpenDoor] = useStateWithLabel(false, 'canOpenDoor');
   const [car, startCar] = useStateWithLabel(false, 'car');
+  const [newChar, addNewChar] = useStateWithLabel(false, 'newChar');
 
   const [trade, startTrade] = useStateWithLabel(false, 'trade');
 
@@ -219,6 +222,12 @@ const PlayersSection = ({
     localStorage.setItem('ZombicideParty', JSON.stringify(updatedCharacters));
   };
 
+  const setNewChar = updatedCharacters => {
+    addNewChar(false);
+    updateCharacters(updatedCharacters);
+    localStorage.setItem('ZombicideParty', JSON.stringify(updatedCharacters));
+  };
+
   useEffect(() => {
     if (!dataLoaded) {
       const updatedCharacters =
@@ -265,131 +274,139 @@ const PlayersSection = ({
   // }, [character]);
 
   return (
-    <CharacterSheet>
-      {trade ? (
-        <TradeArea
-          character={character}
-          characters={characters}
-          confirmTrade={confirmTrade}
-          startTrade={startTrade}
-        />
-      ) : (
-        <>
-          <CharacterOverlay damageMode={damageMode} img={character.img} />
-          <CharName>{character.name}</CharName>
-          <PlayerTag color={getCharacterColor(character.name)}>
-            {character.player}
-          </PlayerTag>
-          <ActionsWrapper>
-            <ActionButton
-              actionType={
-                // eslint-disable-next-line no-nested-ternary
-                character.location === 'car' ? 'car-exit' : 'car-enter'
-              }
-              car={car}
-              enterCar={enterCar}
-              startCar={startCar}
-              type={character.location !== 'car' && !car && 'start'}
-            />
-            {character.location === 'car' ? (
-              <>
-                <ActionButton actionType="car-move" />
-                <ActionButton actionType="car-attack" />
-              </>
-            ) : (
-              <ActionButton actionType="move" type={character.movement} />
-            )}
-            <ActionButton actionType="search" type={character.voice} />
-            {canOpenDoor && !damageMode && (
-              <ActionButton actionType="open-door" type={canOpenDoor} />
-            )}
-          </ActionsWrapper>
-          {character.wounded && <WoundedSign src={Blood} />}
-          {character.wounded === 'killed' && (
-            <>
-              <KilledSign>
-                {!characters || characters.length === 0
-                  ? 'All characters are dead'
-                  : `${character.name} has been killed`}
-              </KilledSign>
-              {characters.length === 0 && (
-                <ExitSign onClick={exitGame} src={Exit} />
+    <>
+      <CharacterSheet>
+        {trade ? (
+          <TradeArea
+            character={character}
+            characters={characters}
+            confirmTrade={confirmTrade}
+            startTrade={startTrade}
+          />
+        ) : (
+          <>
+            <CharacterOverlay damageMode={damageMode} img={character.img} />
+            <AddNewChar type="button" onClick={() => addNewChar(true)}>
+              ADD NEW CHAR
+            </AddNewChar>
+            <CharName>{character.name}</CharName>
+            <PlayerTag color={getCharacterColor(character.name)}>
+              {character.player}
+            </PlayerTag>
+            <ActionsWrapper>
+              <ActionButton
+                actionType={
+                  // eslint-disable-next-line no-nested-ternary
+                  character.location === 'car' ? 'car-exit' : 'car-enter'
+                }
+                car={car}
+                enterCar={enterCar}
+                startCar={startCar}
+                type={character.location !== 'car' && !car && 'start'}
+              />
+              {character.location === 'car' ? (
+                <>
+                  <ActionButton actionType="car-move" />
+                  <ActionButton actionType="car-attack" />
+                </>
+              ) : (
+                <ActionButton actionType="move" type={character.movement} />
               )}
-            </>
-          )}
-          <CharItems slotType="inHand">
-            {character.inHand &&
-              character.inHand.map((item, index) => (
-                <ItemsArea
-                  allSlotsAreEmpty={allSlotsAreEmpty()}
-                  causeDamage={causeDamage}
-                  damageMode={damageMode}
-                  index={index}
-                  item={item}
-                  key={`${item}-${index + 1}`}
-                  onClickDrop={changeInHand}
-                  selectSlot={selectSlot}
-                  slotType="inHand"
-                  startTrade={startTrade}
-                  wounded={character.wounded}
-                />
-              ))}
-          </CharItems>
-          <CharItems slotType="inBackpack">
-            {character.inBackpack &&
-              character.inBackpack.map((item, index) => (
-                <ItemsArea
-                  allSlotsAreEmpty={allSlotsAreEmpty()}
-                  causeDamage={causeDamage}
-                  damageMode={damageMode}
-                  index={index}
-                  item={item}
-                  key={`${item}-${index + 3}`}
-                  noAudio
-                  onClickDrop={changeInBackpack}
-                  selectSlot={selectSlot}
-                  slotType="inBackpack"
-                  startTrade={startTrade}
-                  wounded={character.wounded}
-                />
-              ))}
-          </CharItems>
-          {slot && slot <= 2 && (
-            <ItemsSelectorModal onSelect={changeInHand} slotType="inHand" />
-          )}
-          {slot && slot >= 3 && (
-            <ItemsSelectorModal
-              onSelect={changeInBackpack}
-              slotType="inBackpack"
-            />
-          )}
+              <ActionButton actionType="search" type={character.voice} />
+              {canOpenDoor && !damageMode && (
+                <ActionButton actionType="open-door" type={canOpenDoor} />
+              )}
+            </ActionsWrapper>
+            {character.wounded && <WoundedSign src={Blood} />}
+            {character.wounded === 'killed' && (
+              <>
+                <KilledSign>
+                  {!characters || characters.length === 0
+                    ? 'All characters are dead'
+                    : `${character.name} has been killed`}
+                </KilledSign>
+                {characters.length === 0 && (
+                  <ExitSign onClick={exitGame} src={Exit} />
+                )}
+              </>
+            )}
+            <CharItems slotType="inHand">
+              {character.inHand &&
+                character.inHand.map((item, index) => (
+                  <ItemsArea
+                    allSlotsAreEmpty={allSlotsAreEmpty()}
+                    causeDamage={causeDamage}
+                    damageMode={damageMode}
+                    index={index}
+                    item={item}
+                    key={`${item}-${index + 1}`}
+                    onClickDrop={changeInHand}
+                    selectSlot={selectSlot}
+                    slotType="inHand"
+                    startTrade={startTrade}
+                    wounded={character.wounded}
+                  />
+                ))}
+            </CharItems>
+            <CharItems slotType="inBackpack">
+              {character.inBackpack &&
+                character.inBackpack.map((item, index) => (
+                  <ItemsArea
+                    allSlotsAreEmpty={allSlotsAreEmpty()}
+                    causeDamage={causeDamage}
+                    damageMode={damageMode}
+                    index={index}
+                    item={item}
+                    key={`${item}-${index + 3}`}
+                    noAudio
+                    onClickDrop={changeInBackpack}
+                    selectSlot={selectSlot}
+                    slotType="inBackpack"
+                    startTrade={startTrade}
+                    wounded={character.wounded}
+                  />
+                ))}
+            </CharItems>
+            {slot && slot <= 2 && (
+              <ItemsSelectorModal onSelect={changeInHand} slotType="inHand" />
+            )}
+            {slot && slot >= 3 && (
+              <ItemsSelectorModal
+                onSelect={changeInBackpack}
+                slotType="inBackpack"
+              />
+            )}
 
-          {(characters.length > 1 || prevCharIndex.current === null) && (
-            <>
-              <PreviousButton
-                damageMode={damageMode}
-                onClick={changeToPreviousPlayer}
-                type="button"
-              >
-                PREVIOUS
-              </PreviousButton>
-              <NextButton
-                damageMode={damageMode}
-                onClick={changeToNextPlayer}
-                type="button"
-              >
-                NEXT
-              </NextButton>
-            </>
-          )}
-          {selectCharOverlay && (
-            <SelectButton onClick={selectCharacter} type="button">
-              SELECT
-            </SelectButton>
-          )}
-        </>
+            {(characters.length > 1 || prevCharIndex.current === null) && (
+              <>
+                <PreviousButton
+                  damageMode={damageMode}
+                  onClick={changeToPreviousPlayer}
+                  type="button"
+                >
+                  PREVIOUS
+                </PreviousButton>
+                <NextButton
+                  damageMode={damageMode}
+                  onClick={changeToNextPlayer}
+                  type="button"
+                >
+                  NEXT
+                </NextButton>
+              </>
+            )}
+            {selectCharOverlay && (
+              <SelectButton onClick={selectCharacter} type="button">
+                SELECT
+              </SelectButton>
+            )}
+          </>
+        )}
+      </CharacterSheet>
+      {newChar && (
+        <NewGame currentChars={characters} dynamic setNewChar={setNewChar} />
       )}
-    </CharacterSheet>
+    </>
   );
 };
 
