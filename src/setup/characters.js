@@ -1,16 +1,22 @@
 import Amy from '../assets/images/survivors/amy.jpg';
+import Ben from '../assets/images/survivors/ben.jpg';
+import Mary from '../assets/images/survivors/mary.jpg';
 import Ned from '../assets/images/survivors/ned.jpg';
 import Phil from '../assets/images/survivors/phil.jpg';
 import Wanda from '../assets/images/survivors/wanda.jpg';
 import Josh from '../assets/images/survivors/josh.jpg';
 import Doug from '../assets/images/survivors/doug.jpg';
 import AmyFace from '../assets/images/survivors/amy-face.png';
+import BenFace from '../assets/images/survivors/ben-face.png';
+import MaryFace from '../assets/images/survivors/mary-face.png';
 import NedFace from '../assets/images/survivors/ned-face.png';
 import PhilFace from '../assets/images/survivors/phil-face.png';
 import WandaFace from '../assets/images/survivors/wanda-face.png';
 import JoshFace from '../assets/images/survivors/josh-face.png';
 import DougFace from '../assets/images/survivors/doug-face.png';
 import SelectorAmy from '../assets/images/selectors/selector-amy.png';
+import SelectorBen from '../assets/images/selectors/selector-ben.png';
+import SelectorMary from '../assets/images/selectors/selector-mary.png';
 import SelectorNed from '../assets/images/selectors/selector-ned.png';
 import SelectorPhil from '../assets/images/selectors/selector-phil.png';
 import SelectorWanda from '../assets/images/selectors/selector-wanda.png';
@@ -26,10 +32,78 @@ const AMY = {
   inBackpack: [null, null, null],
   inHand: [null, null],
   location: null,
-  movement: 'normal',
+  movement: 'quick',
   name: 'Amy',
   player: null,
   selector: SelectorAmy,
+  voice: 'female',
+  wounded: false
+};
+
+const BEN = {
+  abilities: [],
+  color: '#537c6f',
+  experience: 0,
+  face: BenFace,
+  img: Ben,
+  inBackpack: [null, null, null],
+  inHand: [null, null],
+  location: null,
+  movement: 'confident',
+  name: 'Ben',
+  player: null,
+  selector: SelectorBen,
+  voice: 'male',
+  wounded: false
+};
+
+const DOUG = {
+  abilities: [],
+  color: '#3566c6',
+  experience: 0,
+  face: DougFace,
+  img: Doug,
+  inBackpack: [null, null, null],
+  inHand: [null, null],
+  location: null,
+  movement: 'confident',
+  name: 'Doug',
+  player: null,
+  selector: SelectorDoug,
+  voice: 'male',
+  wounded: false
+};
+
+const JOSH = {
+  abilities: [],
+  color: '#ba761d',
+  experience: 0,
+  face: JoshFace,
+  img: Josh,
+  inBackpack: [null, null, null],
+  inHand: [null, null],
+  location: null,
+  movement: 'furtive',
+  name: 'Josh',
+  player: null,
+  selector: SelectorJosh,
+  voice: 'male',
+  wounded: false
+};
+
+const MARY = {
+  abilities: [],
+  color: '#3e4c84',
+  experience: 0,
+  face: MaryFace,
+  img: Mary,
+  inBackpack: [null, null, null],
+  inHand: [null, null],
+  location: null,
+  movement: 'normal',
+  name: 'Mary',
+  player: null,
+  selector: SelectorMary,
   voice: 'female',
   wounded: false
 };
@@ -84,38 +158,20 @@ const WANDA = {
   wounded: false
 };
 
-const JOSH = {
-  abilities: [],
-  color: '#ba761d',
-  experience: 0,
-  face: JoshFace,
-  img: Josh,
-  inBackpack: [null, null, null],
-  inHand: [null, null],
-  location: null,
-  movement: 'furtive',
-  name: 'Josh',
-  player: null,
-  selector: SelectorJosh,
-  voice: 'male',
-  wounded: false
-};
+export const CHARACTERS_KOPINSKI = [BEN, MARY];
+export const CHARACTERS_S1 = [AMY, DOUG, JOSH, NED, PHIL, WANDA];
 
-const DOUG = {
-  abilities: [],
-  color: '#3566c6',
-  experience: 0,
-  face: DougFace,
-  img: Doug,
-  inBackpack: [null, null, null],
-  inHand: [null, null],
-  location: null,
-  movement: 'confident',
-  name: 'Doug',
-  player: null,
-  selector: SelectorDoug,
-  voice: 'male',
-  wounded: false
-};
-
-export const CHARACTERS = [AMY, DOUG, JOSH, NED, PHIL, WANDA];
+export const CHARACTERS = [...CHARACTERS_S1, ...CHARACTERS_KOPINSKI].sort(
+  (a, b) => {
+    const nameA = a.name.toUpperCase();
+    const nameB = b.name.toUpperCase();
+    if (nameA < nameB) {
+      return -1;
+    }
+    if (nameA > nameB) {
+      return 1;
+    }
+    // names must be equal
+    return 0;
+  }
+);
