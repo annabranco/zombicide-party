@@ -87,7 +87,7 @@ const ItemsArea = ({
   return (
     <ItemWrapper
       id={`${item}-${index + 1}`}
-      isActive={item && isActive}
+      isActive={isActive}
       key={`${item}-${index + 1}`}
       onMouseOut={() => toggleActive(false)}
       onMouseOver={() => toggleActive(true)}
@@ -119,13 +119,13 @@ const ItemsArea = ({
           </ItemBlank>
         )}
       </Item>
-      {item && !damageMode && (
-        <ActionButtonsWrapper trade={trade}>
-          {!trade && (
-            <ActionButton onClick={() => startTrade(true)} type="button" trade>
-              <ActionButtonIcon className="fas fa-exchange-alt" type="trade" />
-            </ActionButton>
-          )}
+      <ActionButtonsWrapper trade={trade}>
+        {!trade && !damageMode && (
+          <ActionButton onClick={() => startTrade(true)} type="button" trade>
+            <ActionButtonIcon className="fas fa-exchange-alt" type="trade" />
+          </ActionButton>
+        )}
+        {item && !damageMode && (
           <ActionButton
             onClick={() =>
               trade
@@ -137,8 +137,8 @@ const ItemsArea = ({
           >
             <ActionButtonIcon className="far fa-trash-alt" type="drop" />
           </ActionButton>
-        </ActionButtonsWrapper>
-      )}
+        )}
+      </ActionButtonsWrapper>
     </ItemWrapper>
   );
 };

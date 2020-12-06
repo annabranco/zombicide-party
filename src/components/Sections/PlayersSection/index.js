@@ -214,7 +214,6 @@ const PlayersSection = ({
   };
 
   const confirmTrade = (updatedCharacter, updatedCharacters) => {
-    console.log('$$$ updatedCharacters', updatedCharacters);
     changeCharacter(updatedCharacter);
     updateCharacters(updatedCharacters);
     localStorage.setItem('ZombicideParty', JSON.stringify(updatedCharacters));
@@ -261,9 +260,9 @@ const PlayersSection = ({
     }
   }, [charIndex, characters, dataLoaded]);
 
-  useEffect(() => {
-    console.log('$$$ change char', character);
-  }, [character]);
+  // useEffect(() => {
+  //   console.log('$$$ change char', character);
+  // }, [character]);
 
   return (
     <CharacterSheet>
