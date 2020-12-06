@@ -1,8 +1,9 @@
 import React, { useEffect, useRef } from 'react';
+import { cloneDeep } from 'lodash';
 import { arrayOf, bool, func } from 'prop-types';
 import { useHistory } from 'react-router-dom';
 import { CHARACTERS } from '../../../setup/characters';
-import { getCharacterColor, updatePlayerObject } from '../../../utils/players';
+import { getCharacterColor } from '../../../utils/players';
 import { characterCanOpenDoors } from '../../../utils/items';
 import { useStateWithLabel } from '../../../utils/hooks';
 import ItemsSelectorModal from '../../Items/ItemsSelectorModal';
@@ -41,12 +42,6 @@ const PlayersSection = ({
     false,
     'selectCharOverlay'
   );
-  // const [inHand, updateInHand] = useStateWithLabel(['', ''], 'inHand');
-  // const [inBackpack, updateInBackpack] = useStateWithLabel(
-  //   ['', '', ''],
-  //   'inBackpack'
-  // );
-
   const [slot, selectSlot] = useStateWithLabel(null, 'slot');
   const [characters, updateCharacters] = useStateWithLabel([], 'characters');
   const [dataLoaded, setDataLoaded] = useStateWithLabel(false, 'dataLoaded');
@@ -62,8 +57,8 @@ const PlayersSection = ({
   // const prevInBackpack = useRef();
 
   const enterCar = enter => {
-    const updatedCharacter = { ...character };
-    const updatedCharacters = [...characters];
+    const updatedCharacter = cloneDeep(character);
+    const updatedCharacters = cloneDeep(characters);
     if (enter) {
       updatedCharacter.location = 'car';
     } else {
@@ -81,8 +76,8 @@ const PlayersSection = ({
   };
 
   const changeInHand = (name, currentSlot = slot - 1) => {
-    const updatedCharacter = { ...character };
-    const updatedCharacters = [...characters];
+    const updatedCharacter = cloneDeep(character);
+    const updatedCharacters = cloneDeep(characters);
     const newItems = [...updatedCharacter.inHand];
     newItems[currentSlot] = name;
     const openDoors = characterCanOpenDoors(newItems);
@@ -101,8 +96,8 @@ const PlayersSection = ({
   };
 
   const changeInBackpack = (name, currentSlot = slot - 3) => {
-    const updatedCharacter = { ...character };
-    const updatedCharacters = [...characters];
+    const updatedCharacter = cloneDeep(character);
+    const updatedCharacters = cloneDeep(characters);
     const newItems = [...updatedCharacter.inBackpack];
     const openDoors = characterCanOpenDoors(newItems);
 
@@ -143,8 +138,8 @@ const PlayersSection = ({
   };
 
   const causeDamage = selectedSlot => {
-    const woundedCharacter = { ...character };
-    const updatedCharacters = [...characters];
+    const woundedCharacter = cloneDeep(character);
+    const updatedCharacters = cloneDeep(characters);
     const [attacker, oneActionKill] = damageMode.split('-');
     let remainingCharacters = characters.filter(
       char => char.wounded !== 'killed'
@@ -218,12 +213,19 @@ const PlayersSection = ({
     history.push('/');
   };
 
+  const confirmTrade = (updatedCharacter, updatedCharacters) => {
+    console.log('$$$ updatedCharacters', updatedCharacters);
+    changeCharacter(updatedCharacter);
+    updateCharacters(updatedCharacters);
+    localStorage.setItem('ZombicideParty', JSON.stringify(updatedCharacters));
+  };
+
   useEffect(() => {
     if (!dataLoaded) {
-      const updatedCharacters = (initialCharacters.length > 0 && [
-        ...initialCharacters
-      ]) ||
-        (loadedGame && [...loadedGame]) || [...CHARACTERS];
+      const updatedCharacters =
+        (initialCharacters.length > 0 && [...initialCharacters]) ||
+        (loadedGame && cloneDeep(loadedGame)) ||
+        cloneDeep(CHARACTERS);
       updateCharacters(updatedCharacters);
       prevCharIndex.current = charIndex;
     }
@@ -249,44 +251,19 @@ const PlayersSection = ({
           characterCanOpenDoors(charInBackpack);
 
         changeCharacter(nextChar);
-        // updateInHand(charInHand);
-        // updateInBackpack(charInBackpack);
         setCanOpenDoor(openDoors);
-
         prevCharIndex.current = charIndex;
-        // prevInHand.current = nextChar.inHand.join('-');
-        // prevInBackpack.current = nextChar.inBackpack.join('-');
 
         if (!dataLoaded) {
           setDataLoaded(true);
-          // prevInHand.current = character.inHand.join('-');
-          // prevInBackpack.current = character.inBackpack.join('-');
         }
       }
     }
   }, [charIndex, characters, dataLoaded]);
 
-  // useEffect(() => {
-  //   if (
-  //     dataLoaded &&
-  //     (character.inHand.join('-') !== prevInHand.current ||
-  //       character.inBackpack.join('-') !== prevInBackpack.current)
-  //   ) {
-  //     const allCharacters = [...characters];
-  //     // const currentCharacter = updatePlayerObject(
-  //     //   character,
-  //     //   inHand,
-  //     //   inBackpack
-  //     // );
-  //     const openDoors =
-  //       characterCanOpenDoors(character.inHand) || characterCanOpenDoors(character.inBackpack);
-
-  //     setCanOpenDoor(openDoors);
-  //     allCharacters[charIndex] = currentCharacter;
-  //     updateCharacters(allCharacters);
-  //     localStorage.setItem('ZombicideParty', JSON.stringify(allCharacters));
-  //   }
-  // }, [inHand, inBackpack]);
+  useEffect(() => {
+    console.log('$$$ change char', character);
+  }, [character]);
 
   return (
     <CharacterSheet>
@@ -294,6 +271,7 @@ const PlayersSection = ({
         <TradeArea
           character={character}
           characters={characters}
+          confirmTrade={confirmTrade}
           startTrade={startTrade}
         />
       ) : (

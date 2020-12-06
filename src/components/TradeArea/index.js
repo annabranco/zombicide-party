@@ -1,4 +1,5 @@
 import React, { useEffect, useRef } from 'react';
+import { cloneDeep } from 'lodash';
 import { func, string } from 'prop-types';
 import {
   CharItems,
@@ -22,13 +23,7 @@ import {
   TradeWrapper
 } from './styles';
 
-const TradeArea = ({
-  character,
-  characters,
-  inHand: currentInHand,
-  inBackpack: currentInBackpack,
-  startTrade
-}) => {
+const TradeArea = ({ character, characters, confirmTrade, startTrade }) => {
   const [updatedCharacter, updateCharacter] = useStateWithLabel(
     null,
     'updatedCharacter'
@@ -38,10 +33,7 @@ const TradeArea = ({
     null,
     'updatedCharacters'
   );
-  const [tradePartner, changeTradePartner] = useStateWithLabel(
-    null,
-    'tradePartner'
-  );
+  const [tradePartner, updatePartner] = useStateWithLabel(null, 'tradePartner');
 
   const [partnerIndex, changePartnerIndex] = useStateWithLabel(
     0,
@@ -65,24 +57,31 @@ const TradeArea = ({
 
   const prevPartnerIndex = useRef();
 
+  const onClickConfirm = () => {
+    const updCharsAfterTrade = cloneDeep(characters);
+    updCharsAfterTrade.forEach((char, index) => {
+      if (char.name === updatedCharacter.name) {
+        updCharsAfterTrade[index] = updatedCharacter;
+      } else if (char.name === tradePartner.name) {
+        updCharsAfterTrade[index] = tradePartner;
+      }
+    });
+    confirmTrade(updatedCharacter, updCharsAfterTrade);
+    startTrade(false);
+  };
+
   useEffect(() => {
-    const mainChar = { ...character };
+    const mainChar = cloneDeep(character);
     const updChar = characters.filter(char => char.name !== mainChar.name);
     updateCharacter(mainChar);
     updateCharacters(updChar);
-    changeTradePartner(updChar[0]);
-  }, [
-    changeTradePartner,
-    character,
-    characters,
-    updateCharacter,
-    updateCharacters
-  ]);
+    updatePartner(updChar[0]);
+  }, [updatePartner, character, characters, updateCharacter, updateCharacters]);
 
   useEffect(() => {
     if (updatedCharacters && partnerIndex !== prevPartnerIndex.current) {
       const nextPartner = updatedCharacters[partnerIndex];
-      changeTradePartner(nextPartner);
+      updatePartner(nextPartner);
       prevPartnerIndex.current = partnerIndex;
     }
   }, [partnerIndex]);
@@ -92,9 +91,8 @@ const TradeArea = ({
       if (!item) {
         selectItem1();
       } else {
-        console.log('$$$ ITEM2', char, slot, item);
-        const updChar = { ...updatedCharacter };
-        const updPartn = { ...tradePartner };
+        const updChar = cloneDeep(updatedCharacter);
+        const updPartn = cloneDeep(tradePartner);
         const typeItem1 = selectedItem1.slot <= 2 ? 'inHand' : 'inBackpack';
         const typeItem2 = slot <= 2 ? 'inHand' : 'inBackpack';
         const index1 =
@@ -102,36 +100,49 @@ const TradeArea = ({
             ? selectedItem1.slot - 1
             : selectedItem1.slot - 3;
         const index2 = slot <= 2 ? slot - 1 : slot - 3;
-
         if (selectedItem1.char === char) {
           if (updChar.name === char) {
             updChar[typeItem1][index1] = item === 'none' ? null : item;
             updChar[typeItem2][index2] =
               selectedItem1.item === 'none' ? null : selectedItem1.item;
-            // updateCharacter(updChar);
+            updateCharacter(updChar);
           } else {
             updPartn[typeItem1][index1] = item === 'none' ? null : item;
             updPartn[typeItem2][index2] =
               selectedItem1.item === 'none' ? null : selectedItem1.item;
+            updatePartner(updPartn);
           }
-          selectItem1();
         } else if (selectedItem1.item === 'Wounded' || item === 'Wounded') {
           console.log('NOT');
         } else if (selectedItem1.char === updChar.name) {
           updChar[typeItem1][index1] = item === 'none' ? null : item;
           updPartn[typeItem2][index2] =
             selectedItem1.item === 'none' ? null : selectedItem1.item;
-          selectItem1();
+          updateCharacter(updChar);
+          updatePartner(updPartn);
         } else {
           updPartn[typeItem1][index1] = item === 'none' ? null : item;
           updChar[typeItem2][index2] =
             selectedItem1.item === 'none' ? null : selectedItem1.item;
-          selectItem1();
+          updateCharacter(updChar);
+          updatePartner(updPartn);
         }
+        selectItem1();
       }
     } else {
-      console.log('$$$ ITEM1', char, slot, item);
       selectItem1({ item, slot, char });
+    }
+  };
+
+  const onClickDrop = (charName, type, index) => {
+    if (charName === updatedCharacter.name) {
+      const charDropping = cloneDeep(updatedCharacter);
+      charDropping[type][index] = null;
+      updateCharacter(charDropping);
+    } else if (charName === tradePartner.name) {
+      const charDropping = cloneDeep(tradePartner);
+      charDropping[type][index] = null;
+      updatePartner(charDropping);
     }
   };
 
@@ -149,12 +160,12 @@ const TradeArea = ({
           <CharItems slotType="inHand" trade>
             {tradePartner.inHand.map((item, index) => (
               <ItemsArea
-                character={tradePartner.name}
+                charName={tradePartner.name}
                 index={index}
                 item={item}
                 itemSelected={Boolean(selectedItem1)}
                 key={`${item}-${index + 1}`}
-                onClickDrop={() => null}
+                onClickDrop={onClickDrop}
                 slotType="inHand"
                 trade
                 tradeItem={onTrade}
@@ -165,13 +176,13 @@ const TradeArea = ({
           <CharItems slotType="inBackpack" trade>
             {tradePartner.inBackpack.map((item, index) => (
               <ItemsArea
-                character={tradePartner.name}
+                charName={tradePartner.name}
                 index={index}
                 item={item}
                 itemSelected={Boolean(selectedItem1)}
                 key={`${item}-${index + 3}`}
                 noAudio
-                onClickDrop={() => null}
+                onClickDrop={onClickDrop}
                 slotType="inBackpack"
                 trade
                 tradeItem={onTrade}
@@ -200,12 +211,12 @@ const TradeArea = ({
           <CharItems slotType="inHand" trade>
             {updatedCharacter.inHand.map((item, index) => (
               <ItemsArea
-                character={updatedCharacter.name}
+                charName={updatedCharacter.name}
                 index={index}
                 item={item}
                 itemSelected={Boolean(selectedItem1)}
                 key={`${item}-${index + 1}`}
-                onClickDrop={() => null}
+                onClickDrop={onClickDrop}
                 slotType="inHand"
                 trade
                 tradeItem={onTrade}
@@ -216,13 +227,13 @@ const TradeArea = ({
           <CharItems slotType="inBackpack" trade>
             {updatedCharacter.inBackpack.map((item, index) => (
               <ItemsArea
-                character={updatedCharacter.name}
+                charName={updatedCharacter.name}
                 index={index}
                 item={item}
                 itemSelected={Boolean(selectedItem1)}
                 key={`${item}-${index + 3}`}
                 noAudio
-                onClickDrop={() => null}
+                onClickDrop={onClickDrop}
                 slotType="inBackpack"
                 trade
                 tradeItem={onTrade}
@@ -239,7 +250,7 @@ const TradeArea = ({
         <CancelButton type="button" onClick={() => startTrade(false)}>
           CANCEL
         </CancelButton>
-        <ConfirmButton type="button" onClick={() => startTrade(false)}>
+        <ConfirmButton type="button" onClick={onClickConfirm}>
           CONFIRM
         </ConfirmButton>
       </ButtonsWrapper>
@@ -250,8 +261,7 @@ const TradeArea = ({
 TradeArea.propTypes = {
   character: string.isRequired,
   characters: string.isRequired,
-  inHand: string.isRequired,
-  inBackpack: string.isRequired,
+  confirmTrade: func.isRequired,
   startTrade: func.isRequired
 };
 

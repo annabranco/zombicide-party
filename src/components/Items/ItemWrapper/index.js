@@ -15,7 +15,7 @@ import { characterTypes } from '../../../interfaces/types';
 
 const ItemsArea = ({
   allSlotsAreEmpty,
-  character,
+  charName,
   causeDamage,
   damageMode,
   index,
@@ -50,9 +50,9 @@ const ItemsArea = ({
     } else if (trade) {
       if (isSelected) {
         select(false);
-        tradeItem({ item: null, slot: index + adj, char: character });
+        tradeItem({ item: null, slot: index + adj, char: charName });
       } else {
-        tradeItem({ item, slot: index + adj, char: character });
+        tradeItem({ item, slot: index + adj, char: charName });
         if (!itemSelected) {
           select(true);
         }
@@ -72,9 +72,9 @@ const ItemsArea = ({
     } else if (trade) {
       if (isSelected) {
         select(false);
-        tradeItem({ item: null, slot: index + adj, char: character });
+        tradeItem({ item: null, slot: index + adj, char: charName });
       } else {
-        tradeItem({ item: 'none', slot: index + adj, char: character });
+        tradeItem({ item: 'none', slot: index + adj, char: charName });
         if (!itemSelected) {
           select(true);
         }
@@ -127,7 +127,11 @@ const ItemsArea = ({
             </ActionButton>
           )}
           <ActionButton
-            onClick={() => onClickDrop('', index)}
+            onClick={() =>
+              trade
+                ? onClickDrop(charName, slotType, index)
+                : onClickDrop('', index)
+            }
             type="button"
             trade
           >
@@ -141,7 +145,7 @@ const ItemsArea = ({
 
 ItemsArea.propTypes = {
   allSlotsAreEmpty: bool,
-  character: characterTypes,
+  charName: string,
   causeDamage: func.isRequired,
   damageMode: bool.isRequired,
   index: number.isRequired,
@@ -158,7 +162,7 @@ ItemsArea.propTypes = {
 
 ItemsArea.defaultProps = {
   allSlotsAreEmpty: false,
-  character: null,
+  charName: null,
   item: null,
   tradeItem: () => null
 };
