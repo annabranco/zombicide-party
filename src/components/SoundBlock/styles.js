@@ -187,8 +187,8 @@ export const PlayImageButton = styled.button`
   line-height: 0;
   width: 100%;
   padding: 0;
-  cursor: ${({ damageMode, slotType, type }) =>
-    ((type === 'weapons' && slotType === 'inHand') ||
+  cursor: ${({ canAttack, damageMode, slotType, type }) =>
+    ((type === 'weapons' && slotType === 'inHand' && canAttack) ||
       damageMode ||
       type === 'activations' ||
       slotType === 'selection') &&

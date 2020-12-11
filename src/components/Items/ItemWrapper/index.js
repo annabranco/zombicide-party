@@ -15,6 +15,8 @@ import { characterTypes } from '../../../interfaces/types';
 
 const ItemsArea = ({
   allSlotsAreEmpty,
+  callback,
+  canAttack,
   charName,
   causeDamage,
   damageMode,
@@ -98,6 +100,8 @@ const ItemsArea = ({
       <Item damageMode={damageMode} trade={trade}>
         {item ? (
           <SoundBlock
+            callback={callback}
+            canAttack={canAttack}
             damageMode={damageMode}
             img={getItemPhoto(item)}
             isSelected={isSelected}
@@ -147,6 +151,8 @@ const ItemsArea = ({
 
 ItemsArea.propTypes = {
   allSlotsAreEmpty: bool,
+  callback: func.isRequired,
+  canAttack: bool,
   charName: string,
   causeDamage: func.isRequired,
   damageMode: bool.isRequired,
@@ -165,6 +171,7 @@ ItemsArea.propTypes = {
 
 ItemsArea.defaultProps = {
   allSlotsAreEmpty: false,
+  canAttack: false,
   charName: null,
   item: null,
   tradeItem: () => null

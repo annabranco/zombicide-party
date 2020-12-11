@@ -7,6 +7,7 @@ import { ActionIcon, CarActionIcon, CarIcon, CarIconWrapper } from './styles';
 
 const ActionButton = ({
   actionType,
+  callback,
   carStarted,
   enterCar,
   noise,
@@ -96,6 +97,7 @@ const ActionButton = ({
       },
       actionType === 'open-door' ? 15000 : 2000
     );
+    callback();
   };
 
   return (
@@ -123,6 +125,7 @@ const ActionButton = ({
 
 ActionButton.propTypes = {
   actionType: string.isRequired,
+  callback: func.isRequired,
   carStarted: bool,
   enterCar: func,
   noise: number,

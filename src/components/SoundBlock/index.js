@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import { bool, func, number, string } from 'prop-types';
 import { useStateWithLabel } from '../../utils/hooks';
 import { SOUNDS_PATH } from '../../setup/endpoints';
@@ -14,6 +14,8 @@ import {
 import { ZombieLabel } from '../Sections/ZombiesSection/styles';
 
 const SoundBlock = ({
+  callback,
+  canAttack,
   damageMode,
   differentSounds,
   img,
@@ -33,6 +35,8 @@ const SoundBlock = ({
   const [isActive, activate] = useStateWithLabel(false, 'isActive');
   const [isHighlighted, highlight] = useStateWithLabel(false, 'isHighlighted');
 
+  const quickAttackDebounce = useRef();
+
   const randomNumber = max => Math.floor(Math.random() * max + 1);
   const filename = `${SOUNDS_PATH}${type}/${name}${
     differentSounds ? randomNumber(differentSounds) : ''
@@ -45,7 +49,14 @@ const SoundBlock = ({
     new Audio(filename);
 
   const play = () => {
-    if (sound) {
+    if (type === 'weapons' && !quickAttackDebounce.current) {
+      quickAttackDebounce.current = true;
+      setTimeout(() => {
+        quickAttackDebounce.current = false;
+      }, 2000);
+      callback('attack');
+    }
+    if (sound && canAttack) {
       activate(true);
       sound.currentTime = 0;
       sound.play();
@@ -91,6 +102,7 @@ const SoundBlock = ({
           <ZombieLabel isActive={isActive}>{name || label}</ZombieLabel>
         )}
         <PlayImageButton
+          canAttack={canAttack}
           isActive={isActive}
           damageMode={damageMode}
           onClick={damageMode || trade ? onClickCard : play}
@@ -122,6 +134,8 @@ const SoundBlock = ({
 };
 
 SoundBlock.propTypes = {
+  callback: func,
+  canAttack: bool,
   damageMode: bool,
   differentSounds: number,
   img: string,
@@ -140,6 +154,8 @@ SoundBlock.propTypes = {
 };
 
 SoundBlock.defaultProps = {
+  callback: null,
+  canAttack: false,
   damageMode: false,
   differentSounds: null,
   img: null,

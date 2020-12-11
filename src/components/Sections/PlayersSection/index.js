@@ -5,7 +5,7 @@ import { useHistory } from 'react-router-dom';
 import { CHARACTERS } from '../../../setup/characters';
 import { getCharacterColor } from '../../../utils/players';
 import { characterCanOpenDoors, checkForNoise } from '../../../utils/items';
-import { useStateWithLabel } from '../../../utils/hooks';
+import { useStateWithLabel, useTurnsCounter } from '../../../utils/hooks';
 import ItemsSelectorModal from '../../Items/ItemsSelectorModal';
 import ActionButton from './actions';
 import ItemsArea from '../../Items/ItemWrapper';
@@ -61,6 +61,20 @@ const PlayersSection = ({
   const noiseDebounce = useRef();
   const prevCharIndex = useRef();
 
+  const {
+    generalActions,
+    extraMovementActions,
+    extraAttackActions,
+    searchActions,
+    spendAction,
+    finishedTurn,
+    canMove,
+    canAttack,
+    canSearch,
+    message
+  } = useTurnsCounter((character && character.actions) || [3, 0, 0, 0]);
+
+  console.log('$$$ message', message);
   const enterCar = enter => {
     const updatedCharacter = cloneDeep(character);
     const updatedCharacters = cloneDeep(characters);
@@ -309,28 +323,50 @@ const PlayersSection = ({
               {character.player}
             </PlayerTag>
             <ActionsWrapper>
-              <ActionButton
-                actionType={
-                  // eslint-disable-next-line no-nested-ternary
-                  character.location === 'car' ? 'car-exit' : 'car-enter'
-                }
-                car={car}
-                enterCar={enterCar}
-                startCar={startCar}
-                type={character.location !== 'car' && !car && 'start'}
-              />
-              {character.location === 'car' ? (
-                <>
-                  <ActionButton actionType="car-move" />
-                  <ActionButton actionType="car-attack" />
-                </>
-              ) : (
-                <ActionButton actionType="move" type={character.movement} />
+              {canMove && (
+                <ActionButton
+                  actionType={
+                    // eslint-disable-next-line no-nested-ternary
+                    character.location === 'car' ? 'car-exit' : 'car-enter'
+                  }
+                  callback={() => spendAction('move')}
+                  car={car}
+                  enterCar={enterCar}
+                  startCar={startCar}
+                  type={character.location !== 'car' && !car && 'start'}
+                />
               )}
-              <ActionButton actionType="search" type={character.voice} />
-              {canOpenDoor && !damageMode && (
+              {canMove && character.location === 'car' && (
+                <>
+                  <ActionButton
+                    actionType="car-move"
+                    callback={() => spendAction('move')}
+                  />
+                  <ActionButton
+                    actionType="car-attack"
+                    callback={() => spendAction('move')}
+                  />
+                </>
+              )}
+
+              {canMove && character.location !== 'car' && (
+                <ActionButton
+                  actionType="move"
+                  callback={() => spendAction('move')}
+                  type={character.movement}
+                />
+              )}
+              {canSearch && (
+                <ActionButton
+                  actionType="search"
+                  callback={() => spendAction('search')}
+                  type={character.voice}
+                />
+              )}
+              {canOpenDoor && !damageMode && generalActions && (
                 <ActionButton
                   actionType="open-door"
+                  callback={spendAction}
                   noise={noise}
                   setNoise={setNoise}
                   type={canOpenDoor}
@@ -355,6 +391,8 @@ const PlayersSection = ({
                 character.inHand.map((item, index) => (
                   <ItemsArea
                     allSlotsAreEmpty={allSlotsAreEmpty()}
+                    canAttack={canAttack}
+                    callback={spendAction}
                     causeDamage={causeDamage}
                     damageMode={damageMode}
                     index={index}
@@ -374,6 +412,7 @@ const PlayersSection = ({
                 character.inBackpack.map((item, index) => (
                   <ItemsArea
                     allSlotsAreEmpty={allSlotsAreEmpty()}
+                    callback={spendAction}
                     causeDamage={causeDamage}
                     damageMode={damageMode}
                     index={index}
