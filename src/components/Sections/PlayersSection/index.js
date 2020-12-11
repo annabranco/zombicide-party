@@ -4,13 +4,14 @@ import { arrayOf, bool, func } from 'prop-types';
 import { useHistory } from 'react-router-dom';
 import { CHARACTERS } from '../../../setup/characters';
 import { getCharacterColor } from '../../../utils/players';
-import { characterCanOpenDoors } from '../../../utils/items';
+import { characterCanOpenDoors, checkForNoise } from '../../../utils/items';
 import { useStateWithLabel } from '../../../utils/hooks';
 import ItemsSelectorModal from '../../Items/ItemsSelectorModal';
 import ActionButton from './actions';
 import ItemsArea from '../../Items/ItemWrapper';
 import Blood from '../../../assets/images/blood.png';
 import Exit from '../../../assets/images/exit.png';
+import Noise from '../../../assets/images/noise.png';
 import {
   ActionsWrapper,
   CharItems,
@@ -24,7 +25,9 @@ import {
   SelectButton,
   WoundedSign,
   KilledSign,
-  AddNewChar
+  AddNewChar,
+  NoiseWrapper,
+  NoiseIcon
 } from './styles';
 import { characterTypes } from '../../../interfaces/types';
 import { SOUNDS_PATH } from '../../../setup/endpoints';
@@ -52,12 +55,11 @@ const PlayersSection = ({
   const [newChar, addNewChar] = useStateWithLabel(false, 'newChar');
 
   const [trade, startTrade] = useStateWithLabel(false, 'trade');
+  const [noise, setNoise] = useStateWithLabel(0, 'noise');
 
   const history = useHistory();
-
+  const noiseDebounce = useRef();
   const prevCharIndex = useRef();
-  // const prevInHand = useRef();
-  // const prevInBackpack = useRef();
 
   const enterCar = enter => {
     const updatedCharacter = cloneDeep(character);
@@ -70,8 +72,7 @@ const PlayersSection = ({
 
     updatedCharacters.forEach(char => {
       if (char.name === updatedCharacter.name) {
-        // eslint-disable-next-line no-param-reassign
-        char.location = updatedCharacter.location;
+        char.location = updatedCharacter.location; // eslint-disable-line no-param-reassign
       }
     });
     changeCharacter(updatedCharacter);
@@ -102,9 +103,9 @@ const PlayersSection = ({
     const updatedCharacter = cloneDeep(character);
     const updatedCharacters = cloneDeep(characters);
     const newItems = [...updatedCharacter.inBackpack];
+    newItems[currentSlot] = name;
     const openDoors = characterCanOpenDoors(newItems);
 
-    newItems[currentSlot] = name;
     // updateInBackpack(newItems);
     setCanOpenDoor(openDoors);
     updatedCharacter.inBackpack = newItems;
@@ -125,6 +126,7 @@ const PlayersSection = ({
     );
     const nextPlayerIndex =
       charIndex + 1 >= remainingCharacters.length ? 0 : charIndex + 1;
+    setNoise(0);
     updateCharacters(remainingCharacters);
     changeCharIndex(nextPlayerIndex);
   };
@@ -135,9 +137,20 @@ const PlayersSection = ({
     );
     const nextPlayerIndex =
       charIndex - 1 < 0 ? remainingCharacters.length - 1 : charIndex - 1;
+    setNoise(0);
     updateCharacters(remainingCharacters);
     changeCharIndex(nextPlayerIndex);
     // setTimeout(() => changeCharIndex(nextPlayerIndex), 2000);
+  };
+
+  const makeNoise = item => {
+    if (checkForNoise(item) && !noiseDebounce.current) {
+      noiseDebounce.current = true;
+      setTimeout(() => {
+        noiseDebounce.current = false;
+      }, 2000);
+      setNoise(noise + 1);
+    }
   };
 
   const causeDamage = selectedSlot => {
@@ -316,7 +329,12 @@ const PlayersSection = ({
               )}
               <ActionButton actionType="search" type={character.voice} />
               {canOpenDoor && !damageMode && (
-                <ActionButton actionType="open-door" type={canOpenDoor} />
+                <ActionButton
+                  actionType="open-door"
+                  noise={noise}
+                  setNoise={setNoise}
+                  type={canOpenDoor}
+                />
               )}
             </ActionsWrapper>
             {character.wounded && <WoundedSign src={Blood} />}
@@ -342,6 +360,7 @@ const PlayersSection = ({
                     index={index}
                     item={item}
                     key={`${item}-${index + 1}`}
+                    makeNoise={makeNoise}
                     onClickDrop={changeInHand}
                     selectSlot={selectSlot}
                     slotType="inHand"
@@ -360,6 +379,7 @@ const PlayersSection = ({
                     index={index}
                     item={item}
                     key={`${item}-${index + 3}`}
+                    makeNoise={makeNoise}
                     noAudio
                     onClickDrop={changeInBackpack}
                     selectSlot={selectSlot}
@@ -404,6 +424,11 @@ const PlayersSection = ({
             )}
           </>
         )}
+        <NoiseWrapper>
+          {Array.from({ length: noise }, (_, index) => index).map(key => (
+            <NoiseIcon key={key} src={Noise} />
+          ))}
+        </NoiseWrapper>
       </CharacterSheet>
       {newChar && (
         <NewGame currentChars={characters} dynamic setNewChar={setNewChar} />

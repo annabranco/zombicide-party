@@ -19,6 +19,7 @@ const SoundBlock = ({
   img,
   isSelected,
   label,
+  makeNoise,
   name,
   noAudio,
   onClickCard,
@@ -48,6 +49,7 @@ const SoundBlock = ({
       activate(true);
       sound.currentTime = 0;
       sound.play();
+      makeNoise(name);
       setTimeout(() => {
         activate(false);
       }, 4000);
@@ -125,6 +127,7 @@ SoundBlock.propTypes = {
   img: string,
   isSelected: bool,
   label: string,
+  makeNoise: func.isRequired,
   name: string.isRequired,
   noAudio: bool,
   onClickCard: func.isRequired,

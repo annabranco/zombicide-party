@@ -196,6 +196,26 @@ export const NextButton = styled(ActionButton)`
 `;
 NextButton.displayName = 'NextButton';
 
+export const NoiseIcon = styled.img`
+  label: NoiseIcon;
+  width: 45px;
+`;
+NoiseIcon.displayName = 'NoiseIcon';
+
+export const NoiseWrapper = styled.div`
+  label: NoiseWrapper;
+  z-index: 10;
+  position: absolute;
+  bottom: 55px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  height: 45px;
+  width: 100%;
+`;
+NoiseWrapper.displayName = 'NoiseWrapper';
+
 export const PlayerTag = styled.div`
   label: PlayerTag;
   z-index: 6;

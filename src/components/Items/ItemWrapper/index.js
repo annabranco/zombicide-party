@@ -21,6 +21,7 @@ const ItemsArea = ({
   index,
   item,
   itemSelected,
+  makeNoise,
   onClickDrop,
   selectSlot,
   slotType,
@@ -100,6 +101,7 @@ const ItemsArea = ({
             damageMode={damageMode}
             img={getItemPhoto(item)}
             isSelected={isSelected}
+            makeNoise={makeNoise}
             name={item}
             onClickCard={onClickCard}
             slotType={slotType}
@@ -151,6 +153,7 @@ ItemsArea.propTypes = {
   index: number.isRequired,
   item: string,
   itemSelected: bool.isRequired,
+  makeNoise: func.isRequired,
   onClickDrop: func.isRequired,
   selectSlot: func.isRequired,
   slotType: string.isRequired,

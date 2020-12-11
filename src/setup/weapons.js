@@ -18,84 +18,94 @@ export const WEAPONS_S1 = {
   BaseballBat: {
     img: BaseballBat,
     name: 'BaseballBat',
-    noise: {
-      melee: false,
-      range: false,
-      openDoors: false
-    },
+    noise: false,
     type: 'weapons'
   },
   Chainsaw: {
-    canOpenDoor: true,
+    canOpenDoor: 'noisy',
     img: Chainsaw,
     name: 'Chainsaw',
+    noise: true,
     type: 'weapons'
   },
   Crowbar: {
     canOpenDoor: true,
     img: Crowbar,
     name: 'Crowbar',
+    noise: false,
     type: 'weapons'
   },
   EvilTwins: {
     img: EvilTwins,
     name: 'EvilTwins',
+    noise: true,
     type: 'weapons'
   },
   FireAxe: {
-    canOpenDoor: true,
+    canOpenDoor: 'noisy',
     img: FireAxe,
     name: 'FireAxe',
+    noise: false,
     type: 'weapons'
   },
   Katana: {
     img: Katana,
     name: 'Katana',
+    noise: false,
     type: 'weapons'
   },
   MasShotgun: {
     img: MasShotgun,
     name: 'MasShotgun',
+    noise: 'special',
     type: 'weapons'
   },
   Machete: {
     img: Machete,
     name: 'Machete',
+    noise: false,
     type: 'weapons'
   },
   Molotov: {
     img: Molotov,
     name: 'Molotov',
+    noise: false,
     type: 'weapons'
   },
   Pan: {
     img: Pan,
     name: 'Pan',
+    noise: false,
     type: 'weapons'
   },
   Pistol: {
     img: Pistol,
     name: 'Pistol',
+    noise: true,
     type: 'weapons'
   },
   Rifle: {
     img: Rifle,
     name: 'Rifle',
+    noise: true,
     type: 'weapons'
   },
   SawedOff: {
     img: SawedOff,
     name: 'SawedOff',
+    noise: true,
     type: 'weapons'
   },
   Shotgun: {
     img: Shotgun,
     name: 'Shotgun',
+    noise: true,
     type: 'weapons'
   },
   SubMG: {
     img: SubMG,
     name: 'SubMG',
+    noise: true,
     type: 'weapons'
   }
 };

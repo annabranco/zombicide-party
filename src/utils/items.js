@@ -37,3 +37,17 @@ export const getItemType = item => {
   }
   return null;
 };
+
+export const checkForNoise = item => {
+  if (Object.keys(ALL_ITEMS).find(name => item === name)) {
+    return ALL_ITEMS[item].noise;
+  }
+  return null;
+};
+
+export const checkForNoiseOpeningDoor = item => {
+  if (Object.keys(ALL_ITEMS).find(name => item === name)) {
+    return ALL_ITEMS[item].canOpenDoor === 'noisy';
+  }
+  return null;
+};
