@@ -11,8 +11,9 @@ import {
   SelectorWrapper,
   SubSectionTitle
 } from './styles';
+import { ButtonsWrapper, CancelButton } from '../../TradeArea/styles';
 
-const ItemsSelectorModal = ({ onSelect, slotType }) => {
+const ItemsSelectorModal = ({ onSelect, selectSlot, slotType }) => {
   const [items, changeItems] = useStateWithLabel(ITEMS_S1, 'items');
   const [itemsType, changeItemsType] = useStateWithLabel('items', 'itemsType');
 
@@ -54,6 +55,11 @@ const ItemsSelectorModal = ({ onSelect, slotType }) => {
             />
           ))}
         </SelectorArea>
+        <ButtonsWrapper>
+          <CancelButton type="button" onClick={() => selectSlot()}>
+            CANCEL
+          </CancelButton>
+        </ButtonsWrapper>
       </SelectorModal>
     </>
   );
@@ -61,6 +67,7 @@ const ItemsSelectorModal = ({ onSelect, slotType }) => {
 
 ItemsSelectorModal.propTypes = {
   onSelect: func.isRequired,
+  selectSlot: func.isRequired,
   slotType: string.isRequired
 };
 

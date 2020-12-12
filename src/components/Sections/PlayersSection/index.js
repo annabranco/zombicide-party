@@ -429,11 +429,16 @@ const PlayersSection = ({
                 ))}
             </CharItems>
             {slot && slot <= 2 && (
-              <ItemsSelectorModal onSelect={changeInHand} slotType="inHand" />
+              <ItemsSelectorModal
+                onSelect={changeInHand}
+                selectSlot={selectSlot}
+                slotType="inHand"
+              />
             )}
             {slot && slot >= 3 && (
               <ItemsSelectorModal
                 onSelect={changeInBackpack}
+                selectSlot={selectSlot}
                 slotType="inBackpack"
               />
             )}
