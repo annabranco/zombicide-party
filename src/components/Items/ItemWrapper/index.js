@@ -14,6 +14,7 @@ import {
 import { characterTypes } from '../../../interfaces/types';
 
 const ItemsArea = ({
+  actionsLeft,
   allSlotsAreEmpty,
   callback,
   canAttack,
@@ -45,6 +46,8 @@ const ItemsArea = ({
     toggleActive(false);
     selectSlot(index + (itemsType === 'weapons' ? 1 : 3));
   };
+
+  console.log('$$$ actionsLeft', actionsLeft);
 
   const onClickCard = () => {
     const adj = slotType === 'inHand' ? 1 : 3;
@@ -126,7 +129,7 @@ const ItemsArea = ({
         )}
       </Item>
       <ActionButtonsWrapper trade={trade}>
-        {!trade && !damageMode && (
+        {!trade && !damageMode && actionsLeft > 0 && (
           <ActionButton onClick={() => startTrade(true)} type="button" trade>
             <ActionButtonIcon className="fas fa-exchange-alt" type="trade" />
           </ActionButton>
@@ -150,6 +153,7 @@ const ItemsArea = ({
 };
 
 ItemsArea.propTypes = {
+  actionsLeft: number.isRequired,
   allSlotsAreEmpty: bool,
   callback: func.isRequired,
   canAttack: bool,

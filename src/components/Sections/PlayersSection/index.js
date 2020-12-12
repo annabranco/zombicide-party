@@ -310,6 +310,7 @@ const PlayersSection = ({
             character={character}
             characters={characters}
             confirmTrade={confirmTrade}
+            spendAction={spendAction}
             startTrade={startTrade}
           />
         ) : (
@@ -390,6 +391,7 @@ const PlayersSection = ({
               {character.inHand &&
                 character.inHand.map((item, index) => (
                   <ItemsArea
+                    actionsLeft={generalActions}
                     allSlotsAreEmpty={allSlotsAreEmpty()}
                     canAttack={canAttack}
                     callback={spendAction}
@@ -411,6 +413,7 @@ const PlayersSection = ({
               {character.inBackpack &&
                 character.inBackpack.map((item, index) => (
                   <ItemsArea
+                    actionsLeft={generalActions}
                     allSlotsAreEmpty={allSlotsAreEmpty()}
                     callback={spendAction}
                     causeDamage={causeDamage}

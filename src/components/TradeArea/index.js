@@ -23,7 +23,13 @@ import {
   TradeWrapper
 } from './styles';
 
-const TradeArea = ({ character, characters, confirmTrade, startTrade }) => {
+const TradeArea = ({
+  spendAction,
+  character,
+  characters,
+  confirmTrade,
+  startTrade
+}) => {
   const [updatedCharacter, updateCharacter] = useStateWithLabel(
     null,
     'updatedCharacter'
@@ -38,6 +44,10 @@ const TradeArea = ({ character, characters, confirmTrade, startTrade }) => {
   const [partnerIndex, changePartnerIndex] = useStateWithLabel(
     0,
     'partnerIndex'
+  );
+  const [tradeEstablished, establishTrade] = useStateWithLabel(
+    null,
+    'tradeEstablished'
   );
 
   const [selectedItem1, selectItem1] = useStateWithLabel(null, 'selectedItem1');
@@ -68,6 +78,8 @@ const TradeArea = ({ character, characters, confirmTrade, startTrade }) => {
     });
     confirmTrade(updatedCharacter, updCharsAfterTrade);
     startTrade(false);
+    establishTrade(false);
+    spendAction();
   };
 
   useEffect(() => {
@@ -128,6 +140,7 @@ const TradeArea = ({ character, characters, confirmTrade, startTrade }) => {
           updatePartner(updPartn);
         }
         selectItem1();
+        establishTrade(true);
       }
     } else {
       selectItem1({ item, slot, char });
@@ -190,13 +203,26 @@ const TradeArea = ({ character, characters, confirmTrade, startTrade }) => {
               />
             ))}
           </CharItems>
-          <CurrentPartnerTag>Select character to trade with</CurrentPartnerTag>
-          <PreviousButton onClick={changeToPreviousPlayer} trade type="button">
-            ◄
-          </PreviousButton>
-          <NextButton onClick={changeToNextPlayer} trade type="button">
-            ►
-          </NextButton>
+          {!tradeEstablished && (
+            <>
+              <PreviousButton
+                onClick={changeToPreviousPlayer}
+                trade
+                type="button"
+              >
+                ◄
+              </PreviousButton>
+              <NextButton onClick={changeToNextPlayer} trade type="button">
+                ►
+              </NextButton>
+            </>
+          )}
+
+          <CurrentPartnerTag>
+            {tradeEstablished
+              ? `Trading with ${tradePartner.name}`
+              : 'Select character to trade with'}
+          </CurrentPartnerTag>
         </CharacterTrading>
       )}
       {updatedCharacter && (
@@ -241,9 +267,9 @@ const TradeArea = ({ character, characters, confirmTrade, startTrade }) => {
               />
             ))}
           </CharItems>
-          <CurrentCharacterTag color={getCharacterColor(updatedCharacter.name)}>
+          {/* <CurrentCharacterTag color={getCharacterColor(updatedCharacter.name)}>
             Current Character
-          </CurrentCharacterTag>
+          </CurrentCharacterTag> */}
         </CharacterTrading>
       )}
       <ButtonsWrapper>
@@ -262,6 +288,7 @@ TradeArea.propTypes = {
   character: string.isRequired,
   characters: string.isRequired,
   confirmTrade: func.isRequired,
+  spendAction: func.isRequired,
   startTrade: func.isRequired
 };
 
