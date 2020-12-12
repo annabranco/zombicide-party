@@ -56,11 +56,13 @@ const SoundBlock = ({
       }, 2000);
       callback('attack');
     }
-    if (sound && canAttack) {
+    if (sound && ((type === 'weapons' && canAttack) || type !== 'weapons')) {
       activate(true);
       sound.currentTime = 0;
       sound.play();
-      makeNoise(name);
+      if (makeNoise) {
+        makeNoise(name);
+      }
       setTimeout(() => {
         activate(false);
       }, 4000);
