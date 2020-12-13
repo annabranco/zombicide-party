@@ -27,7 +27,9 @@ import {
   KilledSign,
   AddNewChar,
   NoiseWrapper,
-  NoiseIcon
+  NoiseIcon,
+  MovementIndicators,
+  MovementIcon
 } from './styles';
 import { characterTypes } from '../../../interfaces/types';
 import { SOUNDS_PATH } from '../../../setup/endpoints';
@@ -56,6 +58,10 @@ const PlayersSection = ({
 
   const [trade, startTrade] = useStateWithLabel(false, 'trade');
   const [noise, setNoise] = useStateWithLabel(0, 'noise');
+  const [actionsCount, updateActionsCount] = useStateWithLabel(
+    [],
+    'actionsCount'
+  );
 
   const history = useHistory();
   const noiseDebounce = useRef();
@@ -71,7 +77,8 @@ const PlayersSection = ({
     canMove,
     canAttack,
     canSearch,
-    message
+    message,
+    actionsArray
   } = useTurnsCounter((character && character.actions) || [3, 0, 0, 0]);
 
   console.log('$$$ message', message);
@@ -269,6 +276,37 @@ const PlayersSection = ({
   }, [charIndex, dataLoaded, initialCharacters, loadedGame]);
 
   useEffect(() => {
+    const count = [];
+
+    // eslint-disable-next-line no-plusplus
+    for (let i = 1; i <= generalActions; i++) {
+      count.push(`${i}`);
+    }
+    // eslint-disable-next-line no-plusplus
+    for (let i = 1; i <= extraMovementActions; i++) {
+      count.push('free move');
+    }
+    // eslint-disable-next-line no-plusplus
+    for (let i = 1; i <= extraAttackActions; i++) {
+      count.push('free attack');
+    }
+    // eslint-disable-next-line no-plusplus
+    for (let i = 1; i <= searchActions; i++) {
+      count.push('free search');
+    }
+    updateActionsCount(count);
+  }, [
+    generalActions,
+    extraMovementActions,
+    extraAttackActions,
+    searchActions,
+    updateActionsCount
+  ]);
+
+  // actionsCount
+  // updateActionsCount
+
+  useEffect(() => {
     if (characters) {
       const nextChar = characters[charIndex];
       if (
@@ -302,9 +340,24 @@ const PlayersSection = ({
   //   console.log('$$$ change char', character);
   // }, [character]);
 
+  console.log('$$$ actionsCount', actionsCount);
+  // movesArray
+  // attacksArray
+  //   searchArray
+
   return (
     <>
       <CharacterSheet>
+        <MovementIndicators>
+          {actionsCount.map(action => (
+            <MovementIcon key={action} type={action}>
+              {action}
+            </MovementIcon>
+          ))}
+          {/* {actionsArray.map((action, n) => (
+            <MovementIcon key={`move${n}`} /> // eslint-disable-line react/no-array-index-key
+          ))} */}
+        </MovementIndicators>
         {trade ? (
           <TradeArea
             character={character}

@@ -162,6 +162,108 @@ export const KilledSign = styled(AttackInstructions)`
 `;
 KilledSign.displayName = 'KilledSign';
 
+export const MovementIndicators = styled.div`
+  label: MovementIndicators;
+  position: absolute;
+  top: 0;
+  left: 10px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+`;
+MovementIndicators.displayName = 'MovementIndicators';
+
+export const MovementIcon = styled.div`
+  label: MovementIndicators;
+  width: 100px;
+  height: 14px;
+  text-align: center;
+  background: red;
+  color: white;
+  font-weight: 900;
+  font-size: 0.8rem;
+  font-family: 'Cairo', sans-serif;
+
+  ${({ type }) => {
+    if (type === 'free move') {
+      return css`
+        background: #006600;
+        &:before {
+          content: '';
+          position: absolute;
+          right: -7px;
+          bottom: 0;
+          width: 0;
+          height: 0;
+          border-left: 7px solid #006600;
+          border-top: 7px solid transparent;
+          border-bottom: 7px solid transparent;
+        }
+      `;
+    }
+    if (type === 'free attack') {
+      return css`
+        background: #990000;
+        &:before {
+          content: '';
+          position: absolute;
+          right: -7px;
+          bottom: 0;
+          width: 0;
+          height: 0;
+          border-left: 7px solid #990000;
+          border-top: 7px solid transparent;
+          border-bottom: 7px solid transparent;
+        }
+      `;
+    }
+    if (type === 'free search') {
+      return css`
+        background: #660033;
+        &:before {
+          content: '';
+          position: absolute;
+          right: -7px;
+          bottom: 0;
+          width: 0;
+          height: 0;
+          border-left: 7px solid #660033;
+          border-top: 7px solid transparent;
+          border-bottom: 7px solid transparent;
+        }
+      `;
+    }
+    return css`
+      background: #0000cc;
+      &:before {
+        content: '';
+        position: absolute;
+        right: -7px;
+        bottom: 0;
+        width: 0;
+        height: 0;
+        border-left: 7px solid #0000cc;
+        border-top: 7px solid transparent;
+        border-bottom: 7px solid transparent;
+      }
+    `;
+  }}
+
+  &:after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 0;
+    height: 0;
+    border-left: 7px solid black;
+    border-top: 7px solid transparent;
+    border-bottom: 7px solid transparent;
+  }
+`;
+MovementIndicators.displayName = 'MovementIndicators';
+
 export const NextButton = styled(ActionButton)`
   label: NextButton;
   z-index: 11;
@@ -270,10 +372,10 @@ export const SelectButton = styled(NextButton)`
 SelectButton.displayName = 'SelectButton';
 
 export const WoundedSign = styled.img`
+  label: WoundedSign;
   z-index: 2;
   width: 160%;
   filter: brightness(0.4) saturate(2.3);
-  label: WoundedSign;
   transform: translate(20px, 0);
 `;
 WoundedSign.displayName = 'WoundedSign';
