@@ -3,7 +3,9 @@ import { bool, func, number, string } from 'prop-types';
 import { useStateWithLabel } from '../../../utils/hooks';
 import { getItemPhoto, getItemType } from '../../../utils/items';
 import SoundBlock from '../../SoundBlock';
-import { ActionButton } from '../../Sections/PlayersSection/styles';
+import ActionButton from '../../Sections/PlayersSection/actions';
+
+import { AppButton } from '../../Sections/PlayersSection/styles';
 import {
   ActionButtonIcon,
   ItemWrapper,
@@ -18,7 +20,9 @@ const ItemsArea = ({
   allSlotsAreEmpty,
   callback,
   canAttack,
+  canSearch,
   charName,
+  charVoice,
   causeDamage,
   damageMode,
   index,
@@ -46,8 +50,6 @@ const ItemsArea = ({
     toggleActive(false);
     selectSlot(index + (itemsType === 'weapons' ? 1 : 3));
   };
-
-  console.log('$$$ actionsLeft', actionsLeft);
 
   const onClickCard = () => {
     const adj = slotType === 'inHand' ? 1 : 3;
@@ -85,8 +87,9 @@ const ItemsArea = ({
           select(true);
         }
       }
-    } else {
+    } else if (canSearch) {
       selectSlot(index + adj);
+      callback('search');
     }
   };
 
@@ -120,22 +123,31 @@ const ItemsArea = ({
           <ItemBlank
             allSlotsAreEmpty={allSlotsAreEmpty}
             damageMode={damageMode}
+            canSearch={canSearch}
             isSelected={isSelected}
-            onClick={onClickEmptyCard}
+            onClick={(trade || damageMode) && onClickEmptyCard}
+            trade={trade}
           >
             {!trade &&
               (slotType === 'inHand' ? 'Item in hand' : 'Item in backpack')}
+            {canSearch && !damageMode && (
+              <ActionButton
+                actionType="search"
+                callback={onClickEmptyCard}
+                type={charVoice}
+              />
+            )}
           </ItemBlank>
         )}
       </Item>
       <ActionButtonsWrapper trade={trade}>
         {!trade && !damageMode && actionsLeft > 0 && (
-          <ActionButton onClick={() => startTrade(true)} type="button" trade>
+          <AppButton onClick={() => startTrade(true)} type="button" trade>
             <ActionButtonIcon className="fas fa-exchange-alt" type="trade" />
-          </ActionButton>
+          </AppButton>
         )}
         {item && !damageMode && (
-          <ActionButton
+          <AppButton
             onClick={() =>
               trade
                 ? onClickDrop(charName, slotType, index)
@@ -145,7 +157,7 @@ const ItemsArea = ({
             trade
           >
             <ActionButtonIcon className="far fa-trash-alt" type="drop" />
-          </ActionButton>
+          </AppButton>
         )}
       </ActionButtonsWrapper>
     </ItemWrapper>
@@ -157,7 +169,9 @@ ItemsArea.propTypes = {
   allSlotsAreEmpty: bool,
   callback: func.isRequired,
   canAttack: bool,
+  canSearch: bool.isRequired,
   charName: string,
+  charVoice: string,
   causeDamage: func.isRequired,
   damageMode: bool.isRequired,
   index: number.isRequired,
@@ -177,6 +191,7 @@ ItemsArea.defaultProps = {
   allSlotsAreEmpty: false,
   canAttack: false,
   charName: null,
+  charVoice: null,
   item: null,
   tradeItem: () => null
 };

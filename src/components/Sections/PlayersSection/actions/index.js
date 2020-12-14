@@ -85,7 +85,6 @@ const ActionButton = ({
       sound2.currentTime = 0;
       setTimeout(() => sound2.play(), 3100);
     }
-    console.log('$$$ actionType, type', actionType, type);
 
     if (actionType === 'open-door' && checkForNoiseOpeningDoor(type)) {
       setNoise(noise + 1);

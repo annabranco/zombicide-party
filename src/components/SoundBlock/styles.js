@@ -13,7 +13,7 @@ export const Action = styled.p`
   padding: 5px 0;
   font-size: 1.3rem;
   font-weight: 900;
-  line-height: 1;
+  line-height: 1.2;
   color: black;
   text-shadow: 1px 1px 4px gray;
   text-align: center;
@@ -39,6 +39,11 @@ export const Action = styled.p`
     }
     return null;
   }}
+
+  &:hover {
+    color: yellow;
+    -webkit-text-stroke: 1px black;
+  }
 `;
 Action.displayName = 'Action';
 
@@ -187,12 +192,12 @@ export const PlayImageButton = styled.button`
   line-height: 0;
   width: 100%;
   padding: 0;
-  cursor: ${({ canAttack, damageMode, slotType, type }) =>
+  /* cursor: ${({ canAttack, damageMode, slotType, type }) =>
     ((type === 'weapons' && slotType === 'inHand' && canAttack) ||
       damageMode ||
       type === 'activations' ||
       slotType === 'selection') &&
-    'pointer'};
+    'pointer'}; */
 
   &:hover {
     filter: ${({ damageMode, type }) =>
@@ -201,8 +206,30 @@ export const PlayImageButton = styled.button`
       display: block;
     }
   }
-
   transition: background ease 1.5s;
+
+  ${({ canAttack, damageMode, slotType, type }) => {
+    switch (true) {
+      case !!damageMode:
+      case type === 'activations':
+      case slotType === 'selection':
+        return css`
+          cursor: pointer;
+        `;
+      case !canAttack:
+        return css`
+          cursor: not-allowed;
+        `;
+      case type === 'weapons' && slotType === 'inHand':
+        return css`
+          cursor: pointer;
+        `;
+      default:
+        return css`
+          cursor: initial;
+        `;
+    }
+  }};
 `;
 PlayImageButton.displayName = 'PlayImageButton';
 

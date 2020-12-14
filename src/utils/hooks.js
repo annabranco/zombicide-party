@@ -8,10 +8,10 @@ export const useStateWithLabel = (initialValue, displayName) => {
 };
 
 export const useTurnsCounter = ([
-  numOfActions = 3,
-  movements = 0,
-  attacks = 0,
-  searches = 0
+  numOfActions,
+  movements,
+  attacks,
+  searches
 ]) => {
   const [extraMovementActions, setExtraMovementActions] = useState(movements);
   const [extraAttackActions, setExtraAttackActions] = useState(attacks);
@@ -20,31 +20,35 @@ export const useTurnsCounter = ([
   const [finishedTurn, finishTurn] = useState(false);
   const [message, changeMessage] = useState('');
 
-  const checkIfStillCanPlay = ({
+  const hasUsedAllActions = ({
     act = generalActions,
     mov = extraMovementActions,
     att = extraAttackActions,
     sea = searchActions
-  }) => {
+  } = {}) => {
+    if (act === 0 && searchActions === 0) {
+      setSearchActions(searchActions - 1);
+    }
     if (!act && !mov && !att && sea <= 0) {
       changeMessage('Used all actions.');
+      setSearchActions(searchActions - 1);
       finishTurn(true);
-      return false;
+      return true;
     }
-    return true;
+    return false;
   };
 
   const spendAction = (type = 'general') => {
     if (type === 'move' && extraMovementActions > 0) {
       changeMessage(`Used 1 extra move of ${extraMovementActions}.`);
       setExtraMovementActions(extraMovementActions - 1);
-      return checkIfStillCanPlay({ mov: extraMovementActions - 1 });
+      return hasUsedAllActions({ mov: extraMovementActions - 1 });
     }
 
     if (type === 'attack' && extraAttackActions > 0) {
       changeMessage(`Uses 1 extra attack of ${extraAttackActions}.`);
       setExtraAttackActions(extraAttackActions - 1);
-      return checkIfStillCanPlay({ att: extraAttackActions - 1 });
+      return hasUsedAllActions({ att: extraAttackActions - 1 });
     }
 
     if (type === 'search') {
@@ -56,7 +60,7 @@ export const useTurnsCounter = ([
 
       if (searchActions > 0) {
         changeMessage('Uses 1 free search.');
-        return checkIfStillCanPlay({ sea: searchActions - 1 });
+        return hasUsedAllActions({ sea: searchActions - 1 });
       }
     }
 
@@ -65,17 +69,20 @@ export const useTurnsCounter = ([
         `Used 1 general action to ${type}: ${generalActions - 1} left.`
       );
       setGeneralActions(generalActions - 1);
-      return checkIfStillCanPlay({ act: generalActions - 1 });
+      return hasUsedAllActions({ act: generalActions - 1 });
     }
     changeMessage(`No ${type} actions left.`);
     return null;
   };
 
   useEffect(() => {
-    setGeneralActions(numOfActions || 3);
-    setExtraMovementActions(movements || 0);
-    setExtraAttackActions(attacks || 0);
-    setSearchActions(searches || 0);
+    setGeneralActions(numOfActions);
+    setExtraMovementActions(movements);
+    setExtraAttackActions(attacks);
+    setSearchActions(searches);
+    finishTurn(!attacks && !movements && !numOfActions && searches <= 0);
+
+    changeMessage('');
   }, [attacks, movements, numOfActions, searches]);
 
   return {
@@ -87,7 +94,7 @@ export const useTurnsCounter = ([
     finishedTurn,
     canMove: generalActions > 0 || extraMovementActions > 0,
     canAttack: generalActions > 0 || extraAttackActions > 0,
-    canSearch: generalActions > 0 && searchActions >= 0,
+    canSearch: (generalActions > 0 && searchActions >= 0) || searchActions > 0,
     message
   };
 };

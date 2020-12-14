@@ -53,7 +53,7 @@ const SoundBlock = ({
       quickAttackDebounce.current = true;
       setTimeout(() => {
         quickAttackDebounce.current = false;
-      }, 2000);
+      }, 1000);
       callback('attack');
     }
     if (sound && ((type === 'weapons' && canAttack) || type !== 'weapons')) {

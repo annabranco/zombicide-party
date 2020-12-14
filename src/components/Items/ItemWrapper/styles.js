@@ -16,7 +16,7 @@ export const ActionButtonsWrapper = styled.div`
   label: ActionButtonsWrapper;
   z-index: 5;
   position: absolute;
-  top: 20px;
+  top: 10px;
   display: none;
   flex-direction: rows;
   align-items: flex-start;
@@ -36,7 +36,6 @@ export const Item = styled.div`
   label: Item;
   border: ${({ damageMode }) => !damageMode && '2px solid black'};
   border-radius: 14px;
-  margin: 10px 20px;
   height: 273px;
   width: 200px;
   overflow: hidden;
@@ -69,14 +68,26 @@ export const ItemBlank = styled.div`
   text-transform: uppercase;
   color: rgba(255, 255, 255, 0.5);
   text-shadow: 0 0 12px black;
-  cursor: ${({ allSlotsAreEmpty, damageMode }) =>
-    damageMode && !allSlotsAreEmpty ? 'not-allowed' : 'pointer'};
+  cursor: ${({ allSlotsAreEmpty, damageMode, canSearch, trade }) =>
+    (damageMode && !allSlotsAreEmpty) || (!canSearch && !trade)
+      ? 'not-allowed'
+      : 'pointer'};
+
+  & > i {
+    display: none;
+  }
 
   &:hover {
     background: ${({ allSlotsAreEmpty, damageMode }) =>
       damageMode && allSlotsAreEmpty
         ? 'rgba(255, 16, 16, 0.3)'
         : 'rgba(255, 255, 255, 0.2)'};
+    & > i {
+      display: block;
+      position: absolute;
+      top: 40%;
+      opacity: 0.8;
+    }
   }
 
   ${({ isSelected }) =>
@@ -99,7 +110,7 @@ export const ItemWrapper = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  margin-top: 50px;
+  margin: 50px 20px 0;
 
   ${({ slotType, isActive, isSelected, type }) => {
     if (isActive && type === 'wound') {

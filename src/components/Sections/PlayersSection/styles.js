@@ -3,8 +3,8 @@ import { css } from '@emotion/core';
 import { AttackInstructions } from '../ZombiesSection/styles';
 import { Appear } from '../../../styles';
 
-export const ActionButton = styled.button`
-  label: ActionButton;
+export const AppButton = styled.button`
+  label: AppButton;
   z-index: 3;
   top: 0;
   border: 1px solid black;
@@ -28,7 +28,7 @@ export const ActionButton = styled.button`
       background: rgba(0, 0, 0, 0.9);
     `}
 `;
-ActionButton.displayName = 'ActionButton';
+AppButton.displayName = 'AppButton';
 
 export const ActionsWrapper = styled.div`
   label: ActionsWrapper;
@@ -44,18 +44,22 @@ export const ActionsWrapper = styled.div`
 `;
 ActionsWrapper.displayName = 'ActionsWrapper';
 
-export const AddNewChar = styled(ActionButton)`
+export const AddNewChar = styled(AppButton)`
   label: AddNewChar;
   z-index: 11;
   position: absolute;
-  top: 10px;
-  height: 20px;
-  background: ${({ damageMode }) => damageMode && 'red'};
+  top: -40px;
+  right: 10px;
+  height: 30px;
+  width: 30px;
+  font-size: 1.2rem;
+  padding: 1px;
+  /* background: ${({ damageMode }) => damageMode && 'red'};
   color: ${({ damageMode }) => damageMode && 'black'};
-  box-shadow: ${({ damageMode }) => damageMode && '0 0 5px white'};
+  box-shadow: ${({ damageMode }) => damageMode && '0 0 5px white'}; */
 
   &:hover {
-    background: rgba(255, 255, 255, 0.4);
+    color: yellow;
   }
 `;
 AddNewChar.displayName = 'AddNewChar';
@@ -94,7 +98,7 @@ export const CharacterSheet = styled.div`
   height: calc(100vh - 80px);
   width: 90%;
   background: black;
-  overflow: hidden;
+  /* overflow: hidden; */
 `;
 CharacterSheet.displayName = 'CharacterSheet';
 
@@ -137,8 +141,100 @@ export const CharItems = styled.div`
 `;
 CharItems.displayName = 'CharItems';
 
-export const ExitSign = styled.img`
-  label: ExitSign;
+export const FinishedTurnTag = styled(AttackInstructions)`
+  label: FinishedTurnTag;
+  background: none;
+  font-size: 2rem;
+  color: #cc9900;
+  text-shadow: -2px -2px 2px black, -2px 0 2px black, -2px 2px 2px black,
+    0 -2px 2px black, 0 0 2px black, 0 2px 2px black, 2px -2px 2px black,
+    2px 0 2px black, 2px 2px 2px black;
+`;
+FinishedTurnTag.displayName = 'FinishedTurnTag';
+
+export const FirstPlayerStar = styled.span`
+  label: FirstPlayerStar;
+  color: #cea616;
+  font-size: 2.3rem;
+  margin-right: 10px;
+`;
+FirstPlayerStar.displayName = 'FirstPlayerStar';
+
+export const FirstPlayerToken = styled.img`
+  label: FirstPlayerToken;
+  margin-top: -530px;
+  width: 500px;
+  border-radius: 50%;
+  filter: contrast(1.8) brightness(1.2) opacity(0.2);
+`;
+FirstPlayerToken.displayName = 'FirstPlayerToken';
+
+export const FirstPlayerWrapper = styled.div`
+  label: FirstPlayerWrapper;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+  /* background: rgba(255, 233, 0, 0.2); */
+`;
+FirstPlayerWrapper.displayName = 'FirstPlayerWrapper';
+
+export const ModalSign = styled(AttackInstructions)`
+  label: ModalSign;
+  position: absolute;
+  z-index: 2;
+  top: 0;
+  padding: 30% 0;
+  height: 100%;
+  background: ${({ noOverlay }) => (noOverlay ? 'none' : 'rgba(0, 0, 0, 0.6)')};
+  /* background: rgba(0, 0, 0, 0.6); */
+  font-family: Crackhouse, 'Grandstander', cursive;
+  font-size: 4rem;
+  text-align: right;
+
+  ${({ noOverlay }) =>
+    noOverlay &&
+    css`
+      top: -130px;
+      right: -50px;
+      width: auto;
+      opacity: 0.7;
+    `}
+`;
+ModalSign.displayName = 'ModalSign';
+
+export const ModalSignButton = styled(AppButton)`
+  label: ModalSignButton;
+  z-index: 10;
+  position: absolute;
+  top: unset;
+  bottom: 20px;
+  height: 20px;
+  width: 200px;
+  line-height: 0.9;
+  text-align: center;
+  font-family: 'Cairo', sans-serif;
+  font-size: 0.8rem;
+  cursor: pointer;
+  border: 1px solid black;
+  border-radius: 5px;
+
+  ${({ noOverlay }) =>
+    noOverlay &&
+    css`
+      bottom: unset;
+      bottom: 5px;
+      left: 50%;
+      transform: translate(-50%, 0);
+    `}
+`;
+ModalSignButton.displayName = 'ModalSignButton';
+
+export const ModalSignExitButton = styled.img`
+  label: ModalSignButton;
   z-index: 10;
   position: absolute;
   bottom: 52%;
@@ -150,121 +246,64 @@ export const ExitSign = styled.img`
   animation-iteration-count: 1;
   animation-fill-mode: forwards;
 `;
-ExitSign.displayName = 'ExitSign';
-
-export const KilledSign = styled(AttackInstructions)`
-  label: KilledSign;
-  position: absolute;
-  top: 0;
-  padding: 30% 0;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.6);
-`;
-KilledSign.displayName = 'KilledSign';
+ModalSignButton.displayName = 'ModalSignButton';
 
 export const MovementIndicators = styled.div`
   label: MovementIndicators;
+  z-index: 10;
   position: absolute;
   top: 0;
-  left: 10px;
+  left: 20px;
   display: flex;
   flex-direction: row;
   align-items: center;
   justify-content: center;
+  opacity: 0.7;
 `;
 MovementIndicators.displayName = 'MovementIndicators';
 
 export const MovementIcon = styled.div`
   label: MovementIndicators;
-  width: 100px;
+  position: relative;
+  left: 0.75em;
+  width: ${({ type }) => (typeof type === 'number' ? '20px' : '70px')};
   height: 14px;
   text-align: center;
-  background: red;
-  color: white;
-  font-weight: 900;
-  font-size: 0.8rem;
+  background: ${({ color }) => color};
+  color: ${({ type }) => (typeof type === 'number' ? 'white' : 'black')};
+  font-weight: 700;
+  line-height: 1.1;
+  font-size: 0.7rem;
   font-family: 'Cairo', sans-serif;
 
-  ${({ type }) => {
-    if (type === 'free move') {
-      return css`
-        background: #006600;
-        &:before {
-          content: '';
-          position: absolute;
-          right: -7px;
-          bottom: 0;
-          width: 0;
-          height: 0;
-          border-left: 7px solid #006600;
-          border-top: 7px solid transparent;
-          border-bottom: 7px solid transparent;
-        }
-      `;
-    }
-    if (type === 'free attack') {
-      return css`
-        background: #990000;
-        &:before {
-          content: '';
-          position: absolute;
-          right: -7px;
-          bottom: 0;
-          width: 0;
-          height: 0;
-          border-left: 7px solid #990000;
-          border-top: 7px solid transparent;
-          border-bottom: 7px solid transparent;
-        }
-      `;
-    }
-    if (type === 'free search') {
-      return css`
-        background: #660033;
-        &:before {
-          content: '';
-          position: absolute;
-          right: -7px;
-          bottom: 0;
-          width: 0;
-          height: 0;
-          border-left: 7px solid #660033;
-          border-top: 7px solid transparent;
-          border-bottom: 7px solid transparent;
-        }
-      `;
-    }
-    return css`
-      background: #0000cc;
-      &:before {
-        content: '';
-        position: absolute;
-        right: -7px;
-        bottom: 0;
-        width: 0;
-        height: 0;
-        border-left: 7px solid #0000cc;
-        border-top: 7px solid transparent;
-        border-bottom: 7px solid transparent;
-      }
-    `;
-  }}
+  &:not(:first-child) {
+    margin-left: 15px;
+  }
 
   &:after {
     content: '';
     position: absolute;
-    left: 0;
-    bottom: 0;
-    width: 0;
-    height: 0;
-    border-left: 7px solid black;
-    border-top: 7px solid transparent;
-    border-bottom: 7px solid transparent;
+    left: 100%;
+    width: 10px;
+    height: 14px;
+    clip-path: polygon(50% 50%, -50% -50%, 0 100%);
+    background: ${({ color }) => color};
+  }
+  &:before {
+    content: '';
+    position: absolute;
+    left: 1px;
+    top: 0;
+    width: 10px;
+    height: 14px;
+    clip-path: polygon(100% 0, 100% 100%, 0% 100%, 50% 50%, 0% 0%);
+    transform: translateX(-100%);
+    background: ${({ color }) => color};
   }
 `;
 MovementIndicators.displayName = 'MovementIndicators';
 
-export const NextButton = styled(ActionButton)`
+export const NextButton = styled(AppButton)`
   label: NextButton;
   z-index: 11;
   position: absolute;
@@ -323,11 +362,11 @@ export const PlayerTag = styled.div`
   z-index: 6;
   position: absolute;
   top: 70px;
-  right: -10px;
+  right: 0;
   height: 20px;
-  width: 32%;
+  width: 30%;
   border: 1px solid black;
-  border-radius: 20px;
+  border-radius: 20px 0 0 20px;
   padding: 5px 20px;
   background: ${({ color }) => color || 'black'};
   /* cursor: pointer; */
@@ -374,8 +413,22 @@ SelectButton.displayName = 'SelectButton';
 export const WoundedSign = styled.img`
   label: WoundedSign;
   z-index: 2;
-  width: 160%;
-  filter: brightness(0.4) saturate(2.3);
-  transform: translate(20px, 0);
+  width: 180%;
+  filter: brightness(0.35) saturate(2.1) opacity(0.8);
+  margin-top: -60px;
 `;
 WoundedSign.displayName = 'WoundedSign';
+
+export const WoundedWrapper = styled.div`
+  label: WoundedWrapper;
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  width: 100%%;
+  background: rgba(139, 0, 0, 0.1);
+  overflow: hidden;
+`;
+WoundedWrapper.displayName = 'WoundedWrapper';

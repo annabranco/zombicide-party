@@ -17,6 +17,9 @@ export const ActionIcon = styled.i`
     // eslint-disable-next-line no-nested-ternary
     iconSize === 'medium' ? '1.4' : iconSize ? '1.2' : '1'};
   text-align: center;
+  color: black;
+  text-shadow: none;
+
   &:hover {
     color: ${({ isActive }) => (isActive ? 'red' : 'yellow')};
     text-shadow: 0 0 2px black;

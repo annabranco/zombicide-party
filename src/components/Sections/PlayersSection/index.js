@@ -4,6 +4,7 @@ import { arrayOf, bool, func } from 'prop-types';
 import { useHistory } from 'react-router-dom';
 import { CHARACTERS } from '../../../setup/characters';
 import { getCharacterColor } from '../../../utils/players';
+import { getActionColor } from '../../../utils/actions';
 import { characterCanOpenDoors, checkForNoise } from '../../../utils/items';
 import { useStateWithLabel, useTurnsCounter } from '../../../utils/hooks';
 import ItemsSelectorModal from '../../Items/ItemsSelectorModal';
@@ -12,24 +13,32 @@ import ItemsArea from '../../Items/ItemWrapper';
 import Blood from '../../../assets/images/blood.png';
 import Exit from '../../../assets/images/exit.png';
 import Noise from '../../../assets/images/noise.png';
+import FirstPlayer from '../../../assets/images/firstPlayer.jpg';
+
 import {
   ActionsWrapper,
   CharItems,
   CharName,
   CharacterOverlay,
   CharacterSheet,
-  ExitSign,
+  ModalSignButton,
   NextButton,
   PlayerTag,
   PreviousButton,
   SelectButton,
   WoundedSign,
-  KilledSign,
+  ModalSign,
   AddNewChar,
   NoiseWrapper,
   NoiseIcon,
   MovementIndicators,
-  MovementIcon
+  MovementIcon,
+  FinishedTurnTag,
+  FirstPlayerToken,
+  WoundedWrapper,
+  FirstPlayerWrapper,
+  FirstPlayerStar,
+  ModalSignExitButton
 } from './styles';
 import { characterTypes } from '../../../interfaces/types';
 import { SOUNDS_PATH } from '../../../setup/endpoints';
@@ -50,11 +59,17 @@ const PlayersSection = ({
     'selectCharOverlay'
   );
   const [slot, selectSlot] = useStateWithLabel(null, 'slot');
+  const [turnEnded, endTurn] = useStateWithLabel(null, 'turnEnded');
+
   const [characters, updateCharacters] = useStateWithLabel([], 'characters');
   const [dataLoaded, setDataLoaded] = useStateWithLabel(false, 'dataLoaded');
   const [canOpenDoor, setCanOpenDoor] = useStateWithLabel(false, 'canOpenDoor');
   const [car, startCar] = useStateWithLabel(false, 'car');
   const [newChar, addNewChar] = useStateWithLabel(false, 'newChar');
+  const [firstPlayer, changeFirstPlayer] = useStateWithLabel(
+    null,
+    'firstPlayer'
+  );
 
   const [trade, startTrade] = useStateWithLabel(false, 'trade');
   const [noise, setNoise] = useStateWithLabel(0, 'noise');
@@ -77,11 +92,12 @@ const PlayersSection = ({
     canMove,
     canAttack,
     canSearch,
-    message,
-    actionsArray
-  } = useTurnsCounter((character && character.actions) || [3, 0, 0, 0]);
+    message
+  } = useTurnsCounter(
+    (character && (character.actionsLeft || character.actions)) || [3, 0, 0, 0]
+  );
+  window.character = character;
 
-  console.log('$$$ message', message);
   const enterCar = enter => {
     const updatedCharacter = cloneDeep(character);
     const updatedCharacters = cloneDeep(characters);
@@ -145,8 +161,21 @@ const PlayersSection = ({
     const remainingCharacters = characters.filter(
       char => char.wounded !== 'killed'
     );
+    const actionsLeft = [
+      generalActions,
+      extraMovementActions,
+      extraAttackActions,
+      searchActions
+    ];
     const nextPlayerIndex =
       charIndex + 1 >= remainingCharacters.length ? 0 : charIndex + 1;
+
+    remainingCharacters.forEach(char => {
+      if (char.name === character.name) {
+        // eslint-disable-next-line no-param-reassign
+        char.actionsLeft = actionsLeft;
+      }
+    });
     setNoise(0);
     updateCharacters(remainingCharacters);
     changeCharIndex(nextPlayerIndex);
@@ -156,12 +185,24 @@ const PlayersSection = ({
     const remainingCharacters = characters.filter(
       char => char.wounded !== 'killed'
     );
+    const actionsLeft = [
+      generalActions,
+      extraMovementActions,
+      extraAttackActions,
+      searchActions
+    ];
     const nextPlayerIndex =
       charIndex - 1 < 0 ? remainingCharacters.length - 1 : charIndex - 1;
+
+    remainingCharacters.forEach(char => {
+      if (char.name === character.name) {
+        // eslint-disable-next-line no-param-reassign
+        char.actionsLeft = actionsLeft;
+      }
+    });
     setNoise(0);
     updateCharacters(remainingCharacters);
     changeCharIndex(nextPlayerIndex);
-    // setTimeout(() => changeCharIndex(nextPlayerIndex), 2000);
   };
 
   const makeNoise = item => {
@@ -169,7 +210,7 @@ const PlayersSection = ({
       noiseDebounce.current = true;
       setTimeout(() => {
         noiseDebounce.current = false;
-      }, 2000);
+      }, 1000);
       setNoise(noise + 1);
     }
   };
@@ -183,8 +224,6 @@ const PlayersSection = ({
     );
 
     let damage = 'hit';
-    // eslint-disable-next-line no-debugger
-    debugger;
     if (woundedCharacter.wounded || oneActionKill) {
       remainingCharacters = characters.filter(
         char => char.name !== woundedCharacter.name
@@ -204,7 +243,6 @@ const PlayersSection = ({
         updateCharacters(updatedCharacters);
       }
     } else if (selectedSlot <= 2) {
-      // changeInHand('Wounded', selectedSlot - 1);
       woundedCharacter.wounded = true;
       woundedCharacter.inHand[selectedSlot - 1] = 'Wounded';
       updatedCharacters.forEach(char => {
@@ -214,7 +252,6 @@ const PlayersSection = ({
         }
       });
     } else {
-      // changeInBackpack('Wounded', selectedSlot - 3);
       woundedCharacter.wounded = true;
       woundedCharacter.inBackpack[selectedSlot - 3] = 'Wounded';
       updatedCharacters.forEach(char => {
@@ -264,6 +301,40 @@ const PlayersSection = ({
     localStorage.setItem('ZombicideParty', JSON.stringify(updatedCharacters));
   };
 
+  const checkIfRoundHasFinished = () => {
+    if (
+      characters.every(char => {
+        return (
+          char.actionsLeft && char.actionsLeft.reduce((a, b) => a + b, 0) <= 0
+        );
+      })
+    ) {
+      endTurn(true);
+      localStorage.setItem('ZombicideParty', JSON.stringify(characters));
+    } else if (turnEnded) {
+      endTurn(false);
+    }
+  };
+
+  const nextRound = () => {
+    const updatedCharacters = cloneDeep(characters);
+    let nextFirstPlayer;
+
+    updatedCharacters.forEach((char, index) => {
+      char.actionsLeft = char.actions; // eslint-disable-line no-param-reassign
+      if (char.name === firstPlayer) {
+        if (index + 1 === characters.length) {
+          nextFirstPlayer = 0;
+        } else {
+          nextFirstPlayer = index + 1;
+        }
+      }
+    });
+    changeFirstPlayer(characters[nextFirstPlayer].name);
+    updateCharacters(updatedCharacters);
+    changeCharIndex(nextFirstPlayer);
+  };
+
   useEffect(() => {
     if (!dataLoaded) {
       const updatedCharacters =
@@ -272,15 +343,15 @@ const PlayersSection = ({
         cloneDeep(CHARACTERS);
       updateCharacters(updatedCharacters);
       prevCharIndex.current = charIndex;
+      changeFirstPlayer(updatedCharacters[0].name);
     }
   }, [charIndex, dataLoaded, initialCharacters, loadedGame]);
 
   useEffect(() => {
     const count = [];
-
     // eslint-disable-next-line no-plusplus
     for (let i = 1; i <= generalActions; i++) {
-      count.push(`${i}`);
+      count.push(i);
     }
     // eslint-disable-next-line no-plusplus
     for (let i = 1; i <= extraMovementActions; i++) {
@@ -303,11 +374,10 @@ const PlayersSection = ({
     updateActionsCount
   ]);
 
-  // actionsCount
-  // updateActionsCount
-
   useEffect(() => {
     if (characters) {
+      checkIfRoundHasFinished();
+
       const nextChar = characters[charIndex];
       if (
         nextChar &&
@@ -328,6 +398,7 @@ const PlayersSection = ({
         changeCharacter(nextChar);
         setCanOpenDoor(openDoors);
         prevCharIndex.current = charIndex;
+        localStorage.setItem('ZombicideParty', JSON.stringify(characters));
 
         if (!dataLoaded) {
           setDataLoaded(true);
@@ -340,24 +411,22 @@ const PlayersSection = ({
   //   console.log('$$$ change char', character);
   // }, [character]);
 
-  console.log('$$$ actionsCount', actionsCount);
-  // movesArray
-  // attacksArray
-  //   searchArray
-
   return (
     <>
       <CharacterSheet>
-        <MovementIndicators>
-          {actionsCount.map(action => (
-            <MovementIcon key={action} type={action}>
-              {action}
-            </MovementIcon>
-          ))}
-          {/* {actionsArray.map((action, n) => (
-            <MovementIcon key={`move${n}`} /> // eslint-disable-line react/no-array-index-key
-          ))} */}
-        </MovementIndicators>
+        {!trade && (
+          <MovementIndicators>
+            {actionsCount.map(action => (
+              <MovementIcon
+                color={getActionColor(action)}
+                key={action}
+                type={action}
+              >
+                {action}
+              </MovementIcon>
+            ))}
+          </MovementIndicators>
+        )}
         {trade ? (
           <TradeArea
             character={character}
@@ -370,9 +439,19 @@ const PlayersSection = ({
           <>
             <CharacterOverlay damageMode={damageMode} img={character.img} />
             <AddNewChar type="button" onClick={() => addNewChar(true)}>
-              ADD NEW CHAR
+              <i className="fas fa-user-plus" />
             </AddNewChar>
-            <CharName>{character.name}</CharName>
+            {firstPlayer === character.name && (
+              <FirstPlayerWrapper>
+                <FirstPlayerToken src={FirstPlayer} alt="First Player Token" />
+              </FirstPlayerWrapper>
+            )}
+            <CharName>
+              {firstPlayer === character.name && (
+                <FirstPlayerStar>⭐</FirstPlayerStar>
+              )}
+              {character.name}
+            </CharName>
             <PlayerTag color={getCharacterColor(character.name)}>
               {character.player}
             </PlayerTag>
@@ -410,13 +489,13 @@ const PlayersSection = ({
                   type={character.movement}
                 />
               )}
-              {canSearch && (
+              {/* {canSearch && (
                 <ActionButton
                   actionType="search"
                   callback={() => spendAction('search')}
                   type={character.voice}
                 />
-              )}
+              )} */}
               {canOpenDoor && !damageMode && generalActions && (
                 <ActionButton
                   actionType="open-door"
@@ -427,16 +506,29 @@ const PlayersSection = ({
                 />
               )}
             </ActionsWrapper>
-            {character.wounded && <WoundedSign src={Blood} />}
+            {character.wounded && (
+              <WoundedWrapper>
+                <WoundedSign src={Blood} />
+              </WoundedWrapper>
+            )}
+            {finishedTurn && (
+              <FinishedTurnTag>
+                {`${character.name}'s turn has finished`}
+              </FinishedTurnTag>
+            )}
+            {turnEnded && <ModalSign noOverlay>Zombies round ➡</ModalSign>}
+            <ModalSignButton noOverlay onClick={nextRound}>
+              START NEXT ROUND
+            </ModalSignButton>
             {character.wounded === 'killed' && (
               <>
-                <KilledSign>
+                <ModalSign>
                   {!characters || characters.length === 0
                     ? 'All characters are dead'
                     : `${character.name} has been killed`}
-                </KilledSign>
+                </ModalSign>
                 {characters.length === 0 && (
-                  <ExitSign onClick={exitGame} src={Exit} />
+                  <ModalSignExitButton onClick={exitGame} src={Exit} />
                 )}
               </>
             )}
@@ -446,11 +538,13 @@ const PlayersSection = ({
                   <ItemsArea
                     actionsLeft={generalActions}
                     allSlotsAreEmpty={allSlotsAreEmpty()}
-                    canAttack={canAttack}
                     callback={spendAction}
+                    canAttack={canAttack}
+                    canSearch={canSearch}
                     causeDamage={causeDamage}
-                    damageMode={damageMode}
+                    charVoice={character.voice}
                     index={index}
+                    damageMode={damageMode}
                     item={item}
                     key={`${item}-${index + 1}`}
                     makeNoise={makeNoise}
@@ -469,7 +563,9 @@ const PlayersSection = ({
                     actionsLeft={generalActions}
                     allSlotsAreEmpty={allSlotsAreEmpty()}
                     callback={spendAction}
+                    canSearch={canSearch}
                     causeDamage={causeDamage}
+                    charVoice={character.voice}
                     damageMode={damageMode}
                     index={index}
                     item={item}
@@ -524,11 +620,13 @@ const PlayersSection = ({
             )}
           </>
         )}
-        <NoiseWrapper>
-          {Array.from({ length: noise }, (_, index) => index).map(key => (
-            <NoiseIcon key={key} src={Noise} />
-          ))}
-        </NoiseWrapper>
+        {!trade && (
+          <NoiseWrapper>
+            {Array.from({ length: noise }, (_, index) => index).map(key => (
+              <NoiseIcon key={key} src={Noise} />
+            ))}
+          </NoiseWrapper>
+        )}
       </CharacterSheet>
       {newChar && (
         <NewGame currentChars={characters} dynamic setNewChar={setNewChar} />
