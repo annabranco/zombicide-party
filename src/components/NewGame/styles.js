@@ -11,6 +11,14 @@ export const CharacterArea = styled.div`
   justify-content: center;
   height: 100%;
   width: 100%;
+
+  ${({ dynamic }) =>
+    dynamic &&
+    css`
+      z-index: 15;
+      position: absolute;
+      background: rgba(0, 0, 0, 0.8);
+    `}
 `;
 CharacterArea.displayName = 'CharacterArea';
 
@@ -18,6 +26,16 @@ export const CharImage = styled.img`
   label: CharImage;
   ${inactiveImage}
   width: 100%;
+
+  ${({ dynamic }) =>
+    dynamic &&
+    css`
+      filter: sepia(1) opacity(0.7);
+      &:hover {
+        filter: sepia(0.3) brightness(1.4) opacity(0.7) contrast(1.1)
+          saturate(2);
+      }
+    `}
 
   ${({ active }) =>
     active &&
@@ -35,10 +53,16 @@ export const CharName = styled.h1`
   margin: 20px auto 30px;
   width: calc(90vw / 6);
   font-size: 1.5rem;
-  color: white;
+  color: rgba(255, 255, 255, 0.5);
   text-shadow: 0 0 3px black;
   text-align: center;
   text-transform: uppercase;
+
+  ${({ active }) =>
+    active &&
+    css`
+      color: white;
+    `}
 `;
 CharName.displayName = 'CharName';
 
@@ -99,5 +123,14 @@ export const SelectorTitle = styled.h1`
   font-size: 2rem;
   color: white;
   text-shadow: 0 0 2px black;
+
+  ${({ dynamic }) =>
+    dynamic &&
+    css`
+      z-index: 16;
+      position: absolute;
+      top: 50px;
+      font-size: 3rem;
+    `}
 `;
 SelectorTitle.displayName = 'SelectorTitle';

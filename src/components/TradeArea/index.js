@@ -1,4 +1,5 @@
 import React, { useEffect, useRef } from 'react';
+import { cloneDeep } from 'lodash';
 import { func, string } from 'prop-types';
 import {
   CharItems,
@@ -23,10 +24,10 @@ import {
 } from './styles';
 
 const TradeArea = ({
+  spendAction,
   character,
   characters,
-  inHand: currentInHand,
-  inBackpack: currentInBackpack,
+  confirmTrade,
   startTrade
 }) => {
   const [updatedCharacter, updateCharacter] = useStateWithLabel(
@@ -38,39 +39,18 @@ const TradeArea = ({
     null,
     'updatedCharacters'
   );
-  const [tradePartner, changeTradePartner] = useStateWithLabel(
-    null,
-    'tradePartner'
-  );
+  const [tradePartner, updatePartner] = useStateWithLabel(null, 'tradePartner');
 
   const [partnerIndex, changePartnerIndex] = useStateWithLabel(
     0,
     'partnerIndex'
   );
-
-  const [inHand, updateInHand] = useStateWithLabel(['', ''], 'inHand');
-  const [inBackpack, updateInBackpack] = useStateWithLabel(
-    ['', '', ''],
-    'inBackpack'
-  );
-  const [inPartnersHand, updatePartnersInHand] = useStateWithLabel(
-    ['', ''],
-    'inPartnersHand'
-  );
-  const [inPartnersBackpack, updatePartnersInBackpack] = useStateWithLabel(
-    ['', '', ''],
-    'inPartnersBackpack'
+  const [tradeEstablished, establishTrade] = useStateWithLabel(
+    null,
+    'tradeEstablished'
   );
 
-  const [selectedItem1, selectItem1] = useStateWithLabel(
-    ['', '', ''],
-    'selectedItem1'
-  );
-
-  const [selectedItem2, selectItem2] = useStateWithLabel(
-    ['', '', ''],
-    'selectedItem2'
-  );
+  const [selectedItem1, selectItem1] = useStateWithLabel(null, 'selectedItem1');
 
   const changeToNextPlayer = () => {
     const nextPlayerIndex =
@@ -87,50 +67,95 @@ const TradeArea = ({
 
   const prevPartnerIndex = useRef();
 
-  useEffect(() => {
-    const updChar = characters.filter(char => char.name !== character.name);
+  const onClickConfirm = () => {
+    const updCharsAfterTrade = cloneDeep(characters);
+    updCharsAfterTrade.forEach((char, index) => {
+      if (char.name === updatedCharacter.name) {
+        updCharsAfterTrade[index] = updatedCharacter;
+      } else if (char.name === tradePartner.name) {
+        updCharsAfterTrade[index] = tradePartner;
+      }
+    });
+    confirmTrade(updatedCharacter, updCharsAfterTrade);
+    startTrade(false);
+    establishTrade(false);
+    spendAction();
+  };
 
-    updateCharacter({ ...character });
+  useEffect(() => {
+    const mainChar = cloneDeep(character);
+    const updChar = characters.filter(char => char.name !== mainChar.name);
+    updateCharacter(mainChar);
     updateCharacters(updChar);
-    changeTradePartner(updChar[0]);
-    updateInHand([...character.inHand]);
-    updateInBackpack([...character.inBackpack]);
-    updatePartnersInHand([...updChar[0].inHand]);
-    updatePartnersInBackpack([...updChar[0].inBackpack]);
-
-    console.log('$$$ currentInHand', currentInHand);
-  }, [
-    changeTradePartner,
-    character,
-    characters,
-    currentInHand,
-    currentInBackpack,
-    updateCharacter,
-    updateCharacters,
-    updateInHand,
-    updateInBackpack,
-    updatePartnersInHand,
-    updatePartnersInBackpack
-  ]);
+    updatePartner(updChar[0]);
+  }, [updatePartner, character, characters, updateCharacter, updateCharacters]);
 
   useEffect(() => {
-    // eslint-disable-next-line no-debugger
-    debugger;
     if (updatedCharacters && partnerIndex !== prevPartnerIndex.current) {
       const nextPartner = updatedCharacters[partnerIndex];
-      changeTradePartner(nextPartner);
-      updatePartnersInHand([...nextPartner.inHand]);
-      updatePartnersInBackpack([...nextPartner.inBackpack]);
+      updatePartner(nextPartner);
       prevPartnerIndex.current = partnerIndex;
     }
   }, [partnerIndex]);
 
-  const onSelectSlot = (name, slot) => {
+  const onTrade = ({ item, slot, char }) => {
     if (selectedItem1) {
-      console.log('$$$ selectedItem2', name, slot);
+      if (!item) {
+        selectItem1();
+      } else {
+        const updChar = cloneDeep(updatedCharacter);
+        const updPartn = cloneDeep(tradePartner);
+        const typeItem1 = selectedItem1.slot <= 2 ? 'inHand' : 'inBackpack';
+        const typeItem2 = slot <= 2 ? 'inHand' : 'inBackpack';
+        const index1 =
+          selectedItem1.slot <= 2
+            ? selectedItem1.slot - 1
+            : selectedItem1.slot - 3;
+        const index2 = slot <= 2 ? slot - 1 : slot - 3;
+        if (selectedItem1.char === char) {
+          if (updChar.name === char) {
+            updChar[typeItem1][index1] = item === 'none' ? null : item;
+            updChar[typeItem2][index2] =
+              selectedItem1.item === 'none' ? null : selectedItem1.item;
+            updateCharacter(updChar);
+          } else {
+            updPartn[typeItem1][index1] = item === 'none' ? null : item;
+            updPartn[typeItem2][index2] =
+              selectedItem1.item === 'none' ? null : selectedItem1.item;
+            updatePartner(updPartn);
+          }
+        } else if (selectedItem1.item === 'Wounded' || item === 'Wounded') {
+          console.log('NOT');
+        } else if (selectedItem1.char === updChar.name) {
+          updChar[typeItem1][index1] = item === 'none' ? null : item;
+          updPartn[typeItem2][index2] =
+            selectedItem1.item === 'none' ? null : selectedItem1.item;
+          updateCharacter(updChar);
+          updatePartner(updPartn);
+        } else {
+          updPartn[typeItem1][index1] = item === 'none' ? null : item;
+          updChar[typeItem2][index2] =
+            selectedItem1.item === 'none' ? null : selectedItem1.item;
+          updateCharacter(updChar);
+          updatePartner(updPartn);
+        }
+        selectItem1();
+        establishTrade(true);
+      }
     } else {
-      console.log('$$$ selectedItem1', name, slot);
-      selectItem1([name, slot]);
+      selectItem1({ item, slot, char });
+    }
+  };
+
+  const onClickDrop = (charName, type, index) => {
+    if (charName === updatedCharacter.name) {
+      const charDropping = cloneDeep(updatedCharacter);
+      charDropping[type][index] = null;
+      updateCharacter(charDropping);
+    } else if (charName === tradePartner.name) {
+      const charDropping = cloneDeep(tradePartner);
+      charDropping[type][index] = null;
+      updatePartner(charDropping);
     }
   };
 
@@ -146,90 +171,112 @@ const TradeArea = ({
             {tradePartner.player}
           </PlayerName>
           <CharItems slotType="inHand" trade>
-            {inPartnersHand.map((item, index) => (
+            {tradePartner.inHand.map((item, index) => (
               <ItemsArea
+                charName={tradePartner.name}
                 index={index}
                 item={item}
+                itemSelected={Boolean(selectedItem1)}
                 key={`${item}-${index + 1}`}
-                onClickDrop={() => null}
-                selectSlot={onSelectSlot}
+                onClickDrop={onClickDrop}
                 slotType="inHand"
                 trade
-                wounded={character.wounded}
+                tradeItem={onTrade}
+                wounded={tradePartner.wounded}
               />
             ))}
           </CharItems>
           <CharItems slotType="inBackpack" trade>
-            {inPartnersBackpack.map((item, index) => (
+            {tradePartner.inBackpack.map((item, index) => (
               <ItemsArea
+                charName={tradePartner.name}
                 index={index}
                 item={item}
+                itemSelected={Boolean(selectedItem1)}
                 key={`${item}-${index + 3}`}
                 noAudio
-                onClickDrop={() => null}
-                selectSlot={onSelectSlot}
+                onClickDrop={onClickDrop}
                 slotType="inBackpack"
                 trade
-                wounded={character.wounded}
+                tradeItem={onTrade}
+                wounded={tradePartner.wounded}
               />
             ))}
           </CharItems>
-          <CurrentPartnerTag>Select character to trade with</CurrentPartnerTag>
-          <PreviousButton onClick={changeToPreviousPlayer} trade type="button">
-            ◄
-          </PreviousButton>
-          <NextButton onClick={changeToNextPlayer} trade type="button">
-            ►
-          </NextButton>
+          {!tradeEstablished && (
+            <>
+              <PreviousButton
+                onClick={changeToPreviousPlayer}
+                trade
+                type="button"
+              >
+                ◄
+              </PreviousButton>
+              <NextButton onClick={changeToNextPlayer} trade type="button">
+                ►
+              </NextButton>
+            </>
+          )}
+
+          <CurrentPartnerTag>
+            {tradeEstablished
+              ? `Trading with ${tradePartner.name}`
+              : 'Select character to trade with'}
+          </CurrentPartnerTag>
         </CharacterTrading>
       )}
-
-      <CharacterTrading>
-        <CharacterId>
-          <Face src={character.face} alt="" />
-          <CharacterName trade>{character.name}</CharacterName>
-          <PlayerName color={getCharacterColor(character.name)}>
-            {character.player}
-          </PlayerName>
-        </CharacterId>
-        <CharItems slotType="inHand" trade>
-          {inHand.map((item, index) => (
-            <ItemsArea
-              index={index}
-              item={item}
-              key={`${item}-${index + 1}`}
-              onClickDrop={() => null}
-              selectSlot={() => null}
-              slotType="inHand"
-              trade
-              wounded={character.wounded}
-            />
-          ))}
-        </CharItems>
-        <CharItems slotType="inBackpack" trade>
-          {inBackpack.map((item, index) => (
-            <ItemsArea
-              index={index}
-              item={item}
-              key={`${item}-${index + 3}`}
-              noAudio
-              onClickDrop={() => null}
-              selectSlot={() => null}
-              slotType="inBackpack"
-              trade
-              wounded={character.wounded}
-            />
-          ))}
-        </CharItems>
-        <CurrentCharacterTag color={getCharacterColor(character.name)}>
-          Current Character
-        </CurrentCharacterTag>
-      </CharacterTrading>
+      {updatedCharacter && (
+        <CharacterTrading>
+          <CharacterId>
+            <Face src={updatedCharacter.face} alt="" />
+            <CharacterName trade>{updatedCharacter.name}</CharacterName>
+            <PlayerName color={getCharacterColor(updatedCharacter.name)}>
+              {updatedCharacter.player}
+            </PlayerName>
+          </CharacterId>
+          <CharItems slotType="inHand" trade>
+            {updatedCharacter.inHand.map((item, index) => (
+              <ItemsArea
+                charName={updatedCharacter.name}
+                index={index}
+                item={item}
+                itemSelected={Boolean(selectedItem1)}
+                key={`${item}-${index + 1}`}
+                onClickDrop={onClickDrop}
+                slotType="inHand"
+                trade
+                tradeItem={onTrade}
+                wounded={updatedCharacter.wounded}
+              />
+            ))}
+          </CharItems>
+          <CharItems slotType="inBackpack" trade>
+            {updatedCharacter.inBackpack.map((item, index) => (
+              <ItemsArea
+                charName={updatedCharacter.name}
+                index={index}
+                item={item}
+                itemSelected={Boolean(selectedItem1)}
+                key={`${item}-${index + 3}`}
+                noAudio
+                onClickDrop={onClickDrop}
+                slotType="inBackpack"
+                trade
+                tradeItem={onTrade}
+                wounded={updatedCharacter.wounded}
+              />
+            ))}
+          </CharItems>
+          {/* <CurrentCharacterTag color={getCharacterColor(updatedCharacter.name)}>
+            Current Character
+          </CurrentCharacterTag> */}
+        </CharacterTrading>
+      )}
       <ButtonsWrapper>
         <CancelButton type="button" onClick={() => startTrade(false)}>
           CANCEL
         </CancelButton>
-        <ConfirmButton type="button" onClick={() => startTrade(false)}>
+        <ConfirmButton type="button" onClick={onClickConfirm}>
           CONFIRM
         </ConfirmButton>
       </ButtonsWrapper>
@@ -240,8 +287,8 @@ const TradeArea = ({
 TradeArea.propTypes = {
   character: string.isRequired,
   characters: string.isRequired,
-  inHand: string.isRequired,
-  inBackpack: string.isRequired,
+  confirmTrade: func.isRequired,
+  spendAction: func.isRequired,
   startTrade: func.isRequired
 };
 

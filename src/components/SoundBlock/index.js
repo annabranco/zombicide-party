@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import { bool, func, number, string } from 'prop-types';
 import { useStateWithLabel } from '../../utils/hooks';
 import { SOUNDS_PATH } from '../../setup/endpoints';
@@ -14,10 +14,14 @@ import {
 import { ZombieLabel } from '../Sections/ZombiesSection/styles';
 
 const SoundBlock = ({
+  callback,
+  canAttack,
   damageMode,
   differentSounds,
   img,
+  isSelected,
   label,
+  makeNoise,
   name,
   noAudio,
   onClickCard,
@@ -31,6 +35,8 @@ const SoundBlock = ({
   const [isActive, activate] = useStateWithLabel(false, 'isActive');
   const [isHighlighted, highlight] = useStateWithLabel(false, 'isHighlighted');
 
+  const quickAttackDebounce = useRef();
+
   const randomNumber = max => Math.floor(Math.random() * max + 1);
   const filename = `${SOUNDS_PATH}${type}/${name}${
     differentSounds ? randomNumber(differentSounds) : ''
@@ -43,10 +49,20 @@ const SoundBlock = ({
     new Audio(filename);
 
   const play = () => {
-    if (sound) {
+    if (type === 'weapons' && !quickAttackDebounce.current) {
+      quickAttackDebounce.current = true;
+      setTimeout(() => {
+        quickAttackDebounce.current = false;
+      }, 1000);
+      callback('attack');
+    }
+    if (sound && ((type === 'weapons' && canAttack) || type !== 'weapons')) {
       activate(true);
       sound.currentTime = 0;
       sound.play();
+      if (makeNoise) {
+        makeNoise(name);
+      }
       setTimeout(() => {
         activate(false);
       }, 4000);
@@ -61,6 +77,7 @@ const SoundBlock = ({
           onMouseOut={() => highlight(false)}
           onMouseOver={() => highlight(true)}
           img={img}
+          isSelected={isSelected}
           name={name}
           type={type}
         />
@@ -87,9 +104,10 @@ const SoundBlock = ({
           <ZombieLabel isActive={isActive}>{name || label}</ZombieLabel>
         )}
         <PlayImageButton
+          canAttack={canAttack}
           isActive={isActive}
           damageMode={damageMode}
-          onClick={damageMode ? onClickCard : play}
+          onClick={damageMode || trade ? onClickCard : play}
           slotType={slotType}
           type={type}
         >
@@ -118,10 +136,14 @@ const SoundBlock = ({
 };
 
 SoundBlock.propTypes = {
+  callback: func,
+  canAttack: bool,
   damageMode: bool,
   differentSounds: number,
   img: string,
+  isSelected: bool,
   label: string,
+  makeNoise: func.isRequired,
   name: string.isRequired,
   noAudio: bool,
   onClickCard: func.isRequired,
@@ -134,9 +156,12 @@ SoundBlock.propTypes = {
 };
 
 SoundBlock.defaultProps = {
+  callback: null,
+  canAttack: false,
   damageMode: false,
   differentSounds: null,
   img: null,
+  isSelected: false,
   label: null,
   noAudio: false,
   special: null,

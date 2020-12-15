@@ -19,6 +19,7 @@ export const OpenButton = styled.button`
 
 export const SectionWrapper = styled.section`
   label: SectionWrapper;
+  position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
