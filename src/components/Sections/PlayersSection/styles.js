@@ -427,7 +427,7 @@ export const WoundedWrapper = styled.div`
   align-items: center;
   justify-content: center;
   height: 100%;
-  width: 100%%;
+  width: 100%;
   background: rgba(139, 0, 0, 0.1);
   overflow: hidden;
 `;
