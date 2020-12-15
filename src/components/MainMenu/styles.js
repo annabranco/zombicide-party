@@ -114,6 +114,13 @@ export const MenuScreen = styled.div`
     background-size: 100%;
     background-repeat: no-repeat;
   `}
+
+  ${({ type }) =>
+    type === 'newChar' &&
+    css`
+      position: absolute;
+      top: -50px;
+    `}
 `;
 MenuScreen.displayName = 'MenuScreen';
 

@@ -11,6 +11,14 @@ export const CharacterArea = styled.div`
   justify-content: center;
   height: 100%;
   width: 100%;
+
+  ${({ dynamic }) =>
+    dynamic &&
+    css`
+      z-index: 15;
+      position: absolute;
+      background: rgba(0, 0, 0, 0.8);
+    `}
 `;
 CharacterArea.displayName = 'CharacterArea';
 
@@ -115,5 +123,14 @@ export const SelectorTitle = styled.h1`
   font-size: 2rem;
   color: white;
   text-shadow: 0 0 2px black;
+
+  ${({ dynamic }) =>
+    dynamic &&
+    css`
+      z-index: 16;
+      position: absolute;
+      top: 50px;
+      font-size: 3rem;
+    `}
 `;
 SelectorTitle.displayName = 'SelectorTitle';

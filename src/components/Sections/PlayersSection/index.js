@@ -627,10 +627,10 @@ const PlayersSection = ({
             ))}
           </NoiseWrapper>
         )}
+        {newChar && (
+          <NewGame currentChars={characters} dynamic setNewChar={setNewChar} />
+        )}
       </CharacterSheet>
-      {newChar && (
-        <NewGame currentChars={characters} dynamic setNewChar={setNewChar} />
-      )}
     </>
   );
 };

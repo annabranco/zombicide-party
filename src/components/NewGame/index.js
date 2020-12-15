@@ -40,6 +40,11 @@ const NewGame = ({
   );
   const [newPlayer, setNewPlayer] = useStateWithLabel(null, 'newPlayer');
 
+  const [playerWasSelected, selectPlayer] = useStateWithLabel(
+    null,
+    'playerWasSelected'
+  );
+
   const onSelect = event => {
     if (dynamic) {
       const character = event.currentTarget.getAttribute('name');
@@ -110,6 +115,7 @@ const NewGame = ({
 
   const addPlayer = newPlayerSelected => {
     setNewPlayer(newPlayerSelected);
+    selectPlayer(true);
   };
 
   useEffect(() => {
@@ -124,34 +130,39 @@ const NewGame = ({
   }, [currentChars, characters, setCharacters]);
 
   return (
-    <MenuScreen img={BG} type="new">
+    <MenuScreen img={BG} type="newChar">
       <Modal
         addPlayer={addPlayer}
         dynamic={dynamic}
         loadedGame={loadedGame}
         activePlayers={activePlayers}
         setActivePlayers={setActivePlayers}
+        type="newChar"
       />
-      <SelectorTitle>CHOOSE {dynamic ? 'PLAYER' : 'PLAYERS'}</SelectorTitle>
-      <CharacterArea>
-        {characters.map(char => (
-          <Selector key={char.name} name={char.name} onClick={onSelect}>
-            <CharImage
-              active={charactersSelected.has(char.name)}
-              dynamic={dynamic}
-              src={char.selector}
-            />
-            <CharName active={charactersSelected.has(char.name)}>
-              {char.name}
-            </CharName>
-            {charactersSelected.get(char.name) && (
-              <PlayerTag color={getCharacterColor(char.name)}>
-                {charactersSelected.get(char.name)}
-              </PlayerTag>
-            )}
-          </Selector>
-        ))}
-      </CharacterArea>
+      <SelectorTitle dynamic={dynamic}>
+        CHOOSE {dynamic ? 'CHARACTER' : 'CHARACTERS'}
+      </SelectorTitle>
+      {((dynamic && playerWasSelected) || !dynamic) && (
+        <CharacterArea dynamic={dynamic}>
+          {characters.map(char => (
+            <Selector key={char.name} name={char.name} onClick={onSelect}>
+              <CharImage
+                active={charactersSelected.has(char.name)}
+                dynamic={dynamic}
+                src={char.selector}
+              />
+              <CharName active={charactersSelected.has(char.name)}>
+                {char.name}
+              </CharName>
+              {charactersSelected.get(char.name) && (
+                <PlayerTag color={getCharacterColor(char.name)}>
+                  {charactersSelected.get(char.name)}
+                </PlayerTag>
+              )}
+            </Selector>
+          ))}
+        </CharacterArea>
+      )}
       {!dynamic && (
         <Link to={charactersSelected.size > 0 ? '/play' : ''}>
           <SelectorButton

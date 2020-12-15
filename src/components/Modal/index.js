@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
-import { bool, func, instanceOf } from 'prop-types';
+import { bool, func, instanceOf, string } from 'prop-types';
 import { useStateWithLabel } from '../../utils/hooks';
 import {
   ButtonsArea,
@@ -23,7 +23,8 @@ const Modal = ({
   activePlayers,
   dynamic,
   loadedGame,
-  setActivePlayers
+  setActivePlayers,
+  type
 }) => {
   const [visible, toggleVisible] = useStateWithLabel(false, 'visible');
   const [message, setMessage] = useStateWithLabel({ buttons: [] }, 'message');
@@ -149,7 +150,7 @@ const Modal = ({
   };
 
   return (
-    <ModalWindow visible={visible}>
+    <ModalWindow visible={visible} type={type}>
       <ModalTitle>{message.title}</ModalTitle>
       <ModalMessage>{message.text}</ModalMessage>
       {(message.title === 'Manage Players' || !message.title) && (
@@ -222,12 +223,14 @@ Modal.propTypes = {
   activePlayers: instanceOf(Set).isRequired,
   dynamic: bool,
   loadedGame: bool.isRequired,
-  setActivePlayers: func.isRequired
+  setActivePlayers: func.isRequired,
+  type: string
 };
 
 Modal.defaultProps = {
   addPlayer: () => null,
-  dynamic: false
+  dynamic: false,
+  type: null
 };
 
 export default Modal;

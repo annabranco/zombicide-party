@@ -82,7 +82,7 @@ ModalTitle.displayName = 'ModalTitle';
 
 export const ModalWindow = styled.div`
   label: ModalWindow;
-  z-index: 10;
+  z-index: 15;
   display: none;
   position: absolute;
   top: 50%;
@@ -100,6 +100,12 @@ export const ModalWindow = styled.div`
     visible &&
     css`
       display: flex;
+    `}
+
+  ${({ type }) =>
+    type === 'newChar' &&
+    css`
+      border-radius: 0;
     `}
 `;
 ModalWindow.displayName = 'ModalWindow';
