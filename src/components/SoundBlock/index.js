@@ -25,6 +25,7 @@ const SoundBlock = ({
   name,
   noAudio,
   onClickCard,
+  setupMode,
   slotType,
   special,
   toggleDamageMode,
@@ -98,40 +99,39 @@ const SoundBlock = ({
   };
 
   return (
-    <>
-      <Block damageMode={damageMode} type={type} wounded={wounded}>
-        {(isActive || isHighlighted) && type === 'activations' && (
-          <ZombieLabel isActive={isActive}>{name || label}</ZombieLabel>
-        )}
-        <PlayImageButton
-          canAttack={canAttack}
-          isActive={isActive}
-          damageMode={damageMode}
-          onClick={damageMode || trade ? onClickCard : play}
-          slotType={slotType}
-          type={type}
-        >
-          {type === 'activations' && (
-            <ZombieActions>
-              <Action action="activate">Activate</Action>
-              <Action action="attack" onClick={() => toggleDamageMode(name)}>
-                Attack survivor!
+    <Block damageMode={damageMode} type={type} wounded={wounded}>
+      {(isActive || isHighlighted) && type === 'activations' && (
+        <ZombieLabel isActive={isActive}>{name || label}</ZombieLabel>
+      )}
+      <PlayImageButton
+        canAttack={canAttack}
+        isActive={isActive}
+        damageMode={damageMode}
+        onClick={damageMode || trade || setupMode ? onClickCard : play}
+        setupMode={setupMode}
+        slotType={slotType}
+        type={type}
+      >
+        {type === 'activations' && (
+          <ZombieActions>
+            <Action action="activate">Activate</Action>
+            <Action action="attack" onClick={() => toggleDamageMode(name)}>
+              Attack survivor!
+            </Action>
+            {special && (
+              <Action
+                action="kill"
+                onClick={() => toggleDamageMode(`${name}-instant`)}
+              >
+                {special}
               </Action>
-              {special && (
-                <Action
-                  action="kill"
-                  onClick={() => toggleDamageMode(`${name}-instant`)}
-                >
-                  {special}
-                </Action>
-              )}
-            </ZombieActions>
-          )}
+            )}
+          </ZombieActions>
+        )}
 
-          {getImage()}
-        </PlayImageButton>
-      </Block>
-    </>
+        {getImage()}
+      </PlayImageButton>
+    </Block>
   );
 };
 
@@ -147,6 +147,7 @@ SoundBlock.propTypes = {
   name: string.isRequired,
   noAudio: bool,
   onClickCard: func.isRequired,
+  setupMode: bool.isRequired,
   slotType: string,
   special: string,
   toggleDamageMode: func.isRequired,

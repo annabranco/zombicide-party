@@ -231,6 +231,13 @@ export const ModalSignButton = styled(AppButton)`
       left: 50%;
       transform: translate(-50%, 0);
     `}
+
+  ${({ setupMode }) =>
+    setupMode &&
+    css`
+      background: green;
+    `}
+
   ${({ roundEnded }) =>
     roundEnded &&
     css`

@@ -64,6 +64,7 @@ const PlayersSection = ({
   );
   const [slot, selectSlot] = useStateWithLabel(null, 'slot');
   const [roundEnded, endRound] = useStateWithLabel(null, 'roundEnded');
+  const [setupMode, toggleSetupMode] = useStateWithLabel(true, 'roundEnded');
 
   const [characters, updateCharacters] = useStateWithLabel([], 'characters');
   const [dataLoaded, setDataLoaded] = useStateWithLabel(false, 'dataLoaded');
@@ -219,6 +220,17 @@ const PlayersSection = ({
     }
   };
 
+  const getButtonText = () => {
+    switch (true) {
+      case setupMode:
+        return 'FINISH SETUP';
+      case roundEnded:
+        return 'START NEXT ROUND';
+      default:
+        return 'END ROUND';
+    }
+  };
+
   const causeDamage = selectedSlot => {
     const woundedCharacter = cloneDeep(character);
     const updatedCharacters = cloneDeep(characters);
@@ -307,9 +319,9 @@ const PlayersSection = ({
 
   const checkIfRoundHasFinished = () => {
     if (
-      characters.every(char => {
-        return char.actionsLeft && !checkIfHasAnyActionLeft(char.actionsLeft);
-      })
+      characters.every(
+        char => char.actionsLeft && !checkIfHasAnyActionLeft(char.actionsLeft)
+      )
     ) {
       endRound(true);
       setZombiesTurn(true);
@@ -320,35 +332,39 @@ const PlayersSection = ({
     }
   };
 
-  const nextRound = () => {
-    const updatedCharacters = cloneDeep(characters);
-    if (roundEnded) {
-      let nextFirstPlayer;
-
-      updatedCharacters.forEach((char, index) => {
-        char.actionsLeft = char.actions; // eslint-disable-line no-param-reassign
-        if (char.name === firstPlayer) {
-          if (index + 1 === characters.length) {
-            nextFirstPlayer = 0;
-          } else {
-            nextFirstPlayer = index + 1;
-          }
-        }
-      });
-      changeFirstPlayer(characters[nextFirstPlayer].name);
-      updateCharacters(updatedCharacters);
-      changeCharIndex(nextFirstPlayer);
+  const onClickMainButton = () => {
+    if (setupMode) {
+      toggleSetupMode(false);
     } else {
-      const currentCharacter = cloneDeep(character);
+      const updatedCharacters = cloneDeep(characters);
+      if (roundEnded) {
+        let nextFirstPlayer;
 
-      updatedCharacters.forEach((char, index) => {
-        char.actionsLeft = []; // eslint-disable-line no-param-reassign
-      });
-      currentCharacter.actionsLeft = [];
+        updatedCharacters.forEach((char, index) => {
+          char.actionsLeft = char.actions; // eslint-disable-line no-param-reassign
+          if (char.name === firstPlayer) {
+            if (index + 1 === characters.length) {
+              nextFirstPlayer = 0;
+            } else {
+              nextFirstPlayer = index + 1;
+            }
+          }
+        });
+        changeFirstPlayer(characters[nextFirstPlayer].name);
+        updateCharacters(updatedCharacters);
+        changeCharIndex(nextFirstPlayer);
+      } else {
+        const currentCharacter = cloneDeep(character);
 
-      updateCharacters(updatedCharacters);
-      changeCharIndex(charIndex);
-      changeCharacter(currentCharacter);
+        updatedCharacters.forEach((char, index) => {
+          char.actionsLeft = []; // eslint-disable-line no-param-reassign
+        });
+        currentCharacter.actionsLeft = [];
+
+        updateCharacters(updatedCharacters);
+        changeCharIndex(charIndex);
+        changeCharacter(currentCharacter);
+      }
     }
   };
 
@@ -455,9 +471,14 @@ const PlayersSection = ({
         ) : (
           <>
             <CharacterOverlay damageMode={damageMode} img={character.img} />
-            {!damageMode && (
+            {!damageMode && setupMode && characters.length < CHARACTERS.length && (
               <AddNewChar type="button" onClick={() => addNewChar(true)}>
                 <i className="fas fa-user-plus" />
+              </AddNewChar>
+            )}
+            {!damageMode && !setupMode && (
+              <AddNewChar type="button" onClick={() => toggleSetupMode(true)}>
+                <i className="far fa-edit" />
               </AddNewChar>
             )}
             {firstPlayer === character.name && (
@@ -475,7 +496,7 @@ const PlayersSection = ({
               {character.player}
             </PlayerTag>
             <ActionsWrapper>
-              {canMove && !damageMode && (
+              {canMove && !damageMode && !setupMode && (
                 <ActionButton
                   actionType={
                     // eslint-disable-next-line no-nested-ternary
@@ -488,26 +509,32 @@ const PlayersSection = ({
                   type={character.location !== 'car' && !car && 'start'}
                 />
               )}
-              {canMove && character.location === 'car' && !damageMode && (
-                <>
-                  <ActionButton
-                    actionType="car-move"
-                    callback={() => spendAction('move')}
-                  />
-                  <ActionButton
-                    actionType="car-attack"
-                    callback={() => spendAction('move')}
-                  />
-                </>
-              )}
+              {canMove &&
+                character.location === 'car' &&
+                !damageMode &&
+                !setupMode && (
+                  <>
+                    <ActionButton
+                      actionType="car-move"
+                      callback={() => spendAction('move')}
+                    />
+                    <ActionButton
+                      actionType="car-attack"
+                      callback={() => spendAction('move')}
+                    />
+                  </>
+                )}
 
-              {canMove && character.location !== 'car' && !damageMode && (
-                <ActionButton
-                  actionType="move"
-                  callback={() => spendAction('move')}
-                  type={character.movement}
-                />
-              )}
+              {canMove &&
+                character.location !== 'car' &&
+                !damageMode &&
+                !setupMode && (
+                  <ActionButton
+                    actionType="move"
+                    callback={() => spendAction('move')}
+                    type={character.movement}
+                  />
+                )}
               {/* {canSearch && (
                 <ActionButton
                   actionType="search"
@@ -515,7 +542,7 @@ const PlayersSection = ({
                   type={character.voice}
                 />
               )} */}
-              {canOpenDoor && !damageMode && generalActions && (
+              {canOpenDoor && !damageMode && generalActions && !setupMode && (
                 <ActionButton
                   actionType="open-door"
                   callback={spendAction}
@@ -538,10 +565,11 @@ const PlayersSection = ({
             {!damageMode && (
               <ModalSignButton
                 noOverlay
-                onClick={nextRound}
+                onClick={onClickMainButton}
                 roundEnded={roundEnded}
+                setupMode={setupMode}
               >
-                {roundEnded ? 'START NEXT ROUND' : 'END ROUND'}
+                {getButtonText()}
               </ModalSignButton>
             )}
             {character.wounded === 'killed' && (
@@ -574,6 +602,7 @@ const PlayersSection = ({
                     makeNoise={makeNoise}
                     onClickDrop={changeInHand}
                     selectSlot={selectSlot}
+                    setupMode={setupMode}
                     slotType="inHand"
                     startTrade={startTrade}
                     wounded={character.wounded}
@@ -598,6 +627,7 @@ const PlayersSection = ({
                     noAudio
                     onClickDrop={changeInBackpack}
                     selectSlot={selectSlot}
+                    setupMode={setupMode}
                     slotType="inBackpack"
                     startTrade={startTrade}
                     wounded={character.wounded}

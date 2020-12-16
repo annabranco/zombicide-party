@@ -192,12 +192,6 @@ export const PlayImageButton = styled.button`
   line-height: 0;
   width: 100%;
   padding: 0;
-  /* cursor: ${({ canAttack, damageMode, slotType, type }) =>
-    ((type === 'weapons' && slotType === 'inHand' && canAttack) ||
-      damageMode ||
-      type === 'activations' ||
-      slotType === 'selection') &&
-    'pointer'}; */
 
   &:hover {
     filter: ${({ damageMode, type }) =>
@@ -208,9 +202,10 @@ export const PlayImageButton = styled.button`
   }
   transition: background ease 1.5s;
 
-  ${({ canAttack, damageMode, slotType, type }) => {
+  ${({ canAttack, damageMode, setupMode, slotType, type }) => {
     switch (true) {
       case !!damageMode:
+      case !!setupMode:
       case type === 'activations':
       case slotType === 'selection':
         return css`

@@ -31,6 +31,7 @@ const ItemsArea = ({
   makeNoise,
   onClickDrop,
   selectSlot,
+  setupMode,
   slotType,
   startTrade,
   trade,
@@ -87,9 +88,11 @@ const ItemsArea = ({
           select(true);
         }
       }
-    } else if (canSearch) {
+    } else if (canSearch || setupMode) {
       selectSlot(index + adj);
-      callback('search');
+      if (!setupMode) {
+        callback('search');
+      }
     }
   };
 
@@ -113,7 +116,8 @@ const ItemsArea = ({
             isSelected={isSelected}
             makeNoise={makeNoise}
             name={item}
-            onClickCard={onClickCard}
+            onClickCard={setupMode ? onClickEmptyCard : onClickCard}
+            setupMode={setupMode}
             slotType={slotType}
             trade={trade}
             type={itemsType}
@@ -125,12 +129,13 @@ const ItemsArea = ({
             damageMode={damageMode}
             canSearch={canSearch}
             isSelected={isSelected}
-            onClick={(trade || damageMode) && onClickEmptyCard}
+            onClick={trade || damageMode ? () => null : onClickEmptyCard}
+            setupMode={setupMode}
             trade={trade}
           >
             {!trade &&
               (slotType === 'inHand' ? 'Item in hand' : 'Item in backpack')}
-            {canSearch && !damageMode && (
+            {canSearch && !damageMode && !setupMode && (
               <ActionButton
                 actionType="search"
                 callback={onClickEmptyCard}
@@ -180,6 +185,7 @@ ItemsArea.propTypes = {
   makeNoise: func.isRequired,
   onClickDrop: func.isRequired,
   selectSlot: func.isRequired,
+  setupMode: bool,
   slotType: string.isRequired,
   startTrade: func.isRequired,
   trade: bool.isRequired,
@@ -193,6 +199,7 @@ ItemsArea.defaultProps = {
   charName: null,
   charVoice: null,
   item: null,
+  setupMode: false,
   tradeItem: () => null
 };
 

@@ -68,8 +68,8 @@ export const ItemBlank = styled.div`
   text-transform: uppercase;
   color: rgba(255, 255, 255, 0.5);
   text-shadow: 0 0 12px black;
-  cursor: ${({ allSlotsAreEmpty, damageMode, canSearch, trade }) =>
-    (damageMode && !allSlotsAreEmpty) || (!canSearch && !trade)
+  cursor: ${({ allSlotsAreEmpty, damageMode, canSearch, setupMode, trade }) =>
+    (damageMode && !allSlotsAreEmpty) || (!canSearch && !trade && !setupMode)
       ? 'not-allowed'
       : 'pointer'};
 

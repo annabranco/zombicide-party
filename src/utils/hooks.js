@@ -87,6 +87,13 @@ export const useTurnsCounter = ([
     changeMessage('');
   }, [attacks, movements, numOfActions, searches]);
 
+  console.log('$$$ finishedTurn', finishedTurn);
+  console.log('$$$ [numOfActions, movements, attacks, searches]', [
+    numOfActions,
+    movements,
+    attacks,
+    searches
+  ]);
   return {
     generalActions,
     extraMovementActions,

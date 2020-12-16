@@ -12,4 +12,7 @@ export const getActionColor = action => {
 };
 
 export const checkIfHasAnyActionLeft = actionsArray =>
-  actionsArray.reduce((a, b) => a + b, 0) > 0;
+  actionsArray.reduce(
+    (a, b) => a + (typeof b === 'number' ? Math.max(0, b) : Number(!!b)),
+    0
+  );
