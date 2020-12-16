@@ -1,4 +1,5 @@
 import { useState, useDebugValue, useEffect } from 'react';
+import { checkIfHasAnyActionLeft } from './actions';
 
 export const useStateWithLabel = (initialValue, displayName) => {
   const [value, setValue] = useState(initialValue);
@@ -80,8 +81,9 @@ export const useTurnsCounter = ([
     setExtraMovementActions(movements);
     setExtraAttackActions(attacks);
     setSearchActions(searches);
-    finishTurn(!attacks && !movements && !numOfActions && searches <= 0);
-
+    finishTurn(
+      !checkIfHasAnyActionLeft([numOfActions, movements, attacks, searches])
+    );
     changeMessage('');
   }, [attacks, movements, numOfActions, searches]);
 

@@ -10,3 +10,6 @@ export const getActionColor = action => {
       return '#00a9ff';
   }
 };
+
+export const checkIfHasAnyActionLeft = actionsArray =>
+  actionsArray.reduce((a, b) => a + b, 0) > 0;

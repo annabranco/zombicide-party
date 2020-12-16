@@ -17,6 +17,7 @@ const App = () => {
   );
   const [damageMode, toggleDamageMode] = useStateWithLabel(false, 'damageMode');
   const [loadedGame, loadGame] = useStateWithLabel(null, 'damageMode');
+  const [zombiesTurn, setZombiesTurn] = useStateWithLabel(null, 'damageMode');
 
   useEffect(() => {
     const game = JSON.parse(localStorage.getItem('ZombicideParty'));
@@ -57,12 +58,14 @@ const App = () => {
                   loadGame={loadGame}
                   loadedGame={loadedGame}
                   toggleDamageMode={toggleDamageMode}
+                  setZombiesTurn={setZombiesTurn}
                 />
               </Section>
               <Section name="Zombies">
                 <ZombiesSection
                   damageMode={damageMode}
                   toggleDamageMode={toggleDamageMode}
+                  zombiesTurn={zombiesTurn}
                 />
               </Section>
             </MainScreen>

@@ -6,11 +6,18 @@ import SoundBlock from '../../SoundBlock';
 import { SelectorArea, ZombiesArea } from '../../SoundBlock/styles';
 import {
   AttackInstructions,
+  CancelAttackButton,
   NoSelectOverlay,
-  SubSectionWrapper
+  SubSectionWrapper,
+  ZombiesTurnSign
 } from './styles';
 
-const ZombiesSection = ({ damageMode, toggleDamageMode }) => {
+const ZombiesSection = ({
+  damageMode,
+  roundEnded,
+  toggleDamageMode,
+  zombiesTurn
+}) => {
   const [zombies, changeZombies] = useStateWithLabel(
     [...ZOMBIES_S1, DOGZ],
     'zombies'
@@ -40,15 +47,22 @@ const ZombiesSection = ({ damageMode, toggleDamageMode }) => {
             </div>
           ))}
         </SelectorArea>
+        {damageMode && (
+          <CancelAttackButton onClick={() => toggleDamageMode(false)}>
+            Cancel
+          </CancelAttackButton>
+        )}
+        {zombiesTurn && <ZombiesTurnSign>Zombies round</ZombiesTurnSign>}
       </SubSectionWrapper>
-      {/* )} */}
     </ZombiesArea>
   );
 };
 
 ZombiesSection.propTypes = {
   damageMode: bool.isRequired,
-  toggleDamageMode: func.isRequired
+  roundEnded: bool.isRequired,
+  toggleDamageMode: func.isRequired,
+  zombiesTurn: bool.isRequired
 };
 
 export default ZombiesSection;

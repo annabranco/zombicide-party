@@ -4,7 +4,10 @@ import { arrayOf, bool, func } from 'prop-types';
 import { useHistory } from 'react-router-dom';
 import { CHARACTERS } from '../../../setup/characters';
 import { getCharacterColor } from '../../../utils/players';
-import { getActionColor } from '../../../utils/actions';
+import {
+  checkIfHasAnyActionLeft,
+  getActionColor
+} from '../../../utils/actions';
 import { characterCanOpenDoors, checkForNoise } from '../../../utils/items';
 import { useStateWithLabel, useTurnsCounter } from '../../../utils/hooks';
 import ItemsSelectorModal from '../../Items/ItemsSelectorModal';
@@ -50,6 +53,7 @@ const PlayersSection = ({
   initialCharacters,
   loadGame,
   loadedGame,
+  setZombiesTurn,
   toggleDamageMode
 }) => {
   const [character, changeCharacter] = useStateWithLabel({}, 'character');
@@ -59,7 +63,7 @@ const PlayersSection = ({
     'selectCharOverlay'
   );
   const [slot, selectSlot] = useStateWithLabel(null, 'slot');
-  const [turnEnded, endTurn] = useStateWithLabel(null, 'turnEnded');
+  const [roundEnded, endRound] = useStateWithLabel(null, 'roundEnded');
 
   const [characters, updateCharacters] = useStateWithLabel([], 'characters');
   const [dataLoaded, setDataLoaded] = useStateWithLabel(false, 'dataLoaded');
@@ -304,35 +308,48 @@ const PlayersSection = ({
   const checkIfRoundHasFinished = () => {
     if (
       characters.every(char => {
-        return (
-          char.actionsLeft && char.actionsLeft.reduce((a, b) => a + b, 0) <= 0
-        );
+        return char.actionsLeft && !checkIfHasAnyActionLeft(char.actionsLeft);
       })
     ) {
-      endTurn(true);
+      endRound(true);
+      setZombiesTurn(true);
       localStorage.setItem('ZombicideParty', JSON.stringify(characters));
-    } else if (turnEnded) {
-      endTurn(false);
+    } else if (roundEnded) {
+      endRound(false);
+      setZombiesTurn(false);
     }
   };
 
   const nextRound = () => {
     const updatedCharacters = cloneDeep(characters);
-    let nextFirstPlayer;
+    if (roundEnded) {
+      let nextFirstPlayer;
 
-    updatedCharacters.forEach((char, index) => {
-      char.actionsLeft = char.actions; // eslint-disable-line no-param-reassign
-      if (char.name === firstPlayer) {
-        if (index + 1 === characters.length) {
-          nextFirstPlayer = 0;
-        } else {
-          nextFirstPlayer = index + 1;
+      updatedCharacters.forEach((char, index) => {
+        char.actionsLeft = char.actions; // eslint-disable-line no-param-reassign
+        if (char.name === firstPlayer) {
+          if (index + 1 === characters.length) {
+            nextFirstPlayer = 0;
+          } else {
+            nextFirstPlayer = index + 1;
+          }
         }
-      }
-    });
-    changeFirstPlayer(characters[nextFirstPlayer].name);
-    updateCharacters(updatedCharacters);
-    changeCharIndex(nextFirstPlayer);
+      });
+      changeFirstPlayer(characters[nextFirstPlayer].name);
+      updateCharacters(updatedCharacters);
+      changeCharIndex(nextFirstPlayer);
+    } else {
+      const currentCharacter = cloneDeep(character);
+
+      updatedCharacters.forEach((char, index) => {
+        char.actionsLeft = []; // eslint-disable-line no-param-reassign
+      });
+      currentCharacter.actionsLeft = [];
+
+      updateCharacters(updatedCharacters);
+      changeCharIndex(charIndex);
+      changeCharacter(currentCharacter);
+    }
   };
 
   useEffect(() => {
@@ -438,9 +455,11 @@ const PlayersSection = ({
         ) : (
           <>
             <CharacterOverlay damageMode={damageMode} img={character.img} />
-            <AddNewChar type="button" onClick={() => addNewChar(true)}>
-              <i className="fas fa-user-plus" />
-            </AddNewChar>
+            {!damageMode && (
+              <AddNewChar type="button" onClick={() => addNewChar(true)}>
+                <i className="fas fa-user-plus" />
+              </AddNewChar>
+            )}
             {firstPlayer === character.name && (
               <FirstPlayerWrapper>
                 <FirstPlayerToken src={FirstPlayer} alt="First Player Token" />
@@ -456,7 +475,7 @@ const PlayersSection = ({
               {character.player}
             </PlayerTag>
             <ActionsWrapper>
-              {canMove && (
+              {canMove && !damageMode && (
                 <ActionButton
                   actionType={
                     // eslint-disable-next-line no-nested-ternary
@@ -469,7 +488,7 @@ const PlayersSection = ({
                   type={character.location !== 'car' && !car && 'start'}
                 />
               )}
-              {canMove && character.location === 'car' && (
+              {canMove && character.location === 'car' && !damageMode && (
                 <>
                   <ActionButton
                     actionType="car-move"
@@ -482,7 +501,7 @@ const PlayersSection = ({
                 </>
               )}
 
-              {canMove && character.location !== 'car' && (
+              {canMove && character.location !== 'car' && !damageMode && (
                 <ActionButton
                   actionType="move"
                   callback={() => spendAction('move')}
@@ -516,10 +535,15 @@ const PlayersSection = ({
                 {`${character.name}'s turn has finished`}
               </FinishedTurnTag>
             )}
-            {turnEnded && <ModalSign noOverlay>Zombies round ➡</ModalSign>}
-            <ModalSignButton noOverlay onClick={nextRound}>
-              START NEXT ROUND
-            </ModalSignButton>
+            {!damageMode && (
+              <ModalSignButton
+                noOverlay
+                onClick={nextRound}
+                roundEnded={roundEnded}
+              >
+                {roundEnded ? 'START NEXT ROUND' : 'END ROUND'}
+              </ModalSignButton>
+            )}
             {character.wounded === 'killed' && (
               <>
                 <ModalSign>
@@ -640,6 +664,7 @@ PlayersSection.propTypes = {
   initialCharacters: arrayOf(characterTypes),
   loadGame: func.isRequired,
   loadedGame: arrayOf(characterTypes),
+  setZombiesTurn: func.isRequired,
   toggleDamageMode: func.isRequired
 };
 

@@ -198,8 +198,9 @@ export const ModalSign = styled(AttackInstructions)`
   ${({ noOverlay }) =>
     noOverlay &&
     css`
-      top: -130px;
-      right: -50px;
+      bottom: 0;
+      right: 50%;
+      transform: translate(-50%, 0);
       width: auto;
       opacity: 0.7;
     `}
@@ -229,6 +230,12 @@ export const ModalSignButton = styled(AppButton)`
       bottom: 5px;
       left: 50%;
       transform: translate(-50%, 0);
+    `}
+  ${({ roundEnded }) =>
+    roundEnded &&
+    css`
+      color: black;
+      background: red;
     `}
 `;
 ModalSignButton.displayName = 'ModalSignButton';
