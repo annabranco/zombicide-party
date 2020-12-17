@@ -1,4 +1,5 @@
 import styled from '@emotion/styled';
+import { css } from '@emotion/core';
 
 export const ActionIcon = styled.i`
   label: ActionIcon;
@@ -24,6 +25,21 @@ export const ActionIcon = styled.i`
     color: ${({ isActive }) => (isActive ? 'red' : 'yellow')};
     text-shadow: 0 0 2px black;
   }
+
+  ${({ actionType }) =>
+    actionType === 'search' &&
+    css`
+      background: none;
+      position: absolute;
+      left: 50%;
+      transform: translate(-50%, 0);
+      padding: 0;
+      line-height: 0.9;
+      border: none;
+      font-size: 4rem;
+      color: rgba(255, 255, 255, 0.7);
+      -webkit-text-stroke: 1px black;
+    `}
 `;
 ActionIcon.displayName = 'ActionIcon';
 

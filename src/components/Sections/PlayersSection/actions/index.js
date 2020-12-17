@@ -111,6 +111,7 @@ const ActionButton = ({
         </CarIconWrapper>
       ) : (
         <ActionIcon
+          actionType={actionType}
           aria-hidden
           className={iconType}
           isActive={isActive}

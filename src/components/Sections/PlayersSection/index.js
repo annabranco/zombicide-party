@@ -8,7 +8,11 @@ import {
   checkIfHasAnyActionLeft,
   getActionColor
 } from '../../../utils/actions';
-import { characterCanOpenDoors, checkForNoise } from '../../../utils/items';
+import {
+  checkIfCharacterCanOpenDoors,
+  checkForNoise,
+  checkIfCharacterHasFlashlight
+} from '../../../utils/items';
 import { useStateWithLabel, useTurnsCounter } from '../../../utils/hooks';
 import ItemsSelectorModal from '../../Items/ItemsSelectorModal';
 import ActionButton from './actions';
@@ -75,7 +79,10 @@ const PlayersSection = ({
     null,
     'firstPlayer'
   );
-
+  const [canUseFlashlight, changeCanUseFlashlight] = useStateWithLabel(
+    false,
+    'canUseFlashlight'
+  );
   const [trade, startTrade] = useStateWithLabel(false, 'trade');
   const [noise, setNoise] = useStateWithLabel(0, 'noise');
   const [actionsCount, updateActionsCount] = useStateWithLabel(
@@ -126,9 +133,10 @@ const PlayersSection = ({
     const updatedCharacters = cloneDeep(characters);
     const newItems = [...updatedCharacter.inHand];
     newItems[currentSlot] = name;
-    const openDoors = characterCanOpenDoors(newItems);
-    // updateInHand(newItems);
+    const openDoors = checkIfCharacterCanOpenDoors(newItems);
+    const hasFlashlight = checkIfCharacterHasFlashlight(newItems);
     setCanOpenDoor(openDoors);
+    changeCanUseFlashlight(hasFlashlight);
     updatedCharacter.inHand = newItems;
     updatedCharacters.forEach(char => {
       if (char.name === updatedCharacter.name) {
@@ -146,10 +154,10 @@ const PlayersSection = ({
     const updatedCharacters = cloneDeep(characters);
     const newItems = [...updatedCharacter.inBackpack];
     newItems[currentSlot] = name;
-    const openDoors = characterCanOpenDoors(newItems);
-
-    // updateInBackpack(newItems);
+    const openDoors = checkIfCharacterCanOpenDoors(newItems);
+    const hasFlashlight = checkIfCharacterHasFlashlight(newItems);
     setCanOpenDoor(openDoors);
+    changeCanUseFlashlight(hasFlashlight);
     updatedCharacter.inBackpack = newItems;
     updatedCharacters.forEach(char => {
       if (char.name === updatedCharacter.name) {
@@ -228,6 +236,23 @@ const PlayersSection = ({
         return 'START NEXT ROUND';
       default:
         return 'END ROUND';
+    }
+  };
+
+  const handleSearch = () => {
+    if (canUseFlashlight && canSearch && !character.hasUsedFlashlight) {
+      const updatedCharacter = cloneDeep(character);
+      const updatedCharacters = cloneDeep(characters);
+      updatedCharacter.hasUsedFlashlight = true;
+      updatedCharacters.forEach(char => {
+        if (char.name === updatedCharacter.name) {
+          char.hasUsedFlashlight = true; // eslint-disable-line no-param-reassign
+        }
+      });
+      changeCharacter(updatedCharacter);
+      updateCharacters(updatedCharacters);
+    } else if (canSearch) {
+      spendAction('search');
     }
   };
 
@@ -342,6 +367,7 @@ const PlayersSection = ({
 
         updatedCharacters.forEach((char, index) => {
           char.actionsLeft = char.actions; // eslint-disable-line no-param-reassign
+          char.hasUsedFlashlight = false; // eslint-disable-line no-param-reassign
           if (char.name === firstPlayer) {
             if (index + 1 === characters.length) {
               nextFirstPlayer = 0;
@@ -350,9 +376,14 @@ const PlayersSection = ({
             }
           }
         });
-        changeFirstPlayer(characters[nextFirstPlayer].name);
+        setNoise(0);
+        changeFirstPlayer(updatedCharacters[nextFirstPlayer].name);
         updateCharacters(updatedCharacters);
-        changeCharIndex(nextFirstPlayer);
+        if (charIndex === nextFirstPlayer) {
+          changeCharacter(updatedCharacters[nextFirstPlayer]);
+        } else {
+          changeCharIndex(nextFirstPlayer);
+        }
       } else {
         const currentCharacter = cloneDeep(character);
 
@@ -425,11 +456,15 @@ const PlayersSection = ({
           nextChar.inBackpack[2]
         ];
         const openDoors =
-          characterCanOpenDoors(charInHand) ||
-          characterCanOpenDoors(charInBackpack);
-
+          checkIfCharacterCanOpenDoors(charInHand) ||
+          checkIfCharacterCanOpenDoors(charInBackpack);
+        const hasFlashlight = checkIfCharacterHasFlashlight([
+          ...charInHand,
+          ...charInBackpack
+        ]);
         changeCharacter(nextChar);
         setCanOpenDoor(openDoors);
+        changeCanUseFlashlight(hasFlashlight);
         prevCharIndex.current = charIndex;
         localStorage.setItem('ZombicideParty', JSON.stringify(characters));
 
@@ -535,13 +570,7 @@ const PlayersSection = ({
                     type={character.movement}
                   />
                 )}
-              {/* {canSearch && (
-                <ActionButton
-                  actionType="search"
-                  callback={() => spendAction('search')}
-                  type={character.voice}
-                />
-              )} */}
+
               {canOpenDoor && !damageMode && generalActions && !setupMode && (
                 <ActionButton
                   actionType="open-door"
@@ -595,6 +624,7 @@ const PlayersSection = ({
                     canSearch={canSearch}
                     causeDamage={causeDamage}
                     charVoice={character.voice}
+                    handleSearch={handleSearch}
                     index={index}
                     damageMode={damageMode}
                     item={item}
@@ -619,7 +649,7 @@ const PlayersSection = ({
                     canSearch={canSearch}
                     causeDamage={causeDamage}
                     charVoice={character.voice}
-                    damageMode={damageMode}
+                    handleSearch={handleSearch}
                     index={index}
                     item={item}
                     key={`${item}-${index + 3}`}

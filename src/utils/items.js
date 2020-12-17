@@ -8,7 +8,7 @@ const ALL_ITEMS = {
   ...WEAPONS_S1
 };
 
-export const characterCanOpenDoors = currentItems => {
+export const checkIfCharacterCanOpenDoors = currentItems => {
   let openDoor;
   currentItems.forEach(item => {
     if (WEAPONS_S1[item] && WEAPONS_S1[item].canOpenDoor) {
@@ -50,4 +50,11 @@ export const checkForNoiseOpeningDoor = item => {
     return ALL_ITEMS[item].canOpenDoor === 'noisy';
   }
   return null;
+};
+
+export const checkIfCharacterHasFlashlight = items => {
+  if (items.find(name => name === 'Flashlight')) {
+    return true;
+  }
+  return false;
 };

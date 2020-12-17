@@ -57,10 +57,10 @@ export const useTurnsCounter = ([
         changeMessage(`No ${type} actions left.`);
         return null;
       }
-      setSearchActions(searchActions - 1);
 
       if (searchActions > 0) {
         changeMessage('Uses 1 free search.');
+        setSearchActions(-1);
         return hasUsedAllActions({ sea: searchActions - 1 });
       }
     }
@@ -87,13 +87,6 @@ export const useTurnsCounter = ([
     changeMessage('');
   }, [attacks, movements, numOfActions, searches]);
 
-  console.log('$$$ finishedTurn', finishedTurn);
-  console.log('$$$ [numOfActions, movements, attacks, searches]', [
-    numOfActions,
-    movements,
-    attacks,
-    searches
-  ]);
   return {
     generalActions,
     extraMovementActions,

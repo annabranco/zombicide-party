@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { bool, func, number, string } from 'prop-types';
 import { useStateWithLabel } from '../../../utils/hooks';
 import { getItemPhoto, getItemType } from '../../../utils/items';
@@ -13,7 +13,6 @@ import {
   Item,
   ActionButtonsWrapper
 } from './styles';
-import { characterTypes } from '../../../interfaces/types';
 
 const ItemsArea = ({
   actionsLeft,
@@ -25,6 +24,7 @@ const ItemsArea = ({
   charVoice,
   causeDamage,
   damageMode,
+  handleSearch,
   index,
   item,
   itemSelected,
@@ -42,10 +42,6 @@ const ItemsArea = ({
   const [isSelected, select] = useStateWithLabel(false, 'isSelected');
 
   const itemsType = getItemType(item);
-  // const [itemsType, changeItemsType] = useStateWithLabel(
-  //   getItemType(item),
-  //   'itemsType'
-  // );
 
   const onClickChange = () => {
     toggleActive(false);
@@ -91,7 +87,7 @@ const ItemsArea = ({
     } else if (canSearch || setupMode) {
       selectSlot(index + adj);
       if (!setupMode) {
-        callback('search');
+        handleSearch();
       }
     }
   };
@@ -179,6 +175,7 @@ ItemsArea.propTypes = {
   charVoice: string,
   causeDamage: func.isRequired,
   damageMode: bool.isRequired,
+  handleSearch: func.isRequired,
   index: number.isRequired,
   item: string,
   itemSelected: bool.isRequired,
