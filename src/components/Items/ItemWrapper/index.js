@@ -13,6 +13,12 @@ import {
   Item,
   ActionButtonsWrapper
 } from './styles';
+import {
+  IN_HAND,
+  ITEM_IN_BACKPACK,
+  ITEM_IN_HAND,
+  WEAPONS
+} from '../../../constants';
 
 const ItemsArea = ({
   actionsLeft,
@@ -45,11 +51,11 @@ const ItemsArea = ({
 
   const onClickChange = () => {
     toggleActive(false);
-    selectSlot(index + (itemsType === 'weapons' ? 1 : 3));
+    selectSlot(index + (itemsType === WEAPONS ? 1 : 3));
   };
 
   const onClickCard = () => {
-    const adj = slotType === 'inHand' ? 1 : 3;
+    const adj = slotType === IN_HAND ? 1 : 3;
     if (damageMode) {
       causeDamage(index + adj);
     } else if (trade) {
@@ -68,7 +74,7 @@ const ItemsArea = ({
   };
 
   const onClickEmptyCard = () => {
-    const adj = slotType === 'inHand' ? 1 : 3;
+    const adj = slotType === IN_HAND ? 1 : 3;
 
     if (damageMode) {
       if (allSlotsAreEmpty) {
@@ -129,8 +135,7 @@ const ItemsArea = ({
             setupMode={setupMode}
             trade={trade}
           >
-            {!trade &&
-              (slotType === 'inHand' ? 'Item in hand' : 'Item in backpack')}
+            {!trade && (slotType === IN_HAND ? ITEM_IN_HAND : ITEM_IN_BACKPACK)}
             {canSearch && !damageMode && !setupMode && (
               <ActionButton
                 actionType="search"

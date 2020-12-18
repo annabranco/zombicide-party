@@ -1,6 +1,7 @@
 import styled from '@emotion/styled';
 import { css } from '@emotion/core';
 import { inactiveZombie, activeZombie } from '../../styles';
+import { IN_HAND, ITEMS, WEAPONS } from '../../constants';
 
 export const Action = styled.p`
   label: Action;
@@ -147,7 +148,7 @@ export const PlayIcon = styled.img`
         }
       `;
     }
-    if (type === 'weapons' || type === 'items') {
+    if (type === WEAPONS || type === ITEMS) {
       return css`
         border: 1px solid black;
         border-radius: 8px;
@@ -215,7 +216,7 @@ export const PlayImageButton = styled.button`
         return css`
           cursor: not-allowed;
         `;
-      case type === 'weapons' && slotType === 'inHand':
+      case type === WEAPONS && slotType === IN_HAND:
         return css`
           cursor: pointer;
         `;

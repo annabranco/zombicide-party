@@ -8,56 +8,57 @@ import PlentyOfAmmoShotgun from '../assets/images/items/plenty-of-ammo-shotgun.j
 import PlentyOfAmmo from '../assets/images/items/plenty-of-ammo.jpg';
 import Scope from '../assets/images/items/scope.jpg';
 import Water from '../assets/images/items/water.jpg';
+import { ITEMS } from '../constants';
 
 export const ITEMS_S1 = {
   BagOfRice: {
     img: BagOfRice,
     name: 'BagOfRice',
-    type: 'items'
+    type: ITEMS
   },
   CannedFood: {
     img: CannedFood,
     name: 'CannedFood',
-    type: 'items'
+    type: ITEMS
   },
   Flashlight: {
     img: Flashlight,
     name: 'Flashlight',
-    type: 'items'
+    type: ITEMS
   },
   Gasoline: {
     img: Gasoline,
     name: 'Gasoline',
-    type: 'items'
+    type: ITEMS
   },
   GlassBottle: {
     img: GlassBottle,
     name: 'GlassBottle',
-    type: 'items'
+    type: ITEMS
   },
   GoalieMask: {
     img: GoalieMask,
     name: 'GoalieMask',
-    type: 'items'
+    type: ITEMS
   },
   PlentyOfAmmoShotgun: {
     img: PlentyOfAmmoShotgun,
     name: 'PlentyOfAmmoShotgun',
-    type: 'items'
+    type: ITEMS
   },
   PlentyOfAmmo: {
     img: PlentyOfAmmo,
     name: 'PlentyOfAmmo',
-    type: 'items'
+    type: ITEMS
   },
   Scope: {
     img: Scope,
     name: 'Scope',
-    type: 'items'
+    type: ITEMS
   },
   Water: {
     img: Water,
     name: 'Water',
-    type: 'items'
+    type: ITEMS
   }
 };

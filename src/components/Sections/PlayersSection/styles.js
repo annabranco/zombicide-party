@@ -2,6 +2,7 @@ import styled from '@emotion/styled';
 import { css } from '@emotion/core';
 import { AttackInstructions } from '../ZombiesSection/styles';
 import { Appear } from '../../../styles';
+import { IN_BACKPACK } from '../../../constants';
 
 export const AppButton = styled.button`
   label: AppButton;
@@ -129,7 +130,7 @@ export const CharItems = styled.div`
   width: 90%;
 
   ${({ slotType }) =>
-    slotType === 'inBackpack' &&
+    slotType === IN_BACKPACK &&
     css`
       margin-top: -10px;
     `}

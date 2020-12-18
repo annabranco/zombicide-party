@@ -1,5 +1,6 @@
 import styled from '@emotion/styled';
 import { css } from '@emotion/core';
+import { IN_BACKPACK } from '../../../constants';
 
 export const ActionButtonIcon = styled.i`
   label: ActionButtonIcon;
@@ -131,7 +132,7 @@ export const ItemWrapper = styled.div`
         }
       `;
     }
-    if (slotType === 'inBackpack') {
+    if (slotType === IN_BACKPACK) {
       return css`
         z-index: 3;
         filter: contrast(0.6);

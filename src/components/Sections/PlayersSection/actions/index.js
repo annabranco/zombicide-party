@@ -71,6 +71,17 @@ const ActionButton = ({
   const sound = soundName && new Audio(soundName);
   const sound2 = sound2Name && new Audio(sound2Name);
 
+  const delay = () => {
+    switch (actionType) {
+      case 'open-door':
+        return 15000;
+      case 'move':
+        return 500;
+      default:
+        return 2000;
+    }
+  };
+
   const onClickIcon = () => {
     activate(true);
     if (actionType === 'car-enter' && !carStarted) {
@@ -90,12 +101,9 @@ const ActionButton = ({
       setNoise(noise + 1);
     }
 
-    setTimeout(
-      () => {
-        activate(false);
-      },
-      actionType === 'open-door' ? 15000 : 2000
-    );
+    setTimeout(() => {
+      activate(false);
+    }, delay());
     callback();
   };
 

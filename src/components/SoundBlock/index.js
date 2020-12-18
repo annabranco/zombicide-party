@@ -12,6 +12,7 @@ import {
   ItemIcon
 } from './styles';
 import { ZombieLabel } from '../Sections/ZombiesSection/styles';
+import { IN_BACKPACK, ITEMS, WEAPONS } from '../../constants';
 
 const SoundBlock = ({
   callback,
@@ -44,20 +45,20 @@ const SoundBlock = ({
   }.mp3`;
   const sound =
     !noAudio &&
-    slotType !== 'inBackpack' &&
-    type !== 'items' &&
+    slotType !== IN_BACKPACK &&
+    type !== ITEMS &&
     type !== 'wound' &&
     new Audio(filename);
 
   const play = () => {
-    if (type === 'weapons' && !quickAttackDebounce.current) {
+    if (type === WEAPONS && !quickAttackDebounce.current) {
       quickAttackDebounce.current = true;
       setTimeout(() => {
         quickAttackDebounce.current = false;
       }, 1000);
       callback('attack');
     }
-    if (sound && ((type === 'weapons' && canAttack) || type !== 'weapons')) {
+    if (sound && ((type === WEAPONS && canAttack) || type !== WEAPONS)) {
       activate(true);
       sound.currentTime = 0;
       sound.play();

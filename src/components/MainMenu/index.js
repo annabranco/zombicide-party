@@ -20,6 +20,7 @@ import {
   ZombieIntro
 } from './styles';
 import { ZOMBIES_INTRO } from '../../setup/zombies';
+import { STOP_SOUND, TEST_SOUND } from '../../constants';
 
 const MainMenu = ({ loadedGame }) => {
   const [testSound, toggleTestSound] = useStateWithLabel(false, 'testSound');
@@ -66,7 +67,7 @@ const MainMenu = ({ loadedGame }) => {
           </StyledLink>
         )}
         <TestButton onClick={() => toggleTestSound(!testSound)}>
-          {testSound ? 'Stop Sound' : 'Test Sound'}
+          {testSound ? STOP_SOUND : TEST_SOUND}
         </TestButton>
       </ButtonsArea>
 

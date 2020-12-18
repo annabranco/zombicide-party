@@ -543,7 +543,6 @@ const PlayersSection = ({
               {canMove && !damageMode && !setupMode && (
                 <ActionButton
                   actionType={
-                    // eslint-disable-next-line no-nested-ternary
                     character.location === 'car' ? 'car-exit' : 'car-enter'
                   }
                   callback={() => spendAction('move')}

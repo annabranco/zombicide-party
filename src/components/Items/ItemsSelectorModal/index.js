@@ -12,36 +12,37 @@ import {
   SubSectionTitle
 } from './styles';
 import { ButtonsWrapper, CancelButton } from '../../TradeArea/styles';
+import { IN_HAND, ITEMS, WEAPONS } from '../../../constants';
 
 const ItemsSelectorModal = ({ onSelect, selectSlot, slotType }) => {
-  const [items, changeItems] = useStateWithLabel(ITEMS_S1, 'items');
-  const [itemsType, changeItemsType] = useStateWithLabel('items', 'itemsType');
+  const [items, changeItems] = useStateWithLabel(ITEMS_S1, ITEMS);
+  const [itemsType, changeItemsType] = useStateWithLabel(ITEMS, 'itemsType');
 
   const changeType = () => {
-    if (itemsType === 'items') {
+    if (itemsType === ITEMS) {
       changeItems(WEAPONS_S1);
-      changeItemsType('weapons');
+      changeItemsType(WEAPONS);
     } else {
       changeItems(ITEMS_S1);
-      changeItemsType('items');
+      changeItemsType(ITEMS);
     }
   };
 
   useEffect(() => {
-    if (slotType === 'inHand') {
+    if (slotType === IN_HAND) {
       changeItems(WEAPONS_S1);
-      changeItemsType('weapons');
+      changeItemsType(WEAPONS);
     }
   }, [changeItems, slotType, changeItemsType]);
 
   return (
     <>
       <SelectorWrapper onClick={changeType} selectorType="itemsSelector">
-        <SelectorButton displayKills={itemsType === 'items'} />
-        <SubSectionTitle opened={itemsType === 'weapons'}>
+        <SelectorButton displayKills={itemsType === ITEMS} />
+        <SubSectionTitle opened={itemsType === WEAPONS}>
           Weapons
         </SubSectionTitle>
-        <SubSectionTitle opened={itemsType === 'items'}>Items</SubSectionTitle>
+        <SubSectionTitle opened={itemsType === ITEMS}>Items</SubSectionTitle>
       </SelectorWrapper>
       <SelectorModal>
         <SelectorArea columns={6}>

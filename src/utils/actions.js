@@ -1,10 +1,12 @@
+import { FREE_ATTACK, FREE_MOVE, FREE_SEARCH } from '../constants';
+
 export const getActionColor = action => {
   switch (action) {
-    case 'free move':
+    case FREE_MOVE:
       return '#33cc33';
-    case 'free attack':
+    case FREE_ATTACK:
       return '#ff0000';
-    case 'free search':
+    case FREE_SEARCH:
       return '#ffa100';
     default:
       return '#00a9ff';

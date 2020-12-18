@@ -22,6 +22,7 @@ import SelectorPhil from '../assets/images/selectors/selector-phil.png';
 import SelectorWanda from '../assets/images/selectors/selector-wanda.png';
 import SelectorJosh from '../assets/images/selectors/selector-josh.png';
 import SelectorDoug from '../assets/images/selectors/selector-doug.png';
+import { FEMALE, MALE } from '../constants';
 
 const AMY = {
   abilities: [],
@@ -37,7 +38,7 @@ const AMY = {
   name: 'Amy',
   player: null,
   selector: SelectorAmy,
-  voice: 'female',
+  voice: FEMALE,
   wounded: false
 };
 
@@ -55,7 +56,7 @@ const BEN = {
   name: 'Ben',
   player: null,
   selector: SelectorBen,
-  voice: 'male',
+  voice: MALE,
   wounded: false
 };
 
@@ -73,7 +74,7 @@ const DOUG = {
   name: 'Doug',
   player: null,
   selector: SelectorDoug,
-  voice: 'male',
+  voice: MALE,
   wounded: false
 };
 
@@ -91,7 +92,7 @@ const JOSH = {
   name: 'Josh',
   player: null,
   selector: SelectorJosh,
-  voice: 'male',
+  voice: MALE,
   wounded: false
 };
 
@@ -109,7 +110,7 @@ const MARY = {
   name: 'Mary',
   player: null,
   selector: SelectorMary,
-  voice: 'female',
+  voice: FEMALE,
   wounded: false
 };
 
@@ -127,7 +128,7 @@ const NED = {
   name: 'Ned',
   player: null,
   selector: SelectorNed,
-  voice: 'male',
+  voice: MALE,
   wounded: false
 };
 
@@ -144,7 +145,7 @@ const PHIL = {
   name: 'Phil',
   player: null,
   selector: SelectorPhil,
-  voice: 'male',
+  voice: MALE,
   wounded: false
 };
 
@@ -162,7 +163,7 @@ const WANDA = {
   name: 'Wanda',
   player: null,
   selector: SelectorWanda,
-  voice: 'female',
+  voice: FEMALE,
   wounded: false
 };
 
