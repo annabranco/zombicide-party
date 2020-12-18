@@ -125,7 +125,7 @@ const ItemsArea = ({
             damageMode={damageMode}
             canSearch={canSearch}
             isSelected={isSelected}
-            onClick={trade || damageMode ? () => null : onClickEmptyCard}
+            onClick={damageMode ? () => null : onClickEmptyCard}
             setupMode={setupMode}
             trade={trade}
           >
