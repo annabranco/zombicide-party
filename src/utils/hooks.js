@@ -8,12 +8,10 @@ export const useStateWithLabel = (initialValue, displayName) => {
   return [value, setValue];
 };
 
-export const useTurnsCounter = ([
-  numOfActions,
-  movements,
-  attacks,
-  searches
-]) => {
+export const useTurnsCounter = (
+  character,
+  [numOfActions, movements, attacks, searches]
+) => {
   const [extraMovementActions, setExtraMovementActions] = useState(movements);
   const [extraAttackActions, setExtraAttackActions] = useState(attacks);
   const [searchActions, setSearchActions] = useState(searches);
@@ -85,7 +83,7 @@ export const useTurnsCounter = ([
       !checkIfHasAnyActionLeft([numOfActions, movements, attacks, searches])
     );
     changeMessage('');
-  }, [attacks, movements, numOfActions, searches]);
+  }, [attacks, character, movements, numOfActions, searches]);
 
   return {
     generalActions,

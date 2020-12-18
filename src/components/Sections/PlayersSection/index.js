@@ -68,7 +68,7 @@ const PlayersSection = ({
   );
   const [slot, selectSlot] = useStateWithLabel(null, 'slot');
   const [roundEnded, endRound] = useStateWithLabel(null, 'roundEnded');
-  const [setupMode, toggleSetupMode] = useStateWithLabel(true, 'roundEnded');
+  const [setupMode, toggleSetupMode] = useStateWithLabel(true, 'setupMode');
 
   const [characters, updateCharacters] = useStateWithLabel([], 'characters');
   const [dataLoaded, setDataLoaded] = useStateWithLabel(false, 'dataLoaded');
@@ -106,7 +106,8 @@ const PlayersSection = ({
     canSearch,
     message
   } = useTurnsCounter(
-    (character && (character.actionsLeft || character.actions)) || [3, 0, 0, 0]
+    character && character.name,
+    character.actionsLeft || character.actions || [3, 0, 0, 0]
   );
   window.character = character;
 
@@ -398,6 +399,14 @@ const PlayersSection = ({
       }
     }
   };
+
+  characters.forEach(char =>
+    console.log(
+      char.name,
+      char.actionsLeft,
+      !!checkIfHasAnyActionLeft(char.actionsLeft || [])
+    )
+  );
 
   useEffect(() => {
     if (!dataLoaded) {
