@@ -12,6 +12,7 @@ import Pistol from '../assets/images/weapons/pistol.jpg';
 import Rifle from '../assets/images/weapons/rifle.jpg';
 import SawedOff from '../assets/images/weapons/sawed-off.jpg';
 import Shotgun from '../assets/images/weapons/shotgun.jpg';
+import SniperRifle from '../assets/images/weapons/sniper-rifle.jpg';
 import SubMG from '../assets/images/weapons/sub-mg.jpg';
 import { WEAPONS } from '../constants';
 
@@ -100,6 +101,12 @@ export const WEAPONS_S1 = {
   Shotgun: {
     img: Shotgun,
     name: 'Shotgun',
+    noise: true,
+    type: WEAPONS
+  },
+  SniperRifle: {
+    img: SniperRifle,
+    name: 'SniperRifle',
     noise: true,
     type: WEAPONS
   },

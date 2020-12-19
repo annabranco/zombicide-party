@@ -26,20 +26,31 @@ export const ActionIcon = styled.i`
     text-shadow: 0 0 2px black;
   }
 
-  ${({ actionType }) =>
-    actionType === 'search' &&
-    css`
-      background: none;
-      position: absolute;
-      left: 50%;
-      transform: translate(-50%, 0);
-      padding: 0;
-      line-height: 0.9;
-      border: none;
-      font-size: 4rem;
-      color: rgba(255, 255, 255, 0.7);
-      -webkit-text-stroke: 1px black;
-    `}
+  ${({ actionType }) => {
+    if (actionType === 'search') {
+      return css`
+        background: none;
+        position: absolute;
+        left: 50%;
+        transform: translate(-50%, 0);
+        padding: 0;
+        line-height: 0.9;
+        border: none;
+        font-size: 4rem;
+        color: rgba(255, 255, 255, 0.7);
+        -webkit-text-stroke: 1px black;
+      `;
+    }
+    if (actionType === 'endTurn') {
+      return css`
+        color: black;
+        &:hover {
+          color: darkred;
+        }
+      `;
+    }
+    return null;
+  }}
 `;
 ActionIcon.displayName = 'ActionIcon';
 

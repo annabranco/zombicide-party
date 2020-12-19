@@ -236,17 +236,6 @@ const PlayersSection = ({
     }
   };
 
-  const getButtonText = () => {
-    switch (true) {
-      case setupMode:
-        return 'FINISH SETUP';
-      case roundEnded:
-        return 'START NEXT ROUND';
-      default:
-        return 'END ROUND';
-    }
-  };
-
   const handleSearch = () => {
     if (canUseFlashlight && canSearch && !character.hasUsedFlashlight) {
       const updatedCharacter = cloneDeep(character);
@@ -417,6 +406,12 @@ const PlayersSection = ({
     }
   };
 
+  const onClickEndTurn = () => {
+    const updatedCharacter = cloneDeep(character);
+    updatedCharacter.actionsLeft = [];
+    changeCharacter(updatedCharacter);
+  };
+
   useEffect(() => {
     if (!dataLoaded) {
       const updatedCharacters =
@@ -563,6 +558,12 @@ const PlayersSection = ({
             </PlayerTag>
             {character.wounded !== 'killed' && (
               <ActionsWrapper>
+                {!damageMode && !setupMode && !finishedTurn && (
+                  <ActionButton
+                    actionType="endTurn"
+                    callback={onClickEndTurn}
+                  />
+                )}
                 {canMove && !damageMode && !setupMode && (
                   <ActionButton
                     actionType={
@@ -623,14 +624,14 @@ const PlayersSection = ({
                 {`${character.name}${TURN_FINISHED}`}
               </FinishedTurnTag>
             )}
-            {!damageMode && (
+            {(setupMode || roundEnded) && (
               <ModalSignButton
                 noOverlay
                 onClick={onClickMainButton}
                 roundEnded={roundEnded}
                 setupMode={setupMode}
               >
-                {getButtonText()}
+                {setupMode ? 'FINISH SETUP' : 'START NEXT ROUND'}
               </ModalSignButton>
             )}
             {character.wounded === 'killed' && (

@@ -28,6 +28,9 @@ const ActionButton = ({
       iconType = 'fas fa-walking';
       soundName = actionType && type && `${path}/${actionType}-${type}.mp3`;
       break;
+    case 'endTurn':
+      iconType = 'fas fa-times-circle';
+      break;
     case 'open-door':
       iconSize = 'small';
       iconType = 'fas fa-door-open';
@@ -77,6 +80,8 @@ const ActionButton = ({
         return 15000;
       case 'move':
         return 500;
+      case 'endTurn':
+        return 0;
       default:
         return 2000;
     }
@@ -84,17 +89,21 @@ const ActionButton = ({
 
   const onClickIcon = () => {
     activate(true);
+
     if (actionType === 'car-enter' && !carStarted) {
       startCar(true);
       enterCar(true);
     } else if (actionType === 'car-exit') {
       enterCar(false);
     }
-    sound.currentTime = 0;
-    sound.play();
-    if (sound2) {
-      sound2.currentTime = 0;
-      setTimeout(() => sound2.play(), 3100);
+
+    if (sound) {
+      sound.currentTime = 0;
+      sound.play();
+      if (sound2) {
+        sound2.currentTime = 0;
+        setTimeout(() => sound2.play(), 3100);
+      }
     }
 
     if (actionType === 'open-door' && checkForNoiseOpeningDoor(type)) {

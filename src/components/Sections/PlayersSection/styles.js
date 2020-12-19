@@ -231,12 +231,12 @@ export const ModalSignButton = styled(AppButton)`
   position: absolute;
   top: unset;
   bottom: 20px;
-  height: 20px;
+  height: 30px;
   width: 200px;
   line-height: 0.9;
   text-align: center;
   font-family: 'Cairo', sans-serif;
-  font-size: 0.8rem;
+  font-size: 0.9rem;
   cursor: pointer;
   border: 1px solid black;
   border-radius: 5px;
@@ -245,7 +245,7 @@ export const ModalSignButton = styled(AppButton)`
     noOverlay &&
     css`
       bottom: unset;
-      bottom: 5px;
+      bottom: 15px;
       left: 50%;
       transform: translate(-50%, 0);
     `}
