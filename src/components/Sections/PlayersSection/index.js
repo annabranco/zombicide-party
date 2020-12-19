@@ -51,6 +51,7 @@ import { characterTypes } from '../../../interfaces/types';
 import { SOUNDS_PATH } from '../../../setup/endpoints';
 import TradeArea from '../../TradeArea';
 import NewGame from '../../NewGame';
+import { LOCAL_STORAGE_KEY } from '../../../constants';
 
 const PlayersSection = ({
   damageMode,
@@ -107,7 +108,7 @@ const PlayersSection = ({
     message
   } = useTurnsCounter(
     character && character.name,
-    character.actionsLeft || character.actions || [3, 0, 0, 0]
+    character.actionsLeft || character.actions || []
   );
   window.character = character;
 
@@ -147,7 +148,7 @@ const PlayersSection = ({
     changeCharacter(updatedCharacter);
     updateCharacters(updatedCharacters);
     selectSlot();
-    localStorage.setItem('ZombicideParty', JSON.stringify(updatedCharacters));
+    localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(updatedCharacters));
   };
 
   const changeInBackpack = (name, currentSlot = slot - 3) => {
@@ -168,7 +169,7 @@ const PlayersSection = ({
     changeCharacter(updatedCharacter);
     updateCharacters(updatedCharacters);
     selectSlot();
-    localStorage.setItem('ZombicideParty', JSON.stringify(updatedCharacters));
+    localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(updatedCharacters));
   };
 
   const changeToNextPlayer = () => {
@@ -241,6 +242,8 @@ const PlayersSection = ({
   };
 
   const handleSearch = () => {
+    // eslint-disable-next-line no-debugger
+    debugger;
     if (canUseFlashlight && canSearch && !character.hasUsedFlashlight) {
       const updatedCharacter = cloneDeep(character);
       const updatedCharacters = cloneDeep(characters);
@@ -313,7 +316,7 @@ const PlayersSection = ({
     updateCharacters(updatedCharacters);
     changeCharacter(woundedCharacter);
     toggleDamageMode(false);
-    localStorage.setItem('ZombicideParty', JSON.stringify(updatedCharacters));
+    localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(updatedCharacters));
   };
 
   const selectCharacter = () => {
@@ -326,21 +329,31 @@ const PlayersSection = ({
     character.inBackpack.every(item => !item);
 
   const exitGame = () => {
-    localStorage.removeItem('ZombicideParty');
+    localStorage.removeItem(LOCAL_STORAGE_KEY);
     loadGame();
     history.push('/');
   };
 
   const confirmTrade = (updatedCharacter, updatedCharacters) => {
+    const newItems = [
+      ...updatedCharacter.inHand,
+      ...updatedCharacter.inBackpack
+    ];
+    const openDoors = checkIfCharacterCanOpenDoors(newItems);
+    const hasFlashlight = checkIfCharacterHasFlashlight(newItems);
+
     changeCharacter(updatedCharacter);
     updateCharacters(updatedCharacters);
-    localStorage.setItem('ZombicideParty', JSON.stringify(updatedCharacters));
+    setCanOpenDoor(openDoors);
+    changeCanUseFlashlight(hasFlashlight);
+
+    localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(updatedCharacters));
   };
 
   const setNewChar = updatedCharacters => {
     addNewChar(false);
     updateCharacters(updatedCharacters);
-    localStorage.setItem('ZombicideParty', JSON.stringify(updatedCharacters));
+    localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(updatedCharacters));
   };
 
   const checkIfRoundHasFinished = () => {
@@ -351,7 +364,7 @@ const PlayersSection = ({
     ) {
       endRound(true);
       setZombiesTurn(true);
-      localStorage.setItem('ZombicideParty', JSON.stringify(characters));
+      localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(characters));
     } else if (roundEnded) {
       endRound(false);
       setZombiesTurn(false);
@@ -400,14 +413,6 @@ const PlayersSection = ({
     }
   };
 
-  characters.forEach(char =>
-    console.log(
-      char.name,
-      char.actionsLeft,
-      !!checkIfHasAnyActionLeft(char.actionsLeft || [])
-    )
-  );
-
   useEffect(() => {
     if (!dataLoaded) {
       const updatedCharacters =
@@ -439,7 +444,20 @@ const PlayersSection = ({
       count.push('free search');
     }
     updateActionsCount(count);
+    characters.forEach(char =>
+      console.log(
+        '$$$ DEBUG actions',
+        char.name,
+        char.actionsLeft,
+        !!checkIfHasAnyActionLeft(char.actionsLeft || [])
+      )
+    );
+    console.log('$$$ DEBUG message', message);
+
+    console.log('$$$ DEBUG canUseFlashlight', canUseFlashlight);
+    console.log('$$$ DEBUG canSearch', canSearch);
   }, [
+    character,
     generalActions,
     extraMovementActions,
     extraAttackActions,
@@ -475,7 +493,7 @@ const PlayersSection = ({
         setCanOpenDoor(openDoors);
         changeCanUseFlashlight(hasFlashlight);
         prevCharIndex.current = charIndex;
-        localStorage.setItem('ZombicideParty', JSON.stringify(characters));
+        localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(characters));
 
         if (!dataLoaded) {
           setDataLoaded(true);

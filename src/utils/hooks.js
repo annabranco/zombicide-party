@@ -68,7 +68,14 @@ export const useTurnsCounter = (
         `Used 1 general action to ${type}: ${generalActions - 1} left.`
       );
       setGeneralActions(generalActions - 1);
-      return hasUsedAllActions({ act: generalActions - 1 });
+      if (type === 'search') {
+        setSearchActions(-1);
+        return hasUsedAllActions({ act: generalActions - 1 });
+      }
+      return hasUsedAllActions({
+        act: generalActions - 1,
+        sea: searchActions - 1
+      });
     }
     changeMessage(`No ${type} actions left.`);
     return null;
