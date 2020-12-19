@@ -44,3 +44,8 @@ export const FREE_MOVE = 'free move';
 export const FREE_ATTACK = 'free attack';
 
 export const FREE_SEARCH = 'free search';
+
+export const KILLED_EM_ALL = 'All characters are dead';
+export const KILLED = 'has \nbeen killed';
+
+export const TURN_FINISHED = "'s turn has finished";

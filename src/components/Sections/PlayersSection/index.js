@@ -45,13 +45,19 @@ import {
   WoundedWrapper,
   FirstPlayerWrapper,
   FirstPlayerStar,
-  ModalSignExitButton
+  ModalSignExitButton,
+  ModalSignText
 } from './styles';
 import { characterTypes } from '../../../interfaces/types';
 import { SOUNDS_PATH } from '../../../setup/endpoints';
 import TradeArea from '../../TradeArea';
 import NewGame from '../../NewGame';
-import { LOCAL_STORAGE_KEY } from '../../../constants';
+import {
+  KILLED,
+  KILLED_EM_ALL,
+  LOCAL_STORAGE_KEY,
+  TURN_FINISHED
+} from '../../../constants';
 
 const PlayersSection = ({
   damageMode,
@@ -242,8 +248,6 @@ const PlayersSection = ({
   };
 
   const handleSearch = () => {
-    // eslint-disable-next-line no-debugger
-    debugger;
     if (canUseFlashlight && canSearch && !character.hasUsedFlashlight) {
       const updatedCharacter = cloneDeep(character);
       const updatedCharacters = cloneDeep(characters);
@@ -509,7 +513,7 @@ const PlayersSection = ({
   return (
     <>
       <CharacterSheet>
-        {!trade && (
+        {!trade && character.wounded !== 'killed' && (
           <MovementIndicators>
             {actionsCount.map(action => (
               <MovementIcon
@@ -557,64 +561,66 @@ const PlayersSection = ({
             <PlayerTag color={getCharacterColor(character.name)}>
               {character.player}
             </PlayerTag>
-            <ActionsWrapper>
-              {canMove && !damageMode && !setupMode && (
-                <ActionButton
-                  actionType={
-                    character.location === 'car' ? 'car-exit' : 'car-enter'
-                  }
-                  callback={() => spendAction('move')}
-                  car={car}
-                  enterCar={enterCar}
-                  startCar={startCar}
-                  type={character.location !== 'car' && !car && 'start'}
-                />
-              )}
-              {canMove &&
-                character.location === 'car' &&
-                !damageMode &&
-                !setupMode && (
-                  <>
-                    <ActionButton
-                      actionType="car-move"
-                      callback={() => spendAction('move')}
-                    />
-                    <ActionButton
-                      actionType="car-attack"
-                      callback={() => spendAction('move')}
-                    />
-                  </>
-                )}
-
-              {canMove &&
-                character.location !== 'car' &&
-                !damageMode &&
-                !setupMode && (
+            {character.wounded !== 'killed' && (
+              <ActionsWrapper>
+                {canMove && !damageMode && !setupMode && (
                   <ActionButton
-                    actionType="move"
+                    actionType={
+                      character.location === 'car' ? 'car-exit' : 'car-enter'
+                    }
                     callback={() => spendAction('move')}
-                    type={character.movement}
+                    car={car}
+                    enterCar={enterCar}
+                    startCar={startCar}
+                    type={character.location !== 'car' && !car && 'start'}
                   />
                 )}
+                {canMove &&
+                  character.location === 'car' &&
+                  !damageMode &&
+                  !setupMode && (
+                    <>
+                      <ActionButton
+                        actionType="car-move"
+                        callback={() => spendAction('move')}
+                      />
+                      <ActionButton
+                        actionType="car-attack"
+                        callback={() => spendAction('move')}
+                      />
+                    </>
+                  )}
 
-              {canOpenDoor && !damageMode && generalActions && !setupMode && (
-                <ActionButton
-                  actionType="open-door"
-                  callback={spendAction}
-                  noise={noise}
-                  setNoise={setNoise}
-                  type={canOpenDoor}
-                />
-              )}
-            </ActionsWrapper>
+                {canMove &&
+                  character.location !== 'car' &&
+                  !damageMode &&
+                  !setupMode && (
+                    <ActionButton
+                      actionType="move"
+                      callback={() => spendAction('move')}
+                      type={character.movement}
+                    />
+                  )}
+
+                {canOpenDoor && !damageMode && generalActions && !setupMode && (
+                  <ActionButton
+                    actionType="open-door"
+                    callback={spendAction}
+                    noise={noise}
+                    setNoise={setNoise}
+                    type={canOpenDoor}
+                  />
+                )}
+              </ActionsWrapper>
+            )}
             {character.wounded && (
               <WoundedWrapper>
                 <WoundedSign src={Blood} />
               </WoundedWrapper>
             )}
-            {finishedTurn && (
+            {finishedTurn && character.wounded !== 'killed' && (
               <FinishedTurnTag>
-                {`${character.name}'s turn has finished`}
+                {`${character.name}${TURN_FINISHED}`}
               </FinishedTurnTag>
             )}
             {!damageMode && (
@@ -629,67 +635,76 @@ const PlayersSection = ({
             )}
             {character.wounded === 'killed' && (
               <>
-                <ModalSign>
-                  {!characters || characters.length === 0
-                    ? 'All characters are dead'
-                    : `${character.name} has been killed`}
+                <ModalSign killed>
+                  {!characters || characters.length === 0 ? (
+                    <ModalSignText>{KILLED_EM_ALL}</ModalSignText>
+                  ) : (
+                    <ModalSignText>
+                      {`${character.name} ${KILLED}`}
+                    </ModalSignText>
+                  )}
                 </ModalSign>
                 {characters.length === 0 && (
                   <ModalSignExitButton onClick={exitGame} src={Exit} />
                 )}
               </>
             )}
-            <CharItems slotType="inHand">
-              {character.inHand &&
-                character.inHand.map((item, index) => (
-                  <ItemsArea
-                    actionsLeft={generalActions}
-                    allSlotsAreEmpty={allSlotsAreEmpty()}
-                    callback={spendAction}
-                    canAttack={canAttack}
-                    canSearch={canSearch}
-                    causeDamage={causeDamage}
-                    charVoice={character.voice}
-                    handleSearch={handleSearch}
-                    index={index}
-                    damageMode={damageMode}
-                    item={item}
-                    key={`${item}-${index + 1}`}
-                    makeNoise={makeNoise}
-                    onClickDrop={changeInHand}
-                    selectSlot={selectSlot}
-                    setupMode={setupMode}
-                    slotType="inHand"
-                    startTrade={startTrade}
-                    wounded={character.wounded}
-                  />
-                ))}
-            </CharItems>
-            <CharItems slotType="inBackpack">
-              {character.inBackpack &&
-                character.inBackpack.map((item, index) => (
-                  <ItemsArea
-                    actionsLeft={generalActions}
-                    allSlotsAreEmpty={allSlotsAreEmpty()}
-                    callback={spendAction}
-                    canSearch={canSearch}
-                    causeDamage={causeDamage}
-                    charVoice={character.voice}
-                    handleSearch={handleSearch}
-                    index={index}
-                    item={item}
-                    key={`${item}-${index + 3}`}
-                    makeNoise={makeNoise}
-                    noAudio
-                    onClickDrop={changeInBackpack}
-                    selectSlot={selectSlot}
-                    setupMode={setupMode}
-                    slotType="inBackpack"
-                    startTrade={startTrade}
-                    wounded={character.wounded}
-                  />
-                ))}
-            </CharItems>
+            {character.wounded !== 'killed' && (
+              <>
+                <CharItems slotType="inHand">
+                  {character.inHand &&
+                    character.inHand.map((item, index) => (
+                      <ItemsArea
+                        actionsLeft={generalActions}
+                        allSlotsAreEmpty={allSlotsAreEmpty()}
+                        callback={spendAction}
+                        canAttack={canAttack}
+                        canSearch={canSearch}
+                        causeDamage={causeDamage}
+                        charVoice={character.voice}
+                        damageMode={damageMode}
+                        handleSearch={handleSearch}
+                        index={index}
+                        item={item}
+                        key={`${item}-${index + 1}`}
+                        makeNoise={makeNoise}
+                        onClickDrop={changeInHand}
+                        selectSlot={selectSlot}
+                        setupMode={setupMode}
+                        slotType="inHand"
+                        startTrade={startTrade}
+                        wounded={character.wounded}
+                      />
+                    ))}
+                </CharItems>
+                <CharItems slotType="inBackpack">
+                  {character.inBackpack &&
+                    character.inBackpack.map((item, index) => (
+                      <ItemsArea
+                        actionsLeft={generalActions}
+                        allSlotsAreEmpty={allSlotsAreEmpty()}
+                        callback={spendAction}
+                        canSearch={canSearch}
+                        causeDamage={causeDamage}
+                        charVoice={character.voice}
+                        damageMode={damageMode}
+                        handleSearch={handleSearch}
+                        index={index}
+                        item={item}
+                        key={`${item}-${index + 3}`}
+                        makeNoise={makeNoise}
+                        noAudio
+                        onClickDrop={changeInBackpack}
+                        selectSlot={selectSlot}
+                        setupMode={setupMode}
+                        slotType="inBackpack"
+                        startTrade={startTrade}
+                        wounded={character.wounded}
+                      />
+                    ))}
+                </CharItems>
+              </>
+            )}
             {slot && slot <= 2 && (
               <ItemsSelectorModal
                 onSelect={changeInHand}

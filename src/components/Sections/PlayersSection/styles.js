@@ -205,8 +205,25 @@ export const ModalSign = styled(AttackInstructions)`
       width: auto;
       opacity: 0.7;
     `}
+
+  ${({ killed }) =>
+    killed &&
+    css`
+      width: 100%;
+    `}
 `;
 ModalSign.displayName = 'ModalSign';
+
+export const ModalSignText = styled.p`
+  label: ModalSignText;
+  position: absolute;
+  top: 180px;
+  right: 100px;
+  width: 100%;
+  opacity: 0.9;
+  white-space: pre;
+`;
+ModalSignText.displayName = 'ModalSignText';
 
 export const ModalSignButton = styled(AppButton)`
   label: ModalSignButton;

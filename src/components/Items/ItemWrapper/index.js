@@ -75,7 +75,7 @@ const ItemsArea = ({
 
   const onClickEmptyCard = () => {
     const adj = slotType === IN_HAND ? 1 : 3;
-
+    console.log('$$$ damageMode', damageMode);
     if (damageMode) {
       if (allSlotsAreEmpty) {
         causeDamage(index + adj);
@@ -131,7 +131,7 @@ const ItemsArea = ({
             damageMode={damageMode}
             canSearch={canSearch}
             isSelected={isSelected}
-            onClick={damageMode ? () => null : onClickEmptyCard}
+            onClick={onClickEmptyCard}
             setupMode={setupMode}
             trade={trade}
           >
