@@ -1,4 +1,5 @@
 import styled from '@emotion/styled';
+import { SelectionButton } from '../../MainMenu/styles';
 
 export const AttackInstructions = styled.p`
   label: AttackInstructions;
@@ -20,6 +21,24 @@ export const AttackInstructions = styled.p`
 `;
 AttackInstructions.displayName = 'AttackInstructions';
 
+export const CancelAttackButton = styled(SelectionButton)`
+  label: CancelAttackButton;
+  z-index: 10;
+  position: absolute;
+  /* margin-top: -200px; */
+  bottom: 200px;
+  height: 30px;
+  width: 120px;
+  border-radius: 5px;
+  font-size: 1.2rem;
+  line-height: 0.5;
+  text-transform: uppercase;
+  &:hover {
+    color: yellow;
+  }
+`;
+CancelAttackButton.displayName = 'CancelAttackButton';
+
 export const NoSelectOverlay = styled.div`
   label: NoSelectOverlay;
   position: absolute;
@@ -35,6 +54,7 @@ NoSelectOverlay.displayName = 'NoSelectOverlay';
 
 export const SubSectionWrapper = styled.div`
   label: SubSectionWrapper;
+  position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -64,3 +84,18 @@ export const ZombieLabel = styled.h3`
   transition: all ease 1s;
 `;
 ZombieLabel.displayName = 'ZombieLabel';
+
+export const ZombiesTurnSign = styled(AttackInstructions)`
+  label: ZombiesTurnSign;
+  position: absolute;
+  z-index: 2;
+  top: unset;
+  bottom: 50px;
+  left: 50%;
+  transform: translate(-50%, 0);
+  background: none;
+  font-family: Crackhouse, 'Grandstander', cursive;
+  font-size: 5rem;
+  opacity: 0.7;
+`;
+ZombiesTurnSign.displayName = 'ZombiesTurnSign';

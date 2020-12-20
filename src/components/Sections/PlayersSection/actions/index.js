@@ -9,6 +9,8 @@ const ActionButton = ({
   actionType,
   callback,
   carStarted,
+  combineItemSelected,
+  combinePair,
   enterCar,
   noise,
   setNoise,
@@ -27,6 +29,12 @@ const ActionButton = ({
     case 'move':
       iconType = 'fas fa-walking';
       soundName = actionType && type && `${path}/${actionType}-${type}.mp3`;
+      break;
+    case 'endTurn':
+      iconType = 'fas fa-times-circle';
+      break;
+    case 'combine':
+      iconType = 'fas fa-wrench';
       break;
     case 'open-door':
       iconSize = 'small';
@@ -71,32 +79,46 @@ const ActionButton = ({
   const sound = soundName && new Audio(soundName);
   const sound2 = sound2Name && new Audio(sound2Name);
 
-  const onClickIcon = () => {
+  const delay = () => {
+    switch (actionType) {
+      case 'open-door':
+        return 15000;
+      case 'move':
+        return 500;
+      case 'endTurn':
+        return 0;
+      default:
+        return 2000;
+    }
+  };
+
+  const onClickIcon = event => {
     activate(true);
+
     if (actionType === 'car-enter' && !carStarted) {
       startCar(true);
       enterCar(true);
     } else if (actionType === 'car-exit') {
       enterCar(false);
     }
-    sound.currentTime = 0;
-    sound.play();
-    if (sound2) {
-      sound2.currentTime = 0;
-      setTimeout(() => sound2.play(), 3100);
+
+    if (sound) {
+      sound.currentTime = 0;
+      sound.play();
+      if (sound2) {
+        sound2.currentTime = 0;
+        setTimeout(() => sound2.play(), 3100);
+      }
     }
 
     if (actionType === 'open-door' && checkForNoiseOpeningDoor(type)) {
       setNoise(noise + 1);
     }
 
-    setTimeout(
-      () => {
-        activate(false);
-      },
-      actionType === 'open-door' ? 15000 : 2000
-    );
-    callback();
+    setTimeout(() => {
+      activate(false);
+    }, delay());
+    callback(event);
   };
 
   return (
@@ -111,10 +133,13 @@ const ActionButton = ({
         </CarIconWrapper>
       ) : (
         <ActionIcon
+          actionType={actionType}
           aria-hidden
           className={iconType}
+          combineItemSelected={combineItemSelected}
+          combinePair={combinePair}
           isActive={isActive}
-          onClick={isActive ? () => null : onClickIcon}
+          onClick={isActive ? () => null : event => onClickIcon(event)}
           iconSize={iconSize}
         />
       )}
@@ -126,6 +151,8 @@ ActionButton.propTypes = {
   actionType: string.isRequired,
   callback: func.isRequired,
   carStarted: bool,
+  combineItemSelected: bool,
+  combinePair: bool,
   enterCar: func,
   noise: number,
   setNoise: func,
@@ -135,6 +162,8 @@ ActionButton.propTypes = {
 
 ActionButton.defaultProps = {
   carStarted: false,
+  combineItemSelected: false,
+  combinePair: false,
   enterCar: false,
   noise: 0,
   setNoise: null,

@@ -1,6 +1,6 @@
 import styled from '@emotion/styled';
 import { css } from '@emotion/core';
-import { ActionButton } from '../MainMenu/styles';
+import { SelectionButton } from '../MainMenu/styles';
 
 export const ButtonsArea = styled.div`
   label: ButtonsArea;
@@ -19,7 +19,7 @@ export const ButtonsArea = styled.div`
 `;
 ButtonsArea.displayName = 'ButtonsArea';
 
-export const ModalButton = styled(ActionButton)`
+export const ModalButton = styled(SelectionButton)`
   label: ModalButton;
   margin: 0 40px;
   width: 190px;

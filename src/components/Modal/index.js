@@ -17,6 +17,18 @@ import {
   PlayerRemoveToggle,
   PlayersArea
 } from './styles';
+import {
+  CANCEL,
+  GO_ON,
+  NEW_GAME_WARNING,
+  MANAGE_PLAYERS,
+  CHOOSE_PLAYER_DYNAMIC,
+  CHOOSE_PLAYER,
+  OK,
+  PLAYERS_DB_EMPTY,
+  WARNING,
+  LOCAL_STORAGE_PLAYERS_KEY
+} from '../../constants';
 
 const Modal = ({
   addPlayer,
@@ -43,17 +55,16 @@ const Modal = ({
   useEffect(() => {
     if (loadedGame) {
       setMessage({
-        title: 'Warning',
-        text:
-          'You have a preloaded game.\nCreating a new game will erase the previous data.\n\nCreate a new game anyway?',
+        title: WARNING,
+        text: NEW_GAME_WARNING,
         buttons: [
           {
-            text: 'Cancel',
+            text: CANCEL,
             onClick: () => history.push('/'),
             type: 'cancel'
           },
           {
-            text: 'Go on',
+            text: GO_ON,
             onClick: onClickGoOn,
             type: 'go-on'
           }
@@ -68,15 +79,13 @@ const Modal = ({
 
   const openPlayerWindow = () => {
     setMessage({
-      title: !dynamic && 'Manage Players',
-      text: dynamic
-        ? 'Who is gonna play the new character?'
-        : 'Who is gonna play?',
+      title: !dynamic && MANAGE_PLAYERS,
+      text: dynamic ? CHOOSE_PLAYER_DYNAMIC : CHOOSE_PLAYER,
       buttons: dynamic
         ? []
         : [
             {
-              text: 'OK',
+              text: OK,
               onClick: onClickOkButton,
               type: 'accept'
             }
@@ -86,7 +95,7 @@ const Modal = ({
   };
 
   const onClickOkButton = () => {
-    localStorage.setItem('ZombicideParty Players', JSON.stringify(players));
+    localStorage.setItem(LOCAL_STORAGE_PLAYERS_KEY, JSON.stringify(players));
     toggleVisible(false);
   };
 
@@ -153,7 +162,7 @@ const Modal = ({
     <ModalWindow visible={visible} type={type}>
       <ModalTitle>{message.title}</ModalTitle>
       <ModalMessage>{message.text}</ModalMessage>
-      {(message.title === 'Manage Players' || !message.title) && (
+      {(message.title === MANAGE_PLAYERS || !message.title) && (
         <>
           <PlayersArea>
             {players.size > 0 ? (
@@ -173,9 +182,7 @@ const Modal = ({
                 </Player>
               ))
             ) : (
-              <ModalMessageSecondary>
-                No players on database. Please create one or more.
-              </ModalMessageSecondary>
+              <ModalMessageSecondary>{PLAYERS_DB_EMPTY}</ModalMessageSecondary>
             )}
           </PlayersArea>
           {showInput ? (

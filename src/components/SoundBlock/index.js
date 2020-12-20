@@ -1,6 +1,8 @@
 import React, { useRef } from 'react';
 import { bool, func, number, string } from 'prop-types';
 import { useStateWithLabel } from '../../utils/hooks';
+import { checkIfItemCanBeCombined } from '../../utils/items';
+
 import { SOUNDS_PATH } from '../../setup/endpoints';
 import {
   Action,
@@ -12,10 +14,15 @@ import {
   ItemIcon
 } from './styles';
 import { ZombieLabel } from '../Sections/ZombiesSection/styles';
+import { IN_BACKPACK, ITEMS, WEAPONS } from '../../constants';
+import ActionButton from '../Sections/PlayersSection/actions';
 
 const SoundBlock = ({
   callback,
   canAttack,
+  canCombine,
+  combineItemSelected,
+  combinePair,
   damageMode,
   differentSounds,
   img,
@@ -25,6 +32,9 @@ const SoundBlock = ({
   name,
   noAudio,
   onClickCard,
+  onClickCombine,
+  setupMode,
+  slot,
   slotType,
   special,
   toggleDamageMode,
@@ -38,25 +48,26 @@ const SoundBlock = ({
   const quickAttackDebounce = useRef();
 
   const randomNumber = max => Math.floor(Math.random() * max + 1);
-  const filename = `${SOUNDS_PATH}${type}/${name}${
+  const filename = name === 'SniperRifle' ? 'Rifle' : name;
+  const filePath = `${SOUNDS_PATH}${type}/${filename}${
     differentSounds ? randomNumber(differentSounds) : ''
   }.mp3`;
   const sound =
     !noAudio &&
-    slotType !== 'inBackpack' &&
-    type !== 'items' &&
+    slotType !== IN_BACKPACK &&
+    type !== ITEMS &&
     type !== 'wound' &&
-    new Audio(filename);
+    new Audio(filePath);
 
   const play = () => {
-    if (type === 'weapons' && !quickAttackDebounce.current) {
+    if (type === WEAPONS && !quickAttackDebounce.current) {
       quickAttackDebounce.current = true;
       setTimeout(() => {
         quickAttackDebounce.current = false;
       }, 1000);
       callback('attack');
     }
-    if (sound && ((type === 'weapons' && canAttack) || type !== 'weapons')) {
+    if (sound && ((type === WEAPONS && canAttack) || type !== WEAPONS)) {
       activate(true);
       sound.currentTime = 0;
       sound.play();
@@ -98,46 +109,56 @@ const SoundBlock = ({
   };
 
   return (
-    <>
-      <Block damageMode={damageMode} type={type} wounded={wounded}>
-        {(isActive || isHighlighted) && type === 'activations' && (
-          <ZombieLabel isActive={isActive}>{name || label}</ZombieLabel>
+    <Block damageMode={damageMode} type={type} wounded={wounded}>
+      {(isActive || isHighlighted) && type === 'activations' && (
+        <ZombieLabel isActive={isActive}>{name || label}</ZombieLabel>
+      )}
+      <PlayImageButton
+        canAttack={canAttack}
+        isActive={isActive}
+        damageMode={damageMode}
+        onClick={damageMode || trade || setupMode ? onClickCard : play}
+        setupMode={setupMode}
+        slotType={slotType}
+        type={type}
+      >
+        {checkIfItemCanBeCombined(name) && canCombine && (
+          <ActionButton
+            actionType="combine"
+            callback={event => onClickCombine([name, slot], event)}
+            combineItemSelected={combineItemSelected}
+            combinePair={combinePair}
+          />
         )}
-        <PlayImageButton
-          canAttack={canAttack}
-          isActive={isActive}
-          damageMode={damageMode}
-          onClick={damageMode || trade ? onClickCard : play}
-          slotType={slotType}
-          type={type}
-        >
-          {type === 'activations' && (
-            <ZombieActions>
-              <Action action="activate">Activate</Action>
-              <Action action="attack" onClick={() => toggleDamageMode(name)}>
-                Attack survivor!
+        {type === 'activations' && (
+          <ZombieActions>
+            <Action action="activate">Activate</Action>
+            <Action action="attack" onClick={() => toggleDamageMode(name)}>
+              Attack survivor!
+            </Action>
+            {special && (
+              <Action
+                action="kill"
+                onClick={() => toggleDamageMode(`${name}-instant`)}
+              >
+                {special}
               </Action>
-              {special && (
-                <Action
-                  action="kill"
-                  onClick={() => toggleDamageMode(`${name}-instant`)}
-                >
-                  {special}
-                </Action>
-              )}
-            </ZombieActions>
-          )}
+            )}
+          </ZombieActions>
+        )}
 
-          {getImage()}
-        </PlayImageButton>
-      </Block>
-    </>
+        {getImage()}
+      </PlayImageButton>
+    </Block>
   );
 };
 
 SoundBlock.propTypes = {
   callback: func,
   canAttack: bool,
+  canCombine: bool,
+  combineItemSelected: bool,
+  combinePair: bool,
   damageMode: bool,
   differentSounds: number,
   img: string,
@@ -147,6 +168,9 @@ SoundBlock.propTypes = {
   name: string.isRequired,
   noAudio: bool,
   onClickCard: func.isRequired,
+  onClickCombine: func,
+  setupMode: bool.isRequired,
+  slot: number,
   slotType: string,
   special: string,
   toggleDamageMode: func.isRequired,
@@ -158,12 +182,17 @@ SoundBlock.propTypes = {
 SoundBlock.defaultProps = {
   callback: null,
   canAttack: false,
+  canCombine: false,
+  combineItemSelected: false,
+  combinePair: false,
   damageMode: false,
   differentSounds: null,
   img: null,
   isSelected: false,
   label: null,
   noAudio: false,
+  onClickCombine: null,
+  slot: null,
   special: null,
   slotType: null
 };

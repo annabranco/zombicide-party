@@ -22,6 +22,7 @@ import {
   PlayerName,
   TradeWrapper
 } from './styles';
+import { IN_BACKPACK, IN_HAND } from '../../constants';
 
 const TradeArea = ({
   spendAction,
@@ -105,8 +106,8 @@ const TradeArea = ({
       } else {
         const updChar = cloneDeep(updatedCharacter);
         const updPartn = cloneDeep(tradePartner);
-        const typeItem1 = selectedItem1.slot <= 2 ? 'inHand' : 'inBackpack';
-        const typeItem2 = slot <= 2 ? 'inHand' : 'inBackpack';
+        const typeItem1 = selectedItem1.slot <= 2 ? IN_HAND : IN_BACKPACK;
+        const typeItem2 = slot <= 2 ? IN_HAND : IN_BACKPACK;
         const index1 =
           selectedItem1.slot <= 2
             ? selectedItem1.slot - 1

@@ -1,6 +1,7 @@
 import styled from '@emotion/styled';
 import { css } from '@emotion/core';
 import { inactiveZombie, activeZombie } from '../../styles';
+import { IN_HAND, ITEMS, WEAPONS } from '../../constants';
 
 export const Action = styled.p`
   label: Action;
@@ -147,7 +148,7 @@ export const PlayIcon = styled.img`
         }
       `;
     }
-    if (type === 'weapons' || type === 'items') {
+    if (type === WEAPONS || type === ITEMS) {
       return css`
         border: 1px solid black;
         border-radius: 8px;
@@ -192,12 +193,6 @@ export const PlayImageButton = styled.button`
   line-height: 0;
   width: 100%;
   padding: 0;
-  /* cursor: ${({ canAttack, damageMode, slotType, type }) =>
-    ((type === 'weapons' && slotType === 'inHand' && canAttack) ||
-      damageMode ||
-      type === 'activations' ||
-      slotType === 'selection') &&
-    'pointer'}; */
 
   &:hover {
     filter: ${({ damageMode, type }) =>
@@ -205,12 +200,17 @@ export const PlayImageButton = styled.button`
     & > div > p {
       display: block;
     }
+
+    & > i {
+      display: block;
+    }
   }
   transition: background ease 1.5s;
 
-  ${({ canAttack, damageMode, slotType, type }) => {
+  ${({ canAttack, damageMode, setupMode, slotType, type }) => {
     switch (true) {
       case !!damageMode:
+      case !!setupMode:
       case type === 'activations':
       case slotType === 'selection':
         return css`
@@ -220,7 +220,7 @@ export const PlayImageButton = styled.button`
         return css`
           cursor: not-allowed;
         `;
-      case type === 'weapons' && slotType === 'inHand':
+      case type === WEAPONS && slotType === IN_HAND:
         return css`
           cursor: pointer;
         `;

@@ -2,6 +2,7 @@ import styled from '@emotion/styled';
 import { css } from '@emotion/core';
 import { AttackInstructions } from '../ZombiesSection/styles';
 import { Appear } from '../../../styles';
+import { IN_BACKPACK } from '../../../constants';
 
 export const AppButton = styled.button`
   label: AppButton;
@@ -129,7 +130,7 @@ export const CharItems = styled.div`
   width: 90%;
 
   ${({ slotType }) =>
-    slotType === 'inBackpack' &&
+    slotType === IN_BACKPACK &&
     css`
       margin-top: -10px;
     `}
@@ -198,13 +199,31 @@ export const ModalSign = styled(AttackInstructions)`
   ${({ noOverlay }) =>
     noOverlay &&
     css`
-      top: -130px;
-      right: -50px;
+      bottom: 0;
+      right: 50%;
+      transform: translate(-50%, 0);
       width: auto;
       opacity: 0.7;
     `}
+
+  ${({ killed }) =>
+    killed &&
+    css`
+      width: 100%;
+    `}
 `;
 ModalSign.displayName = 'ModalSign';
+
+export const ModalSignText = styled.p`
+  label: ModalSignText;
+  position: absolute;
+  top: 180px;
+  right: 100px;
+  width: 100%;
+  opacity: 0.9;
+  white-space: pre;
+`;
+ModalSignText.displayName = 'ModalSignText';
 
 export const ModalSignButton = styled(AppButton)`
   label: ModalSignButton;
@@ -212,12 +231,12 @@ export const ModalSignButton = styled(AppButton)`
   position: absolute;
   top: unset;
   bottom: 20px;
-  height: 20px;
+  height: 30px;
   width: 200px;
   line-height: 0.9;
   text-align: center;
   font-family: 'Cairo', sans-serif;
-  font-size: 0.8rem;
+  font-size: 0.9rem;
   cursor: pointer;
   border: 1px solid black;
   border-radius: 5px;
@@ -226,9 +245,22 @@ export const ModalSignButton = styled(AppButton)`
     noOverlay &&
     css`
       bottom: unset;
-      bottom: 5px;
+      bottom: 15px;
       left: 50%;
       transform: translate(-50%, 0);
+    `}
+
+  ${({ setupMode }) =>
+    setupMode &&
+    css`
+      background: green;
+    `}
+
+  ${({ roundEnded }) =>
+    roundEnded &&
+    css`
+      color: black;
+      background: red;
     `}
 `;
 ModalSignButton.displayName = 'ModalSignButton';

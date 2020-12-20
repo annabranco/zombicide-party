@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { bool, func, number, string } from 'prop-types';
 import { useStateWithLabel } from '../../../utils/hooks';
 import { getItemPhoto, getItemType } from '../../../utils/items';
@@ -13,24 +13,35 @@ import {
   Item,
   ActionButtonsWrapper
 } from './styles';
-import { characterTypes } from '../../../interfaces/types';
+import {
+  IN_HAND,
+  ITEM_IN_BACKPACK,
+  ITEM_IN_HAND,
+  WEAPONS
+} from '../../../constants';
 
 const ItemsArea = ({
   actionsLeft,
   allSlotsAreEmpty,
   callback,
   canAttack,
+  canCombine,
   canSearch,
   charName,
   charVoice,
   causeDamage,
+  combineItemSelected,
+  combinePair,
   damageMode,
+  handleSearch,
   index,
   item,
   itemSelected,
   makeNoise,
+  onClickCombine,
   onClickDrop,
   selectSlot,
+  setupMode,
   slotType,
   startTrade,
   trade,
@@ -41,26 +52,22 @@ const ItemsArea = ({
   const [isSelected, select] = useStateWithLabel(false, 'isSelected');
 
   const itemsType = getItemType(item);
-  // const [itemsType, changeItemsType] = useStateWithLabel(
-  //   getItemType(item),
-  //   'itemsType'
-  // );
 
   const onClickChange = () => {
     toggleActive(false);
-    selectSlot(index + (itemsType === 'weapons' ? 1 : 3));
+    selectSlot(index + (itemsType === WEAPONS ? 1 : 3));
   };
 
   const onClickCard = () => {
-    const adj = slotType === 'inHand' ? 1 : 3;
+    const slot = getSlotNumber(index);
     if (damageMode) {
-      causeDamage(index + adj);
+      causeDamage(slot);
     } else if (trade) {
       if (isSelected) {
         select(false);
-        tradeItem({ item: null, slot: index + adj, char: charName });
+        tradeItem({ item: null, slot, char: charName });
       } else {
-        tradeItem({ item, slot: index + adj, char: charName });
+        tradeItem({ item, slot, char: charName });
         if (!itemSelected) {
           select(true);
         }
@@ -70,26 +77,32 @@ const ItemsArea = ({
     }
   };
 
-  const onClickEmptyCard = () => {
-    const adj = slotType === 'inHand' ? 1 : 3;
+  const getSlotNumber = itemIndex => {
+    const adj = slotType === IN_HAND ? 1 : 3;
+    return itemIndex + adj;
+  };
 
+  const onClickEmptyCard = () => {
+    const slot = getSlotNumber(index);
     if (damageMode) {
       if (allSlotsAreEmpty) {
-        causeDamage(index + adj);
+        causeDamage(slot);
       }
     } else if (trade) {
       if (isSelected) {
         select(false);
-        tradeItem({ item: null, slot: index + adj, char: charName });
+        tradeItem({ item: null, slot, char: charName });
       } else {
-        tradeItem({ item: 'none', slot: index + adj, char: charName });
+        tradeItem({ item: 'none', slot, char: charName });
         if (!itemSelected) {
           select(true);
         }
       }
-    } else if (canSearch) {
-      selectSlot(index + adj);
-      callback('search');
+    } else if (canSearch || setupMode) {
+      selectSlot(slot);
+      if (!setupMode) {
+        handleSearch();
+      }
     }
   };
 
@@ -108,29 +121,43 @@ const ItemsArea = ({
           <SoundBlock
             callback={callback}
             canAttack={canAttack}
+            canCombine={canCombine && canCombine.includes(item)}
+            combineItemSelected={combineItemSelected}
+            combinePair={combinePair}
             damageMode={damageMode}
             img={getItemPhoto(item)}
             isSelected={isSelected}
             makeNoise={makeNoise}
             name={item}
-            onClickCard={onClickCard}
+            onClickCard={setupMode ? onClickEmptyCard : onClickCard}
+            onClickCombine={onClickCombine}
+            setupMode={setupMode}
+            slot={getSlotNumber(index)}
             slotType={slotType}
             trade={trade}
             type={itemsType}
             wounded={wounded}
-          />
+          >
+            {canSearch && !damageMode && !setupMode && (
+              <ActionButton
+                actionType="search"
+                callback={onClickEmptyCard}
+                type={charVoice}
+              />
+            )}
+          </SoundBlock>
         ) : (
           <ItemBlank
             allSlotsAreEmpty={allSlotsAreEmpty}
             damageMode={damageMode}
             canSearch={canSearch}
             isSelected={isSelected}
-            onClick={(trade || damageMode) && onClickEmptyCard}
+            onClick={onClickEmptyCard}
+            setupMode={setupMode}
             trade={trade}
           >
-            {!trade &&
-              (slotType === 'inHand' ? 'Item in hand' : 'Item in backpack')}
-            {canSearch && !damageMode && (
+            {!trade && (slotType === IN_HAND ? ITEM_IN_HAND : ITEM_IN_BACKPACK)}
+            {canSearch && !damageMode && !setupMode && (
               <ActionButton
                 actionType="search"
                 callback={onClickEmptyCard}
@@ -169,17 +196,23 @@ ItemsArea.propTypes = {
   allSlotsAreEmpty: bool,
   callback: func.isRequired,
   canAttack: bool,
+  canCombine: bool.isRequired,
   canSearch: bool.isRequired,
   charName: string,
   charVoice: string,
   causeDamage: func.isRequired,
+  combineItemSelected: bool,
+  combinePair: bool,
   damageMode: bool.isRequired,
+  handleSearch: func.isRequired,
   index: number.isRequired,
   item: string,
   itemSelected: bool.isRequired,
   makeNoise: func.isRequired,
+  onClickCombine: func.isRequired,
   onClickDrop: func.isRequired,
   selectSlot: func.isRequired,
+  setupMode: bool,
   slotType: string.isRequired,
   startTrade: func.isRequired,
   trade: bool.isRequired,
@@ -192,7 +225,10 @@ ItemsArea.defaultProps = {
   canAttack: false,
   charName: null,
   charVoice: null,
+  combineItemSelected: false,
+  combinePair: false,
   item: null,
+  setupMode: false,
   tradeItem: () => null
 };
 

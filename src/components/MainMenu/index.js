@@ -7,7 +7,7 @@ import Logo from '../../assets/images/logo.png';
 import Storm from '../../assets/sounds/intro/intro.mp3';
 import Horde from '../../assets/sounds/activations/Horde1.mp3';
 import {
-  ActionButton,
+  SelectionButton,
   ButtonsArea,
   LogoArea,
   MainTitle,
@@ -20,6 +20,7 @@ import {
   ZombieIntro
 } from './styles';
 import { ZOMBIES_INTRO } from '../../setup/zombies';
+import { STOP_SOUND, TEST_SOUND } from '../../constants';
 
 const MainMenu = ({ loadedGame }) => {
   const [testSound, toggleTestSound] = useStateWithLabel(false, 'testSound');
@@ -58,15 +59,15 @@ const MainMenu = ({ loadedGame }) => {
       <ZombieIntro src={zombieImage.current} />
       <ButtonsArea>
         <StyledLink to="/new">
-          <ActionButton>New Game</ActionButton>
+          <SelectionButton>New Game</SelectionButton>
         </StyledLink>
         {loadedGame && (
           <StyledLink to="/play">
-            <ActionButton>Continue</ActionButton>
+            <SelectionButton>Continue</SelectionButton>
           </StyledLink>
         )}
         <TestButton onClick={() => toggleTestSound(!testSound)}>
-          {testSound ? 'Stop Sound' : 'Test Sound'}
+          {testSound ? STOP_SOUND : TEST_SOUND}
         </TestButton>
       </ButtonsArea>
 

@@ -18,6 +18,7 @@ import {
 } from './styles';
 import { MenuScreen } from '../MainMenu/styles';
 import { characterTypes } from '../../interfaces/types';
+import { LOCAL_STORAGE_KEY } from '../../constants';
 
 const NewGame = ({
   currentChars,
@@ -105,7 +106,7 @@ const NewGame = ({
   };
 
   const onClickConfirm = () => {
-    localStorage.removeItem('ZombicideParty');
+    localStorage.removeItem(LOCAL_STORAGE_KEY);
     const newgameCharacters = [];
     charactersSelected.forEach((player, name) => {
       newgameCharacters.push(characters.find(char => char.name === name));

@@ -4,8 +4,18 @@ import { arrayOf, bool, func } from 'prop-types';
 import { useHistory } from 'react-router-dom';
 import { CHARACTERS } from '../../../setup/characters';
 import { getCharacterColor } from '../../../utils/players';
-import { getActionColor } from '../../../utils/actions';
-import { characterCanOpenDoors, checkForNoise } from '../../../utils/items';
+import {
+  checkIfHasAnyActionLeft,
+  getActionColor
+} from '../../../utils/actions';
+import {
+  checkIfCharacterCanOpenDoors,
+  checkForNoise,
+  checkIfCharacterHasFlashlight,
+  checkIfCharCanCombineItems,
+  checkIfAllSlotsAreEmpty,
+  getCombiningReference
+} from '../../../utils/items';
 import { useStateWithLabel, useTurnsCounter } from '../../../utils/hooks';
 import ItemsSelectorModal from '../../Items/ItemsSelectorModal';
 import ActionButton from './actions';
@@ -38,18 +48,26 @@ import {
   WoundedWrapper,
   FirstPlayerWrapper,
   FirstPlayerStar,
-  ModalSignExitButton
+  ModalSignExitButton,
+  ModalSignText
 } from './styles';
 import { characterTypes } from '../../../interfaces/types';
 import { SOUNDS_PATH } from '../../../setup/endpoints';
 import TradeArea from '../../TradeArea';
 import NewGame from '../../NewGame';
+import {
+  KILLED,
+  KILLED_EM_ALL,
+  LOCAL_STORAGE_KEY,
+  TURN_FINISHED
+} from '../../../constants';
 
 const PlayersSection = ({
   damageMode,
   initialCharacters,
   loadGame,
   loadedGame,
+  setZombiesTurn,
   toggleDamageMode
 }) => {
   const [character, changeCharacter] = useStateWithLabel({}, 'character');
@@ -59,7 +77,8 @@ const PlayersSection = ({
     'selectCharOverlay'
   );
   const [slot, selectSlot] = useStateWithLabel(null, 'slot');
-  const [turnEnded, endTurn] = useStateWithLabel(null, 'turnEnded');
+  const [roundEnded, endRound] = useStateWithLabel(null, 'roundEnded');
+  const [setupMode, toggleSetupMode] = useStateWithLabel(true, 'setupMode');
 
   const [characters, updateCharacters] = useStateWithLabel([], 'characters');
   const [dataLoaded, setDataLoaded] = useStateWithLabel(false, 'dataLoaded');
@@ -70,9 +89,17 @@ const PlayersSection = ({
     null,
     'firstPlayer'
   );
-
+  const [canUseFlashlight, changeCanUseFlashlight] = useStateWithLabel(
+    false,
+    'canUseFlashlight'
+  );
+  const [combiningItem, setCombiningItem] = useStateWithLabel(
+    null,
+    'combiningItem'
+  );
   const [trade, startTrade] = useStateWithLabel(false, 'trade');
   const [noise, setNoise] = useStateWithLabel(0, 'noise');
+  const [canCombine, toggleCanCombine] = useStateWithLabel(false, 'canCombine');
   const [actionsCount, updateActionsCount] = useStateWithLabel(
     [],
     'actionsCount'
@@ -94,7 +121,8 @@ const PlayersSection = ({
     canSearch,
     message
   } = useTurnsCounter(
-    (character && (character.actionsLeft || character.actions)) || [3, 0, 0, 0]
+    character && character.name,
+    character.actionsLeft || character.actions || []
   );
   window.character = character;
 
@@ -121,9 +149,15 @@ const PlayersSection = ({
     const updatedCharacters = cloneDeep(characters);
     const newItems = [...updatedCharacter.inHand];
     newItems[currentSlot] = name;
-    const openDoors = characterCanOpenDoors(newItems);
-    // updateInHand(newItems);
+    const openDoors = checkIfCharacterCanOpenDoors(newItems);
+    const hasFlashlight = checkIfCharacterHasFlashlight(newItems);
+    const charCanCombineItems = checkIfCharCanCombineItems([
+      ...newItems,
+      ...updatedCharacter.inBackpack
+    ]);
     setCanOpenDoor(openDoors);
+    changeCanUseFlashlight(hasFlashlight);
+    toggleCanCombine(charCanCombineItems);
     updatedCharacter.inHand = newItems;
     updatedCharacters.forEach(char => {
       if (char.name === updatedCharacter.name) {
@@ -133,7 +167,7 @@ const PlayersSection = ({
     changeCharacter(updatedCharacter);
     updateCharacters(updatedCharacters);
     selectSlot();
-    localStorage.setItem('ZombicideParty', JSON.stringify(updatedCharacters));
+    localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(updatedCharacters));
   };
 
   const changeInBackpack = (name, currentSlot = slot - 3) => {
@@ -141,10 +175,15 @@ const PlayersSection = ({
     const updatedCharacters = cloneDeep(characters);
     const newItems = [...updatedCharacter.inBackpack];
     newItems[currentSlot] = name;
-    const openDoors = characterCanOpenDoors(newItems);
-
-    // updateInBackpack(newItems);
+    const openDoors = checkIfCharacterCanOpenDoors(newItems);
+    const hasFlashlight = checkIfCharacterHasFlashlight(newItems);
+    const charCanCombineItems = checkIfCharCanCombineItems([
+      ...newItems,
+      ...updatedCharacter.inHand
+    ]);
     setCanOpenDoor(openDoors);
+    changeCanUseFlashlight(hasFlashlight);
+    toggleCanCombine(charCanCombineItems);
     updatedCharacter.inBackpack = newItems;
     updatedCharacters.forEach(char => {
       if (char.name === updatedCharacter.name) {
@@ -154,7 +193,7 @@ const PlayersSection = ({
     changeCharacter(updatedCharacter);
     updateCharacters(updatedCharacters);
     selectSlot();
-    localStorage.setItem('ZombicideParty', JSON.stringify(updatedCharacters));
+    localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(updatedCharacters));
   };
 
   const changeToNextPlayer = () => {
@@ -215,6 +254,23 @@ const PlayersSection = ({
     }
   };
 
+  const handleSearch = () => {
+    if (canUseFlashlight && canSearch && !character.hasUsedFlashlight) {
+      const updatedCharacter = cloneDeep(character);
+      const updatedCharacters = cloneDeep(characters);
+      updatedCharacter.hasUsedFlashlight = true;
+      updatedCharacters.forEach(char => {
+        if (char.name === updatedCharacter.name) {
+          char.hasUsedFlashlight = true; // eslint-disable-line no-param-reassign
+        }
+      });
+      changeCharacter(updatedCharacter);
+      updateCharacters(updatedCharacters);
+    } else if (canSearch) {
+      spendAction('search');
+    }
+  };
+
   const causeDamage = selectedSlot => {
     const woundedCharacter = cloneDeep(character);
     const updatedCharacters = cloneDeep(characters);
@@ -271,7 +327,7 @@ const PlayersSection = ({
     updateCharacters(updatedCharacters);
     changeCharacter(woundedCharacter);
     toggleDamageMode(false);
-    localStorage.setItem('ZombicideParty', JSON.stringify(updatedCharacters));
+    localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(updatedCharacters));
   };
 
   const selectCharacter = () => {
@@ -279,60 +335,129 @@ const PlayersSection = ({
     return character;
   };
 
-  const allSlotsAreEmpty = () =>
-    character.inHand.every(item => !item) &&
-    character.inBackpack.every(item => !item);
-
   const exitGame = () => {
-    localStorage.removeItem('ZombicideParty');
+    localStorage.removeItem(LOCAL_STORAGE_KEY);
     loadGame();
     history.push('/');
   };
 
   const confirmTrade = (updatedCharacter, updatedCharacters) => {
+    const newItems = [
+      ...updatedCharacter.inHand,
+      ...updatedCharacter.inBackpack
+    ];
+    const openDoors = checkIfCharacterCanOpenDoors(newItems);
+    const hasFlashlight = checkIfCharacterHasFlashlight(newItems);
+    const charCanCombineItems = checkIfCharCanCombineItems(newItems);
+
+    toggleCanCombine(charCanCombineItems);
     changeCharacter(updatedCharacter);
     updateCharacters(updatedCharacters);
-    localStorage.setItem('ZombicideParty', JSON.stringify(updatedCharacters));
+    setCanOpenDoor(openDoors);
+    changeCanUseFlashlight(hasFlashlight);
+
+    localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(updatedCharacters));
   };
 
   const setNewChar = updatedCharacters => {
     addNewChar(false);
     updateCharacters(updatedCharacters);
-    localStorage.setItem('ZombicideParty', JSON.stringify(updatedCharacters));
+    localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(updatedCharacters));
   };
 
   const checkIfRoundHasFinished = () => {
     if (
-      characters.every(char => {
-        return (
-          char.actionsLeft && char.actionsLeft.reduce((a, b) => a + b, 0) <= 0
-        );
-      })
+      characters.every(
+        char => char.actionsLeft && !checkIfHasAnyActionLeft(char.actionsLeft)
+      )
     ) {
-      endTurn(true);
-      localStorage.setItem('ZombicideParty', JSON.stringify(characters));
-    } else if (turnEnded) {
-      endTurn(false);
+      endRound(true);
+      setZombiesTurn(true);
+      localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(characters));
+    } else if (roundEnded) {
+      endRound(false);
+      setZombiesTurn(false);
     }
   };
 
-  const nextRound = () => {
-    const updatedCharacters = cloneDeep(characters);
-    let nextFirstPlayer;
+  const onClickMainButton = () => {
+    if (setupMode) {
+      toggleSetupMode(false);
+    } else {
+      const updatedCharacters = cloneDeep(characters);
+      if (roundEnded) {
+        let nextFirstPlayer;
 
-    updatedCharacters.forEach((char, index) => {
-      char.actionsLeft = char.actions; // eslint-disable-line no-param-reassign
-      if (char.name === firstPlayer) {
-        if (index + 1 === characters.length) {
-          nextFirstPlayer = 0;
+        updatedCharacters.forEach((char, index) => {
+          char.actionsLeft = char.actions; // eslint-disable-line no-param-reassign
+          char.hasUsedFlashlight = false; // eslint-disable-line no-param-reassign
+          if (char.name === firstPlayer) {
+            if (index + 1 === characters.length) {
+              nextFirstPlayer = 0;
+            } else {
+              nextFirstPlayer = index + 1;
+            }
+          }
+        });
+        setNoise(0);
+        changeFirstPlayer(updatedCharacters[nextFirstPlayer].name);
+        updateCharacters(updatedCharacters);
+        if (charIndex === nextFirstPlayer) {
+          changeCharacter(updatedCharacters[nextFirstPlayer]);
         } else {
-          nextFirstPlayer = index + 1;
+          changeCharIndex(nextFirstPlayer);
         }
+      } else {
+        const currentCharacter = cloneDeep(character);
+
+        updatedCharacters.forEach((char, index) => {
+          char.actionsLeft = []; // eslint-disable-line no-param-reassign
+        });
+        currentCharacter.actionsLeft = [];
+
+        updateCharacters(updatedCharacters);
+        changeCharIndex(charIndex);
+        changeCharacter(currentCharacter);
       }
-    });
-    changeFirstPlayer(characters[nextFirstPlayer].name);
-    updateCharacters(updatedCharacters);
-    changeCharIndex(nextFirstPlayer);
+    }
+  };
+
+  const onClickEndTurn = () => {
+    const updatedCharacter = cloneDeep(character);
+    updatedCharacter.actionsLeft = [];
+    changeCharacter(updatedCharacter);
+  };
+
+  const onClickCombine = ([item, itemSlot], event) => {
+    event.stopPropagation();
+    if (combiningItem) {
+      const { firstSlot, pair, finalItem } = combiningItem;
+      if (item === pair) {
+        const updatedCharacter = cloneDeep(character);
+        const secondSlot = itemSlot;
+
+        if (firstSlot <= 2) {
+          updatedCharacter.inHand[firstSlot - 1] = '';
+        } else {
+          updatedCharacter.inBackpack[firstSlot - 3] = '';
+        }
+        if (secondSlot <= 2) {
+          updatedCharacter.inHand[secondSlot - 1] = finalItem;
+        } else {
+          updatedCharacter.inBackpack[secondSlot - 3] = finalItem;
+        }
+        changeCharacter(updatedCharacter);
+        if (!setupMode) {
+          spendAction('general');
+        }
+        setCombiningItem();
+      } else {
+        setCombiningItem();
+      }
+    } else {
+      setCombiningItem(getCombiningReference([item, itemSlot]));
+      setTimeout(() => setCombiningItem(), 3000);
+    }
   };
 
   useEffect(() => {
@@ -366,7 +491,20 @@ const PlayersSection = ({
       count.push('free search');
     }
     updateActionsCount(count);
+    // characters.forEach(char =>
+    //   console.log(
+    //     '$$$ DEBUG actions',
+    //     char.name,
+    //     char.actionsLeft,
+    //     !!checkIfHasAnyActionLeft(char.actionsLeft || [])
+    //   )
+    // );
+    // console.log('$$$ DEBUG message', message);
+
+    // console.log('$$$ DEBUG canUseFlashlight', canUseFlashlight);
+    // console.log('$$$ DEBUG canSearch', canSearch);
   }, [
+    character,
     generalActions,
     extraMovementActions,
     extraAttackActions,
@@ -392,13 +530,23 @@ const PlayersSection = ({
           nextChar.inBackpack[2]
         ];
         const openDoors =
-          characterCanOpenDoors(charInHand) ||
-          characterCanOpenDoors(charInBackpack);
+          checkIfCharacterCanOpenDoors(charInHand) ||
+          checkIfCharacterCanOpenDoors(charInBackpack);
+        const hasFlashlight = checkIfCharacterHasFlashlight([
+          ...charInHand,
+          ...charInBackpack
+        ]);
+        const charCanCombineItems = checkIfCharCanCombineItems([
+          ...charInHand,
+          ...charInBackpack
+        ]);
 
         changeCharacter(nextChar);
         setCanOpenDoor(openDoors);
+        changeCanUseFlashlight(hasFlashlight);
+        toggleCanCombine(charCanCombineItems);
         prevCharIndex.current = charIndex;
-        localStorage.setItem('ZombicideParty', JSON.stringify(characters));
+        localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(characters));
 
         if (!dataLoaded) {
           setDataLoaded(true);
@@ -414,7 +562,7 @@ const PlayersSection = ({
   return (
     <>
       <CharacterSheet>
-        {!trade && (
+        {!trade && character.wounded !== 'killed' && (
           <MovementIndicators>
             {actionsCount.map(action => (
               <MovementIcon
@@ -438,9 +586,16 @@ const PlayersSection = ({
         ) : (
           <>
             <CharacterOverlay damageMode={damageMode} img={character.img} />
-            <AddNewChar type="button" onClick={() => addNewChar(true)}>
-              <i className="fas fa-user-plus" />
-            </AddNewChar>
+            {!damageMode && setupMode && characters.length < CHARACTERS.length && (
+              <AddNewChar type="button" onClick={() => addNewChar(true)}>
+                <i className="fas fa-user-plus" />
+              </AddNewChar>
+            )}
+            {!damageMode && !setupMode && (
+              <AddNewChar type="button" onClick={() => toggleSetupMode(true)}>
+                <i className="far fa-edit" />
+              </AddNewChar>
+            )}
             {firstPlayer === character.name && (
               <FirstPlayerWrapper>
                 <FirstPlayerToken src={FirstPlayer} alt="First Player Token" />
@@ -455,131 +610,178 @@ const PlayersSection = ({
             <PlayerTag color={getCharacterColor(character.name)}>
               {character.player}
             </PlayerTag>
-            <ActionsWrapper>
-              {canMove && (
-                <ActionButton
-                  actionType={
-                    // eslint-disable-next-line no-nested-ternary
-                    character.location === 'car' ? 'car-exit' : 'car-enter'
-                  }
-                  callback={() => spendAction('move')}
-                  car={car}
-                  enterCar={enterCar}
-                  startCar={startCar}
-                  type={character.location !== 'car' && !car && 'start'}
-                />
-              )}
-              {canMove && character.location === 'car' && (
-                <>
+            {character.wounded !== 'killed' && (
+              <ActionsWrapper>
+                {!damageMode && !setupMode && !finishedTurn && (
                   <ActionButton
-                    actionType="car-move"
-                    callback={() => spendAction('move')}
+                    actionType="endTurn"
+                    callback={onClickEndTurn}
                   />
+                )}
+                {canMove && !damageMode && !setupMode && (
                   <ActionButton
-                    actionType="car-attack"
+                    actionType={
+                      character.location === 'car' ? 'car-exit' : 'car-enter'
+                    }
                     callback={() => spendAction('move')}
+                    car={car}
+                    enterCar={enterCar}
+                    startCar={startCar}
+                    type={character.location !== 'car' && !car && 'start'}
                   />
-                </>
-              )}
+                )}
+                {canMove &&
+                  character.location === 'car' &&
+                  !damageMode &&
+                  !setupMode && (
+                    <>
+                      <ActionButton
+                        actionType="car-move"
+                        callback={() => spendAction('move')}
+                      />
+                      <ActionButton
+                        actionType="car-attack"
+                        callback={() => spendAction('move')}
+                      />
+                    </>
+                  )}
 
-              {canMove && character.location !== 'car' && (
-                <ActionButton
-                  actionType="move"
-                  callback={() => spendAction('move')}
-                  type={character.movement}
-                />
-              )}
-              {/* {canSearch && (
-                <ActionButton
-                  actionType="search"
-                  callback={() => spendAction('search')}
-                  type={character.voice}
-                />
-              )} */}
-              {canOpenDoor && !damageMode && generalActions && (
-                <ActionButton
-                  actionType="open-door"
-                  callback={spendAction}
-                  noise={noise}
-                  setNoise={setNoise}
-                  type={canOpenDoor}
-                />
-              )}
-            </ActionsWrapper>
+                {canMove &&
+                  character.location !== 'car' &&
+                  !damageMode &&
+                  !setupMode && (
+                    <ActionButton
+                      actionType="move"
+                      callback={() => spendAction('move')}
+                      type={character.movement}
+                    />
+                  )}
+
+                {canOpenDoor && !damageMode && generalActions && !setupMode && (
+                  <ActionButton
+                    actionType="open-door"
+                    callback={spendAction}
+                    noise={noise}
+                    setNoise={setNoise}
+                    type={canOpenDoor}
+                  />
+                )}
+              </ActionsWrapper>
+            )}
             {character.wounded && (
               <WoundedWrapper>
                 <WoundedSign src={Blood} />
               </WoundedWrapper>
             )}
-            {finishedTurn && (
+            {finishedTurn && character.wounded !== 'killed' && (
               <FinishedTurnTag>
-                {`${character.name}'s turn has finished`}
+                {`${character.name}${TURN_FINISHED}`}
               </FinishedTurnTag>
             )}
-            {turnEnded && <ModalSign noOverlay>Zombies round ➡</ModalSign>}
-            <ModalSignButton noOverlay onClick={nextRound}>
-              START NEXT ROUND
-            </ModalSignButton>
+            {(setupMode || roundEnded) && (
+              <ModalSignButton
+                noOverlay
+                onClick={onClickMainButton}
+                roundEnded={roundEnded}
+                setupMode={setupMode}
+              >
+                {setupMode ? 'FINISH SETUP' : 'START NEXT ROUND'}
+              </ModalSignButton>
+            )}
             {character.wounded === 'killed' && (
               <>
-                <ModalSign>
-                  {!characters || characters.length === 0
-                    ? 'All characters are dead'
-                    : `${character.name} has been killed`}
+                <ModalSign killed>
+                  {!characters || characters.length === 0 ? (
+                    <ModalSignText>{KILLED_EM_ALL}</ModalSignText>
+                  ) : (
+                    <ModalSignText>
+                      {`${character.name} ${KILLED}`}
+                    </ModalSignText>
+                  )}
                 </ModalSign>
                 {characters.length === 0 && (
                   <ModalSignExitButton onClick={exitGame} src={Exit} />
                 )}
               </>
             )}
-            <CharItems slotType="inHand">
-              {character.inHand &&
-                character.inHand.map((item, index) => (
-                  <ItemsArea
-                    actionsLeft={generalActions}
-                    allSlotsAreEmpty={allSlotsAreEmpty()}
-                    callback={spendAction}
-                    canAttack={canAttack}
-                    canSearch={canSearch}
-                    causeDamage={causeDamage}
-                    charVoice={character.voice}
-                    index={index}
-                    damageMode={damageMode}
-                    item={item}
-                    key={`${item}-${index + 1}`}
-                    makeNoise={makeNoise}
-                    onClickDrop={changeInHand}
-                    selectSlot={selectSlot}
-                    slotType="inHand"
-                    startTrade={startTrade}
-                    wounded={character.wounded}
-                  />
-                ))}
-            </CharItems>
-            <CharItems slotType="inBackpack">
-              {character.inBackpack &&
-                character.inBackpack.map((item, index) => (
-                  <ItemsArea
-                    actionsLeft={generalActions}
-                    allSlotsAreEmpty={allSlotsAreEmpty()}
-                    callback={spendAction}
-                    canSearch={canSearch}
-                    causeDamage={causeDamage}
-                    charVoice={character.voice}
-                    damageMode={damageMode}
-                    index={index}
-                    item={item}
-                    key={`${item}-${index + 3}`}
-                    makeNoise={makeNoise}
-                    noAudio
-                    onClickDrop={changeInBackpack}
-                    selectSlot={selectSlot}
-                    slotType="inBackpack"
-                    startTrade={startTrade}
-                    wounded={character.wounded}
-                  />
-                ))}
-            </CharItems>
+            {character.wounded !== 'killed' && (
+              <>
+                <CharItems slotType="inHand">
+                  {character.inHand &&
+                    character.inHand.map((item, index) => (
+                      <ItemsArea
+                        actionsLeft={generalActions}
+                        allSlotsAreEmpty={checkIfAllSlotsAreEmpty([
+                          ...character.inHand,
+                          ...character.inBackpack
+                        ])}
+                        callback={spendAction}
+                        canAttack={canAttack}
+                        canCombine={generalActions && canCombine}
+                        canSearch={canSearch}
+                        causeDamage={causeDamage}
+                        combineItemSelected={
+                          combiningItem && combiningItem.item === item
+                        }
+                        combinePair={
+                          combiningItem && combiningItem.pair === item
+                        }
+                        charVoice={character.voice}
+                        damageMode={damageMode}
+                        handleSearch={handleSearch}
+                        index={index}
+                        item={item}
+                        key={`${item}-${index + 1}`}
+                        makeNoise={makeNoise}
+                        onClickCombine={onClickCombine}
+                        onClickDrop={changeInHand}
+                        selectSlot={selectSlot}
+                        setupMode={setupMode}
+                        slotType="inHand"
+                        startTrade={startTrade}
+                        wounded={character.wounded}
+                      />
+                    ))}
+                </CharItems>
+                <CharItems slotType="inBackpack">
+                  {character.inBackpack &&
+                    character.inBackpack.map((item, index) => (
+                      <ItemsArea
+                        actionsLeft={generalActions}
+                        allSlotsAreEmpty={checkIfAllSlotsAreEmpty([
+                          ...character.inHand,
+                          ...character.inBackpack
+                        ])}
+                        callback={spendAction}
+                        canCombine={generalActions && canCombine}
+                        canSearch={canSearch}
+                        causeDamage={causeDamage}
+                        charVoice={character.voice}
+                        combineItemSelected={
+                          combiningItem && combiningItem.item === item
+                        }
+                        combinePair={
+                          combiningItem && combiningItem.pair === item
+                        }
+                        damageMode={damageMode}
+                        handleSearch={handleSearch}
+                        index={index}
+                        item={item}
+                        key={`${item}-${index + 3}`}
+                        makeNoise={makeNoise}
+                        noAudio
+                        onClickCombine={onClickCombine}
+                        onClickDrop={changeInBackpack}
+                        selectSlot={selectSlot}
+                        setupMode={setupMode}
+                        slotType="inBackpack"
+                        startTrade={startTrade}
+                        wounded={character.wounded}
+                      />
+                    ))}
+                </CharItems>
+              </>
+            )}
             {slot && slot <= 2 && (
               <ItemsSelectorModal
                 onSelect={changeInHand}
@@ -640,6 +842,7 @@ PlayersSection.propTypes = {
   initialCharacters: arrayOf(characterTypes),
   loadGame: func.isRequired,
   loadedGame: arrayOf(characterTypes),
+  setZombiesTurn: func.isRequired,
   toggleDamageMode: func.isRequired
 };
 

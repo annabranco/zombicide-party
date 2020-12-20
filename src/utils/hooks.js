@@ -1,4 +1,5 @@
 import { useState, useDebugValue, useEffect } from 'react';
+import { checkIfHasAnyActionLeft } from './actions';
 
 export const useStateWithLabel = (initialValue, displayName) => {
   const [value, setValue] = useState(initialValue);
@@ -7,12 +8,10 @@ export const useStateWithLabel = (initialValue, displayName) => {
   return [value, setValue];
 };
 
-export const useTurnsCounter = ([
-  numOfActions,
-  movements,
-  attacks,
-  searches
-]) => {
+export const useTurnsCounter = (
+  character,
+  [numOfActions, movements, attacks, searches]
+) => {
   const [extraMovementActions, setExtraMovementActions] = useState(movements);
   const [extraAttackActions, setExtraAttackActions] = useState(attacks);
   const [searchActions, setSearchActions] = useState(searches);
@@ -56,10 +55,10 @@ export const useTurnsCounter = ([
         changeMessage(`No ${type} actions left.`);
         return null;
       }
-      setSearchActions(searchActions - 1);
 
       if (searchActions > 0) {
         changeMessage('Uses 1 free search.');
+        setSearchActions(-1);
         return hasUsedAllActions({ sea: searchActions - 1 });
       }
     }
@@ -69,7 +68,14 @@ export const useTurnsCounter = ([
         `Used 1 general action to ${type}: ${generalActions - 1} left.`
       );
       setGeneralActions(generalActions - 1);
-      return hasUsedAllActions({ act: generalActions - 1 });
+      if (type === 'search') {
+        setSearchActions(-1);
+        return hasUsedAllActions({ act: generalActions - 1 });
+      }
+      return hasUsedAllActions({
+        act: generalActions - 1,
+        sea: searchActions - 1
+      });
     }
     changeMessage(`No ${type} actions left.`);
     return null;
@@ -80,10 +86,11 @@ export const useTurnsCounter = ([
     setExtraMovementActions(movements);
     setExtraAttackActions(attacks);
     setSearchActions(searches);
-    finishTurn(!attacks && !movements && !numOfActions && searches <= 0);
-
+    finishTurn(
+      !checkIfHasAnyActionLeft([numOfActions, movements, attacks, searches])
+    );
     changeMessage('');
-  }, [attacks, movements, numOfActions, searches]);
+  }, [attacks, character, movements, numOfActions, searches]);
 
   return {
     generalActions,
