@@ -25,16 +25,20 @@ const ItemsArea = ({
   allSlotsAreEmpty,
   callback,
   canAttack,
+  canCombine,
   canSearch,
   charName,
   charVoice,
   causeDamage,
+  combineItemSelected,
+  combinePair,
   damageMode,
   handleSearch,
   index,
   item,
   itemSelected,
   makeNoise,
+  onClickCombine,
   onClickDrop,
   selectSlot,
   setupMode,
@@ -55,15 +59,15 @@ const ItemsArea = ({
   };
 
   const onClickCard = () => {
-    const adj = slotType === IN_HAND ? 1 : 3;
+    const slot = getSlotNumber(index);
     if (damageMode) {
-      causeDamage(index + adj);
+      causeDamage(slot);
     } else if (trade) {
       if (isSelected) {
         select(false);
-        tradeItem({ item: null, slot: index + adj, char: charName });
+        tradeItem({ item: null, slot, char: charName });
       } else {
-        tradeItem({ item, slot: index + adj, char: charName });
+        tradeItem({ item, slot, char: charName });
         if (!itemSelected) {
           select(true);
         }
@@ -73,24 +77,29 @@ const ItemsArea = ({
     }
   };
 
-  const onClickEmptyCard = () => {
+  const getSlotNumber = itemIndex => {
     const adj = slotType === IN_HAND ? 1 : 3;
+    return itemIndex + adj;
+  };
+
+  const onClickEmptyCard = () => {
+    const slot = getSlotNumber(index);
     if (damageMode) {
       if (allSlotsAreEmpty) {
-        causeDamage(index + adj);
+        causeDamage(slot);
       }
     } else if (trade) {
       if (isSelected) {
         select(false);
-        tradeItem({ item: null, slot: index + adj, char: charName });
+        tradeItem({ item: null, slot, char: charName });
       } else {
-        tradeItem({ item: 'none', slot: index + adj, char: charName });
+        tradeItem({ item: 'none', slot, char: charName });
         if (!itemSelected) {
           select(true);
         }
       }
     } else if (canSearch || setupMode) {
-      selectSlot(index + adj);
+      selectSlot(slot);
       if (!setupMode) {
         handleSearch();
       }
@@ -112,18 +121,31 @@ const ItemsArea = ({
           <SoundBlock
             callback={callback}
             canAttack={canAttack}
+            canCombine={canCombine && canCombine.includes(item)}
+            combineItemSelected={combineItemSelected}
+            combinePair={combinePair}
             damageMode={damageMode}
             img={getItemPhoto(item)}
             isSelected={isSelected}
             makeNoise={makeNoise}
             name={item}
             onClickCard={setupMode ? onClickEmptyCard : onClickCard}
+            onClickCombine={onClickCombine}
             setupMode={setupMode}
+            slot={getSlotNumber(index)}
             slotType={slotType}
             trade={trade}
             type={itemsType}
             wounded={wounded}
-          />
+          >
+            {canSearch && !damageMode && !setupMode && (
+              <ActionButton
+                actionType="search"
+                callback={onClickEmptyCard}
+                type={charVoice}
+              />
+            )}
+          </SoundBlock>
         ) : (
           <ItemBlank
             allSlotsAreEmpty={allSlotsAreEmpty}
@@ -174,16 +196,20 @@ ItemsArea.propTypes = {
   allSlotsAreEmpty: bool,
   callback: func.isRequired,
   canAttack: bool,
+  canCombine: bool.isRequired,
   canSearch: bool.isRequired,
   charName: string,
   charVoice: string,
   causeDamage: func.isRequired,
+  combineItemSelected: bool,
+  combinePair: bool,
   damageMode: bool.isRequired,
   handleSearch: func.isRequired,
   index: number.isRequired,
   item: string,
   itemSelected: bool.isRequired,
   makeNoise: func.isRequired,
+  onClickCombine: func.isRequired,
   onClickDrop: func.isRequired,
   selectSlot: func.isRequired,
   setupMode: bool,
@@ -199,6 +225,8 @@ ItemsArea.defaultProps = {
   canAttack: false,
   charName: null,
   charVoice: null,
+  combineItemSelected: false,
+  combinePair: false,
   item: null,
   setupMode: false,
   tradeItem: () => null

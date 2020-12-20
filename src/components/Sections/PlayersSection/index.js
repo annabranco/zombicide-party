@@ -11,7 +11,10 @@ import {
 import {
   checkIfCharacterCanOpenDoors,
   checkForNoise,
-  checkIfCharacterHasFlashlight
+  checkIfCharacterHasFlashlight,
+  checkIfCharCanCombineItems,
+  checkIfAllSlotsAreEmpty,
+  getCombiningReference
 } from '../../../utils/items';
 import { useStateWithLabel, useTurnsCounter } from '../../../utils/hooks';
 import ItemsSelectorModal from '../../Items/ItemsSelectorModal';
@@ -90,8 +93,13 @@ const PlayersSection = ({
     false,
     'canUseFlashlight'
   );
+  const [combiningItem, setCombiningItem] = useStateWithLabel(
+    null,
+    'combiningItem'
+  );
   const [trade, startTrade] = useStateWithLabel(false, 'trade');
   const [noise, setNoise] = useStateWithLabel(0, 'noise');
+  const [canCombine, toggleCanCombine] = useStateWithLabel(false, 'canCombine');
   const [actionsCount, updateActionsCount] = useStateWithLabel(
     [],
     'actionsCount'
@@ -143,8 +151,13 @@ const PlayersSection = ({
     newItems[currentSlot] = name;
     const openDoors = checkIfCharacterCanOpenDoors(newItems);
     const hasFlashlight = checkIfCharacterHasFlashlight(newItems);
+    const charCanCombineItems = checkIfCharCanCombineItems([
+      ...newItems,
+      ...updatedCharacter.inBackpack
+    ]);
     setCanOpenDoor(openDoors);
     changeCanUseFlashlight(hasFlashlight);
+    toggleCanCombine(charCanCombineItems);
     updatedCharacter.inHand = newItems;
     updatedCharacters.forEach(char => {
       if (char.name === updatedCharacter.name) {
@@ -164,8 +177,13 @@ const PlayersSection = ({
     newItems[currentSlot] = name;
     const openDoors = checkIfCharacterCanOpenDoors(newItems);
     const hasFlashlight = checkIfCharacterHasFlashlight(newItems);
+    const charCanCombineItems = checkIfCharCanCombineItems([
+      ...newItems,
+      ...updatedCharacter.inHand
+    ]);
     setCanOpenDoor(openDoors);
     changeCanUseFlashlight(hasFlashlight);
+    toggleCanCombine(charCanCombineItems);
     updatedCharacter.inBackpack = newItems;
     updatedCharacters.forEach(char => {
       if (char.name === updatedCharacter.name) {
@@ -317,10 +335,6 @@ const PlayersSection = ({
     return character;
   };
 
-  const allSlotsAreEmpty = () =>
-    character.inHand.every(item => !item) &&
-    character.inBackpack.every(item => !item);
-
   const exitGame = () => {
     localStorage.removeItem(LOCAL_STORAGE_KEY);
     loadGame();
@@ -334,7 +348,9 @@ const PlayersSection = ({
     ];
     const openDoors = checkIfCharacterCanOpenDoors(newItems);
     const hasFlashlight = checkIfCharacterHasFlashlight(newItems);
+    const charCanCombineItems = checkIfCharCanCombineItems(newItems);
 
+    toggleCanCombine(charCanCombineItems);
     changeCharacter(updatedCharacter);
     updateCharacters(updatedCharacters);
     setCanOpenDoor(openDoors);
@@ -412,6 +428,38 @@ const PlayersSection = ({
     changeCharacter(updatedCharacter);
   };
 
+  const onClickCombine = ([item, itemSlot], event) => {
+    event.stopPropagation();
+    if (combiningItem) {
+      const { firstSlot, pair, finalItem } = combiningItem;
+      if (item === pair) {
+        const updatedCharacter = cloneDeep(character);
+        const secondSlot = itemSlot;
+
+        if (firstSlot <= 2) {
+          updatedCharacter.inHand[firstSlot - 1] = '';
+        } else {
+          updatedCharacter.inBackpack[firstSlot - 3] = '';
+        }
+        if (secondSlot <= 2) {
+          updatedCharacter.inHand[secondSlot - 1] = finalItem;
+        } else {
+          updatedCharacter.inBackpack[secondSlot - 3] = finalItem;
+        }
+        changeCharacter(updatedCharacter);
+        if (!setupMode) {
+          spendAction('general');
+        }
+        setCombiningItem();
+      } else {
+        setCombiningItem();
+      }
+    } else {
+      setCombiningItem(getCombiningReference([item, itemSlot]));
+      setTimeout(() => setCombiningItem(), 3000);
+    }
+  };
+
   useEffect(() => {
     if (!dataLoaded) {
       const updatedCharacters =
@@ -443,18 +491,18 @@ const PlayersSection = ({
       count.push('free search');
     }
     updateActionsCount(count);
-    characters.forEach(char =>
-      console.log(
-        '$$$ DEBUG actions',
-        char.name,
-        char.actionsLeft,
-        !!checkIfHasAnyActionLeft(char.actionsLeft || [])
-      )
-    );
-    console.log('$$$ DEBUG message', message);
+    // characters.forEach(char =>
+    //   console.log(
+    //     '$$$ DEBUG actions',
+    //     char.name,
+    //     char.actionsLeft,
+    //     !!checkIfHasAnyActionLeft(char.actionsLeft || [])
+    //   )
+    // );
+    // console.log('$$$ DEBUG message', message);
 
-    console.log('$$$ DEBUG canUseFlashlight', canUseFlashlight);
-    console.log('$$$ DEBUG canSearch', canSearch);
+    // console.log('$$$ DEBUG canUseFlashlight', canUseFlashlight);
+    // console.log('$$$ DEBUG canSearch', canSearch);
   }, [
     character,
     generalActions,
@@ -488,9 +536,15 @@ const PlayersSection = ({
           ...charInHand,
           ...charInBackpack
         ]);
+        const charCanCombineItems = checkIfCharCanCombineItems([
+          ...charInHand,
+          ...charInBackpack
+        ]);
+
         changeCharacter(nextChar);
         setCanOpenDoor(openDoors);
         changeCanUseFlashlight(hasFlashlight);
+        toggleCanCombine(charCanCombineItems);
         prevCharIndex.current = charIndex;
         localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(characters));
 
@@ -657,11 +711,21 @@ const PlayersSection = ({
                     character.inHand.map((item, index) => (
                       <ItemsArea
                         actionsLeft={generalActions}
-                        allSlotsAreEmpty={allSlotsAreEmpty()}
+                        allSlotsAreEmpty={checkIfAllSlotsAreEmpty([
+                          ...character.inHand,
+                          ...character.inBackpack
+                        ])}
                         callback={spendAction}
                         canAttack={canAttack}
+                        canCombine={generalActions && canCombine}
                         canSearch={canSearch}
                         causeDamage={causeDamage}
+                        combineItemSelected={
+                          combiningItem && combiningItem.item === item
+                        }
+                        combinePair={
+                          combiningItem && combiningItem.pair === item
+                        }
                         charVoice={character.voice}
                         damageMode={damageMode}
                         handleSearch={handleSearch}
@@ -669,6 +733,7 @@ const PlayersSection = ({
                         item={item}
                         key={`${item}-${index + 1}`}
                         makeNoise={makeNoise}
+                        onClickCombine={onClickCombine}
                         onClickDrop={changeInHand}
                         selectSlot={selectSlot}
                         setupMode={setupMode}
@@ -683,11 +748,21 @@ const PlayersSection = ({
                     character.inBackpack.map((item, index) => (
                       <ItemsArea
                         actionsLeft={generalActions}
-                        allSlotsAreEmpty={allSlotsAreEmpty()}
+                        allSlotsAreEmpty={checkIfAllSlotsAreEmpty([
+                          ...character.inHand,
+                          ...character.inBackpack
+                        ])}
                         callback={spendAction}
+                        canCombine={generalActions && canCombine}
                         canSearch={canSearch}
                         causeDamage={causeDamage}
                         charVoice={character.voice}
+                        combineItemSelected={
+                          combiningItem && combiningItem.item === item
+                        }
+                        combinePair={
+                          combiningItem && combiningItem.pair === item
+                        }
                         damageMode={damageMode}
                         handleSearch={handleSearch}
                         index={index}
@@ -695,6 +770,7 @@ const PlayersSection = ({
                         key={`${item}-${index + 3}`}
                         makeNoise={makeNoise}
                         noAudio
+                        onClickCombine={onClickCombine}
                         onClickDrop={changeInBackpack}
                         selectSlot={selectSlot}
                         setupMode={setupMode}

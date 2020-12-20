@@ -27,11 +27,13 @@ export const ITEMS_S1 = {
     type: ITEMS
   },
   Gasoline: {
+    combine: ['GlassBottle', 'Molotov'],
     img: Gasoline,
     name: 'Gasoline',
     type: ITEMS
   },
   GlassBottle: {
+    combine: ['Gasoline', 'Molotov'],
     img: GlassBottle,
     name: 'GlassBottle',
     type: ITEMS
@@ -52,6 +54,7 @@ export const ITEMS_S1 = {
     type: ITEMS
   },
   Scope: {
+    combine: ['Rifle', 'SniperRifle'],
     img: Scope,
     name: 'Scope',
     type: ITEMS

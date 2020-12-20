@@ -9,6 +9,8 @@ const ActionButton = ({
   actionType,
   callback,
   carStarted,
+  combineItemSelected,
+  combinePair,
   enterCar,
   noise,
   setNoise,
@@ -30,6 +32,9 @@ const ActionButton = ({
       break;
     case 'endTurn':
       iconType = 'fas fa-times-circle';
+      break;
+    case 'combine':
+      iconType = 'fas fa-wrench';
       break;
     case 'open-door':
       iconSize = 'small';
@@ -87,7 +92,7 @@ const ActionButton = ({
     }
   };
 
-  const onClickIcon = () => {
+  const onClickIcon = event => {
     activate(true);
 
     if (actionType === 'car-enter' && !carStarted) {
@@ -113,7 +118,7 @@ const ActionButton = ({
     setTimeout(() => {
       activate(false);
     }, delay());
-    callback();
+    callback(event);
   };
 
   return (
@@ -131,8 +136,10 @@ const ActionButton = ({
           actionType={actionType}
           aria-hidden
           className={iconType}
+          combineItemSelected={combineItemSelected}
+          combinePair={combinePair}
           isActive={isActive}
-          onClick={isActive ? () => null : onClickIcon}
+          onClick={isActive ? () => null : event => onClickIcon(event)}
           iconSize={iconSize}
         />
       )}
@@ -144,6 +151,8 @@ ActionButton.propTypes = {
   actionType: string.isRequired,
   callback: func.isRequired,
   carStarted: bool,
+  combineItemSelected: bool,
+  combinePair: bool,
   enterCar: func,
   noise: number,
   setNoise: func,
@@ -153,6 +162,8 @@ ActionButton.propTypes = {
 
 ActionButton.defaultProps = {
   carStarted: false,
+  combineItemSelected: false,
+  combinePair: false,
   enterCar: false,
   noise: 0,
   setNoise: null,

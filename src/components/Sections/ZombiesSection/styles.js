@@ -1,5 +1,5 @@
 import styled from '@emotion/styled';
-import { ActionButton } from '../../MainMenu/styles';
+import { SelectionButton } from '../../MainMenu/styles';
 
 export const AttackInstructions = styled.p`
   label: AttackInstructions;
@@ -21,7 +21,7 @@ export const AttackInstructions = styled.p`
 `;
 AttackInstructions.displayName = 'AttackInstructions';
 
-export const CancelAttackButton = styled(ActionButton)`
+export const CancelAttackButton = styled(SelectionButton)`
   label: CancelAttackButton;
   z-index: 10;
   position: absolute;

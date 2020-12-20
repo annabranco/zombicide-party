@@ -200,6 +200,10 @@ export const PlayImageButton = styled.button`
     & > div > p {
       display: block;
     }
+
+    & > i {
+      display: block;
+    }
   }
   transition: background ease 1.5s;
 

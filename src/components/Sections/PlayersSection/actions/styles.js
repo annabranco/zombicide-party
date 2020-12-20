@@ -2,6 +2,7 @@ import styled from '@emotion/styled';
 import { css } from '@emotion/core';
 
 export const ActionIcon = styled.i`
+  z-index: 5;
   label: ActionIcon;
   height: 50px;
   width: 50px;
@@ -47,6 +48,46 @@ export const ActionIcon = styled.i`
         &:hover {
           color: darkred;
         }
+      `;
+    }
+    if (actionType === 'combine') {
+      return css`
+        display: none;
+        background: none;
+        position: absolute;
+        top: 80px;
+        left: 50%;
+        transform: translate(-50%, 0);
+        width: auto;
+        padding: 0;
+        line-height: 0.9;
+        border: none;
+        font-size: 7rem;
+        color: rgba(255, 255, 255, 0.85);
+        -webkit-text-stroke: 1px black;
+      `;
+    }
+    return null;
+  }}
+
+  ${({ combineItemSelected, combinePair }) => {
+    if (combineItemSelected) {
+      return css`
+        display: block;
+        -webkit-text-stroke: 0;
+        color: rgba(255, 255, 255, 0.4);
+
+        &:hover {
+          color: rgba(255, 255, 255, 0.4);
+          text-shadow: none;
+          cursor: initial;
+        }
+      `;
+    }
+    if (combinePair) {
+      return css`
+        display: block;
+        color: rgba(50, 205, 50, 0.5);
       `;
     }
     return null;

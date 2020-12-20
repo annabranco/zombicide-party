@@ -57,19 +57,6 @@ const ThunderFlash = keyframes`
   }
 `;
 
-export const ActionButton = styled.button`
-  label: ActionButton;
-  margin: 20px auto;
-  width: 300px;
-  padding: 10px 25px;
-  font-family: 'Grandstander', cursive;
-  font-size: 2.5rem;
-  border-radius: 20px;
-  background: red;
-  cursor: pointer;
-`;
-ActionButton.displayName = 'ActionButton';
-
 export const ButtonsArea = styled.div`
   label: ButtonsArea;
   z-index: 5;
@@ -137,13 +124,26 @@ export const MainTitle = styled.h1`
 `;
 MenuScreen.displayName = 'MenuScreen';
 
+export const SelectionButton = styled.button`
+  label: SelectionButton;
+  margin: 20px auto;
+  width: 300px;
+  padding: 10px 25px;
+  font-family: 'Grandstander', cursive;
+  font-size: 2.5rem;
+  border-radius: 20px;
+  background: red;
+  cursor: pointer;
+`;
+SelectionButton.displayName = 'SelectionButton';
+
 export const StyledLink = styled(Link)`
   label: StyledLink;
   z-index: 5;
 `;
 StyledLink.displayName = 'Link';
 
-export const TestButton = styled(ActionButton)`
+export const TestButton = styled(SelectionButton)`
   label: TestButton;
   z-index: 5;
   font-size: 1rem;

@@ -87,6 +87,7 @@ export const WEAPONS_S1 = {
     type: WEAPONS
   },
   Rifle: {
+    combine: ['Scope', 'SniperRifle'],
     img: Rifle,
     name: 'Rifle',
     noise: true,

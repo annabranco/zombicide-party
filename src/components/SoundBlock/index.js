@@ -1,6 +1,8 @@
 import React, { useRef } from 'react';
 import { bool, func, number, string } from 'prop-types';
 import { useStateWithLabel } from '../../utils/hooks';
+import { checkIfItemCanBeCombined } from '../../utils/items';
+
 import { SOUNDS_PATH } from '../../setup/endpoints';
 import {
   Action,
@@ -13,10 +15,14 @@ import {
 } from './styles';
 import { ZombieLabel } from '../Sections/ZombiesSection/styles';
 import { IN_BACKPACK, ITEMS, WEAPONS } from '../../constants';
+import ActionButton from '../Sections/PlayersSection/actions';
 
 const SoundBlock = ({
   callback,
   canAttack,
+  canCombine,
+  combineItemSelected,
+  combinePair,
   damageMode,
   differentSounds,
   img,
@@ -26,7 +32,9 @@ const SoundBlock = ({
   name,
   noAudio,
   onClickCard,
+  onClickCombine,
   setupMode,
+  slot,
   slotType,
   special,
   toggleDamageMode,
@@ -40,7 +48,8 @@ const SoundBlock = ({
   const quickAttackDebounce = useRef();
 
   const randomNumber = max => Math.floor(Math.random() * max + 1);
-  const filename = `${SOUNDS_PATH}${type}/${name}${
+  const filename = name === 'SniperRifle' ? 'Rifle' : name;
+  const filePath = `${SOUNDS_PATH}${type}/${filename}${
     differentSounds ? randomNumber(differentSounds) : ''
   }.mp3`;
   const sound =
@@ -48,7 +57,7 @@ const SoundBlock = ({
     slotType !== IN_BACKPACK &&
     type !== ITEMS &&
     type !== 'wound' &&
-    new Audio(filename);
+    new Audio(filePath);
 
   const play = () => {
     if (type === WEAPONS && !quickAttackDebounce.current) {
@@ -113,6 +122,14 @@ const SoundBlock = ({
         slotType={slotType}
         type={type}
       >
+        {checkIfItemCanBeCombined(name) && canCombine && (
+          <ActionButton
+            actionType="combine"
+            callback={event => onClickCombine([name, slot], event)}
+            combineItemSelected={combineItemSelected}
+            combinePair={combinePair}
+          />
+        )}
         {type === 'activations' && (
           <ZombieActions>
             <Action action="activate">Activate</Action>
@@ -139,6 +156,9 @@ const SoundBlock = ({
 SoundBlock.propTypes = {
   callback: func,
   canAttack: bool,
+  canCombine: bool,
+  combineItemSelected: bool,
+  combinePair: bool,
   damageMode: bool,
   differentSounds: number,
   img: string,
@@ -148,7 +168,9 @@ SoundBlock.propTypes = {
   name: string.isRequired,
   noAudio: bool,
   onClickCard: func.isRequired,
+  onClickCombine: func,
   setupMode: bool.isRequired,
+  slot: number,
   slotType: string,
   special: string,
   toggleDamageMode: func.isRequired,
@@ -160,12 +182,17 @@ SoundBlock.propTypes = {
 SoundBlock.defaultProps = {
   callback: null,
   canAttack: false,
+  canCombine: false,
+  combineItemSelected: false,
+  combinePair: false,
   damageMode: false,
   differentSounds: null,
   img: null,
   isSelected: false,
   label: null,
   noAudio: false,
+  onClickCombine: null,
+  slot: null,
   special: null,
   slotType: null
 };

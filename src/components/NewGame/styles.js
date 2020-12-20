@@ -1,6 +1,6 @@
 import styled from '@emotion/styled';
 import { css } from '@emotion/core';
-import { ActionButton } from '../MainMenu/styles';
+import { SelectionButton } from '../MainMenu/styles';
 import { activeImage, inactiveImage } from '../../styles';
 
 export const CharacterArea = styled.div`
@@ -99,7 +99,7 @@ export const Selector = styled.div`
 `;
 Selector.displayName = 'Selector';
 
-export const SelectorButton = styled(ActionButton)`
+export const SelectorButton = styled(SelectionButton)`
   label: SelectorButton;
   margin: 30px auto;
   width: 200px;

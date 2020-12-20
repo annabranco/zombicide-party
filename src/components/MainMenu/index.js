@@ -7,7 +7,7 @@ import Logo from '../../assets/images/logo.png';
 import Storm from '../../assets/sounds/intro/intro.mp3';
 import Horde from '../../assets/sounds/activations/Horde1.mp3';
 import {
-  ActionButton,
+  SelectionButton,
   ButtonsArea,
   LogoArea,
   MainTitle,
@@ -59,11 +59,11 @@ const MainMenu = ({ loadedGame }) => {
       <ZombieIntro src={zombieImage.current} />
       <ButtonsArea>
         <StyledLink to="/new">
-          <ActionButton>New Game</ActionButton>
+          <SelectionButton>New Game</SelectionButton>
         </StyledLink>
         {loadedGame && (
           <StyledLink to="/play">
-            <ActionButton>Continue</ActionButton>
+            <SelectionButton>Continue</SelectionButton>
           </StyledLink>
         )}
         <TestButton onClick={() => toggleTestSound(!testSound)}>
