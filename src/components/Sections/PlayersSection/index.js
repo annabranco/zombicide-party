@@ -61,9 +61,11 @@ import {
   KILLED,
   KILLED_EM_ALL,
   LOCAL_STORAGE_KEY,
-  TURN_FINISHED
+  TURN_FINISHED,
+  WEAPONS
 } from '../../../constants';
 import { calculateXpBar, getXpColor } from '../../../utils/xp';
+import { WEAPONS_S1 } from '../../../setup/weapons';
 
 const PlayersSection = ({
   damageMode,
@@ -598,9 +600,6 @@ const PlayersSection = ({
   return (
     <>
       <CharacterSheet>
-        <button type="button" onClick={() => gainXp(1)} style={{ zIndex: 200 }}>
-          GAIN XP
-        </button>
         {!trade && character.wounded !== 'killed' && (
           <IndicatorsWrapper header>
             {xpCounter &&
@@ -792,6 +791,8 @@ const PlayersSection = ({
                         }
                         charVoice={character.voice}
                         damageMode={damageMode}
+                        dices={WEAPONS_S1[item] && WEAPONS_S1[item].dices}
+                        gainXp={gainXp}
                         handleSearch={handleSearch}
                         index={index}
                         item={item}

@@ -1,6 +1,7 @@
 import styled from '@emotion/styled';
 import { css } from '@emotion/core';
 import { IN_BACKPACK } from '../../../constants';
+import { AppButton } from '../../Sections/PlayersSection/styles';
 
 export const ActionButtonIcon = styled.i`
   label: ActionButtonIcon;
@@ -75,7 +76,7 @@ export const ItemBlank = styled.div`
       : 'pointer'};
 
   & > i {
-    display: none;
+    display: block;
   }
 
   &:hover {
@@ -143,3 +144,36 @@ export const ItemWrapper = styled.div`
   }}
 `;
 ItemWrapper.displayName = 'ItemWrapper';
+
+export const KillButton = styled(AppButton)`
+  label: KillButton;
+  color: red;
+  margin: 5px;
+  border-radius: 50%;
+  height: 60px;
+  width: 60px;
+  opacity: 0.8;
+  outline: none;
+`;
+KillButton.displayName = 'KillButton';
+
+export const KillButtonIcon = styled(ActionButtonIcon)`
+  label: KillButtonIcon;
+  font-size: 1.8rem;
+  color: red;
+`;
+KillButtonIcon.displayName = 'KillButtonIcon';
+
+export const KillButtonsWrapper = styled.div`
+  label: KillButtonsWrapper;
+  position: absolute;
+  display: flex;
+  flex-direction: row;
+  flex-flow: wrap;
+  align-items: center;
+  justify-content: space-around;
+  margin-top: 10px;
+  height: 100%;
+  width: 100%;
+`;
+KillButtonsWrapper.displayName = 'KillButtonsWrapper';

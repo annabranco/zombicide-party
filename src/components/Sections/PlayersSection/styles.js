@@ -209,11 +209,11 @@ export const IndicatorsWrapper = styled.div`
   ${({ header }) =>
     header &&
     css`
-      top: -40px;
+      top: -35px;
       left: 0;
       width: 100%;
       justify-content: space-around;
-      padding: 0 20px;
+      padding: 0 50px 0 20px;
     `}
 `;
 IndicatorsWrapper.displayName = 'IndicatorsWrapper';

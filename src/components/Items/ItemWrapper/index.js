@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import { bool, func, number, string } from 'prop-types';
 import { useStateWithLabel } from '../../../utils/hooks';
 import { getItemPhoto, getItemType } from '../../../utils/items';
@@ -11,7 +11,10 @@ import {
   ItemWrapper,
   ItemBlank,
   Item,
-  ActionButtonsWrapper
+  ActionButtonsWrapper,
+  KillButtonsWrapper,
+  KillButton,
+  KillButtonIcon
 } from './styles';
 import {
   IN_HAND,
@@ -33,6 +36,8 @@ const ItemsArea = ({
   combineItemSelected,
   combinePair,
   damageMode,
+  dices,
+  gainXp,
   handleSearch,
   index,
   item,
@@ -50,6 +55,15 @@ const ItemsArea = ({
 }) => {
   const [isActive, toggleActive] = useStateWithLabel(false, 'isActive');
   const [isSelected, select] = useStateWithLabel(false, 'isSelected');
+  const [killButtons, changeKillButtons] = useStateWithLabel(
+    dices ? [...Array(dices).keys()] : [],
+    'killButtons'
+  );
+  const [displayKillButtons, toggleDisplayKillButtons] = useStateWithLabel(
+    false,
+    'displayKillButtons'
+  );
+  const killButtonsTimer = useRef();
 
   const itemsType = getItemType(item);
 
@@ -106,6 +120,26 @@ const ItemsArea = ({
     }
   };
 
+  const activateKillButtons = () => {
+    toggleDisplayKillButtons(true);
+    killButtonsTimer.current = setTimeout(() => {
+      toggleDisplayKillButtons(false);
+      changeKillButtons([...Array(dices).keys()]);
+    }, 3000);
+  };
+
+  const killOneZombie = () => {
+    const updatedKillButtons = [...killButtons];
+    clearTimeout(killButtonsTimer.current);
+    killButtonsTimer.current = setTimeout(() => {
+      toggleDisplayKillButtons(false);
+      changeKillButtons([...Array(dices).keys()]);
+    }, 3000);
+    updatedKillButtons.pop();
+    changeKillButtons(updatedKillButtons);
+    gainXp(1);
+  };
+
   return (
     <ItemWrapper
       id={`${item}-${index + 1}`}
@@ -119,6 +153,7 @@ const ItemsArea = ({
       <Item damageMode={damageMode} trade={trade}>
         {item ? (
           <SoundBlock
+            activateKillButtons={activateKillButtons}
             callback={callback}
             canAttack={canAttack}
             canCombine={canCombine && canCombine.includes(item)}
@@ -187,6 +222,20 @@ const ItemsArea = ({
           </AppButton>
         )}
       </ActionButtonsWrapper>
+      {displayKillButtons && (
+        <KillButtonsWrapper>
+          {killButtons.map(key => (
+            <KillButton
+              key={`kill-${item}-${key}`}
+              onClick={killOneZombie}
+              type="button"
+              trade
+            >
+              <KillButtonIcon className="fas fa-skull" type="kill" />
+            </KillButton>
+          ))}
+        </KillButtonsWrapper>
+      )}
     </ItemWrapper>
   );
 };
@@ -204,6 +253,8 @@ ItemsArea.propTypes = {
   combineItemSelected: bool,
   combinePair: bool,
   damageMode: bool.isRequired,
+  dices: number,
+  gainXp: func,
   handleSearch: func.isRequired,
   index: number.isRequired,
   item: string,
@@ -227,6 +278,8 @@ ItemsArea.defaultProps = {
   charVoice: null,
   combineItemSelected: false,
   combinePair: false,
+  dices: null,
+  gainXp: null,
   item: null,
   setupMode: false,
   tradeItem: () => null
