@@ -179,9 +179,44 @@ export const FirstPlayerWrapper = styled.div`
   height: 100%;
   width: 100%;
   overflow: hidden;
-  /* background: rgba(255, 233, 0, 0.2); */
 `;
 FirstPlayerWrapper.displayName = 'FirstPlayerWrapper';
+
+export const HishestXpTag = styled.span`
+  label: HishestXpTag;
+  position: absolute;
+  top: 20px;
+  left: -3px;
+  font-family: 'Cairo', sans-serif;
+  text-transform: uppercase;
+  font-size: 0.8rem;
+  color: white;
+`;
+HishestXpTag.displayName = 'HishestXpTag';
+
+export const IndicatorsWrapper = styled.div`
+  label: IndicatorsWrapper;
+  z-index: 10;
+  position: absolute;
+  top: 0;
+  left: 20px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  opacity: 0.7;
+
+  ${({ header }) =>
+    header &&
+    css`
+      top: -40px;
+      left: 0;
+      width: 100%;
+      justify-content: space-around;
+      padding: 0 20px;
+    `}
+`;
+IndicatorsWrapper.displayName = 'IndicatorsWrapper';
 
 export const ModalSign = styled(AttackInstructions)`
   label: ModalSign;
@@ -280,22 +315,8 @@ export const ModalSignExitButton = styled.img`
 `;
 ModalSignButton.displayName = 'ModalSignButton';
 
-export const MovementIndicators = styled.div`
-  label: MovementIndicators;
-  z-index: 10;
-  position: absolute;
-  top: 0;
-  left: 20px;
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: center;
-  opacity: 0.7;
-`;
-MovementIndicators.displayName = 'MovementIndicators';
-
 export const MovementIcon = styled.div`
-  label: MovementIndicators;
+  label: MovementIcon;
   position: relative;
   left: 0.75em;
   width: ${({ type }) => (typeof type === 'number' ? '20px' : '70px')};
@@ -308,7 +329,7 @@ export const MovementIcon = styled.div`
   font-size: 0.7rem;
   font-family: 'Cairo', sans-serif;
 
-  &:not(:first-child) {
+  &:not(:first-of-type) {
     margin-left: 15px;
   }
 
@@ -333,7 +354,7 @@ export const MovementIcon = styled.div`
     background: ${({ color }) => color};
   }
 `;
-MovementIndicators.displayName = 'MovementIndicators';
+MovementIcon.displayName = 'MovementIcon';
 
 export const NextButton = styled(AppButton)`
   label: NextButton;
@@ -464,3 +485,57 @@ export const WoundedWrapper = styled.div`
   overflow: hidden;
 `;
 WoundedWrapper.displayName = 'WoundedWrapper';
+
+export const XpIcon = styled(MovementIcon)`
+  label: XpIcon;
+  width: 25px;
+  left: 0;
+  /* color: black; */
+  color: black;
+  font-size: ${({ currentXp, highestXp }) =>
+    (currentXp || highestXp) && '1.1rem'};
+  line-height: ${({ currentXp, highestXp }) =>
+    currentXp || highestXp ? '1' : '1.2'};
+
+  background: ${({ activeColor }) => activeColor && activeColor};
+  opacity: ${({ activeColor }) => activeColor && 1};
+  height: ${({ currentXp, highestXp }) =>
+    currentXp || highestXp ? '18px' : '14px'};
+  width: ${({ currentXp, highestXp }) =>
+    currentXp || highestXp ? '35px' : '25px'};
+
+  &:not(:first-of-type) {
+    margin-left: 8px;
+  }
+
+  &:after {
+    content: '';
+    position: absolute;
+    left: 100%;
+    width: 6px;
+    height: ${({ currentXp, highestXp }) =>
+      currentXp || highestXp ? '18px' : '14px'};
+    clip-path: polygon(50% 50%, -50% -50%, 0 100%);
+    background: ${({ activeColor }) => activeColor && activeColor};
+  }
+  &:before {
+    content: '';
+    position: absolute;
+    /* left: 10px; */
+    top: 0;
+    width: 6px;
+    height: ${({ currentXp, highestXp }) =>
+      currentXp || highestXp ? '18px' : '14px'};
+    clip-path: polygon(100% 0, 100% 100%, 0% 100%, 50% 50%, 0% 0%);
+    transform: translateX(-100%);
+    background: ${({ activeColor }) => activeColor && activeColor};
+  }
+
+  &:first-of-type:before {
+    clip-path: none;
+  }
+  &:last-of-type:after {
+    clip-path: none;
+  }
+`;
+XpIcon.displayName = 'XPIcon';

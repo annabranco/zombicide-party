@@ -34,7 +34,7 @@ export const TitleBar = styled.div`
   height: 50px;
   width: 90%;
   border: 1px solid black;
-  background: #730000;
+  background: rgba(100, 100, 100, 0.4);
   padding: 5px 50px;
   text-align: center;
   color: white;

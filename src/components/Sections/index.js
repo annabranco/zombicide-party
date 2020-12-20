@@ -4,9 +4,7 @@ import { SectionWrapper, Title, TitleBar } from './styles';
 
 const Section = ({ name, children }) => (
   <SectionWrapper>
-    <TitleBar>
-      <Title> {name}</Title>
-    </TitleBar>
+    <TitleBar>{/* <Title> {name}</Title> */}</TitleBar>
     {children}
   </SectionWrapper>
 );

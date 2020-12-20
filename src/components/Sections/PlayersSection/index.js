@@ -41,7 +41,7 @@ import {
   AddNewChar,
   NoiseWrapper,
   NoiseIcon,
-  MovementIndicators,
+  IndicatorsWrapper,
   MovementIcon,
   FinishedTurnTag,
   FirstPlayerToken,
@@ -49,7 +49,9 @@ import {
   FirstPlayerWrapper,
   FirstPlayerStar,
   ModalSignExitButton,
-  ModalSignText
+  ModalSignText,
+  XpIcon,
+  HishestXpTag
 } from './styles';
 import { characterTypes } from '../../../interfaces/types';
 import { SOUNDS_PATH } from '../../../setup/endpoints';
@@ -61,6 +63,7 @@ import {
   LOCAL_STORAGE_KEY,
   TURN_FINISHED
 } from '../../../constants';
+import { calculateXpBar, getXpColor } from '../../../utils/xp';
 
 const PlayersSection = ({
   damageMode,
@@ -100,6 +103,15 @@ const PlayersSection = ({
   const [trade, startTrade] = useStateWithLabel(false, 'trade');
   const [noise, setNoise] = useStateWithLabel(0, 'noise');
   const [canCombine, toggleCanCombine] = useStateWithLabel(false, 'canCombine');
+  const [xpCounter, updateXpCounter] = useStateWithLabel(
+    calculateXpBar(0, 0),
+    'xpCounter'
+  );
+  const [highestXp, updateHighestXp] = useStateWithLabel(
+    { name: '', xp: 0 },
+    'highestXp'
+  );
+
   const [actionsCount, updateActionsCount] = useStateWithLabel(
     [],
     'actionsCount'
@@ -460,6 +472,25 @@ const PlayersSection = ({
     }
   };
 
+  const gainXp = (xp = 1) => {
+    const updatedCharacter = cloneDeep(character);
+    const updatedCharacters = cloneDeep(characters);
+    const newXp = updatedCharacter.experience + xp;
+
+    if (newXp > highestXp.xp) {
+      updateHighestXp({ name: character.name, xp: newXp });
+    }
+    updatedCharacter.experience = newXp;
+    updatedCharacters.forEach(char => {
+      if (char.name === character.name) {
+        char.experience = newXp; // eslint-disable-line no-param-reassign
+      }
+    });
+    changeCharacter(updatedCharacter);
+    updateCharacters(updatedCharacters);
+    localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(characters));
+  };
+
   useEffect(() => {
     if (!dataLoaded) {
       const updatedCharacters =
@@ -555,6 +586,11 @@ const PlayersSection = ({
     }
   }, [charIndex, characters, dataLoaded]);
 
+  useEffect(() => {
+    const newXpBar = calculateXpBar(character.experience);
+    updateXpCounter(newXpBar);
+  }, [character.experience, updateXpCounter]);
+
   // useEffect(() => {
   //   console.log('$$$ change char', character);
   // }, [character]);
@@ -562,8 +598,36 @@ const PlayersSection = ({
   return (
     <>
       <CharacterSheet>
+        <button type="button" onClick={() => gainXp(1)} style={{ zIndex: 200 }}>
+          GAIN XP
+        </button>
         {!trade && character.wounded !== 'killed' && (
-          <MovementIndicators>
+          <IndicatorsWrapper header>
+            {xpCounter &&
+              xpCounter.map((level, index) => (
+                <XpIcon
+                  activeColor={
+                    (level <= character.experience ||
+                      xpCounter[index - 1] < character.experience) &&
+                    getXpColor(level, xpCounter[index - 1], true)
+                  }
+                  color={getXpColor(level, xpCounter[index - 1])}
+                  currentXp={character.experience === level}
+                  highestXp={highestXp.xp === level}
+                  key={`xp-${level}-${xpCounter[index - 1]}`}
+                  type={level}
+                >
+                  {level}
+                  {highestXp.xp === level &&
+                    highestXp.name !== character.name && (
+                      <HishestXpTag>{highestXp.name}</HishestXpTag>
+                    )}
+                </XpIcon>
+              ))}
+          </IndicatorsWrapper>
+        )}
+        {!trade && character.wounded !== 'killed' && (
+          <IndicatorsWrapper>
             {actionsCount.map(action => (
               <MovementIcon
                 color={getActionColor(action)}
@@ -573,7 +637,7 @@ const PlayersSection = ({
                 {action}
               </MovementIcon>
             ))}
-          </MovementIndicators>
+          </IndicatorsWrapper>
         )}
         {trade ? (
           <TradeArea
