@@ -442,6 +442,11 @@ const PlayersSection = ({
     changeCharacter(updatedCharacter);
   };
 
+  const onClickObjectiveEndTurn = () => {
+    gainXp(5);
+    spendAction('general');
+  };
+
   const onClickCombine = ([item, itemSlot], event) => {
     event.stopPropagation();
     if (combiningItem) {
@@ -674,62 +679,68 @@ const PlayersSection = ({
               {character.player}
             </PlayerTag>
             {character.wounded !== 'killed' && (
-              <ActionsWrapper>
-                {!damageMode && !setupMode && !finishedTurn && (
-                  <ActionButton
-                    actionType="endTurn"
-                    callback={onClickEndTurn}
-                  />
-                )}
-                {canMove && !damageMode && !setupMode && (
-                  <ActionButton
-                    actionType={
-                      character.location === 'car' ? 'car-exit' : 'car-enter'
-                    }
-                    callback={() => spendAction('move')}
-                    car={car}
-                    enterCar={enterCar}
-                    startCar={startCar}
-                    type={character.location !== 'car' && !car && 'start'}
-                  />
-                )}
-                {canMove &&
-                  character.location === 'car' &&
-                  !damageMode &&
-                  !setupMode && (
-                    <>
+              <>
+                {!damageMode && !setupMode && (
+                  <ActionsWrapper>
+                    {!finishedTurn && generalActions && (
                       <ActionButton
-                        actionType="car-move"
-                        callback={() => spendAction('move')}
+                        actionType="objective"
+                        callback={onClickObjectiveEndTurn}
                       />
+                    )}
+                    {canMove && (
                       <ActionButton
-                        actionType="car-attack"
+                        actionType={
+                          character.location === 'car'
+                            ? 'car-exit'
+                            : 'car-enter'
+                        }
                         callback={() => spendAction('move')}
+                        car={car}
+                        enterCar={enterCar}
+                        startCar={startCar}
+                        type={character.location !== 'car' && !car && 'start'}
                       />
-                    </>
-                  )}
+                    )}
+                    {canMove && character.location === 'car' && (
+                      <>
+                        <ActionButton
+                          actionType="car-move"
+                          callback={() => spendAction('move')}
+                        />
+                        <ActionButton
+                          actionType="car-attack"
+                          callback={() => spendAction('move')}
+                        />
+                      </>
+                    )}
 
-                {canMove &&
-                  character.location !== 'car' &&
-                  !damageMode &&
-                  !setupMode && (
-                    <ActionButton
-                      actionType="move"
-                      callback={() => spendAction('move')}
-                      type={character.movement}
-                    />
-                  )}
+                    {canMove && character.location !== 'car' && (
+                      <ActionButton
+                        actionType="move"
+                        callback={() => spendAction('move')}
+                        type={character.movement}
+                      />
+                    )}
 
-                {canOpenDoor && !damageMode && generalActions && !setupMode && (
-                  <ActionButton
-                    actionType="open-door"
-                    callback={spendAction}
-                    noise={noise}
-                    setNoise={setNoise}
-                    type={canOpenDoor}
-                  />
+                    {canOpenDoor && generalActions && (
+                      <ActionButton
+                        actionType="open-door"
+                        callback={spendAction}
+                        noise={noise}
+                        setNoise={setNoise}
+                        type={canOpenDoor}
+                      />
+                    )}
+                    {!finishedTurn && (
+                      <ActionButton
+                        actionType="endTurn"
+                        callback={onClickEndTurn}
+                      />
+                    )}
+                  </ActionsWrapper>
                 )}
-              </ActionsWrapper>
+              </>
             )}
             {character.wounded && (
               <WoundedWrapper>

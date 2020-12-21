@@ -31,10 +31,13 @@ const ActionButton = ({
       soundName = actionType && type && `${path}/${actionType}-${type}.mp3`;
       break;
     case 'endTurn':
-      iconType = 'fas fa-times-circle';
+      iconType = 'fas fa-hand-paper';
       break;
     case 'combine':
       iconType = 'fas fa-wrench';
+      break;
+    case 'objective':
+      iconType = 'far fa-times-circle';
       break;
     case 'open-door':
       iconSize = 'small';

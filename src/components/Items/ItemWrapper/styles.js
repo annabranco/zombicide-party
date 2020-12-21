@@ -76,7 +76,7 @@ export const ItemBlank = styled.div`
       : 'pointer'};
 
   & > i {
-    display: block;
+    display: none;
   }
 
   &:hover {
