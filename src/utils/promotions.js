@@ -6,12 +6,13 @@ const { ACTION, MOVE_ACTION, SEARCH_ACTION } = ABILITIES_S1;
 export const handlePromotionEffects = (char, level, actionsLeft) => {
   const updatedChar = cloneDeep(char);
   updatedChar.actionsLeft = [...actionsLeft];
-
+  console.log('$$$ actionsLeft', actionsLeft);
   if (level === 'blue') {
     if (
-      char.promotions.blue.name === ACTION.name ||
-      char.promotions.blue.name === MOVE_ACTION.name ||
-      char.promotions.blue.name === SEARCH_ACTION.name
+      (char.promotions.blue.name === ACTION.name ||
+        char.promotions.blue.name === MOVE_ACTION.name ||
+        char.promotions.blue.name === SEARCH_ACTION.name) &&
+      char.promotions.blue.effect
     ) {
       updatedChar.actions = char.promotions.blue.effect(char.actions);
       updatedChar.actionsLeft = char.promotions.blue.effect(
@@ -20,9 +21,10 @@ export const handlePromotionEffects = (char, level, actionsLeft) => {
     }
   } else if (level === 'yellow') {
     if (
-      char.promotions.yellow.name === ACTION.name ||
-      char.promotions.yellow.name === MOVE_ACTION.name ||
-      char.promotions.yellow.name === SEARCH_ACTION.name
+      (char.promotions.yellow.name === ACTION.name ||
+        char.promotions.yellow.name === MOVE_ACTION.name ||
+        char.promotions.yellow.name === SEARCH_ACTION.name) &&
+      char.promotions.yellow.effect
     ) {
       updatedChar.actions = char.promotions.yellow.effect(char.actions);
       updatedChar.actionsLeft = char.promotions.yellow.effect(

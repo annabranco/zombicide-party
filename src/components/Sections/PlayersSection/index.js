@@ -502,18 +502,17 @@ const PlayersSection = ({
 
       default:
         if (updatedChar.abilities.length === 0) {
-          updatedChar = handlePromotionEffects(char, 'blue', [
-            generalActions,
-            extraMovementActions,
-            extraAttackActions,
-            searchActions
-          ]);
+          updatedChar = handlePromotionEffects(
+            char,
+            'blue',
+            (char.actionsLeft && [...char.actionsLeft]) || [...char.actions]
+          );
           updatedChar.abilities.push(char.promotions.blue.name);
         }
         break;
     }
     console.log('$$$ updatedChar', updatedChar);
-    updateData(updatedChar);
+    // updateData(updatedChar);
     return updatedChar;
   };
 
@@ -568,7 +567,7 @@ const PlayersSection = ({
     if (characters) {
       checkIfRoundHasFinished();
 
-      const nextChar = characters[charIndex];
+      let nextChar = cloneDeep(characters[charIndex]);
       if (
         nextChar &&
         (charIndex !== prevCharIndex.current ||
@@ -592,6 +591,11 @@ const PlayersSection = ({
           ...charInHand,
           ...charInBackpack
         ]);
+
+        console.log('$$$ nextChar', nextChar);
+        if (nextChar.abilities.length === 0) {
+          nextChar = advancingLevel(nextChar.experience, nextChar);
+        }
 
         changeCharacter(nextChar);
         setCanOpenDoor(openDoors);
@@ -674,10 +678,10 @@ const PlayersSection = ({
         )}
         {!trade && character.wounded !== 'killed' && (
           <IndicatorsWrapper>
-            {actionsCount.map(action => (
+            {actionsCount.map((action, index) => (
               <MovementIcon
                 color={getActionColor(action)}
-                key={`${action}-${parseInt(Math.random() * 9, 10)}`}
+                key={`${action}-${index}`} // eslint-disable-line react/no-array-index-key
                 type={action}
               >
                 {action}

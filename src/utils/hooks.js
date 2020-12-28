@@ -10,7 +10,7 @@ export const useStateWithLabel = (initialValue, displayName) => {
 
 export const useTurnsCounter = (
   character,
-  [numOfActions, movements, attacks, searches]
+  [numOfActions = 3, movements = 0, attacks = 0, searches = 0]
 ) => {
   const [extraMovementActions, setExtraMovementActions] = useState(movements);
   const [extraAttackActions, setExtraAttackActions] = useState(attacks);

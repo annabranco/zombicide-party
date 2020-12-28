@@ -72,7 +72,7 @@ const { Pistol } = WEAPONS_S1;
 
 const AMY = {
   abilities: [],
-  actions: [3, 1, 0, 0],
+  actions: [3, 0, 0, 0],
   color: '#a015a3',
   experience: 0,
   face: AmyFace,
@@ -192,7 +192,7 @@ const MARY = {
 
 const NED = {
   abilities: [],
-  actions: [3, 0, 0, 1],
+  actions: [3, 0, 0, 0],
   color: '#b52929',
   experience: 0,
   face: NedFace,
