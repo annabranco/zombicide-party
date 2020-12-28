@@ -49,3 +49,6 @@ export const KILLED_EM_ALL = 'All characters are dead';
 export const KILLED = 'has \nbeen killed';
 
 export const TURN_FINISHED = "'s turn has finished";
+
+export const PREVIOUS = 'previous';
+export const NEXT = 'next';

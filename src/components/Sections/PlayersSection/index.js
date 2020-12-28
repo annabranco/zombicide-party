@@ -1,9 +1,10 @@
 import React, { useEffect, useRef } from 'react';
-import { cloneDeep } from 'lodash';
+import { cloneDeep, isEqual } from 'lodash';
 import { arrayOf, bool, func } from 'prop-types';
 import { useHistory } from 'react-router-dom';
 import { CHARACTERS } from '../../../setup/characters';
 import { getCharacterColor } from '../../../utils/players';
+import { handlePromotionEffects } from '../../../utils/promotions';
 import {
   checkIfHasAnyActionLeft,
   getActionColor
@@ -51,7 +52,9 @@ import {
   ModalSignExitButton,
   ModalSignText,
   XpIcon,
-  HishestXpTag
+  HishestXpTag,
+  AbilitiesWrapper,
+  Abilities
 } from './styles';
 import { characterTypes } from '../../../interfaces/types';
 import { SOUNDS_PATH } from '../../../setup/endpoints';
@@ -61,10 +64,18 @@ import {
   KILLED,
   KILLED_EM_ALL,
   LOCAL_STORAGE_KEY,
+  NEXT,
+  PREVIOUS,
   TURN_FINISHED,
   WEAPONS
 } from '../../../constants';
-import { calculateXpBar, getXpColor } from '../../../utils/xp';
+import {
+  blueThreatThresold,
+  calculateXpBar,
+  getXpColor,
+  orangeThreatThresold,
+  yellowThreatThresold
+} from '../../../utils/xp';
 import { WEAPONS_S1 } from '../../../setup/weapons';
 
 const PlayersSection = ({
@@ -105,10 +116,7 @@ const PlayersSection = ({
   const [trade, startTrade] = useStateWithLabel(false, 'trade');
   const [noise, setNoise] = useStateWithLabel(0, 'noise');
   const [canCombine, toggleCanCombine] = useStateWithLabel(false, 'canCombine');
-  const [xpCounter, updateXpCounter] = useStateWithLabel(
-    calculateXpBar(0, 0),
-    'xpCounter'
-  );
+  const [xpCounter, updateXpCounter] = useStateWithLabel([], 'xpCounter');
   const [highestXp, updateHighestXp] = useStateWithLabel(
     { name: '', xp: 0 },
     'highestXp'
@@ -122,6 +130,7 @@ const PlayersSection = ({
   const history = useHistory();
   const noiseDebounce = useRef();
   const prevCharIndex = useRef();
+  const abilitiesRef = useRef();
 
   const {
     generalActions,
@@ -129,38 +138,52 @@ const PlayersSection = ({
     extraAttackActions,
     searchActions,
     spendAction,
+    updateActions,
     finishedTurn,
     canMove,
     canAttack,
     canSearch,
     message
   } = useTurnsCounter(
-    character && character.name,
+    character.name,
     character.actionsLeft || character.actions || []
   );
   window.character = character;
 
-  const enterCar = enter => {
+  const updateData = (charWithChangedData = character) => {
+    const charOnGlobalList = characters.find(
+      char => char.name === charWithChangedData.name
+    );
+
+    if (!isEqual(charWithChangedData, character)) {
+      changeCharacter(charWithChangedData);
+    }
+    if (!isEqual(charWithChangedData, charOnGlobalList)) {
+      const updatedCharacters = cloneDeep(characters);
+      const changedCharIndex = updatedCharacters.findIndex(
+        char => char.name === charWithChangedData.name
+      );
+      updatedCharacters[changedCharIndex] = charWithChangedData;
+      updateCharacters(updatedCharacters);
+      localStorage.setItem(
+        LOCAL_STORAGE_KEY,
+        JSON.stringify(updatedCharacters)
+      );
+    }
+  };
+
+  const interactWithCar = enter => {
     const updatedCharacter = cloneDeep(character);
-    const updatedCharacters = cloneDeep(characters);
     if (enter) {
       updatedCharacter.location = 'car';
     } else {
       updatedCharacter.location = null;
     }
-
-    updatedCharacters.forEach(char => {
-      if (char.name === updatedCharacter.name) {
-        char.location = updatedCharacter.location; // eslint-disable-line no-param-reassign
-      }
-    });
     changeCharacter(updatedCharacter);
-    updateCharacters(updatedCharacters);
   };
 
   const changeInHand = (name, currentSlot = slot - 1) => {
     const updatedCharacter = cloneDeep(character);
-    const updatedCharacters = cloneDeep(characters);
     const newItems = [...updatedCharacter.inHand];
     newItems[currentSlot] = name;
     const openDoors = checkIfCharacterCanOpenDoors(newItems);
@@ -173,20 +196,14 @@ const PlayersSection = ({
     changeCanUseFlashlight(hasFlashlight);
     toggleCanCombine(charCanCombineItems);
     updatedCharacter.inHand = newItems;
-    updatedCharacters.forEach(char => {
-      if (char.name === updatedCharacter.name) {
-        char.inHand = newItems; // eslint-disable-line no-param-reassign
-      }
-    });
-    changeCharacter(updatedCharacter);
-    updateCharacters(updatedCharacters);
+
+    updateData(updatedCharacter);
     selectSlot();
-    localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(updatedCharacters));
   };
 
   const changeInBackpack = (name, currentSlot = slot - 3) => {
     const updatedCharacter = cloneDeep(character);
-    const updatedCharacters = cloneDeep(characters);
+    // const updatedCharacters = cloneDeep(characters);
     const newItems = [...updatedCharacter.inBackpack];
     newItems[currentSlot] = name;
     const openDoors = checkIfCharacterCanOpenDoors(newItems);
@@ -199,62 +216,30 @@ const PlayersSection = ({
     changeCanUseFlashlight(hasFlashlight);
     toggleCanCombine(charCanCombineItems);
     updatedCharacter.inBackpack = newItems;
-    updatedCharacters.forEach(char => {
-      if (char.name === updatedCharacter.name) {
-        char.inBackpack = newItems; // eslint-disable-line no-param-reassign
-      }
-    });
+
     changeCharacter(updatedCharacter);
-    updateCharacters(updatedCharacters);
     selectSlot();
-    localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(updatedCharacters));
   };
 
-  const changeToNextPlayer = () => {
+  const changeToAnotherPlayer = type => {
+    const charactersNumber = characters.length;
     const remainingCharacters = characters.filter(
       char => char.wounded !== 'killed'
     );
-    const actionsLeft = [
-      generalActions,
-      extraMovementActions,
-      extraAttackActions,
-      searchActions
-    ];
-    const nextPlayerIndex =
-      charIndex + 1 >= remainingCharacters.length ? 0 : charIndex + 1;
+    let nextPlayerIndex;
 
-    remainingCharacters.forEach(char => {
-      if (char.name === character.name) {
-        // eslint-disable-next-line no-param-reassign
-        char.actionsLeft = actionsLeft;
-      }
-    });
+    if (charactersNumber && remainingCharacters.length) {
+      updateCharacters(remainingCharacters);
+    }
+
+    if (type === NEXT) {
+      nextPlayerIndex =
+        charIndex + 1 >= remainingCharacters.length ? 0 : charIndex + 1;
+    } else if (type === PREVIOUS) {
+      nextPlayerIndex =
+        charIndex - 1 < 0 ? remainingCharacters.length - 1 : charIndex - 1;
+    }
     setNoise(0);
-    updateCharacters(remainingCharacters);
-    changeCharIndex(nextPlayerIndex);
-  };
-
-  const changeToPreviousPlayer = () => {
-    const remainingCharacters = characters.filter(
-      char => char.wounded !== 'killed'
-    );
-    const actionsLeft = [
-      generalActions,
-      extraMovementActions,
-      extraAttackActions,
-      searchActions
-    ];
-    const nextPlayerIndex =
-      charIndex - 1 < 0 ? remainingCharacters.length - 1 : charIndex - 1;
-
-    remainingCharacters.forEach(char => {
-      if (char.name === character.name) {
-        // eslint-disable-next-line no-param-reassign
-        char.actionsLeft = actionsLeft;
-      }
-    });
-    setNoise(0);
-    updateCharacters(remainingCharacters);
     changeCharIndex(nextPlayerIndex);
   };
 
@@ -271,15 +256,8 @@ const PlayersSection = ({
   const handleSearch = () => {
     if (canUseFlashlight && canSearch && !character.hasUsedFlashlight) {
       const updatedCharacter = cloneDeep(character);
-      const updatedCharacters = cloneDeep(characters);
       updatedCharacter.hasUsedFlashlight = true;
-      updatedCharacters.forEach(char => {
-        if (char.name === updatedCharacter.name) {
-          char.hasUsedFlashlight = true; // eslint-disable-line no-param-reassign
-        }
-      });
-      changeCharacter(updatedCharacter);
-      updateCharacters(updatedCharacters);
+      updateData(updatedCharacter);
     } else if (canSearch) {
       spendAction('search');
     }
@@ -287,7 +265,6 @@ const PlayersSection = ({
 
   const causeDamage = selectedSlot => {
     const woundedCharacter = cloneDeep(character);
-    const updatedCharacters = cloneDeep(characters);
     const [attacker, oneActionKill] = damageMode.split('-');
     let remainingCharacters = characters.filter(
       char => char.wounded !== 'killed'
@@ -299,37 +276,18 @@ const PlayersSection = ({
         char => char.name !== woundedCharacter.name
       );
 
-      updatedCharacters.forEach(char => {
-        if (char.name === woundedCharacter.name) {
-          char.wounded = 'killed'; // eslint-disable-line no-param-reassign
-        }
-      });
       woundedCharacter.wounded = 'killed';
       damage = 'kill';
 
       if (remainingCharacters.length === 0) {
         updateCharacters(remainingCharacters);
-      } else {
-        updateCharacters(updatedCharacters);
       }
     } else if (selectedSlot <= 2) {
       woundedCharacter.wounded = true;
       woundedCharacter.inHand[selectedSlot - 1] = 'Wounded';
-      updatedCharacters.forEach(char => {
-        if (char.name === woundedCharacter.name) {
-          char.wounded = true; // eslint-disable-line no-param-reassign
-          char.inHand[selectedSlot - 1] = 'Wounded'; // eslint-disable-line no-param-reassign
-        }
-      });
     } else {
       woundedCharacter.wounded = true;
       woundedCharacter.inBackpack[selectedSlot - 3] = 'Wounded';
-      updatedCharacters.forEach(char => {
-        if (char.name === woundedCharacter.name) {
-          char.wounded = true; // eslint-disable-line no-param-reassign
-          char.inBackpack[selectedSlot - 3] = 'Wounded'; // eslint-disable-line no-param-reassign
-        }
-      });
     }
 
     const filename = `${SOUNDS_PATH}/attacks/${
@@ -338,10 +296,9 @@ const PlayersSection = ({
     const sound = new Audio(filename);
     sound.currentTime = 0;
     sound.play();
-    updateCharacters(updatedCharacters);
-    changeCharacter(woundedCharacter);
+
     toggleDamageMode(false);
-    localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(updatedCharacters));
+    updateData(woundedCharacter);
   };
 
   const selectCharacter = () => {
@@ -369,7 +326,6 @@ const PlayersSection = ({
     updateCharacters(updatedCharacters);
     setCanOpenDoor(openDoors);
     changeCanUseFlashlight(hasFlashlight);
-
     localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(updatedCharacters));
   };
 
@@ -438,13 +394,13 @@ const PlayersSection = ({
 
   const onClickEndTurn = () => {
     const updatedCharacter = cloneDeep(character);
-    updatedCharacter.actionsLeft = [];
-    changeCharacter(updatedCharacter);
+    updatedCharacter.actionsLeft = [0, 0, 0, 0];
+    updateData(updatedCharacter);
   };
 
-  const onClickObjectiveEndTurn = () => {
+  const onClickObjective = () => {
     gainXp(5);
-    spendAction('general');
+    spendAction('get objective');
   };
 
   const onClickCombine = ([item, itemSlot], event) => {
@@ -481,21 +437,84 @@ const PlayersSection = ({
 
   const gainXp = (xp = 1) => {
     const updatedCharacter = cloneDeep(character);
-    const updatedCharacters = cloneDeep(characters);
     const newXp = updatedCharacter.experience + xp;
 
     if (newXp > highestXp.xp) {
       updateHighestXp({ name: character.name, xp: newXp });
     }
+    // updatedCharacter = advancingLevel(newXp, updatedCharacter);
     updatedCharacter.experience = newXp;
-    updatedCharacters.forEach(char => {
-      if (char.name === character.name) {
-        char.experience = newXp; // eslint-disable-line no-param-reassign
-      }
-    });
-    changeCharacter(updatedCharacter);
-    updateCharacters(updatedCharacters);
-    localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(characters));
+    updateData(updatedCharacter);
+  };
+
+  const generateActionsCountArray = actionsLeft => {
+    const actions = {
+      gen: (actionsLeft && actionsLeft[0]) || generalActions,
+      mov: (actionsLeft && actionsLeft[1]) || extraMovementActions,
+      att: (actionsLeft && actionsLeft[2]) || extraAttackActions,
+      sea: (actionsLeft && actionsLeft[3]) || searchActions
+    };
+    const count = [];
+    for (let i = 1; i <= actions.gen; i++) {
+      count.push(i);
+    }
+    for (let i = 1; i <= actions.mov; i++) {
+      count.push('free move');
+    }
+    for (let i = 1; i <= actions.att; i++) {
+      count.push('free attack');
+    }
+    for (let i = 1; i <= actions.sea; i++) {
+      count.push('free search');
+    }
+    return count;
+  };
+  console.log('$$$ message', message);
+
+  const advancingLevel = (xp, char) => {
+    console.log('$$$ advancing level', char.actionsLeft);
+    let updatedChar = cloneDeep(char);
+    switch (true) {
+      case xp > blueThreatThresold:
+        if (updatedChar.abilities.length === 1) {
+          updatedChar = handlePromotionEffects(char, 'yellow', [
+            generalActions,
+            extraMovementActions,
+            extraAttackActions,
+            searchActions
+          ]);
+          updatedChar.abilities.push(char.promotions.yellow.name);
+          console.log('$$$ update');
+          updateActions('general');
+        }
+        break;
+
+      case xp > yellowThreatThresold:
+        if (char.abilities.length === 2) {
+          updatedChar.abilities.push(char.promotions.orange[0].name);
+        }
+        break;
+      case xp > orangeThreatThresold:
+        if (char.abilities.length === 3) {
+          updatedChar.abilities.push(char.promotions.red[0].name);
+        }
+        break;
+
+      default:
+        if (updatedChar.abilities.length === 0) {
+          updatedChar = handlePromotionEffects(char, 'blue', [
+            generalActions,
+            extraMovementActions,
+            extraAttackActions,
+            searchActions
+          ]);
+          updatedChar.abilities.push(char.promotions.blue.name);
+        }
+        break;
+    }
+    console.log('$$$ updatedChar', updatedChar);
+    updateData(updatedChar);
+    return updatedChar;
   };
 
   useEffect(() => {
@@ -511,44 +530,39 @@ const PlayersSection = ({
   }, [charIndex, dataLoaded, initialCharacters, loadedGame]);
 
   useEffect(() => {
-    const count = [];
-    // eslint-disable-next-line no-plusplus
-    for (let i = 1; i <= generalActions; i++) {
-      count.push(i);
-    }
-    // eslint-disable-next-line no-plusplus
-    for (let i = 1; i <= extraMovementActions; i++) {
-      count.push('free move');
-    }
-    // eslint-disable-next-line no-plusplus
-    for (let i = 1; i <= extraAttackActions; i++) {
-      count.push('free attack');
-    }
-    // eslint-disable-next-line no-plusplus
-    for (let i = 1; i <= searchActions; i++) {
-      count.push('free search');
-    }
-    updateActionsCount(count);
-    // characters.forEach(char =>
-    //   console.log(
-    //     '$$$ DEBUG actions',
-    //     char.name,
-    //     char.actionsLeft,
-    //     !!checkIfHasAnyActionLeft(char.actionsLeft || [])
-    //   )
-    // );
-    // console.log('$$$ DEBUG message', message);
+    if (character.name) {
+      const updatedCharacter = cloneDeep(character);
 
-    // console.log('$$$ DEBUG canUseFlashlight', canUseFlashlight);
-    // console.log('$$$ DEBUG canSearch', canSearch);
+      updatedCharacter.actionsLeft = [
+        generalActions,
+        extraMovementActions,
+        extraAttackActions,
+        searchActions
+      ];
+
+      changeCharacter(updatedCharacter);
+      const actionsArray = generateActionsCountArray();
+
+      if (!isEqual(actionsArray, actionsCount)) {
+        updateActionsCount(actionsArray);
+        updateData(updatedCharacter);
+      }
+    }
   }, [
-    character,
+    // character.name,
     generalActions,
     extraMovementActions,
     extraAttackActions,
-    searchActions,
-    updateActionsCount
+    searchActions
   ]);
+
+  useEffect(() => {
+    const actionsArray = generateActionsCountArray(character.actionsLeft);
+
+    if (!isEqual(actionsArray, actionsCount)) {
+      updateActionsCount(actionsArray);
+    }
+  }, [character.actionsLeft]);
 
   useEffect(() => {
     if (characters) {
@@ -594,8 +608,35 @@ const PlayersSection = ({
   }, [charIndex, characters, dataLoaded]);
 
   useEffect(() => {
-    const newXpBar = calculateXpBar(character.experience);
-    updateXpCounter(newXpBar);
+    if (character.experience >= 0) {
+      const charClone = cloneDeep(character);
+      console.log('$$$ highestXp', highestXp);
+      const newXpBar = calculateXpBar(charClone.experience, highestXp.xp);
+      if (!isEqual(newXpBar, xpCounter)) {
+        updateXpCounter(newXpBar);
+
+        // charClone.actionsLeft = [
+        //   generalActions,
+        //   extraMovementActions,
+        //   extraAttackActions,
+        //   searchActions
+        // ];
+        // console.log(
+        //   '$$$ cloneDeep(charClone.actionsLeft)',
+        //   cloneDeep(charClone.actionsLeft)
+        // );
+        // if (charClone.actionsLeft.some(action => action === undefined)) {
+        //   charClone.actionsLeft = charClone.actions;
+        // }
+        // console.log('$$$ charClone.actionsLeft', charClone.actionsLeft);
+        // const updatedChar = advancingLevel(charClone.experience, charClone);
+        // abilitiesRef.current = updatedChar.abilities.toString();
+        // changeCharacter(updatedChar);
+        abilitiesRef.current = charClone.abilities.toString();
+        // changeCharacter(charClone);
+      }
+      // }
+    }
   }, [character.experience, updateXpCounter]);
 
   // useEffect(() => {
@@ -619,6 +660,7 @@ const PlayersSection = ({
                   currentXp={character.experience === level}
                   highestXp={highestXp.xp === level}
                   key={`xp-${level}-${xpCounter[index - 1]}`}
+                  size={xpCounter.length}
                   type={level}
                 >
                   {level}
@@ -635,7 +677,7 @@ const PlayersSection = ({
             {actionsCount.map(action => (
               <MovementIcon
                 color={getActionColor(action)}
-                key={action}
+                key={`${action}-${parseInt(Math.random() * 9, 10)}`}
                 type={action}
               >
                 {action}
@@ -685,7 +727,7 @@ const PlayersSection = ({
                     {!finishedTurn && generalActions && (
                       <ActionButton
                         actionType="objective"
-                        callback={onClickObjectiveEndTurn}
+                        callback={onClickObjective}
                       />
                     )}
                     {canMove && (
@@ -697,7 +739,7 @@ const PlayersSection = ({
                         }
                         callback={() => spendAction('move')}
                         car={car}
-                        enterCar={enterCar}
+                        interactWithCar={interactWithCar}
                         startCar={startCar}
                         type={character.location !== 'car' && !car && 'start'}
                       />
@@ -742,6 +784,11 @@ const PlayersSection = ({
                 )}
               </>
             )}
+            <NoiseWrapper>
+              {Array.from({ length: noise }, (_, index) => index).map(key => (
+                <NoiseIcon key={key} src={Noise} />
+              ))}
+            </NoiseWrapper>
             {character.wounded && (
               <WoundedWrapper>
                 <WoundedSign src={Blood} />
@@ -877,14 +924,14 @@ const PlayersSection = ({
               <>
                 <PreviousButton
                   damageMode={damageMode}
-                  onClick={changeToPreviousPlayer}
+                  onClick={() => changeToAnotherPlayer(PREVIOUS)}
                   type="button"
                 >
                   PREVIOUS
                 </PreviousButton>
                 <NextButton
                   damageMode={damageMode}
-                  onClick={changeToNextPlayer}
+                  onClick={() => changeToAnotherPlayer(NEXT)}
                   type="button"
                 >
                   NEXT
@@ -896,14 +943,16 @@ const PlayersSection = ({
                 SELECT
               </SelectButton>
             )}
+            <AbilitiesWrapper>
+              {character &&
+                character.abilities &&
+                character.abilities.map(ability => (
+                  <Abilities key={`${character}-${ability}`}>
+                    {ability}
+                  </Abilities>
+                ))}
+            </AbilitiesWrapper>
           </>
-        )}
-        {!trade && (
-          <NoiseWrapper>
-            {Array.from({ length: noise }, (_, index) => index).map(key => (
-              <NoiseIcon key={key} src={Noise} />
-            ))}
-          </NoiseWrapper>
         )}
         {newChar && (
           <NewGame currentChars={characters} dynamic setNewChar={setNewChar} />

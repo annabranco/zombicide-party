@@ -44,6 +44,12 @@
 		"linebreak-style": "off",
 		"lines-around-comment": ["error", {"beforeBlockComment": true}],
 		"multiline-comment-style": "off",
+		"no-plusplus": [
+			"error",
+			{
+				"allowForLoopAfterthoughts": true
+			}
+		],
 		"react/jsx-filename-extension": [1, {"extensions": [".js", ".jsx"]}],
 		"prettier/prettier": [
 			"error",

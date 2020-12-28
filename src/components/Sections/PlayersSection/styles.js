@@ -4,6 +4,34 @@ import { AttackInstructions } from '../ZombiesSection/styles';
 import { Appear } from '../../../styles';
 import { IN_BACKPACK } from '../../../constants';
 
+export const Abilities = styled.p`
+  label: Abilities;
+  margin: 2px auto;
+  font-family: 'Grandstander', cursive;
+  text-transform: uppercase;
+  font-weight: 700;
+  font-size: 1.2rem;
+  color: rgba(255, 255, 0, 0.6);
+  -webkit-text-stroke: 1px black;
+`;
+Abilities.displayName = 'Abilities';
+
+export const AbilitiesWrapper = styled.div`
+  label: AbilitiesWrapper;
+  z-index: 10;
+  position: absolute;
+  bottom: 50px;
+  left: 50%;
+  transform: translate(-50%, 0);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 14%;
+  width: 90%;
+`;
+AbilitiesWrapper.displayName = 'AbilitiesWrapper';
+
 export const AppButton = styled.button`
   label: AppButton;
   z-index: 3;
@@ -186,7 +214,8 @@ export const HishestXpTag = styled.span`
   label: HishestXpTag;
   position: absolute;
   top: 20px;
-  left: -3px;
+  left: 50%;
+  transform: translate(-50%, 0);
   font-family: 'Cairo', sans-serif;
   text-transform: uppercase;
   font-size: 0.8rem;
@@ -400,13 +429,14 @@ export const NoiseWrapper = styled.div`
   label: NoiseWrapper;
   z-index: 10;
   position: absolute;
-  bottom: 55px;
+  top: calc(18% + 50px);
+  right: 30px;
   display: flex;
   flex-direction: row;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-end;
   height: 45px;
-  width: 100%;
+  width: 300px;
 `;
 NoiseWrapper.displayName = 'NoiseWrapper';
 
@@ -501,8 +531,10 @@ export const XpIcon = styled(MovementIcon)`
   opacity: ${({ activeColor }) => activeColor && 1};
   height: ${({ currentXp, highestXp }) =>
     currentXp || highestXp ? '18px' : '14px'};
-  width: ${({ currentXp, highestXp }) =>
-    currentXp || highestXp ? '35px' : '25px'};
+  width: ${({ currentXp, highestXp, size }) =>
+    currentXp || highestXp
+      ? `calc(100% / ${size} + 10px) `
+      : `calc(100% / ${size} )`};
 
   &:not(:first-of-type) {
     margin-left: 8px;

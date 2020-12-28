@@ -110,6 +110,8 @@ const SoundBlock = ({
     return <PlayText>{label || name}</PlayText>;
   };
 
+  const temp = () => console.log('click temp');
+
   return (
     <Block damageMode={damageMode} type={type} wounded={wounded}>
       {(isActive || isHighlighted) && type === 'activations' && (

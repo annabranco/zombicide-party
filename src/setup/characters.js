@@ -23,6 +23,52 @@ import SelectorWanda from '../assets/images/selectors/selector-wanda.png';
 import SelectorJosh from '../assets/images/selectors/selector-josh.png';
 import SelectorDoug from '../assets/images/selectors/selector-doug.png';
 import { FEMALE, MALE } from '../constants';
+import { ABILITIES_S1, ABILITIES_S2, ABILITIES_MALL } from './abilities';
+import { WEAPONS_S1 } from './weapons';
+
+const {
+  ACTION,
+  DAMAGEMELEE,
+  DAMAGE_RANGED,
+  DICE_ROLL_COMBAT,
+  DICE_ROLL_MEELEE,
+  DICE_ROLL_RANGED,
+  DIE_COMBAT,
+  DIE_MELEE,
+  DIE_RANGED,
+  COMBAT_ACTION,
+  MOVE_ACTION,
+  SEARCH_ACTION,
+  MAX_RANGE,
+  ZONE_PER_MOVE,
+  RE_ROLL,
+  TWO_COCKTAILS,
+  TWO_ZONES_MOVE,
+  AMBIDEXTROUS,
+  BORN_LEADER,
+  DESTINY,
+  GUNSLINGER,
+  HEARD,
+  HOLD_YOUR_NOSE,
+  ALL_YOUVE_GOT,
+  LOCK_IT_DOWN,
+  LOUD,
+  LUCKY,
+  MATCHING_SET,
+  MEDIC,
+  NINJA,
+  SLIPPERY,
+  SNIPER,
+  STARTS_WITH,
+  SWORDMASTER,
+  TOUGH,
+  TRICK_SHOT
+} = ABILITIES_S1;
+
+const { REAPER_RANGED, BLITZ } = ABILITIES_S2;
+const { ACTION_RANGED } = ABILITIES_MALL;
+
+const { Pistol } = WEAPONS_S1;
 
 const AMY = {
   abilities: [],
@@ -37,6 +83,12 @@ const AMY = {
   movement: 'quick',
   name: 'Amy',
   player: null,
+  promotions: {
+    blue: MOVE_ACTION,
+    yellow: ACTION,
+    orange: [COMBAT_ACTION, MOVE_ACTION],
+    red: [DIE_COMBAT, DICE_ROLL_COMBAT, MEDIC]
+  },
   selector: SelectorAmy,
   voice: FEMALE,
   wounded: false
@@ -55,6 +107,12 @@ const BEN = {
   movement: 'confident',
   name: 'Ben',
   player: null,
+  promotions: {
+    blue: BLITZ,
+    yellow: ACTION,
+    orange: [DICE_ROLL_RANGED, DIE_MELEE],
+    red: [COMBAT_ACTION, MOVE_ACTION, SLIPPERY]
+  },
   selector: SelectorBen,
   voice: MALE,
   wounded: false
@@ -73,6 +131,12 @@ const DOUG = {
   movement: 'confident',
   name: 'Doug',
   player: null,
+  promotions: {
+    blue: MATCHING_SET,
+    yellow: ACTION,
+    orange: [DIE_RANGED, COMBAT_ACTION],
+    red: [DICE_ROLL_COMBAT, AMBIDEXTROUS, SLIPPERY]
+  },
   selector: SelectorDoug,
   voice: MALE,
   wounded: false
@@ -91,6 +155,12 @@ const JOSH = {
   movement: 'furtive',
   name: 'Josh',
   player: null,
+  promotions: {
+    blue: SLIPPERY,
+    yellow: ACTION,
+    orange: [DIE_MELEE, RE_ROLL],
+    red: [ACTION, DICE_ROLL_COMBAT, LUCKY]
+  },
   selector: SelectorJosh,
   voice: MALE,
   wounded: false
@@ -109,6 +179,12 @@ const MARY = {
   movement: 'normal',
   name: 'Mary',
   player: null,
+  promotions: {
+    blue: REAPER_RANGED,
+    yellow: ACTION,
+    orange: [ACTION_RANGED, BLITZ],
+    red: [DICE_ROLL_COMBAT, DIE_COMBAT, MOVE_ACTION]
+  },
   selector: SelectorMary,
   voice: FEMALE,
   wounded: false
@@ -127,6 +203,12 @@ const NED = {
   movement: 'heavy',
   name: 'Ned',
   player: null,
+  promotions: {
+    blue: SEARCH_ACTION,
+    yellow: ACTION,
+    orange: [DIE_RANGED, COMBAT_ACTION],
+    red: [DICE_ROLL_COMBAT, DIE_COMBAT, TOUGH]
+  },
   selector: SelectorNed,
   voice: MALE,
   wounded: false
@@ -145,6 +227,12 @@ const PHIL = {
   name: 'Phil',
   player: null,
   selector: SelectorPhil,
+  promotions: {
+    blue: STARTS_WITH(Pistol.name),
+    yellow: ACTION,
+    orange: [DICE_ROLL_RANGED, SEARCH_ACTION],
+    red: [DIE_RANGED, BORN_LEADER, SNIPER]
+  },
   voice: MALE,
   wounded: false
 };
@@ -162,6 +250,12 @@ const WANDA = {
   movement: 'rolling',
   name: 'Wanda',
   player: null,
+  promotions: {
+    blue: TWO_ZONES_MOVE,
+    yellow: ACTION,
+    orange: [DICE_ROLL_MEELEE, SLIPPERY],
+    red: [DIE_COMBAT, MOVE_ACTION, ZONE_PER_MOVE]
+  },
   selector: SelectorWanda,
   voice: FEMALE,
   wounded: false

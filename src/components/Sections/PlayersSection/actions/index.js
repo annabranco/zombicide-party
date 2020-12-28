@@ -11,7 +11,7 @@ const ActionButton = ({
   carStarted,
   combineItemSelected,
   combinePair,
-  enterCar,
+  interactWithCar,
   noise,
   setNoise,
   startCar,
@@ -100,9 +100,9 @@ const ActionButton = ({
 
     if (actionType === 'car-enter' && !carStarted) {
       startCar(true);
-      enterCar(true);
+      interactWithCar(true);
     } else if (actionType === 'car-exit') {
-      enterCar(false);
+      interactWithCar(false);
     }
 
     if (sound) {
@@ -156,7 +156,7 @@ ActionButton.propTypes = {
   carStarted: bool,
   combineItemSelected: bool,
   combinePair: bool,
-  enterCar: func,
+  interactWithCar: func,
   noise: number,
   setNoise: func,
   startCar: func,
@@ -167,7 +167,7 @@ ActionButton.defaultProps = {
   carStarted: false,
   combineItemSelected: false,
   combinePair: false,
-  enterCar: false,
+  interactWithCar: false,
   noise: 0,
   setNoise: null,
   startCar: null,
