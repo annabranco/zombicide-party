@@ -37,25 +37,25 @@ export const useTurnsCounter = (
     return false;
   };
 
-  const updateActions = (type = 'general') => {
-    if (type === 'move') {
-      changeMessage(`Gained 1 extra free move action.`);
-      return setExtraMovementActions(extraMovementActions + 1);
-    }
+  // const updateActions = (type = 'general') => {
+  //   if (type === 'move') {
+  //     changeMessage(`Gained 1 extra free move action.`);
+  //     return setExtraMovementActions(extraMovementActions + 1);
+  //   }
 
-    if (type === 'attack') {
-      changeMessage(`Gained 1 extra free attack action.`);
-      return setExtraAttackActions(extraAttackActions + 1);
-    }
+  //   if (type === 'attack') {
+  //     changeMessage(`Gained 1 extra free attack action.`);
+  //     return setExtraAttackActions(extraAttackActions + 1);
+  //   }
 
-    if (type === 'search' && searchActions >= 0) {
-      changeMessage(`Gained 1 extra free search action.`);
-      return setSearchActions(searchActions + 1);
-    }
+  //   if (type === 'search' && searchActions >= 0) {
+  //     changeMessage(`Gained 1 extra free search action.`);
+  //     return setSearchActions(searchActions + 1);
+  //   }
 
-    changeMessage(`Gained 1 extra free action.`);
-    return setGeneralActions(generalActions + 1);
-  };
+  //   changeMessage(`Gained 1 extra free action.`);
+  //   return setGeneralActions(generalActions + 1);
+  // };
 
   const spendAction = (type = 'general') => {
     if (type === 'move' && extraMovementActions > 0) {
@@ -129,7 +129,7 @@ export const useTurnsCounter = (
     extraAttackActions,
     searchActions,
     spendAction,
-    updateActions,
+    // updateActions,
     finishedTurn,
     canMove: generalActions > 0 || extraMovementActions > 0,
     canAttack: generalActions > 0 || extraAttackActions > 0,

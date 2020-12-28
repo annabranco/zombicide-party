@@ -138,7 +138,7 @@ const PlayersSection = ({
     extraAttackActions,
     searchActions,
     spendAction,
-    updateActions,
+    // updateActions,
     finishedTurn,
     canMove,
     canAttack,
@@ -399,8 +399,8 @@ const PlayersSection = ({
   };
 
   const onClickObjective = () => {
-    gainXp(5);
     spendAction('get objective');
+    gainXp(5);
   };
 
   const onClickCombine = ([item, itemSlot], event) => {
@@ -442,7 +442,7 @@ const PlayersSection = ({
     if (newXp > highestXp.xp) {
       updateHighestXp({ name: character.name, xp: newXp });
     }
-    // updatedCharacter = advancingLevel(newXp, updatedCharacter);
+
     updatedCharacter.experience = newXp;
     updateData(updatedCharacter);
   };
@@ -469,23 +469,23 @@ const PlayersSection = ({
     }
     return count;
   };
-  console.log('$$$ message', message);
+
+  if (message) {
+    console.log('$$$ message', message);
+  }
 
   const advancingLevel = (xp, char) => {
-    console.log('$$$ advancing level', char.actionsLeft);
     let updatedChar = cloneDeep(char);
     switch (true) {
       case xp > blueThreatThresold:
         if (updatedChar.abilities.length === 1) {
-          updatedChar = handlePromotionEffects(char, 'yellow', [
+          updatedChar = handlePromotionEffects(updatedChar, 'yellow', [
             generalActions,
             extraMovementActions,
             extraAttackActions,
             searchActions
           ]);
-          updatedChar.abilities.push(char.promotions.yellow.name);
-          console.log('$$$ update');
-          updateActions('general');
+          abilitiesRef.current = updatedChar.abilities.toString();
         }
         break;
 
@@ -507,12 +507,9 @@ const PlayersSection = ({
             'blue',
             (char.actionsLeft && [...char.actionsLeft]) || [...char.actions]
           );
-          updatedChar.abilities.push(char.promotions.blue.name);
         }
         break;
     }
-    console.log('$$$ updatedChar', updatedChar);
-    // updateData(updatedChar);
     return updatedChar;
   };
 
@@ -592,7 +589,6 @@ const PlayersSection = ({
           ...charInBackpack
         ]);
 
-        console.log('$$$ nextChar', nextChar);
         if (nextChar.abilities.length === 0) {
           nextChar = advancingLevel(nextChar.experience, nextChar);
         }
@@ -614,32 +610,13 @@ const PlayersSection = ({
   useEffect(() => {
     if (character.experience >= 0) {
       const charClone = cloneDeep(character);
-      console.log('$$$ highestXp', highestXp);
       const newXpBar = calculateXpBar(charClone.experience, highestXp.xp);
       if (!isEqual(newXpBar, xpCounter)) {
-        updateXpCounter(newXpBar);
+        const updatedChar = advancingLevel(charClone.experience, charClone);
 
-        // charClone.actionsLeft = [
-        //   generalActions,
-        //   extraMovementActions,
-        //   extraAttackActions,
-        //   searchActions
-        // ];
-        // console.log(
-        //   '$$$ cloneDeep(charClone.actionsLeft)',
-        //   cloneDeep(charClone.actionsLeft)
-        // );
-        // if (charClone.actionsLeft.some(action => action === undefined)) {
-        //   charClone.actionsLeft = charClone.actions;
-        // }
-        // console.log('$$$ charClone.actionsLeft', charClone.actionsLeft);
-        // const updatedChar = advancingLevel(charClone.experience, charClone);
-        // abilitiesRef.current = updatedChar.abilities.toString();
-        // changeCharacter(updatedChar);
-        abilitiesRef.current = charClone.abilities.toString();
-        // changeCharacter(charClone);
+        updateXpCounter(newXpBar);
+        updateData(updatedChar);
       }
-      // }
     }
   }, [character.experience, updateXpCounter]);
 

@@ -5,36 +5,39 @@ const { ACTION, MOVE_ACTION, SEARCH_ACTION } = ABILITIES_S1;
 
 export const handlePromotionEffects = (char, level, actionsLeft) => {
   const updatedChar = cloneDeep(char);
+
   updatedChar.actionsLeft = [...actionsLeft];
-  console.log('$$$ actionsLeft', actionsLeft);
+
   if (level === 'blue') {
     if (
-      (char.promotions.blue.name === ACTION.name ||
-        char.promotions.blue.name === MOVE_ACTION.name ||
-        char.promotions.blue.name === SEARCH_ACTION.name) &&
-      char.promotions.blue.effect
+      (updatedChar.promotions.blue.name === ACTION.name ||
+        updatedChar.promotions.blue.name === MOVE_ACTION.name ||
+        updatedChar.promotions.blue.name === SEARCH_ACTION.name) &&
+      updatedChar.promotions.blue.effect
     ) {
-      updatedChar.actions = char.promotions.blue.effect(char.actions);
-      updatedChar.actionsLeft = char.promotions.blue.effect(
-        actionsLeft || char.actions
+      updatedChar.actions = updatedChar.promotions.blue.effect(
+        updatedChar.actions
+      );
+      updatedChar.actionsLeft = updatedChar.promotions.blue.effect(
+        actionsLeft || updatedChar.actions
       );
     }
+    updatedChar.abilities.push(updatedChar.promotions.blue.name);
   } else if (level === 'yellow') {
     if (
-      (char.promotions.yellow.name === ACTION.name ||
-        char.promotions.yellow.name === MOVE_ACTION.name ||
-        char.promotions.yellow.name === SEARCH_ACTION.name) &&
-      char.promotions.yellow.effect
+      (updatedChar.promotions.yellow.name === ACTION.name ||
+        updatedChar.promotions.yellow.name === MOVE_ACTION.name ||
+        updatedChar.promotions.yellow.name === SEARCH_ACTION.name) &&
+      updatedChar.promotions.yellow.effect
     ) {
-      updatedChar.actions = char.promotions.yellow.effect(char.actions);
-      updatedChar.actionsLeft = char.promotions.yellow.effect(
-        actionsLeft || char.actions
+      updatedChar.actions = updatedChar.promotions.yellow.effect(
+        updatedChar.actions
+      );
+      updatedChar.actionsLeft = updatedChar.promotions.yellow.effect(
+        actionsLeft || updatedChar.actions
       );
     }
+    updatedChar.abilities.push(char.promotions.yellow.name);
   }
-  console.log('$$$ actionsLeft UTILS', actionsLeft);
-  console.log('$$$ updatedChar UTILS', updatedChar);
-  console.log('$$$ updatedChar UTILS', cloneDeep(updatedChar));
-
   return updatedChar;
 };
