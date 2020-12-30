@@ -15,7 +15,9 @@ const ActionButton = ({
   noise,
   setNoise,
   startCar,
-  type
+  type,
+  changeActionLabel,
+  label
 }) => {
   const [isActive, activate] = useStateWithLabel(false, 'isActive');
   const path = `${SOUNDS_PATH}/actions/`;
@@ -130,6 +132,8 @@ const ActionButton = ({
         <CarIconWrapper
           isActive={isActive}
           onClick={isActive ? () => null : onClickIcon}
+          onMouseOut={() => changeActionLabel('')}
+          onMouseOver={() => changeActionLabel(label)}
         >
           <CarIcon className={iconType2} />
           <CarActionIcon actionType={actionType} className={iconType} />
@@ -144,6 +148,8 @@ const ActionButton = ({
           isActive={isActive}
           onClick={isActive ? () => null : event => onClickIcon(event)}
           iconSize={iconSize}
+          onMouseOut={() => changeActionLabel('')}
+          onMouseOver={() => changeActionLabel(label)}
         />
       )}
     </>
@@ -160,7 +166,9 @@ ActionButton.propTypes = {
   noise: number,
   setNoise: func,
   startCar: func,
-  type: string
+  type: string,
+  changeActionLabel: func,
+  label: string
 };
 
 ActionButton.defaultProps = {
@@ -171,7 +179,9 @@ ActionButton.defaultProps = {
   noise: 0,
   setNoise: null,
   startCar: null,
-  type: null
+  type: null,
+  changeActionLabel: () => null,
+  label: null
 };
 
 export default ActionButton;

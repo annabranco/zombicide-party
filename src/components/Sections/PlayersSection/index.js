@@ -54,7 +54,8 @@ import {
   XpIcon,
   HishestXpTag,
   AbilitiesWrapper,
-  Abilities
+  Abilities,
+  ActionsLabelWrapper
 } from './styles';
 import { characterTypes } from '../../../interfaces/types';
 import { SOUNDS_PATH } from '../../../setup/endpoints';
@@ -67,7 +68,16 @@ import {
   NEXT,
   PREVIOUS,
   TURN_FINISHED,
-  WEAPONS
+  WEAPONS,
+  GET_OBJECTIVE,
+  ENTER_CAR,
+  EXIT_CAR,
+  MOVE_CAR,
+  RUN_OVER,
+  MOVE,
+  OPEN_DOOR,
+  BREAK_DOOR,
+  END_CHAR_TURN
 } from '../../../constants';
 import {
   blueThreatThresold,
@@ -120,6 +130,10 @@ const PlayersSection = ({
   const [highestXp, updateHighestXp] = useStateWithLabel(
     { name: '', xp: 0 },
     'highestXp'
+  );
+  const [actionsLabel, changeActionLabel] = useStateWithLabel(
+    'actionsLabel',
+    'actionsLabel'
   );
 
   const [actionsCount, updateActionsCount] = useStateWithLabel(
@@ -704,64 +718,83 @@ const PlayersSection = ({
             {character.wounded !== 'killed' && (
               <>
                 {!damageMode && !setupMode && (
-                  <ActionsWrapper>
-                    {!finishedTurn && generalActions && (
-                      <ActionButton
-                        actionType="objective"
-                        callback={onClickObjective}
-                      />
-                    )}
-                    {canMove && (
-                      <ActionButton
-                        actionType={
-                          character.location === 'car'
-                            ? 'car-exit'
-                            : 'car-enter'
-                        }
-                        callback={() => spendAction('move')}
-                        car={car}
-                        interactWithCar={interactWithCar}
-                        startCar={startCar}
-                        type={character.location !== 'car' && !car && 'start'}
-                      />
-                    )}
-                    {canMove && character.location === 'car' && (
-                      <>
+                  <>
+                    <ActionsWrapper>
+                      {!finishedTurn && generalActions && (
                         <ActionButton
-                          actionType="car-move"
-                          callback={() => spendAction('move')}
+                          actionType="objective"
+                          callback={onClickObjective}
+                          changeActionLabel={changeActionLabel}
+                          label={GET_OBJECTIVE}
                         />
+                      )}
+                      {canMove && (
                         <ActionButton
-                          actionType="car-attack"
+                          actionType={
+                            character.location === 'car'
+                              ? 'car-exit'
+                              : 'car-enter'
+                          }
                           callback={() => spendAction('move')}
+                          car={car}
+                          interactWithCar={interactWithCar}
+                          startCar={startCar}
+                          type={character.location !== 'car' && !car && 'start'}
+                          changeActionLabel={changeActionLabel}
+                          label={
+                            character.location === 'car' ? EXIT_CAR : ENTER_CAR
+                          }
                         />
-                      </>
-                    )}
+                      )}
+                      {canMove && character.location === 'car' && (
+                        <>
+                          <ActionButton
+                            actionType="car-move"
+                            callback={() => spendAction('move')}
+                            changeActionLabel={changeActionLabel}
+                            label={MOVE_CAR}
+                          />
+                          <ActionButton
+                            actionType="car-attack"
+                            callback={() => spendAction('move')}
+                            changeActionLabel={changeActionLabel}
+                            label={RUN_OVER}
+                          />
+                        </>
+                      )}
 
-                    {canMove && character.location !== 'car' && (
-                      <ActionButton
-                        actionType="move"
-                        callback={() => spendAction('move')}
-                        type={character.movement}
-                      />
-                    )}
+                      {canMove && character.location !== 'car' && (
+                        <ActionButton
+                          actionType="move"
+                          callback={() => spendAction('move')}
+                          type={character.movement}
+                          changeActionLabel={changeActionLabel}
+                          label={MOVE}
+                        />
+                      )}
 
-                    {canOpenDoor && generalActions && (
-                      <ActionButton
-                        actionType="open-door"
-                        callback={spendAction}
-                        noise={noise}
-                        setNoise={setNoise}
-                        type={canOpenDoor}
-                      />
-                    )}
-                    {!finishedTurn && (
-                      <ActionButton
-                        actionType="endTurn"
-                        callback={onClickEndTurn}
-                      />
-                    )}
-                  </ActionsWrapper>
+                      {canOpenDoor && generalActions && (
+                        <ActionButton
+                          actionType="open-door"
+                          callback={spendAction}
+                          noise={noise}
+                          setNoise={setNoise}
+                          type={canOpenDoor}
+                          changeActionLabel={changeActionLabel}
+                          label={noise ? BREAK_DOOR : OPEN_DOOR}
+                        />
+                      )}
+                      {!finishedTurn && (
+                        <ActionButton
+                          actionType="endTurn"
+                          callback={onClickEndTurn}
+                          changeActionLabel={changeActionLabel}
+                          label={END_CHAR_TURN(character.name)}
+                        />
+                      )}
+                    </ActionsWrapper>
+                    <ActionsLabelWrapper>{actionsLabel}</ActionsLabelWrapper>
+                  </>
                 )}
               </>
             )}
