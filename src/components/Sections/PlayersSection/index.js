@@ -58,7 +58,7 @@ import {
   ActionsLabelWrapper,
   TopActionsLabelWrapper
 } from './styles';
-import { characterTypes } from '../../../interfaces/types';
+import { CharacterType } from '../../../interfaces/types';
 import { SOUNDS_PATH } from '../../../setup/endpoints';
 import TradeArea from '../../TradeArea';
 import NewGame from '../../NewGame';
@@ -90,6 +90,7 @@ import {
   yellowThreatThresold
 } from '../../../utils/xp';
 import { WEAPONS_S1 } from '../../../setup/weapons';
+import ActionsModal from '../../ActionsModal';
 
 const PlayersSection = ({
   damageMode,
@@ -137,6 +138,10 @@ const PlayersSection = ({
   const [actionsLabel, changeActionLabel] = useStateWithLabel(
     '',
     'actionsLabel'
+  );
+  const [displayActionsModal, toggleActionsModal] = useStateWithLabel(
+    true,
+    'displayActionsModal'
   );
 
   const [topActionsLabel, changeTopActionLabel] = useStateWithLabel(
@@ -995,6 +1000,13 @@ const PlayersSection = ({
         {newChar && (
           <NewGame currentChars={characters} dynamic setNewChar={setNewChar} />
         )}
+        <ActionsModal
+          toggleVisibility={toggleActionsModal}
+          onConfirmModal={() => null}
+          visible={displayActionsModal}
+        >
+          <div>Testing</div>
+        </ActionsModal>
       </CharacterSheet>
     </>
   );
@@ -1002,9 +1014,9 @@ const PlayersSection = ({
 
 PlayersSection.propTypes = {
   damageMode: bool.isRequired,
-  initialCharacters: arrayOf(characterTypes),
+  initialCharacters: arrayOf(CharacterType),
   loadGame: func.isRequired,
-  loadedGame: arrayOf(characterTypes),
+  loadedGame: arrayOf(CharacterType),
   setZombiesTurn: func.isRequired,
   toggleDamageMode: func.isRequired
 };

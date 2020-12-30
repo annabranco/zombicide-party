@@ -20,3 +20,9 @@ export const END_CHAR_TURN = char => `End ${char}'s turn`;
 
 export const EDIT_CHARACTERS = 'Edit characters';
 export const ADD_CHARACTER = 'Add new character';
+
+export const XP_GAIN = 'XP Gain';
+
+export const XP_GAIN_SELECT = 'Select the ammount of XP gained';
+
+export const CONFIRMATION_NEEDED = 'Do you really wanna do it?';

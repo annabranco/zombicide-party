@@ -57,7 +57,7 @@ const MainMenu = ({ loadedGame }) => {
         <MainTitle>PARTY</MainTitle>
       </LogoArea>
       <ZombieIntro src={zombieImage.current} />
-      <ButtonsArea>
+      <ButtonsArea delay>
         <StyledLink to="/new">
           <SelectionButton>New Game</SelectionButton>
         </StyledLink>

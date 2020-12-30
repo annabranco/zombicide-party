@@ -21,7 +21,7 @@ ButtonsArea.displayName = 'ButtonsArea';
 
 export const ModalButton = styled(SelectionButton)`
   label: ModalButton;
-  margin: 0 40px;
+  margin: 10px 40px;
   width: 190px;
   background: gray;
   padding: 5px 15px;
@@ -30,17 +30,30 @@ export const ModalButton = styled(SelectionButton)`
   font-weight: 700;
   color: black;
 
-  ${({ type }) =>
-    type === 'go-on' &&
-    css`
-      background: red;
-    `}
+  ${({ type }) => {
+    if (type === 'go-on') {
+      return css`
+        background: red;
+      `;
+    }
+    if (type === 'confirm') {
+      return css`
+        background: green;
+      `;
+    }
+    return null;
+  }}
   ${({ inactive }) =>
     inactive &&
     css`
       color: #707070;
       cursor: not-allowed;
     `}
+
+    &: hover {
+    color: yellow;
+    filter: brightness(1.2);
+  }
 `;
 ModalButton.displayName = 'ModalButton';
 
@@ -77,6 +90,12 @@ export const ModalTitle = styled.h1`
   font-size: 2rem;
   color: red;
   text-shadow: 0 0 2px white;
+
+  ${({ uppercase }) =>
+    uppercase &&
+    css`
+      text-transform: uppercase;
+    `}
 `;
 ModalTitle.displayName = 'ModalTitle';
 
@@ -88,7 +107,7 @@ export const ModalWindow = styled.div`
   top: 50%;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
+  justify-content: space-around;
   border-radius: 15px;
   height: 100%;
   width: 100%;

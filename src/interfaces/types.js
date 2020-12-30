@@ -9,7 +9,7 @@ import {
   oneOfType
 } from 'prop-types';
 
-export const characterTypes = shape({
+export const CharacterType = shape({
   abilities: arrayOf(string),
   color: string,
   experience: number,
@@ -20,4 +20,16 @@ export const characterTypes = shape({
   player: string,
   selector: string,
   voice: string
+});
+
+const ModalButtonType = shape({
+  text: string.isRequired,
+  onClick: func.isRequired,
+  type: string.isRequired
+});
+
+export const ModalContentType = shape({
+  title: string,
+  text: string.isRequired,
+  buttons: arrayOf(ModalButtonType)
 });

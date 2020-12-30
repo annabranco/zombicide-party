@@ -4,7 +4,7 @@ import { bool, func } from 'prop-types';
 import { cloneDeep } from 'lodash';
 import { getCharacterColor } from '../../utils/players';
 import { useStateWithLabel } from '../../utils/hooks';
-import Modal from '../Modal';
+import SetupModal from '../SetupModal';
 import BG from '../../assets/images/background/background.jpg';
 import { CHARACTERS } from '../../setup/characters';
 import {
@@ -17,7 +17,7 @@ import {
   SelectorTitle
 } from './styles';
 import { MenuScreen } from '../MainMenu/styles';
-import { characterTypes } from '../../interfaces/types';
+import { CharacterType } from '../../interfaces/types';
 import { LOCAL_STORAGE_KEY } from '../../constants';
 
 const NewGame = ({
@@ -132,7 +132,7 @@ const NewGame = ({
 
   return (
     <MenuScreen img={BG} type="newChar">
-      <Modal
+      <SetupModal
         addPlayer={addPlayer}
         dynamic={dynamic}
         loadedGame={loadedGame}
@@ -180,7 +180,7 @@ const NewGame = ({
 };
 
 NewGame.propTypes = {
-  currentChars: characterTypes,
+  currentChars: CharacterType,
   dynamic: bool,
   loadedGame: bool.isRequired,
   setInitialCharacters: func.isRequired,

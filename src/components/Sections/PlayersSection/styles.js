@@ -46,7 +46,7 @@ export const ActionsLabelWrapper = styled.div`
   width: 50%;
   font-family: 'Grandstander', cursive;
   font-size: 0.9rem;
-  letter-spacing: 0.4rem;
+  letter-spacing: 0.2rem;
   color: rgba(255, 255, 180, 0.6);
   text-transform: uppercase;
 `;

@@ -30,7 +30,7 @@ import {
   LOCAL_STORAGE_PLAYERS_KEY
 } from '../../constants';
 
-const Modal = ({
+const SetupModal = ({
   addPlayer,
   activePlayers,
   dynamic,
@@ -202,7 +202,7 @@ const Modal = ({
           )}
         </>
       )}
-      <ButtonsArea>
+      <ButtonsArea delay>
         {message.buttons.map(button => (
           <ModalButton
             disabled={
@@ -225,7 +225,7 @@ const Modal = ({
   );
 };
 
-Modal.propTypes = {
+SetupModal.propTypes = {
   addPlayer: func,
   activePlayers: instanceOf(Set).isRequired,
   dynamic: bool,
@@ -234,10 +234,10 @@ Modal.propTypes = {
   type: string
 };
 
-Modal.defaultProps = {
+SetupModal.defaultProps = {
   addPlayer: () => null,
   dynamic: false,
   type: null
 };
 
-export default Modal;
+export default SetupModal;
