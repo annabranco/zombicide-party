@@ -513,6 +513,19 @@ export const SelectButton = styled(NextButton)`
 `;
 SelectButton.displayName = 'SelectButton';
 
+export const TopActionsLabelWrapper = styled(ActionsLabelWrapper)`
+  label: TopActionsLabelWrapper;
+  top: 0;
+  right: 0;
+  align-items: flex-end;
+  height: 20px;
+  width: 30%;
+  font-size: 0.6rem;
+  letter-spacing: 0.2rem;
+  text-align: right;
+`;
+TopActionsLabelWrapper.displayName = 'TopActionsLabelWrapper';
+
 export const WoundedSign = styled.img`
   label: WoundedSign;
   z-index: 2;

@@ -19,3 +19,4 @@ export const BREAK_DOOR = 'Break door down';
 export const END_CHAR_TURN = char => `End ${char}'s turn`;
 
 export const EDIT_CHARACTERS = 'Edit characters';
+export const ADD_CHARACTER = 'Add new character';

@@ -55,7 +55,8 @@ import {
   HishestXpTag,
   AbilitiesWrapper,
   Abilities,
-  ActionsLabelWrapper
+  ActionsLabelWrapper,
+  TopActionsLabelWrapper
 } from './styles';
 import { characterTypes } from '../../../interfaces/types';
 import { SOUNDS_PATH } from '../../../setup/endpoints';
@@ -77,7 +78,9 @@ import {
   MOVE,
   OPEN_DOOR,
   BREAK_DOOR,
-  END_CHAR_TURN
+  END_CHAR_TURN,
+  ADD_CHARACTER,
+  EDIT_CHARACTERS
 } from '../../../constants';
 import {
   blueThreatThresold,
@@ -132,8 +135,13 @@ const PlayersSection = ({
     'highestXp'
   );
   const [actionsLabel, changeActionLabel] = useStateWithLabel(
-    'actionsLabel',
+    '',
     'actionsLabel'
+  );
+
+  const [topActionsLabel, changeTopActionLabel] = useStateWithLabel(
+    '',
+    'topActionsLabel'
   );
 
   const [actionsCount, updateActionsCount] = useStateWithLabel(
@@ -449,6 +457,11 @@ const PlayersSection = ({
     }
   };
 
+  const onClickEdit = () => {
+    toggleSetupMode(true);
+    changeTopActionLabel('');
+  };
+
   const gainXp = (xp = 1) => {
     const updatedCharacter = cloneDeep(character);
     const newXp = updatedCharacter.experience + xp;
@@ -692,15 +705,26 @@ const PlayersSection = ({
           <>
             <CharacterOverlay damageMode={damageMode} img={character.img} />
             {!damageMode && setupMode && characters.length < CHARACTERS.length && (
-              <AddNewChar type="button" onClick={() => addNewChar(true)}>
+              <AddNewChar
+                type="button"
+                onClick={() => addNewChar(true)}
+                onMouseOver={() => changeTopActionLabel(ADD_CHARACTER)}
+                onMouseOut={() => changeTopActionLabel('')}
+              >
                 <i className="fas fa-user-plus" />
               </AddNewChar>
             )}
             {!damageMode && !setupMode && (
-              <AddNewChar type="button" onClick={() => toggleSetupMode(true)}>
+              <AddNewChar
+                type="button"
+                onClick={onClickEdit}
+                onMouseOver={() => changeTopActionLabel(EDIT_CHARACTERS)}
+                onMouseOut={() => changeTopActionLabel('')}
+              >
                 <i className="far fa-edit" />
               </AddNewChar>
             )}
+            <TopActionsLabelWrapper>{topActionsLabel}</TopActionsLabelWrapper>
             {firstPlayer === character.name && (
               <FirstPlayerWrapper>
                 <FirstPlayerToken src={FirstPlayer} alt="First Player Token" />
