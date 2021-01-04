@@ -41,6 +41,12 @@ export const ModalButton = styled(SelectionButton)`
         background: green;
       `;
     }
+    if (type === 'option') {
+      return css`
+        min-height: 80px;
+        background: lightgray;
+      `;
+    }
     return null;
   }}
   ${({ inactive }) =>
@@ -56,6 +62,13 @@ export const ModalButton = styled(SelectionButton)`
   }
 `;
 ModalButton.displayName = 'ModalButton';
+
+export const ModalCharFace = styled.img`
+  label: ModalCharFace;
+  margin-bottom: -30px;
+  width: 25%;
+`;
+ModalCharFace.displayName = 'ModalCharFace';
 
 export const ModalMessage = styled.p`
   label: ModalMessage;
@@ -109,9 +122,9 @@ export const ModalWindow = styled.div`
   align-items: center;
   justify-content: space-around;
   border-radius: 15px;
-  height: 100%;
-  width: 100%;
-  background: rgba(0, 0, 0, 0.7);
+  height: 120%;
+  width: 120%;
+  background: rgba(0, 0, 0, 0.75);
   overflow: hidden;
   transform: translate(0, -50%);
 

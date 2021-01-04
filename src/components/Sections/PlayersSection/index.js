@@ -84,7 +84,9 @@ import {
   CANCEL,
   OK,
   XP_GAIN,
-  XP_GAIN_SELECT
+  XP_GAIN_SELECT,
+  LEARNED_NEW_ABILITY,
+  CHOOSE_NEW_ABILITY
 } from '../../../constants';
 import {
   blueThreatThresold,
@@ -1041,6 +1043,28 @@ const PlayersSection = ({
                 {
                   text: OK,
                   type: 'confirm'
+                }
+              ]
+            }}
+            onConfirmModal={onClickGainBonusXp}
+          />
+        )}
+        {character.promotions && (
+          <ActionsModal
+            toggleVisibility={toggleActionsModal}
+            visible={displayActionsModal}
+            content={{
+              data: character.face,
+              title: LEARNED_NEW_ABILITY,
+              type: 'option',
+              buttons: [
+                {
+                  text: character.promotions.orange[0].name,
+                  type: 'option'
+                },
+                {
+                  text: character.promotions.orange[1].name,
+                  type: 'option'
                 }
               ]
             }}

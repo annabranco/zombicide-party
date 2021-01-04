@@ -6,7 +6,8 @@ import {
   ModalButton,
   ModalMessage,
   ModalTitle,
-  ModalWindow
+  ModalWindow,
+  ModalCharFace
 } from '../SetupModal/styles';
 import { ButtonsArea } from '../MainMenu/styles';
 import { ModalContentType } from '../../interfaces/types';
@@ -91,7 +92,10 @@ const ActionsModal = ({
               }}
             />
           )}
-
+          {console.log(modalMessage.data)}
+          {modalMessage.type === 'option' && (
+            <ModalCharFace src={modalMessage.data} alt="Character face" />
+          )}
           <ButtonsArea>
             <ModalButton
               onClick={onClickCancel}

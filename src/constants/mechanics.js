@@ -15,3 +15,5 @@ export const PLAYERS_DB_EMPTY =
   'No players on database. Please create one or more.';
 
 export const TURN_FINISHED = "'s turn has finished";
+
+export const LEARNED_NEW_ABILITY = 'New ability learned';
