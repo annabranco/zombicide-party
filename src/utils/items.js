@@ -1,3 +1,4 @@
+import { NOISY } from '../constants';
 import { ITEMS_S1 } from '../setup/items';
 import { SPECIALS_CARDS } from '../setup/specials';
 import { WEAPONS_S1 } from '../setup/weapons';
@@ -47,7 +48,7 @@ export const checkForNoise = item => {
 
 export const checkForNoiseOpeningDoor = item => {
   if (Object.keys(ALL_ITEMS).find(name => item === name)) {
-    return ALL_ITEMS[item].canOpenDoor === 'noisy';
+    return ALL_ITEMS[item].canOpenDoor === NOISY;
   }
   return null;
 };

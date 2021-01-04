@@ -14,7 +14,7 @@ import SawedOff from '../assets/images/weapons/sawed-off.jpg';
 import Shotgun from '../assets/images/weapons/shotgun.jpg';
 import SniperRifle from '../assets/images/weapons/sniper-rifle.jpg';
 import SubMG from '../assets/images/weapons/sub-mg.jpg';
-import { WEAPONS } from '../constants';
+import { SPECIAL, WEAPONS, NOISY } from '../constants';
 
 export const WEAPONS_S1 = {
   BaseballBat: {
@@ -25,7 +25,7 @@ export const WEAPONS_S1 = {
     type: WEAPONS
   },
   Chainsaw: {
-    canOpenDoor: 'noisy',
+    canOpenDoor: NOISY,
     dices: 5,
     img: Chainsaw,
     name: 'Chainsaw',
@@ -48,7 +48,7 @@ export const WEAPONS_S1 = {
     type: WEAPONS
   },
   FireAxe: {
-    canOpenDoor: 'noisy',
+    canOpenDoor: NOISY,
     dices: 1,
     img: FireAxe,
     name: 'FireAxe',
@@ -66,7 +66,7 @@ export const WEAPONS_S1 = {
     dices: 2,
     img: MasShotgun,
     name: 'MasShotgun',
-    noise: 'special',
+    noise: SPECIAL,
     type: WEAPONS
   },
   Machete: {
@@ -77,7 +77,7 @@ export const WEAPONS_S1 = {
     type: WEAPONS
   },
   Molotov: {
-    dices: 'special',
+    dices: SPECIAL,
     img: Molotov,
     name: 'Molotov',
     noise: false,

@@ -477,9 +477,16 @@ const PlayersSection = ({
     changeTopActionLabel('');
   };
 
+  const gainCustomXp = specialSlot => {
+    if (specialSlot) {
+      const updatedCharacter = cloneDeep(character);
+      updatedCharacter.inHand[specialSlot] = '';
+      changeCharacter(updatedCharacter);
+    }
+    toggleActionsModal('xp');
+  };
+
   const gainXp = (xp = 1) => {
-    // eslint-disable-next-line no-debugger
-    debugger;
     const updatedCharacter = cloneDeep(character);
     const maxXP = 43;
     const newXp =
@@ -909,6 +916,7 @@ const PlayersSection = ({
                         charVoice={character.voice}
                         damageMode={damageMode}
                         dices={WEAPONS_S1[item] && WEAPONS_S1[item].dices}
+                        gainCustomXp={gainCustomXp}
                         gainXp={gainXp}
                         handleSearch={handleSearch}
                         index={index}
@@ -1016,27 +1024,29 @@ const PlayersSection = ({
         {newChar && (
           <NewGame currentChars={characters} dynamic setNewChar={setNewChar} />
         )}
-        <ActionsModal
-          toggleVisibility={toggleActionsModal}
-          visible={displayActionsModal}
-          content={{
-            data: { maxXp: 43, currentXp: character.experience || 0 },
-            title: XP_GAIN,
-            text: XP_GAIN_SELECT,
-            type: 'slider',
-            buttons: [
-              {
-                text: CANCEL,
-                type: 'cancel'
-              },
-              {
-                text: OK,
-                type: 'confirm'
-              }
-            ]
-          }}
-          onConfirmModal={onClickGainBonusXp}
-        />
+        {displayActionsModal === 'xp' && (
+          <ActionsModal
+            toggleVisibility={toggleActionsModal}
+            visible={displayActionsModal}
+            content={{
+              data: { maxXp: 43, currentXp: character.experience || 0 },
+              title: XP_GAIN,
+              text: XP_GAIN_SELECT,
+              type: 'slider',
+              buttons: [
+                {
+                  text: CANCEL,
+                  type: 'cancel'
+                },
+                {
+                  text: OK,
+                  type: 'confirm'
+                }
+              ]
+            }}
+            onConfirmModal={onClickGainBonusXp}
+          />
+        )}
       </CharacterSheet>
     </>
   );

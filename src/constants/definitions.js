@@ -5,3 +5,5 @@ export const ITEMS = 'items';
 export const ITEMS_SELECTOR = 'itemsSelector';
 export const MALE = 'male';
 export const WEAPONS = 'weapons';
+export const SPECIAL = 'special';
+export const NOISY = 'noisy';

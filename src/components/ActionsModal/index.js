@@ -31,11 +31,8 @@ const ActionsModal = ({
   };
 
   const onClickConfirm = () => {
-    console.log('$$$ modalState', modalState);
     onConfirmModal(modalState);
   };
-
-  console.log('$$$ modalMessage', modalMessage);
 
   useEffect(() => {
     if (!content) {
@@ -69,8 +66,6 @@ const ActionsModal = ({
           {modalMessage.type === 'select' && (
             <ModalSelect
               onChange={event => {
-                console.log(event.target);
-                console.log(event.currentTarget.value);
                 changeModalState(event.currentTarget.value);
               }}
               value={modalState}
@@ -92,8 +87,6 @@ const ActionsModal = ({
               max={modalMessage.data.maxXp}
               currentXp={modalMessage.data.currentXp}
               onChange={(event, value) => {
-                console.log(event.target);
-                console.log(value);
                 changeModalState(value);
               }}
             />

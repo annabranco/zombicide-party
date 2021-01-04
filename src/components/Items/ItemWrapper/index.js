@@ -4,6 +4,7 @@ import { useStateWithLabel } from '../../../utils/hooks';
 import { getItemPhoto, getItemType } from '../../../utils/items';
 import SoundBlock from '../../SoundBlock';
 import ActionButton from '../../Sections/PlayersSection/actions';
+import { WEAPONS_S1 } from '../../../setup/weapons';
 
 import { AppButton } from '../../Sections/PlayersSection/styles';
 import {
@@ -20,6 +21,7 @@ import {
   IN_HAND,
   ITEM_IN_BACKPACK,
   ITEM_IN_HAND,
+  SPECIAL,
   WEAPONS
 } from '../../../constants';
 
@@ -37,6 +39,7 @@ const ItemsArea = ({
   combinePair,
   damageMode,
   dices,
+  gainCustomXp,
   gainXp,
   handleSearch,
   index,
@@ -121,11 +124,15 @@ const ItemsArea = ({
   };
 
   const activateKillButtons = () => {
-    toggleDisplayKillButtons(true);
-    killButtonsTimer.current = setTimeout(() => {
-      toggleDisplayKillButtons(false);
-      changeKillButtons([...Array(dices).keys()]);
-    }, 3000);
+    if (WEAPONS_S1[item].dices === SPECIAL) {
+      gainCustomXp(index);
+    } else {
+      toggleDisplayKillButtons(true);
+      killButtonsTimer.current = setTimeout(() => {
+        toggleDisplayKillButtons(false);
+        changeKillButtons([...Array(dices).keys()]);
+      }, 3000);
+    }
   };
 
   const killOneZombie = () => {
@@ -254,6 +261,7 @@ ItemsArea.propTypes = {
   combinePair: bool,
   damageMode: bool.isRequired,
   dices: number,
+  gainCustomXp: func,
   gainXp: func,
   handleSearch: func.isRequired,
   index: number.isRequired,
@@ -279,7 +287,8 @@ ItemsArea.defaultProps = {
   combineItemSelected: false,
   combinePair: false,
   dices: null,
-  gainXp: null,
+  gainCustomXp: () => null,
+  gainXp: () => null,
   item: null,
   setupMode: false,
   tradeItem: () => null
