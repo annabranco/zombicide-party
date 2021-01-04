@@ -80,7 +80,11 @@ import {
   BREAK_DOOR,
   END_CHAR_TURN,
   ADD_CHARACTER,
-  EDIT_CHARACTERS
+  EDIT_CHARACTERS,
+  CANCEL,
+  OK,
+  XP_GAIN,
+  XP_GAIN_SELECT
 } from '../../../constants';
 import {
   blueThreatThresold,
@@ -128,6 +132,7 @@ const PlayersSection = ({
     'combiningItem'
   );
   const [trade, startTrade] = useStateWithLabel(false, 'trade');
+
   const [noise, setNoise] = useStateWithLabel(0, 'noise');
   const [canCombine, toggleCanCombine] = useStateWithLabel(false, 'canCombine');
   const [xpCounter, updateXpCounter] = useStateWithLabel([], 'xpCounter');
@@ -268,6 +273,11 @@ const PlayersSection = ({
     }
     setNoise(0);
     changeCharIndex(nextPlayerIndex);
+  };
+
+  const onClickGainBonusXp = bonusXp => {
+    gainXp(Number(bonusXp));
+    toggleActionsModal(false);
   };
 
   const makeNoise = item => {
@@ -468,8 +478,14 @@ const PlayersSection = ({
   };
 
   const gainXp = (xp = 1) => {
+    // eslint-disable-next-line no-debugger
+    debugger;
     const updatedCharacter = cloneDeep(character);
-    const newXp = updatedCharacter.experience + xp;
+    const maxXP = 43;
+    const newXp =
+      updatedCharacter.experience + xp >= maxXP
+        ? maxXP
+        : updatedCharacter.experience + xp;
 
     if (newXp > highestXp.xp) {
       updateHighestXp({ name: character.name, xp: newXp });
@@ -1002,11 +1018,25 @@ const PlayersSection = ({
         )}
         <ActionsModal
           toggleVisibility={toggleActionsModal}
-          onConfirmModal={() => null}
           visible={displayActionsModal}
-        >
-          <div>Testing</div>
-        </ActionsModal>
+          content={{
+            data: { maxXp: 43, currentXp: character.experience || 0 },
+            title: XP_GAIN,
+            text: XP_GAIN_SELECT,
+            type: 'slider',
+            buttons: [
+              {
+                text: CANCEL,
+                type: 'cancel'
+              },
+              {
+                text: OK,
+                type: 'confirm'
+              }
+            ]
+          }}
+          onConfirmModal={onClickGainBonusXp}
+        />
       </CharacterSheet>
     </>
   );

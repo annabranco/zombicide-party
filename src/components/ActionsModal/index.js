@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import { bool, func, node } from 'prop-types';
+
 import { NO_WAY, CONFIRMATION_NEEDED, YEAH } from '../../constants';
 import {
   ModalButton,
@@ -10,30 +11,34 @@ import {
 import { ButtonsArea } from '../MainMenu/styles';
 import { ModalContentType } from '../../interfaces/types';
 import { useStateWithLabel } from '../../utils/hooks';
+import { ModalSelect, XpSlider } from './styles';
 
 const ActionsModal = ({
-  message,
+  content,
   children,
   toggleVisibility,
   visible,
   onConfirmModal
 }) => {
   const [modalMessage, changeModalMessage] = useStateWithLabel(
-    message,
+    content,
     'modalMessage'
   );
+  const [modalState, changeModalState] = useStateWithLabel(null, 'modalState');
 
   const onClickCancel = () => {
     toggleVisibility(false);
   };
 
   const onClickConfirm = () => {
-    toggleVisibility(false);
-    onConfirmModal();
+    console.log('$$$ modalState', modalState);
+    onConfirmModal(modalState);
   };
 
+  console.log('$$$ modalMessage', modalMessage);
+
   useEffect(() => {
-    if (!message) {
+    if (!content) {
       const DEFAULT_MODAL_MESSAGE = {
         title: null,
         text: CONFIRMATION_NEEDED,
@@ -53,7 +58,7 @@ const ActionsModal = ({
 
       changeModalMessage(DEFAULT_MODAL_MESSAGE);
     }
-  }, [changeModalMessage, message]);
+  }, [changeModalMessage, content]);
 
   return (
     <ModalWindow visible={visible}>
@@ -61,17 +66,52 @@ const ActionsModal = ({
         <>
           <ModalTitle uppercase>{modalMessage.title}</ModalTitle>
           <ModalMessage>{modalMessage.text}</ModalMessage>
-          {children}
+          {modalMessage.type === 'select' && (
+            <ModalSelect
+              onChange={event => {
+                console.log(event.target);
+                console.log(event.currentTarget.value);
+                changeModalState(event.currentTarget.value);
+              }}
+              value={modalState}
+            >
+              {modalMessage.data.map(item => (
+                <option key={`option${item}`} value={item}>
+                  {item}
+                </option>
+              ))}
+            </ModalSelect>
+          )}
+          {modalMessage.type === 'slider' && (
+            <XpSlider
+              defaultValue={modalState}
+              aria-labelledby="discrete-slider-always"
+              valueLabelDisplay="on"
+              step={1}
+              min={1}
+              max={modalMessage.data.maxXp}
+              currentXp={modalMessage.data.currentXp}
+              onChange={(event, value) => {
+                console.log(event.target);
+                console.log(value);
+                changeModalState(value);
+              }}
+            />
+          )}
+
           <ButtonsArea>
-            {modalMessage.buttons.map(button => (
-              <ModalButton
-                key={`modal_button_${button.type}`}
-                onClick={button.onClick}
-                type={button.type}
-              >
-                {button.text}
-              </ModalButton>
-            ))}
+            <ModalButton
+              onClick={onClickCancel}
+              type={modalMessage.buttons[0].type}
+            >
+              {modalMessage.buttons[0].text}
+            </ModalButton>
+            <ModalButton
+              onClick={onClickConfirm}
+              type={modalMessage.buttons[1].type}
+            >
+              {modalMessage.buttons[1].text}
+            </ModalButton>
           </ButtonsArea>
         </>
       )}
@@ -80,7 +120,7 @@ const ActionsModal = ({
 };
 
 ActionsModal.propTypes = {
-  message: ModalContentType,
+  content: ModalContentType,
   children: node,
   visible: bool.isRequired,
   toggleVisibility: func.isRequired,
@@ -88,9 +128,9 @@ ActionsModal.propTypes = {
 };
 
 ActionsModal.defaultProps = {
-  message: null,
+  content: null,
   children: null,
-  onConfirmModal: null
+  onConfirmModal: () => null
 };
 
 export default ActionsModal;
