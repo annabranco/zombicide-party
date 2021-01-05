@@ -48,7 +48,8 @@ const DIE_RANGED = {
 const COMBAT_ACTION = {
   name: '✚ 1 free Combat Action',
   description:
-    'The Survivor has one free extra Combat Action. This Action may only be used for Melee or Ranged Combat.'
+    'The Survivor has one free extra Combat Action. This Action may only be used for Melee or Ranged Combat.',
+  effect: ([gen, mov, att, sea]) => [gen, mov, att + 1, sea]
 };
 const MOVE_ACTION = {
   name: '✚ 1 free Move Action',

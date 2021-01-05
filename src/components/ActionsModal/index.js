@@ -7,7 +7,8 @@ import {
   ModalMessage,
   ModalTitle,
   ModalWindow,
-  ModalCharFace
+  ModalCharFace,
+  ModalMessageWrapper
 } from '../SetupModal/styles';
 import { ButtonsArea } from '../MainMenu/styles';
 import { ModalContentType } from '../../interfaces/types';
@@ -16,7 +17,6 @@ import { ModalSelect, XpSlider } from './styles';
 
 const ActionsModal = ({
   content,
-  children,
   toggleVisibility,
   visible,
   onConfirmModal
@@ -31,8 +31,12 @@ const ActionsModal = ({
     toggleVisibility(false);
   };
 
-  const onClickConfirm = () => {
-    onConfirmModal(modalState);
+  const onClickConfirm = args => {
+    if (args.target) {
+      onConfirmModal(modalState);
+    } else {
+      onConfirmModal(args);
+    }
   };
 
   useEffect(() => {
@@ -53,8 +57,12 @@ const ActionsModal = ({
           }
         ]
       };
-
       changeModalMessage(DEFAULT_MODAL_MESSAGE);
+    } else {
+      changeModalMessage(content);
+    }
+    if (modalMessage.type === 'slider') {
+      changeModalState(1);
     }
   }, [changeModalMessage, content]);
 
@@ -80,7 +88,7 @@ const ActionsModal = ({
           )}
           {modalMessage.type === 'slider' && (
             <XpSlider
-              defaultValue={modalState}
+              value={modalState}
               aria-labelledby="discrete-slider-always"
               valueLabelDisplay="on"
               step={1}
@@ -93,22 +101,55 @@ const ActionsModal = ({
             />
           )}
           {console.log(modalMessage.data)}
-          {modalMessage.type === 'option' && (
-            <ModalCharFace src={modalMessage.data} alt="Character face" />
+          {modalMessage.type === 'option' && modalMessage.data.img && (
+            <>
+              {modalState ? (
+                <ModalMessageWrapper>
+                  <ModalMessage type={modalMessage.type}>
+                    {modalState}
+                  </ModalMessage>
+                </ModalMessageWrapper>
+              ) : (
+                <ModalCharFace
+                  src={modalMessage.data.img}
+                  alt="Character face"
+                />
+              )}
+            </>
           )}
           <ButtonsArea>
-            <ModalButton
-              onClick={onClickCancel}
-              type={modalMessage.buttons[0].type}
-            >
-              {modalMessage.buttons[0].text}
-            </ModalButton>
-            <ModalButton
-              onClick={onClickConfirm}
-              type={modalMessage.buttons[1].type}
-            >
-              {modalMessage.buttons[1].text}
-            </ModalButton>
+            {modalMessage.buttons.map((button, index) => {
+              const onClickButton = () => {
+                switch (button.type) {
+                  case 'cancel':
+                    return onClickCancel;
+                  case 'option':
+                    return () =>
+                      onClickConfirm({ level: modalMessage.data.level, index });
+                  default:
+                    return onClickConfirm;
+                }
+              };
+              return (
+                <ModalButton
+                  key={button.text}
+                  onClick={onClickButton()}
+                  type={button.type}
+                  onMouseOver={
+                    modalMessage.type === 'option'
+                      ? () => changeModalState(button.details)
+                      : () => null
+                  }
+                  onMouseOut={
+                    modalMessage.type === 'option'
+                      ? () => changeModalState('')
+                      : () => null
+                  }
+                >
+                  {button.text}
+                </ModalButton>
+              );
+            })}
           </ButtonsArea>
         </>
       )}
@@ -118,7 +159,6 @@ const ActionsModal = ({
 
 ActionsModal.propTypes = {
   content: ModalContentType,
-  children: node,
   visible: bool.isRequired,
   toggleVisibility: func.isRequired,
   onConfirmModal: func
@@ -126,7 +166,6 @@ ActionsModal.propTypes = {
 
 ActionsModal.defaultProps = {
   content: null,
-  children: null,
   onConfirmModal: () => null
 };
 

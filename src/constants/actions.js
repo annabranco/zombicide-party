@@ -26,3 +26,5 @@ export const XP_GAIN = 'XP Gain';
 export const XP_GAIN_SELECT = 'Select the ammount of XP gained';
 
 export const CONFIRMATION_NEEDED = 'Do you really wanna do it?';
+
+export const BURNEM_ALL = "BURN'EM ALL";

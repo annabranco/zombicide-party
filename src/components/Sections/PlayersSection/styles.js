@@ -240,6 +240,7 @@ export const HishestXpTag = styled.span`
   text-transform: uppercase;
   font-size: 0.8rem;
   color: white;
+  user-select: none;
 `;
 HishestXpTag.displayName = 'HishestXpTag';
 
@@ -553,6 +554,7 @@ export const XpIcon = styled(MovementIcon)`
   label: XpIcon;
   width: 25px;
   left: 0;
+  user-select: none;
   /* color: black; */
   color: black;
   font-size: ${({ currentXp, highestXp }) =>
@@ -602,5 +604,11 @@ export const XpIcon = styled(MovementIcon)`
   &:last-of-type:after {
     clip-path: none;
   }
+
+  ${({ setupMode }) =>
+    setupMode &&
+    css`
+      cursor: pointer;
+    `}
 `;
 XpIcon.displayName = 'XPIcon';

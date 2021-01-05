@@ -22,13 +22,19 @@ ButtonsArea.displayName = 'ButtonsArea';
 export const ModalButton = styled(SelectionButton)`
   label: ModalButton;
   margin: 10px 40px;
+  min-height: 40px;
   width: 190px;
   background: gray;
   padding: 5px 15px;
-  font-family: 'Grandstander', cursive;
-  font-size: 0.9rem;
+  font-size: 1.1rem;
   font-weight: 700;
   color: black;
+  font-family: 'Grandstander', cursive;
+
+  &: hover {
+    color: yellow;
+    filter: brightness(1.2);
+  }
 
   ${({ type }) => {
     if (type === 'go-on') {
@@ -38,13 +44,21 @@ export const ModalButton = styled(SelectionButton)`
     }
     if (type === 'confirm') {
       return css`
-        background: green;
+        background: lightgreen;
       `;
     }
     if (type === 'option') {
       return css`
         min-height: 80px;
         background: lightgray;
+        font-size: 1.15rem;
+        font-family: 'Grandstander', cursive;
+
+        &: hover {
+          color: purple;
+          filter: brightness(1.2);
+          font-size: 1.2rem;
+        }
       `;
     }
     return null;
@@ -55,18 +69,13 @@ export const ModalButton = styled(SelectionButton)`
       color: #707070;
       cursor: not-allowed;
     `}
-
-    &: hover {
-    color: yellow;
-    filter: brightness(1.2);
-  }
 `;
 ModalButton.displayName = 'ModalButton';
 
 export const ModalCharFace = styled.img`
   label: ModalCharFace;
-  margin-bottom: -30px;
-  width: 25%;
+  margin: -50px auto;
+  width: 160px;
 `;
 ModalCharFace.displayName = 'ModalCharFace';
 
@@ -78,8 +87,25 @@ export const ModalMessage = styled.p`
   text-align: center;
   line-height: 2;
   white-space: pre;
+  font-family: 'Cairo', sans-serif;
+  ${({ type }) =>
+    type === 'option' &&
+    css`
+      height: 160px;
+      white-space: normal;
+      font-size: 1.3rem;
+      color: yellow;
+    `}
 `;
 ModalMessage.displayName = 'ModalMessage';
+
+export const ModalMessageWrapper = styled.div`
+  label: ModalMessageWrapper;
+  margin: -50px auto;
+  height: 160px;
+  width: 80%;
+`;
+ModalMessageWrapper.displayName = 'ModalMessageWrapper';
 
 export const ModalMessageSecondary = styled.p`
   label: ModalMessageSecondary;

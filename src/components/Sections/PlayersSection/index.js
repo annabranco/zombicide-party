@@ -86,7 +86,7 @@ import {
   XP_GAIN,
   XP_GAIN_SELECT,
   LEARNED_NEW_ABILITY,
-  CHOOSE_NEW_ABILITY
+  BURNEM_ALL
 } from '../../../constants';
 import {
   blueThreatThresold,
@@ -134,7 +134,6 @@ const PlayersSection = ({
     'combiningItem'
   );
   const [trade, startTrade] = useStateWithLabel(false, 'trade');
-
   const [noise, setNoise] = useStateWithLabel(0, 'noise');
   const [canCombine, toggleCanCombine] = useStateWithLabel(false, 'canCombine');
   const [xpCounter, updateXpCounter] = useStateWithLabel([], 'xpCounter');
@@ -146,8 +145,9 @@ const PlayersSection = ({
     '',
     'actionsLabel'
   );
+
   const [displayActionsModal, toggleActionsModal] = useStateWithLabel(
-    true,
+    false,
     'displayActionsModal'
   );
 
@@ -159,6 +159,10 @@ const PlayersSection = ({
   const [actionsCount, updateActionsCount] = useStateWithLabel(
     [],
     'actionsCount'
+  );
+  const [newAbilityIndex, setNewAbilityIndex] = useStateWithLabel(
+    null,
+    'newAbilityIndex'
   );
 
   const history = useHistory();
@@ -183,6 +187,12 @@ const PlayersSection = ({
     character.actionsLeft || character.actions || []
   );
   window.character = character;
+  window.actions = [
+    generalActions,
+    extraMovementActions,
+    extraAttackActions,
+    searchActions
+  ];
 
   const updateData = (charWithChangedData = character) => {
     const charOnGlobalList = characters.find(
@@ -504,6 +514,28 @@ const PlayersSection = ({
     updateData(updatedCharacter);
   };
 
+  const setCustomXp = (newXp, prevXp, nextXp) => {
+    let updatedXp = newXp;
+    if (newXp === '...') {
+      if (prevXp === 19 && nextXp === 43) {
+        updatedXp = 20;
+      } else if (prevXp === 0 && nextXp === 18) {
+        updatedXp = 17;
+      } else if (prevXp === 0 && nextXp === 7) {
+        updatedXp = 6;
+      } else if (prevXp === 7 && nextXp === 19) {
+        updatedXp = 8;
+      } else if (prevXp === 19 && nextXp === 30) {
+        updatedXp = 20;
+      } else if (prevXp === 30 && nextXp === 43) {
+        updatedXp = 31;
+      }
+    }
+    const updatedCharacter = cloneDeep(character);
+    updatedCharacter.experience = updatedXp;
+    updateData(updatedCharacter);
+  };
+
   const generateActionsCountArray = actionsLeft => {
     const actions = {
       gen: (actionsLeft && actionsLeft[0]) || generalActions,
@@ -531,9 +563,70 @@ const PlayersSection = ({
     console.log('$$$ message', message);
   }
 
+  const learnNewAbility = ({ level, index }) => {
+    const updatedChar = handlePromotionEffects(
+      character,
+      level,
+      character.actionsLeft,
+      index
+    );
+    toggleActionsModal(false);
+    updateData(updatedChar);
+    if (
+      updatedChar.experience > orangeThreatThresold &&
+      updatedChar.abilities.length === 3
+    ) {
+      toggleActionsModal('red');
+    }
+  };
+
   const advancingLevel = (xp, char) => {
     let updatedChar = cloneDeep(char);
     switch (true) {
+      case xp > orangeThreatThresold:
+        if (char.abilities.length === 3) {
+          toggleActionsModal('red');
+        } else if (char.abilities.length !== 4) {
+          updatedChar.abilities = [];
+          updatedChar.actions = [3, 0, 0, 0];
+          updatedChar = handlePromotionEffects(updatedChar, 'blue', [
+            3,
+            0,
+            0,
+            0
+          ]);
+          updatedChar = handlePromotionEffects(
+            updatedChar,
+            'yellow',
+            updatedChar.actionsLeft
+          );
+          toggleActionsModal('orange');
+        }
+        abilitiesRef.current = updatedChar.abilities.toString();
+        break;
+
+      case xp > yellowThreatThresold:
+        if (char.abilities.length === 2) {
+          toggleActionsModal('orange');
+        } else if (char.abilities.length !== 3) {
+          updatedChar.abilities = [];
+          updatedChar.actions = [3, 0, 0, 0];
+          updatedChar = handlePromotionEffects(updatedChar, 'blue', [
+            3,
+            0,
+            0,
+            0
+          ]);
+          updatedChar = handlePromotionEffects(
+            updatedChar,
+            'yellow',
+            updatedChar.actionsLeft
+          );
+          toggleActionsModal('orange');
+        }
+        abilitiesRef.current = updatedChar.abilities.toString();
+        break;
+
       case xp > blueThreatThresold:
         if (updatedChar.abilities.length === 1) {
           updatedChar = handlePromotionEffects(updatedChar, 'yellow', [
@@ -542,19 +635,22 @@ const PlayersSection = ({
             extraAttackActions,
             searchActions
           ]);
-          abilitiesRef.current = updatedChar.abilities.toString();
+        } else if (updatedChar.abilities.length !== 2) {
+          updatedChar.abilities = [];
+          updatedChar.actions = [3, 0, 0, 0];
+          updatedChar = handlePromotionEffects(updatedChar, 'blue', [
+            3,
+            0,
+            0,
+            0
+          ]);
+          updatedChar = handlePromotionEffects(
+            updatedChar,
+            'yellow',
+            updatedChar.actionsLeft
+          );
         }
-        break;
-
-      case xp > yellowThreatThresold:
-        if (char.abilities.length === 2) {
-          updatedChar.abilities.push(char.promotions.orange[0].name);
-        }
-        break;
-      case xp > orangeThreatThresold:
-        if (char.abilities.length === 3) {
-          updatedChar.abilities.push(char.promotions.red[0].name);
-        }
+        abilitiesRef.current = updatedChar.abilities.toString();
         break;
 
       default:
@@ -564,7 +660,17 @@ const PlayersSection = ({
             'blue',
             (char.actionsLeft && [...char.actionsLeft]) || [...char.actions]
           );
+        } else {
+          updatedChar.abilities = [];
+          updatedChar.actions = [3, 0, 0, 0];
+          updatedChar = handlePromotionEffects(updatedChar, 'blue', [
+            3,
+            0,
+            0,
+            0
+          ]);
         }
+        abilitiesRef.current = updatedChar.abilities.toString();
         break;
     }
     return updatedChar;
@@ -668,7 +774,7 @@ const PlayersSection = ({
     if (character.experience >= 0) {
       const charClone = cloneDeep(character);
       const newXpBar = calculateXpBar(charClone.experience, highestXp.xp);
-      if (!isEqual(newXpBar, xpCounter)) {
+      if (!isEqual(newXpBar, xpCounter) || setupMode) {
         const updatedChar = advancingLevel(charClone.experience, charClone);
 
         updateXpCounter(newXpBar);
@@ -698,6 +804,17 @@ const PlayersSection = ({
                   currentXp={character.experience === level}
                   highestXp={highestXp.xp === level}
                   key={`xp-${level}-${xpCounter[index - 1]}`}
+                  onClick={
+                    setupMode
+                      ? () =>
+                          setCustomXp(
+                            level,
+                            xpCounter[index - 1],
+                            xpCounter[index + 1]
+                          )
+                      : () => null
+                  }
+                  setupMode={setupMode}
                   size={xpCounter.length}
                   type={level}
                 >
@@ -1015,8 +1132,9 @@ const PlayersSection = ({
             <AbilitiesWrapper>
               {character &&
                 character.abilities &&
-                character.abilities.map(ability => (
-                  <Abilities key={`${character}-${ability}`}>
+                character.abilities.map((ability, index) => (
+                  // eslint-disable-next-line react/no-array-index-key
+                  <Abilities key={`${character}-${index}-${ability}`}>
                     {ability}
                   </Abilities>
                 ))}
@@ -1037,11 +1155,7 @@ const PlayersSection = ({
               type: 'slider',
               buttons: [
                 {
-                  text: CANCEL,
-                  type: 'cancel'
-                },
-                {
-                  text: OK,
+                  text: BURNEM_ALL,
                   type: 'confirm'
                 }
               ]
@@ -1049,26 +1163,24 @@ const PlayersSection = ({
             onConfirmModal={onClickGainBonusXp}
           />
         )}
-        {character.promotions && (
+        {(displayActionsModal === 'orange' ||
+          displayActionsModal === 'red') && (
           <ActionsModal
             toggleVisibility={toggleActionsModal}
             visible={displayActionsModal}
             content={{
-              data: character.face,
+              data: { img: character.face, level: displayActionsModal },
               title: LEARNED_NEW_ABILITY,
               type: 'option',
-              buttons: [
-                {
-                  text: character.promotions.orange[0].name,
-                  type: 'option'
-                },
-                {
-                  text: character.promotions.orange[1].name,
-                  type: 'option'
-                }
-              ]
+              buttons: character.promotions[displayActionsModal].map(
+                button => ({
+                  text: button.name,
+                  type: 'option',
+                  details: button.description
+                })
+              )
             }}
-            onConfirmModal={onClickGainBonusXp}
+            onConfirmModal={learnNewAbility}
           />
         )}
       </CharacterSheet>

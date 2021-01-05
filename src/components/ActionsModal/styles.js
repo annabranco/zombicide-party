@@ -60,7 +60,7 @@ const useXpSliderStyles = makeStyles({
   root: {
     width: '80%',
     color: props => {
-      return getXpColor(props.currentXp + props.defaultValue);
+      return getXpColor(props.currentXp + props.value);
     },
     height: 8
   }
