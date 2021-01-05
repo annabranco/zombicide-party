@@ -73,6 +73,7 @@ const { Pistol } = WEAPONS_S1;
 const AMY = {
   abilities: [],
   actions: [3, 0, 0, 0],
+  bonusDices: { combat: 0, melee: 0, ranged: 0 },
   color: '#a015a3',
   experience: 0,
   face: AmyFace,
@@ -97,6 +98,7 @@ const AMY = {
 const BEN = {
   abilities: [],
   actions: [3, 0, 0, 0],
+  bonusDices: { combat: 0, melee: 0, ranged: 0 },
   color: '#537c6f',
   experience: 0,
   face: BenFace,
@@ -121,6 +123,7 @@ const BEN = {
 const DOUG = {
   abilities: [],
   actions: [3, 0, 0, 0],
+  bonusDices: { combat: 0, melee: 0, ranged: 0 },
   color: '#3566c6',
   experience: 0,
   face: DougFace,
@@ -145,6 +148,7 @@ const DOUG = {
 const JOSH = {
   abilities: [],
   actions: [3, 0, 0, 0],
+  bonusDices: { combat: 0, melee: 0, ranged: 0 },
   color: '#ba761d',
   experience: 0,
   face: JoshFace,
@@ -169,6 +173,7 @@ const JOSH = {
 const MARY = {
   abilities: [],
   actions: [3, 0, 0, 0],
+  bonusDices: { combat: 0, melee: 0, ranged: 0 },
   color: '#3e4c84',
   experience: 0,
   face: MaryFace,
@@ -193,6 +198,7 @@ const MARY = {
 const NED = {
   abilities: [],
   actions: [3, 0, 0, 0],
+  bonusDices: { combat: 0, melee: 0, ranged: 0 },
   color: '#b52929',
   experience: 0,
   face: NedFace,
@@ -217,6 +223,7 @@ const NED = {
 const PHIL = {
   abilities: [],
   actions: [3, 0, 0, 0],
+  bonusDices: { combat: 0, melee: 0, ranged: 0 },
   color: '#565656',
   experience: 0,
   face: PhilFace,
@@ -240,6 +247,7 @@ const PHIL = {
 const WANDA = {
   abilities: [],
   actions: [3, 0, 0, 0],
+  bonusDices: { combat: 0, melee: 0, ranged: 0 },
   color: '#339b35',
   experience: 0,
   face: WandaFace,

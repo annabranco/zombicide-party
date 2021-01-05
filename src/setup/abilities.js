@@ -33,17 +33,20 @@ const DICE_ROLL_RANGED = {
 const DIE_COMBAT = {
   name: '✚ 1 die: Combat',
   description:
-    'The Survivor’s weapons roll an extra die in Combat (Melee or Ranged). Dual weapons gain a die each, for a total of +2 dice per Dual Combat Action.'
+    'The Survivor’s weapons roll an extra die in Combat (Melee or Ranged). Dual weapons gain a die each, for a total of +2 dice per Dual Combat Action.',
+  effect: ({ combat, melee, ranged }) => ({ combat: combat + 1, melee, ranged })
 };
 const DIE_MELEE = {
   name: '✚ 1 die: Melee',
   description:
-    'The Survivor’s Melee weapons rolls an extra die in Combat. Dual melee weapons gain a die each, for a total of +2 dice per Dual Melee Combat Action.'
+    'The Survivor’s Melee weapons rolls an extra die in Combat. Dual melee weapons gain a die each, for a total of +2 dice per Dual Melee Combat Action.',
+  effect: ({ combat, melee, ranged }) => ({ combat, melee: melee + 1, ranged })
 };
 const DIE_RANGED = {
   name: '✚ 1 die: Ranged',
   description:
-    'The Survivor’s Ranged weapons roll an extra die in Combat. Dual ranged weapons gain a die each, for a total of +2 dice per Dual Ranged Combat Action.'
+    'The Survivor’s Ranged weapons roll an extra die in Combat. Dual ranged weapons gain a die each, for a total of +2 dice per Dual Ranged Combat Action.',
+  effect: ({ combat, melee, ranged }) => ({ combat, melee, ranged: ranged + 1 })
 };
 const COMBAT_ACTION = {
   name: '✚ 1 free Combat Action',

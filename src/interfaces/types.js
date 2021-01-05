@@ -33,3 +33,9 @@ export const ModalContentType = shape({
   text: string.isRequired,
   buttons: arrayOf(ModalButtonType)
 });
+
+export const BonusDicesType = shape({
+  combat: number.isRequired,
+  melee: number.isRequired,
+  ranged: number.isRequired
+});

@@ -1,5 +1,6 @@
-import React, { useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { bool, func, number, string } from 'prop-types';
+import { isEqual } from 'lodash';
 import { useStateWithLabel } from '../../../utils/hooks';
 import { getItemPhoto, getItemType } from '../../../utils/items';
 import SoundBlock from '../../SoundBlock';
@@ -21,13 +22,18 @@ import {
   IN_HAND,
   ITEM_IN_BACKPACK,
   ITEM_IN_HAND,
+  MELEE,
+  MELEE_RANGED,
+  RANGED,
   SPECIAL,
   WEAPONS
 } from '../../../constants';
+import { BonusDicesType } from '../../../interfaces/types';
 
 const ItemsArea = ({
   actionsLeft,
   allSlotsAreEmpty,
+  bonusDices,
   callback,
   canAttack,
   canCombine,
@@ -38,7 +44,7 @@ const ItemsArea = ({
   combineItemSelected,
   combinePair,
   damageMode,
-  dices,
+  dice,
   gainCustomXp,
   gainXp,
   handleSearch,
@@ -58,15 +64,14 @@ const ItemsArea = ({
 }) => {
   const [isActive, toggleActive] = useStateWithLabel(false, 'isActive');
   const [isSelected, select] = useStateWithLabel(false, 'isSelected');
-  const [killButtons, changeKillButtons] = useStateWithLabel(
-    dices ? [...Array(dices).keys()] : [],
-    'killButtons'
-  );
+  const [killButtons, changeKillButtons] = useStateWithLabel([], 'killButtons');
   const [displayKillButtons, toggleDisplayKillButtons] = useStateWithLabel(
     false,
     'displayKillButtons'
   );
   const killButtonsTimer = useRef();
+  const bonusDiceRef = useRef();
+  const dicesRef = useRef();
 
   const itemsType = getItemType(item);
 
@@ -124,28 +129,57 @@ const ItemsArea = ({
   };
 
   const activateKillButtons = () => {
-    if (WEAPONS_S1[item].dices === SPECIAL) {
+    if (WEAPONS_S1[item].dice === SPECIAL) {
       gainCustomXp(index);
     } else {
       toggleDisplayKillButtons(true);
       killButtonsTimer.current = setTimeout(() => {
         toggleDisplayKillButtons(false);
-        changeKillButtons([...Array(dices).keys()]);
+        changeKillButtons(calculateTotalDices());
       }, 3000);
     }
   };
 
-  const killOneZombie = () => {
+  const calculateTotalDices = () => {
+    const { combat, melee, ranged } = bonusDices;
+    let totalDices;
+    bonusDiceRef.current = bonusDices;
+    dicesRef.current = dice;
+
+    totalDices = dice + combat;
+
+    if (WEAPONS_S1[item].attack === MELEE) {
+      totalDices += melee;
+    } else if (WEAPONS_S1[item].attack === RANGED) {
+      totalDices += ranged;
+    } else if (WEAPONS_S1[item].attack === MELEE_RANGED) {
+      totalDices = totalDices + ranged + melee;
+    }
+    return [...Array(totalDices).keys()];
+  };
+
+  const killOneZombie = pressedButton => {
     const updatedKillButtons = [...killButtons];
     clearTimeout(killButtonsTimer.current);
     killButtonsTimer.current = setTimeout(() => {
       toggleDisplayKillButtons(false);
-      changeKillButtons([...Array(dices).keys()]);
+      changeKillButtons(calculateTotalDices());
     }, 3000);
-    updatedKillButtons.pop();
+    updatedKillButtons[pressedButton] = `${pressedButton}`;
     changeKillButtons(updatedKillButtons);
     gainXp(1);
   };
+
+  useEffect(() => {
+    if (dice && bonusDices) {
+      if (
+        !isEqual(bonusDiceRef.current, bonusDices) ||
+        dicesRef.current !== dice
+      ) {
+        changeKillButtons(calculateTotalDices());
+      }
+    }
+  }, [dice, bonusDices, item, changeKillButtons]);
 
   return (
     <ItemWrapper
@@ -234,9 +268,10 @@ const ItemsArea = ({
           {killButtons.map(key => (
             <KillButton
               key={`kill-${item}-${key}`}
-              onClick={killOneZombie}
+              onClick={() => killOneZombie(key)}
               type="button"
               trade
+              visible={typeof key === 'number'}
             >
               <KillButtonIcon className="fas fa-skull" type="kill" />
             </KillButton>
@@ -250,6 +285,7 @@ const ItemsArea = ({
 ItemsArea.propTypes = {
   actionsLeft: number.isRequired,
   allSlotsAreEmpty: bool,
+  bonusDices: BonusDicesType,
   callback: func.isRequired,
   canAttack: bool,
   canCombine: bool.isRequired,
@@ -260,7 +296,7 @@ ItemsArea.propTypes = {
   combineItemSelected: bool,
   combinePair: bool,
   damageMode: bool.isRequired,
-  dices: number,
+  dice: number,
   gainCustomXp: func,
   gainXp: func,
   handleSearch: func.isRequired,
@@ -281,12 +317,13 @@ ItemsArea.propTypes = {
 
 ItemsArea.defaultProps = {
   allSlotsAreEmpty: false,
+  bonusDices: null,
   canAttack: false,
   charName: null,
   charVoice: null,
   combineItemSelected: false,
   combinePair: false,
-  dices: null,
+  dice: null,
   gainCustomXp: () => null,
   gainXp: () => null,
   item: null,

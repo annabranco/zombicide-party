@@ -7,3 +7,6 @@ export const MALE = 'male';
 export const WEAPONS = 'weapons';
 export const SPECIAL = 'special';
 export const NOISY = 'noisy';
+export const MELEE = 'melee';
+export const RANGED = 'ranged';
+export const MELEE_RANGED = 'melee&ranged';

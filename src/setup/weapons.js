@@ -14,11 +14,19 @@ import SawedOff from '../assets/images/weapons/sawed-off.jpg';
 import Shotgun from '../assets/images/weapons/shotgun.jpg';
 import SniperRifle from '../assets/images/weapons/sniper-rifle.jpg';
 import SubMG from '../assets/images/weapons/sub-mg.jpg';
-import { SPECIAL, WEAPONS, NOISY } from '../constants';
+import {
+  SPECIAL,
+  WEAPONS,
+  NOISY,
+  MELEE,
+  RANGED,
+  MELEE_RANGED
+} from '../constants';
 
 export const WEAPONS_S1 = {
   BaseballBat: {
-    dices: 1,
+    attack: MELEE,
+    dice: 1,
     img: BaseballBat,
     name: 'BaseballBat',
     noise: false,
@@ -26,7 +34,8 @@ export const WEAPONS_S1 = {
   },
   Chainsaw: {
     canOpenDoor: NOISY,
-    dices: 5,
+    attack: MELEE,
+    dice: 5,
     img: Chainsaw,
     name: 'Chainsaw',
     noise: true,
@@ -34,14 +43,16 @@ export const WEAPONS_S1 = {
   },
   Crowbar: {
     canOpenDoor: true,
-    dices: 1,
+    attack: MELEE,
+    dice: 1,
     img: Crowbar,
     name: 'Crowbar',
     noise: false,
     type: WEAPONS
   },
   EvilTwins: {
-    dices: 2,
+    attack: RANGED,
+    dice: 2,
     img: EvilTwins,
     name: 'EvilTwins',
     noise: true,
@@ -49,49 +60,56 @@ export const WEAPONS_S1 = {
   },
   FireAxe: {
     canOpenDoor: NOISY,
-    dices: 1,
+    attack: MELEE,
+    dice: 1,
     img: FireAxe,
     name: 'FireAxe',
     noise: false,
     type: WEAPONS
   },
   Katana: {
-    dices: 2,
+    attack: MELEE,
+    dice: 2,
     img: Katana,
     name: 'Katana',
     noise: false,
     type: WEAPONS
   },
   MasShotgun: {
-    dices: 2,
+    attack: MELEE_RANGED,
+    dice: 2,
     img: MasShotgun,
     name: 'MasShotgun',
     noise: SPECIAL,
     type: WEAPONS
   },
   Machete: {
-    dices: 1,
+    attack: MELEE,
+    dice: 1,
     img: Machete,
     name: 'Machete',
     noise: false,
     type: WEAPONS
   },
   Molotov: {
-    dices: SPECIAL,
+    attack: SPECIAL,
+    dice: SPECIAL,
     img: Molotov,
     name: 'Molotov',
     noise: false,
     type: WEAPONS
   },
   Pan: {
-    dices: 1,
+    attack: MELEE,
+    dice: 1,
     img: Pan,
     name: 'Pan',
     noise: false,
     type: WEAPONS
   },
   Pistol: {
-    dices: 1,
+    attack: RANGED,
+    dice: 1,
     img: Pistol,
     name: 'Pistol',
     noise: true,
@@ -99,35 +117,40 @@ export const WEAPONS_S1 = {
   },
   Rifle: {
     combine: ['Scope', 'SniperRifle'],
-    dices: 1,
+    attack: RANGED,
+    dice: 1,
     img: Rifle,
     name: 'Rifle',
     noise: true,
     type: WEAPONS
   },
   SawedOff: {
-    dices: 2,
+    attack: RANGED,
+    dice: 2,
     img: SawedOff,
     name: 'SawedOff',
     noise: true,
     type: WEAPONS
   },
   Shotgun: {
-    dices: 2,
+    attack: RANGED,
+    dice: 2,
     img: Shotgun,
     name: 'Shotgun',
     noise: true,
     type: WEAPONS
   },
   SniperRifle: {
-    dices: 1,
+    attack: RANGED,
+    dice: 1,
     img: SniperRifle,
     name: 'SniperRifle',
     noise: true,
     type: WEAPONS
   },
   SubMG: {
-    dices: 3,
+    attack: RANGED,
+    dice: 3,
     img: SubMG,
     name: 'SubMG',
     noise: true,

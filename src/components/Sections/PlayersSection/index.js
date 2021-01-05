@@ -611,6 +611,7 @@ const PlayersSection = ({
         } else if (char.abilities.length !== 3) {
           updatedChar.abilities = [];
           updatedChar.actions = [3, 0, 0, 0];
+          updatedChar.bonusDices = { combat: 0, melee: 0, ranged: 0 };
           updatedChar = handlePromotionEffects(updatedChar, 'blue', [
             3,
             0,
@@ -638,6 +639,7 @@ const PlayersSection = ({
         } else if (updatedChar.abilities.length !== 2) {
           updatedChar.abilities = [];
           updatedChar.actions = [3, 0, 0, 0];
+          updatedChar.bonusDices = { combat: 0, melee: 0, ranged: 0 };
           updatedChar = handlePromotionEffects(updatedChar, 'blue', [
             3,
             0,
@@ -663,6 +665,7 @@ const PlayersSection = ({
         } else {
           updatedChar.abilities = [];
           updatedChar.actions = [3, 0, 0, 0];
+          updatedChar.bonusDices = { combat: 0, melee: 0, ranged: 0 };
           updatedChar = handlePromotionEffects(updatedChar, 'blue', [
             3,
             0,
@@ -1021,6 +1024,7 @@ const PlayersSection = ({
                           ...character.inHand,
                           ...character.inBackpack
                         ])}
+                        bonusDices={character.bonusDices}
                         callback={spendAction}
                         canAttack={canAttack}
                         canCombine={generalActions && canCombine}
@@ -1034,7 +1038,7 @@ const PlayersSection = ({
                         }
                         charVoice={character.voice}
                         damageMode={damageMode}
-                        dices={WEAPONS_S1[item] && WEAPONS_S1[item].dices}
+                        dice={WEAPONS_S1[item] && WEAPONS_S1[item].dice}
                         gainCustomXp={gainCustomXp}
                         gainXp={gainXp}
                         handleSearch={handleSearch}

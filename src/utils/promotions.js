@@ -1,7 +1,15 @@
 import { cloneDeep } from 'lodash';
 import { ABILITIES_S1 } from '../setup/abilities';
 
-const { ACTION, MOVE_ACTION, SEARCH_ACTION, COMBAT_ACTION } = ABILITIES_S1;
+const {
+  ACTION,
+  MOVE_ACTION,
+  SEARCH_ACTION,
+  COMBAT_ACTION,
+  DIE_COMBAT,
+  DIE_MELEE,
+  DIE_RANGED
+} = ABILITIES_S1;
 
 export const handlePromotionEffects = (char, level, actionsLeft, index) => {
   const updatedChar = cloneDeep(char);
@@ -69,6 +77,15 @@ export const handlePromotionEffects = (char, level, actionsLeft, index) => {
       );
       updatedChar.actionsLeft = updatedChar.promotions.red[index].effect(
         actionsLeft || updatedChar.actions
+      );
+    } else if (
+      (updatedChar.promotions.red[index].name === DIE_COMBAT.name ||
+        updatedChar.promotions.red[index].name === DIE_MELEE.name ||
+        updatedChar.promotions.red[index].name === DIE_RANGED.name) &&
+      updatedChar.promotions.red[index].effect
+    ) {
+      updatedChar.bonusDices = updatedChar.promotions.red[index].effect(
+        updatedChar.bonusDices
       );
     }
     updatedChar.abilities.push(char.promotions.red[index].name);
