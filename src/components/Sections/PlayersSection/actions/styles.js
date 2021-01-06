@@ -50,6 +50,14 @@ export const ActionIcon = styled.i`
         }
       `;
     }
+    if (actionType === 'objective') {
+      return css`
+        color: black;
+        &:hover {
+          color: green;
+        }
+      `;
+    }
     if (actionType === 'combine') {
       return css`
         display: none;

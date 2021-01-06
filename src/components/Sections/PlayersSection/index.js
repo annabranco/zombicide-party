@@ -1,9 +1,10 @@
 import React, { useEffect, useRef } from 'react';
-import { cloneDeep } from 'lodash';
+import { cloneDeep, isEqual } from 'lodash';
 import { arrayOf, bool, func } from 'prop-types';
 import { useHistory } from 'react-router-dom';
 import { CHARACTERS } from '../../../setup/characters';
 import { getCharacterColor } from '../../../utils/players';
+import { handlePromotionEffects } from '../../../utils/promotions';
 import {
   checkIfHasAnyActionLeft,
   getActionColor
@@ -41,7 +42,7 @@ import {
   AddNewChar,
   NoiseWrapper,
   NoiseIcon,
-  MovementIndicators,
+  IndicatorsWrapper,
   MovementIcon,
   FinishedTurnTag,
   FirstPlayerToken,
@@ -49,9 +50,15 @@ import {
   FirstPlayerWrapper,
   FirstPlayerStar,
   ModalSignExitButton,
-  ModalSignText
+  ModalSignText,
+  XpIcon,
+  HishestXpTag,
+  AbilitiesWrapper,
+  Abilities,
+  ActionsLabelWrapper,
+  TopActionsLabelWrapper
 } from './styles';
-import { characterTypes } from '../../../interfaces/types';
+import { CharacterType } from '../../../interfaces/types';
 import { SOUNDS_PATH } from '../../../setup/endpoints';
 import TradeArea from '../../TradeArea';
 import NewGame from '../../NewGame';
@@ -59,8 +66,37 @@ import {
   KILLED,
   KILLED_EM_ALL,
   LOCAL_STORAGE_KEY,
-  TURN_FINISHED
+  NEXT,
+  PREVIOUS,
+  TURN_FINISHED,
+  WEAPONS,
+  GET_OBJECTIVE,
+  ENTER_CAR,
+  EXIT_CAR,
+  MOVE_CAR,
+  RUN_OVER,
+  MOVE,
+  OPEN_DOOR,
+  BREAK_DOOR,
+  END_CHAR_TURN,
+  ADD_CHARACTER,
+  EDIT_CHARACTERS,
+  CANCEL,
+  OK,
+  XP_GAIN,
+  XP_GAIN_SELECT,
+  LEARNED_NEW_ABILITY,
+  BURNEM_ALL
 } from '../../../constants';
+import {
+  blueThreatThresold,
+  calculateXpBar,
+  getXpColor,
+  orangeThreatThresold,
+  yellowThreatThresold
+} from '../../../utils/xp';
+import { WEAPONS_S1 } from '../../../setup/weapons';
+import ActionsModal from '../../ActionsModal';
 
 const PlayersSection = ({
   damageMode,
@@ -100,14 +136,39 @@ const PlayersSection = ({
   const [trade, startTrade] = useStateWithLabel(false, 'trade');
   const [noise, setNoise] = useStateWithLabel(0, 'noise');
   const [canCombine, toggleCanCombine] = useStateWithLabel(false, 'canCombine');
+  const [xpCounter, updateXpCounter] = useStateWithLabel([], 'xpCounter');
+  const [highestXp, updateHighestXp] = useStateWithLabel(
+    { name: '', xp: 0 },
+    'highestXp'
+  );
+  const [actionsLabel, changeActionLabel] = useStateWithLabel(
+    '',
+    'actionsLabel'
+  );
+
+  const [displayActionsModal, toggleActionsModal] = useStateWithLabel(
+    false,
+    'displayActionsModal'
+  );
+
+  const [topActionsLabel, changeTopActionLabel] = useStateWithLabel(
+    '',
+    'topActionsLabel'
+  );
+
   const [actionsCount, updateActionsCount] = useStateWithLabel(
     [],
     'actionsCount'
+  );
+  const [newAbilityIndex, setNewAbilityIndex] = useStateWithLabel(
+    null,
+    'newAbilityIndex'
   );
 
   const history = useHistory();
   const noiseDebounce = useRef();
   const prevCharIndex = useRef();
+  const abilitiesRef = useRef();
 
   const {
     generalActions,
@@ -115,38 +176,58 @@ const PlayersSection = ({
     extraAttackActions,
     searchActions,
     spendAction,
+    // updateActions,
     finishedTurn,
     canMove,
     canAttack,
     canSearch,
     message
   } = useTurnsCounter(
-    character && character.name,
+    character.name,
     character.actionsLeft || character.actions || []
   );
   window.character = character;
+  window.actions = [
+    generalActions,
+    extraMovementActions,
+    extraAttackActions,
+    searchActions
+  ];
 
-  const enterCar = enter => {
+  const updateData = (charWithChangedData = character) => {
+    const charOnGlobalList = characters.find(
+      char => char.name === charWithChangedData.name
+    );
+
+    if (!isEqual(charWithChangedData, character)) {
+      changeCharacter(charWithChangedData);
+    }
+    if (!isEqual(charWithChangedData, charOnGlobalList)) {
+      const updatedCharacters = cloneDeep(characters);
+      const changedCharIndex = updatedCharacters.findIndex(
+        char => char.name === charWithChangedData.name
+      );
+      updatedCharacters[changedCharIndex] = charWithChangedData;
+      updateCharacters(updatedCharacters);
+      localStorage.setItem(
+        LOCAL_STORAGE_KEY,
+        JSON.stringify(updatedCharacters)
+      );
+    }
+  };
+
+  const interactWithCar = enter => {
     const updatedCharacter = cloneDeep(character);
-    const updatedCharacters = cloneDeep(characters);
     if (enter) {
       updatedCharacter.location = 'car';
     } else {
       updatedCharacter.location = null;
     }
-
-    updatedCharacters.forEach(char => {
-      if (char.name === updatedCharacter.name) {
-        char.location = updatedCharacter.location; // eslint-disable-line no-param-reassign
-      }
-    });
     changeCharacter(updatedCharacter);
-    updateCharacters(updatedCharacters);
   };
 
   const changeInHand = (name, currentSlot = slot - 1) => {
     const updatedCharacter = cloneDeep(character);
-    const updatedCharacters = cloneDeep(characters);
     const newItems = [...updatedCharacter.inHand];
     newItems[currentSlot] = name;
     const openDoors = checkIfCharacterCanOpenDoors(newItems);
@@ -159,20 +240,14 @@ const PlayersSection = ({
     changeCanUseFlashlight(hasFlashlight);
     toggleCanCombine(charCanCombineItems);
     updatedCharacter.inHand = newItems;
-    updatedCharacters.forEach(char => {
-      if (char.name === updatedCharacter.name) {
-        char.inHand = newItems; // eslint-disable-line no-param-reassign
-      }
-    });
-    changeCharacter(updatedCharacter);
-    updateCharacters(updatedCharacters);
+
+    updateData(updatedCharacter);
     selectSlot();
-    localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(updatedCharacters));
   };
 
   const changeInBackpack = (name, currentSlot = slot - 3) => {
     const updatedCharacter = cloneDeep(character);
-    const updatedCharacters = cloneDeep(characters);
+    // const updatedCharacters = cloneDeep(characters);
     const newItems = [...updatedCharacter.inBackpack];
     newItems[currentSlot] = name;
     const openDoors = checkIfCharacterCanOpenDoors(newItems);
@@ -185,63 +260,36 @@ const PlayersSection = ({
     changeCanUseFlashlight(hasFlashlight);
     toggleCanCombine(charCanCombineItems);
     updatedCharacter.inBackpack = newItems;
-    updatedCharacters.forEach(char => {
-      if (char.name === updatedCharacter.name) {
-        char.inBackpack = newItems; // eslint-disable-line no-param-reassign
-      }
-    });
+
     changeCharacter(updatedCharacter);
-    updateCharacters(updatedCharacters);
     selectSlot();
-    localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(updatedCharacters));
   };
 
-  const changeToNextPlayer = () => {
+  const changeToAnotherPlayer = type => {
+    const charactersNumber = characters.length;
     const remainingCharacters = characters.filter(
       char => char.wounded !== 'killed'
     );
-    const actionsLeft = [
-      generalActions,
-      extraMovementActions,
-      extraAttackActions,
-      searchActions
-    ];
-    const nextPlayerIndex =
-      charIndex + 1 >= remainingCharacters.length ? 0 : charIndex + 1;
+    let nextPlayerIndex;
 
-    remainingCharacters.forEach(char => {
-      if (char.name === character.name) {
-        // eslint-disable-next-line no-param-reassign
-        char.actionsLeft = actionsLeft;
-      }
-    });
+    if (charactersNumber && remainingCharacters.length) {
+      updateCharacters(remainingCharacters);
+    }
+
+    if (type === NEXT) {
+      nextPlayerIndex =
+        charIndex + 1 >= remainingCharacters.length ? 0 : charIndex + 1;
+    } else if (type === PREVIOUS) {
+      nextPlayerIndex =
+        charIndex - 1 < 0 ? remainingCharacters.length - 1 : charIndex - 1;
+    }
     setNoise(0);
-    updateCharacters(remainingCharacters);
     changeCharIndex(nextPlayerIndex);
   };
 
-  const changeToPreviousPlayer = () => {
-    const remainingCharacters = characters.filter(
-      char => char.wounded !== 'killed'
-    );
-    const actionsLeft = [
-      generalActions,
-      extraMovementActions,
-      extraAttackActions,
-      searchActions
-    ];
-    const nextPlayerIndex =
-      charIndex - 1 < 0 ? remainingCharacters.length - 1 : charIndex - 1;
-
-    remainingCharacters.forEach(char => {
-      if (char.name === character.name) {
-        // eslint-disable-next-line no-param-reassign
-        char.actionsLeft = actionsLeft;
-      }
-    });
-    setNoise(0);
-    updateCharacters(remainingCharacters);
-    changeCharIndex(nextPlayerIndex);
+  const onClickGainBonusXp = bonusXp => {
+    gainXp(Number(bonusXp));
+    toggleActionsModal(false);
   };
 
   const makeNoise = item => {
@@ -257,15 +305,8 @@ const PlayersSection = ({
   const handleSearch = () => {
     if (canUseFlashlight && canSearch && !character.hasUsedFlashlight) {
       const updatedCharacter = cloneDeep(character);
-      const updatedCharacters = cloneDeep(characters);
       updatedCharacter.hasUsedFlashlight = true;
-      updatedCharacters.forEach(char => {
-        if (char.name === updatedCharacter.name) {
-          char.hasUsedFlashlight = true; // eslint-disable-line no-param-reassign
-        }
-      });
-      changeCharacter(updatedCharacter);
-      updateCharacters(updatedCharacters);
+      updateData(updatedCharacter);
     } else if (canSearch) {
       spendAction('search');
     }
@@ -273,7 +314,6 @@ const PlayersSection = ({
 
   const causeDamage = selectedSlot => {
     const woundedCharacter = cloneDeep(character);
-    const updatedCharacters = cloneDeep(characters);
     const [attacker, oneActionKill] = damageMode.split('-');
     let remainingCharacters = characters.filter(
       char => char.wounded !== 'killed'
@@ -285,37 +325,18 @@ const PlayersSection = ({
         char => char.name !== woundedCharacter.name
       );
 
-      updatedCharacters.forEach(char => {
-        if (char.name === woundedCharacter.name) {
-          char.wounded = 'killed'; // eslint-disable-line no-param-reassign
-        }
-      });
       woundedCharacter.wounded = 'killed';
       damage = 'kill';
 
       if (remainingCharacters.length === 0) {
         updateCharacters(remainingCharacters);
-      } else {
-        updateCharacters(updatedCharacters);
       }
     } else if (selectedSlot <= 2) {
       woundedCharacter.wounded = true;
       woundedCharacter.inHand[selectedSlot - 1] = 'Wounded';
-      updatedCharacters.forEach(char => {
-        if (char.name === woundedCharacter.name) {
-          char.wounded = true; // eslint-disable-line no-param-reassign
-          char.inHand[selectedSlot - 1] = 'Wounded'; // eslint-disable-line no-param-reassign
-        }
-      });
     } else {
       woundedCharacter.wounded = true;
       woundedCharacter.inBackpack[selectedSlot - 3] = 'Wounded';
-      updatedCharacters.forEach(char => {
-        if (char.name === woundedCharacter.name) {
-          char.wounded = true; // eslint-disable-line no-param-reassign
-          char.inBackpack[selectedSlot - 3] = 'Wounded'; // eslint-disable-line no-param-reassign
-        }
-      });
     }
 
     const filename = `${SOUNDS_PATH}/attacks/${
@@ -324,10 +345,9 @@ const PlayersSection = ({
     const sound = new Audio(filename);
     sound.currentTime = 0;
     sound.play();
-    updateCharacters(updatedCharacters);
-    changeCharacter(woundedCharacter);
+
     toggleDamageMode(false);
-    localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(updatedCharacters));
+    updateData(woundedCharacter);
   };
 
   const selectCharacter = () => {
@@ -355,7 +375,6 @@ const PlayersSection = ({
     updateCharacters(updatedCharacters);
     setCanOpenDoor(openDoors);
     changeCanUseFlashlight(hasFlashlight);
-
     localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(updatedCharacters));
   };
 
@@ -424,8 +443,14 @@ const PlayersSection = ({
 
   const onClickEndTurn = () => {
     const updatedCharacter = cloneDeep(character);
-    updatedCharacter.actionsLeft = [];
-    changeCharacter(updatedCharacter);
+    updatedCharacter.actionsLeft = [0, 0, 0, 0];
+    updateData(updatedCharacter);
+    setTimeout(() => changeToAnotherPlayer(NEXT), 1000);
+  };
+
+  const onClickObjective = () => {
+    spendAction('get objective');
+    gainXp(5);
   };
 
   const onClickCombine = ([item, itemSlot], event) => {
@@ -460,6 +485,201 @@ const PlayersSection = ({
     }
   };
 
+  const onClickEdit = () => {
+    toggleSetupMode(true);
+    changeTopActionLabel('');
+  };
+
+  const gainCustomXp = specialSlot => {
+    if (specialSlot) {
+      const updatedCharacter = cloneDeep(character);
+      updatedCharacter.inHand[specialSlot] = '';
+      changeCharacter(updatedCharacter);
+    }
+    toggleActionsModal('xp');
+  };
+
+  const gainXp = (xp = 1) => {
+    const updatedCharacter = cloneDeep(character);
+    const maxXP = 43;
+    const newXp =
+      updatedCharacter.experience + xp >= maxXP
+        ? maxXP
+        : updatedCharacter.experience + xp;
+
+    if (newXp > highestXp.xp) {
+      updateHighestXp({ name: character.name, xp: newXp });
+    }
+
+    updatedCharacter.experience = newXp;
+    updateData(updatedCharacter);
+  };
+
+  const setCustomXp = (newXp, prevXp, nextXp) => {
+    let updatedXp = newXp;
+    if (newXp === '...') {
+      if (prevXp === 19 && nextXp === 43) {
+        updatedXp = 20;
+      } else if (prevXp === 0 && nextXp === 18) {
+        updatedXp = 17;
+      } else if (prevXp === 0 && nextXp === 7) {
+        updatedXp = 6;
+      } else if (prevXp === 7 && nextXp === 19) {
+        updatedXp = 8;
+      } else if (prevXp === 19 && nextXp === 30) {
+        updatedXp = 20;
+      } else if (prevXp === 30 && nextXp === 43) {
+        updatedXp = 31;
+      }
+    }
+    const updatedCharacter = cloneDeep(character);
+    updatedCharacter.experience = updatedXp;
+    updateData(updatedCharacter);
+  };
+
+  const generateActionsCountArray = actionsLeft => {
+    const actions = {
+      gen: (actionsLeft && actionsLeft[0]) || generalActions,
+      mov: (actionsLeft && actionsLeft[1]) || extraMovementActions,
+      att: (actionsLeft && actionsLeft[2]) || extraAttackActions,
+      sea: (actionsLeft && actionsLeft[3]) || searchActions
+    };
+    const count = [];
+    for (let i = 1; i <= actions.gen; i++) {
+      count.push(i);
+    }
+    for (let i = 1; i <= actions.mov; i++) {
+      count.push('free move');
+    }
+    for (let i = 1; i <= actions.att; i++) {
+      count.push('free attack');
+    }
+    for (let i = 1; i <= actions.sea; i++) {
+      count.push('free search');
+    }
+    return count;
+  };
+
+  if (message) {
+    console.log('$$$ message', message);
+  }
+
+  const learnNewAbility = ({ level, index }) => {
+    const updatedChar = handlePromotionEffects(
+      character,
+      level,
+      character.actionsLeft,
+      index
+    );
+    toggleActionsModal(false);
+    updateData(updatedChar);
+    if (
+      updatedChar.experience > orangeThreatThresold &&
+      updatedChar.abilities.length === 3
+    ) {
+      toggleActionsModal('red');
+    }
+  };
+
+  const advancingLevel = (xp, char) => {
+    let updatedChar = cloneDeep(char);
+    switch (true) {
+      case xp > orangeThreatThresold:
+        if (char.abilities.length === 3) {
+          toggleActionsModal('red');
+        } else if (char.abilities.length !== 4) {
+          updatedChar.abilities = [];
+          updatedChar.actions = [3, 0, 0, 0];
+          updatedChar = handlePromotionEffects(updatedChar, 'blue', [
+            3,
+            0,
+            0,
+            0
+          ]);
+          updatedChar = handlePromotionEffects(
+            updatedChar,
+            'yellow',
+            updatedChar.actionsLeft
+          );
+          toggleActionsModal('orange');
+        }
+        abilitiesRef.current = updatedChar.abilities.toString();
+        break;
+
+      case xp > yellowThreatThresold:
+        if (char.abilities.length === 2) {
+          toggleActionsModal('orange');
+        } else if (char.abilities.length !== 3) {
+          updatedChar.abilities = [];
+          updatedChar.actions = [3, 0, 0, 0];
+          updatedChar.bonusDices = { combat: 0, melee: 0, ranged: 0 };
+          updatedChar = handlePromotionEffects(updatedChar, 'blue', [
+            3,
+            0,
+            0,
+            0
+          ]);
+          updatedChar = handlePromotionEffects(
+            updatedChar,
+            'yellow',
+            updatedChar.actionsLeft
+          );
+          toggleActionsModal('orange');
+        }
+        abilitiesRef.current = updatedChar.abilities.toString();
+        break;
+
+      case xp > blueThreatThresold:
+        if (updatedChar.abilities.length === 1) {
+          updatedChar = handlePromotionEffects(updatedChar, 'yellow', [
+            generalActions,
+            extraMovementActions,
+            extraAttackActions,
+            searchActions
+          ]);
+        } else if (updatedChar.abilities.length !== 2) {
+          updatedChar.abilities = [];
+          updatedChar.actions = [3, 0, 0, 0];
+          updatedChar.bonusDices = { combat: 0, melee: 0, ranged: 0 };
+          updatedChar = handlePromotionEffects(updatedChar, 'blue', [
+            3,
+            0,
+            0,
+            0
+          ]);
+          updatedChar = handlePromotionEffects(
+            updatedChar,
+            'yellow',
+            updatedChar.actionsLeft
+          );
+        }
+        abilitiesRef.current = updatedChar.abilities.toString();
+        break;
+
+      default:
+        if (updatedChar.abilities.length === 0) {
+          updatedChar = handlePromotionEffects(
+            char,
+            'blue',
+            (char.actionsLeft && [...char.actionsLeft]) || [...char.actions]
+          );
+        } else {
+          updatedChar.abilities = [];
+          updatedChar.actions = [3, 0, 0, 0];
+          updatedChar.bonusDices = { combat: 0, melee: 0, ranged: 0 };
+          updatedChar = handlePromotionEffects(updatedChar, 'blue', [
+            3,
+            0,
+            0,
+            0
+          ]);
+        }
+        abilitiesRef.current = updatedChar.abilities.toString();
+        break;
+    }
+    return updatedChar;
+  };
+
   useEffect(() => {
     if (!dataLoaded) {
       const updatedCharacters =
@@ -473,50 +693,45 @@ const PlayersSection = ({
   }, [charIndex, dataLoaded, initialCharacters, loadedGame]);
 
   useEffect(() => {
-    const count = [];
-    // eslint-disable-next-line no-plusplus
-    for (let i = 1; i <= generalActions; i++) {
-      count.push(i);
-    }
-    // eslint-disable-next-line no-plusplus
-    for (let i = 1; i <= extraMovementActions; i++) {
-      count.push('free move');
-    }
-    // eslint-disable-next-line no-plusplus
-    for (let i = 1; i <= extraAttackActions; i++) {
-      count.push('free attack');
-    }
-    // eslint-disable-next-line no-plusplus
-    for (let i = 1; i <= searchActions; i++) {
-      count.push('free search');
-    }
-    updateActionsCount(count);
-    // characters.forEach(char =>
-    //   console.log(
-    //     '$$$ DEBUG actions',
-    //     char.name,
-    //     char.actionsLeft,
-    //     !!checkIfHasAnyActionLeft(char.actionsLeft || [])
-    //   )
-    // );
-    // console.log('$$$ DEBUG message', message);
+    if (character.name) {
+      const updatedCharacter = cloneDeep(character);
 
-    // console.log('$$$ DEBUG canUseFlashlight', canUseFlashlight);
-    // console.log('$$$ DEBUG canSearch', canSearch);
+      updatedCharacter.actionsLeft = [
+        generalActions,
+        extraMovementActions,
+        extraAttackActions,
+        searchActions
+      ];
+
+      changeCharacter(updatedCharacter);
+      const actionsArray = generateActionsCountArray();
+
+      if (!isEqual(actionsArray, actionsCount)) {
+        updateActionsCount(actionsArray);
+        updateData(updatedCharacter);
+      }
+    }
   }, [
-    character,
+    // character.name,
     generalActions,
     extraMovementActions,
     extraAttackActions,
-    searchActions,
-    updateActionsCount
+    searchActions
   ]);
+
+  useEffect(() => {
+    const actionsArray = generateActionsCountArray(character.actionsLeft);
+
+    if (!isEqual(actionsArray, actionsCount)) {
+      updateActionsCount(actionsArray);
+    }
+  }, [character.actionsLeft]);
 
   useEffect(() => {
     if (characters) {
       checkIfRoundHasFinished();
 
-      const nextChar = characters[charIndex];
+      let nextChar = cloneDeep(characters[charIndex]);
       if (
         nextChar &&
         (charIndex !== prevCharIndex.current ||
@@ -541,6 +756,10 @@ const PlayersSection = ({
           ...charInBackpack
         ]);
 
+        if (nextChar.abilities.length === 0) {
+          nextChar = advancingLevel(nextChar.experience, nextChar);
+        }
+
         changeCharacter(nextChar);
         setCanOpenDoor(openDoors);
         changeCanUseFlashlight(hasFlashlight);
@@ -555,6 +774,19 @@ const PlayersSection = ({
     }
   }, [charIndex, characters, dataLoaded]);
 
+  useEffect(() => {
+    if (character.experience >= 0) {
+      const charClone = cloneDeep(character);
+      const newXpBar = calculateXpBar(charClone.experience, highestXp.xp);
+      if (!isEqual(newXpBar, xpCounter) || setupMode) {
+        const updatedChar = advancingLevel(charClone.experience, charClone);
+
+        updateXpCounter(newXpBar);
+        updateData(updatedChar);
+      }
+    }
+  }, [character.experience, updateXpCounter]);
+
   // useEffect(() => {
   //   console.log('$$$ change char', character);
   // }, [character]);
@@ -563,17 +795,54 @@ const PlayersSection = ({
     <>
       <CharacterSheet>
         {!trade && character.wounded !== 'killed' && (
-          <MovementIndicators>
-            {actionsCount.map(action => (
+          <IndicatorsWrapper header>
+            {xpCounter &&
+              xpCounter.map((level, index) => (
+                <XpIcon
+                  activeColor={
+                    (level <= character.experience ||
+                      xpCounter[index - 1] < character.experience) &&
+                    getXpColor(level, xpCounter[index - 1], true)
+                  }
+                  color={getXpColor(level, xpCounter[index - 1])}
+                  currentXp={character.experience === level}
+                  highestXp={highestXp.xp === level}
+                  key={`xp-${level}-${xpCounter[index - 1]}`}
+                  onClick={
+                    setupMode
+                      ? () =>
+                          setCustomXp(
+                            level,
+                            xpCounter[index - 1],
+                            xpCounter[index + 1]
+                          )
+                      : () => null
+                  }
+                  setupMode={setupMode}
+                  size={xpCounter.length}
+                  type={level}
+                >
+                  {level}
+                  {highestXp.xp === level &&
+                    highestXp.name !== character.name && (
+                      <HishestXpTag>{highestXp.name}</HishestXpTag>
+                    )}
+                </XpIcon>
+              ))}
+          </IndicatorsWrapper>
+        )}
+        {!trade && character.wounded !== 'killed' && (
+          <IndicatorsWrapper>
+            {actionsCount.map((action, index) => (
               <MovementIcon
                 color={getActionColor(action)}
-                key={action}
+                key={`${action}-${index}`} // eslint-disable-line react/no-array-index-key
                 type={action}
               >
                 {action}
               </MovementIcon>
             ))}
-          </MovementIndicators>
+          </IndicatorsWrapper>
         )}
         {trade ? (
           <TradeArea
@@ -587,15 +856,26 @@ const PlayersSection = ({
           <>
             <CharacterOverlay damageMode={damageMode} img={character.img} />
             {!damageMode && setupMode && characters.length < CHARACTERS.length && (
-              <AddNewChar type="button" onClick={() => addNewChar(true)}>
+              <AddNewChar
+                type="button"
+                onClick={() => addNewChar(true)}
+                onMouseOver={() => changeTopActionLabel(ADD_CHARACTER)}
+                onMouseOut={() => changeTopActionLabel('')}
+              >
                 <i className="fas fa-user-plus" />
               </AddNewChar>
             )}
             {!damageMode && !setupMode && (
-              <AddNewChar type="button" onClick={() => toggleSetupMode(true)}>
+              <AddNewChar
+                type="button"
+                onClick={onClickEdit}
+                onMouseOver={() => changeTopActionLabel(EDIT_CHARACTERS)}
+                onMouseOut={() => changeTopActionLabel('')}
+              >
                 <i className="far fa-edit" />
               </AddNewChar>
             )}
+            <TopActionsLabelWrapper>{topActionsLabel}</TopActionsLabelWrapper>
             {firstPlayer === character.name && (
               <FirstPlayerWrapper>
                 <FirstPlayerToken src={FirstPlayer} alt="First Player Token" />
@@ -611,63 +891,93 @@ const PlayersSection = ({
               {character.player}
             </PlayerTag>
             {character.wounded !== 'killed' && (
-              <ActionsWrapper>
-                {!damageMode && !setupMode && !finishedTurn && (
-                  <ActionButton
-                    actionType="endTurn"
-                    callback={onClickEndTurn}
-                  />
-                )}
-                {canMove && !damageMode && !setupMode && (
-                  <ActionButton
-                    actionType={
-                      character.location === 'car' ? 'car-exit' : 'car-enter'
-                    }
-                    callback={() => spendAction('move')}
-                    car={car}
-                    enterCar={enterCar}
-                    startCar={startCar}
-                    type={character.location !== 'car' && !car && 'start'}
-                  />
-                )}
-                {canMove &&
-                  character.location === 'car' &&
-                  !damageMode &&
-                  !setupMode && (
-                    <>
-                      <ActionButton
-                        actionType="car-move"
-                        callback={() => spendAction('move')}
-                      />
-                      <ActionButton
-                        actionType="car-attack"
-                        callback={() => spendAction('move')}
-                      />
-                    </>
-                  )}
+              <>
+                {!damageMode && !setupMode && (
+                  <>
+                    <ActionsWrapper>
+                      {!finishedTurn && generalActions && (
+                        <ActionButton
+                          actionType="objective"
+                          callback={onClickObjective}
+                          changeActionLabel={changeActionLabel}
+                          label={GET_OBJECTIVE}
+                        />
+                      )}
+                      {canMove && (
+                        <ActionButton
+                          actionType={
+                            character.location === 'car'
+                              ? 'car-exit'
+                              : 'car-enter'
+                          }
+                          callback={() => spendAction('move')}
+                          car={car}
+                          interactWithCar={interactWithCar}
+                          startCar={startCar}
+                          type={character.location !== 'car' && !car && 'start'}
+                          changeActionLabel={changeActionLabel}
+                          label={
+                            character.location === 'car' ? EXIT_CAR : ENTER_CAR
+                          }
+                        />
+                      )}
+                      {canMove && character.location === 'car' && (
+                        <>
+                          <ActionButton
+                            actionType="car-move"
+                            callback={() => spendAction('move')}
+                            changeActionLabel={changeActionLabel}
+                            label={MOVE_CAR}
+                          />
+                          <ActionButton
+                            actionType="car-attack"
+                            callback={() => spendAction('move')}
+                            changeActionLabel={changeActionLabel}
+                            label={RUN_OVER}
+                          />
+                        </>
+                      )}
 
-                {canMove &&
-                  character.location !== 'car' &&
-                  !damageMode &&
-                  !setupMode && (
-                    <ActionButton
-                      actionType="move"
-                      callback={() => spendAction('move')}
-                      type={character.movement}
-                    />
-                  )}
+                      {canMove && character.location !== 'car' && (
+                        <ActionButton
+                          actionType="move"
+                          callback={() => spendAction('move')}
+                          type={character.movement}
+                          changeActionLabel={changeActionLabel}
+                          label={MOVE}
+                        />
+                      )}
 
-                {canOpenDoor && !damageMode && generalActions && !setupMode && (
-                  <ActionButton
-                    actionType="open-door"
-                    callback={spendAction}
-                    noise={noise}
-                    setNoise={setNoise}
-                    type={canOpenDoor}
-                  />
+                      {canOpenDoor && generalActions && (
+                        <ActionButton
+                          actionType="open-door"
+                          callback={spendAction}
+                          noise={noise}
+                          setNoise={setNoise}
+                          type={canOpenDoor}
+                          changeActionLabel={changeActionLabel}
+                          label={noise ? BREAK_DOOR : OPEN_DOOR}
+                        />
+                      )}
+                      {!finishedTurn && (
+                        <ActionButton
+                          actionType="endTurn"
+                          callback={onClickEndTurn}
+                          changeActionLabel={changeActionLabel}
+                          label={END_CHAR_TURN(character.name)}
+                        />
+                      )}
+                    </ActionsWrapper>
+                    <ActionsLabelWrapper>{actionsLabel}</ActionsLabelWrapper>
+                  </>
                 )}
-              </ActionsWrapper>
+              </>
             )}
+            <NoiseWrapper>
+              {Array.from({ length: noise }, (_, index) => index).map(key => (
+                <NoiseIcon key={key} src={Noise} />
+              ))}
+            </NoiseWrapper>
             {character.wounded && (
               <WoundedWrapper>
                 <WoundedSign src={Blood} />
@@ -715,6 +1025,7 @@ const PlayersSection = ({
                           ...character.inHand,
                           ...character.inBackpack
                         ])}
+                        bonusDices={character.bonusDices}
                         callback={spendAction}
                         canAttack={canAttack}
                         canCombine={generalActions && canCombine}
@@ -728,6 +1039,9 @@ const PlayersSection = ({
                         }
                         charVoice={character.voice}
                         damageMode={damageMode}
+                        dice={WEAPONS_S1[item] && WEAPONS_S1[item].dice}
+                        gainCustomXp={gainCustomXp}
+                        gainXp={gainXp}
                         handleSearch={handleSearch}
                         index={index}
                         item={item}
@@ -801,14 +1115,14 @@ const PlayersSection = ({
               <>
                 <PreviousButton
                   damageMode={damageMode}
-                  onClick={changeToPreviousPlayer}
+                  onClick={() => changeToAnotherPlayer(PREVIOUS)}
                   type="button"
                 >
                   PREVIOUS
                 </PreviousButton>
                 <NextButton
                   damageMode={damageMode}
-                  onClick={changeToNextPlayer}
+                  onClick={() => changeToAnotherPlayer(NEXT)}
                   type="button"
                 >
                   NEXT
@@ -820,17 +1134,59 @@ const PlayersSection = ({
                 SELECT
               </SelectButton>
             )}
+            <AbilitiesWrapper>
+              {character &&
+                character.abilities &&
+                character.abilities.map((ability, index) => (
+                  // eslint-disable-next-line react/no-array-index-key
+                  <Abilities key={`${character}-${index}-${ability}`}>
+                    {ability}
+                  </Abilities>
+                ))}
+            </AbilitiesWrapper>
           </>
-        )}
-        {!trade && (
-          <NoiseWrapper>
-            {Array.from({ length: noise }, (_, index) => index).map(key => (
-              <NoiseIcon key={key} src={Noise} />
-            ))}
-          </NoiseWrapper>
         )}
         {newChar && (
           <NewGame currentChars={characters} dynamic setNewChar={setNewChar} />
+        )}
+        {displayActionsModal === 'xp' && (
+          <ActionsModal
+            toggleVisibility={toggleActionsModal}
+            visible={displayActionsModal}
+            content={{
+              data: { maxXp: 43, currentXp: character.experience || 0 },
+              title: XP_GAIN,
+              text: XP_GAIN_SELECT,
+              type: 'slider',
+              buttons: [
+                {
+                  text: BURNEM_ALL,
+                  type: 'confirm'
+                }
+              ]
+            }}
+            onConfirmModal={onClickGainBonusXp}
+          />
+        )}
+        {(displayActionsModal === 'orange' ||
+          displayActionsModal === 'red') && (
+          <ActionsModal
+            toggleVisibility={toggleActionsModal}
+            visible={displayActionsModal}
+            content={{
+              data: { img: character.face, level: displayActionsModal },
+              title: LEARNED_NEW_ABILITY,
+              type: 'option',
+              buttons: character.promotions[displayActionsModal].map(
+                button => ({
+                  text: button.name,
+                  type: 'option',
+                  details: button.description
+                })
+              )
+            }}
+            onConfirmModal={learnNewAbility}
+          />
         )}
       </CharacterSheet>
     </>
@@ -839,9 +1195,9 @@ const PlayersSection = ({
 
 PlayersSection.propTypes = {
   damageMode: bool.isRequired,
-  initialCharacters: arrayOf(characterTypes),
+  initialCharacters: arrayOf(CharacterType),
   loadGame: func.isRequired,
-  loadedGame: arrayOf(characterTypes),
+  loadedGame: arrayOf(CharacterType),
   setZombiesTurn: func.isRequired,
   toggleDamageMode: func.isRequired
 };

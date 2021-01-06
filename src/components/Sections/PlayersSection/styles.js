@@ -4,6 +4,54 @@ import { AttackInstructions } from '../ZombiesSection/styles';
 import { Appear } from '../../../styles';
 import { IN_BACKPACK } from '../../../constants';
 
+export const Abilities = styled.p`
+  label: Abilities;
+  margin: 2px auto;
+  font-family: 'Grandstander', cursive;
+  text-transform: uppercase;
+  font-weight: 700;
+  font-size: 1.2rem;
+  color: rgba(255, 255, 0, 0.6);
+  -webkit-text-stroke: 1px black;
+`;
+Abilities.displayName = 'Abilities';
+
+export const AbilitiesWrapper = styled.div`
+  label: AbilitiesWrapper;
+  z-index: 10;
+  position: absolute;
+  bottom: 50px;
+  left: 50%;
+  transform: translate(-50%, 0);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 14%;
+  width: 90%;
+`;
+AbilitiesWrapper.displayName = 'AbilitiesWrapper';
+
+export const ActionsLabelWrapper = styled.div`
+  label: ActionsLabelWrapper;
+  z-index: 10;
+  position: absolute;
+  top: 175px;
+  right: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 20px;
+  width: 50%;
+  font-family: 'Grandstander', cursive;
+  font-size: 0.9rem;
+  letter-spacing: 0.2rem;
+  color: rgba(255, 255, 180, 0.6);
+  text-transform: uppercase;
+`;
+ActionsLabelWrapper.displayName = 'ActionsLabelWrapper';
+
 export const AppButton = styled.button`
   label: AppButton;
   z-index: 3;
@@ -179,9 +227,46 @@ export const FirstPlayerWrapper = styled.div`
   height: 100%;
   width: 100%;
   overflow: hidden;
-  /* background: rgba(255, 233, 0, 0.2); */
 `;
 FirstPlayerWrapper.displayName = 'FirstPlayerWrapper';
+
+export const HishestXpTag = styled.span`
+  label: HishestXpTag;
+  position: absolute;
+  top: 20px;
+  left: 50%;
+  transform: translate(-50%, 0);
+  font-family: 'Cairo', sans-serif;
+  text-transform: uppercase;
+  font-size: 0.8rem;
+  color: white;
+  user-select: none;
+`;
+HishestXpTag.displayName = 'HishestXpTag';
+
+export const IndicatorsWrapper = styled.div`
+  label: IndicatorsWrapper;
+  z-index: 10;
+  position: absolute;
+  top: 0;
+  left: 20px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  opacity: 0.7;
+
+  ${({ header }) =>
+    header &&
+    css`
+      top: -35px;
+      left: 0;
+      width: 100%;
+      justify-content: space-around;
+      padding: 0 50px 0 20px;
+    `}
+`;
+IndicatorsWrapper.displayName = 'IndicatorsWrapper';
 
 export const ModalSign = styled(AttackInstructions)`
   label: ModalSign;
@@ -280,22 +365,8 @@ export const ModalSignExitButton = styled.img`
 `;
 ModalSignButton.displayName = 'ModalSignButton';
 
-export const MovementIndicators = styled.div`
-  label: MovementIndicators;
-  z-index: 10;
-  position: absolute;
-  top: 0;
-  left: 20px;
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: center;
-  opacity: 0.7;
-`;
-MovementIndicators.displayName = 'MovementIndicators';
-
 export const MovementIcon = styled.div`
-  label: MovementIndicators;
+  label: MovementIcon;
   position: relative;
   left: 0.75em;
   width: ${({ type }) => (typeof type === 'number' ? '20px' : '70px')};
@@ -308,7 +379,7 @@ export const MovementIcon = styled.div`
   font-size: 0.7rem;
   font-family: 'Cairo', sans-serif;
 
-  &:not(:first-child) {
+  &:not(:first-of-type) {
     margin-left: 15px;
   }
 
@@ -333,7 +404,7 @@ export const MovementIcon = styled.div`
     background: ${({ color }) => color};
   }
 `;
-MovementIndicators.displayName = 'MovementIndicators';
+MovementIcon.displayName = 'MovementIcon';
 
 export const NextButton = styled(AppButton)`
   label: NextButton;
@@ -379,13 +450,14 @@ export const NoiseWrapper = styled.div`
   label: NoiseWrapper;
   z-index: 10;
   position: absolute;
-  bottom: 55px;
+  top: calc(18% + 50px);
+  right: 30px;
   display: flex;
   flex-direction: row;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-end;
   height: 45px;
-  width: 100%;
+  width: 300px;
 `;
 NoiseWrapper.displayName = 'NoiseWrapper';
 
@@ -442,6 +514,19 @@ export const SelectButton = styled(NextButton)`
 `;
 SelectButton.displayName = 'SelectButton';
 
+export const TopActionsLabelWrapper = styled(ActionsLabelWrapper)`
+  label: TopActionsLabelWrapper;
+  top: 0;
+  right: 0;
+  align-items: flex-end;
+  height: 20px;
+  width: 30%;
+  font-size: 0.6rem;
+  letter-spacing: 0.2rem;
+  text-align: right;
+`;
+TopActionsLabelWrapper.displayName = 'TopActionsLabelWrapper';
+
 export const WoundedSign = styled.img`
   label: WoundedSign;
   z-index: 2;
@@ -464,3 +549,66 @@ export const WoundedWrapper = styled.div`
   overflow: hidden;
 `;
 WoundedWrapper.displayName = 'WoundedWrapper';
+
+export const XpIcon = styled(MovementIcon)`
+  label: XpIcon;
+  width: 25px;
+  left: 0;
+  user-select: none;
+  /* color: black; */
+  color: black;
+  font-size: ${({ currentXp, highestXp }) =>
+    (currentXp || highestXp) && '1.1rem'};
+  line-height: ${({ currentXp, highestXp }) =>
+    currentXp || highestXp ? '1' : '1.2'};
+
+  background: ${({ activeColor }) => activeColor && activeColor};
+  opacity: ${({ activeColor }) => activeColor && 1};
+  height: ${({ currentXp, highestXp }) =>
+    currentXp || highestXp ? '18px' : '14px'};
+  width: ${({ currentXp, highestXp, size }) =>
+    currentXp || highestXp
+      ? `calc(100% / ${size} + 10px) `
+      : `calc(100% / ${size} )`};
+
+  &:not(:first-of-type) {
+    margin-left: 8px;
+  }
+
+  &:after {
+    content: '';
+    position: absolute;
+    left: 100%;
+    width: 6px;
+    height: ${({ currentXp, highestXp }) =>
+      currentXp || highestXp ? '18px' : '14px'};
+    clip-path: polygon(50% 50%, -50% -50%, 0 100%);
+    background: ${({ activeColor }) => activeColor && activeColor};
+  }
+  &:before {
+    content: '';
+    position: absolute;
+    /* left: 10px; */
+    top: 0;
+    width: 6px;
+    height: ${({ currentXp, highestXp }) =>
+      currentXp || highestXp ? '18px' : '14px'};
+    clip-path: polygon(100% 0, 100% 100%, 0% 100%, 50% 50%, 0% 0%);
+    transform: translateX(-100%);
+    background: ${({ activeColor }) => activeColor && activeColor};
+  }
+
+  &:first-of-type:before {
+    clip-path: none;
+  }
+  &:last-of-type:after {
+    clip-path: none;
+  }
+
+  ${({ setupMode }) =>
+    setupMode &&
+    css`
+      cursor: pointer;
+    `}
+`;
+XpIcon.displayName = 'XPIcon';

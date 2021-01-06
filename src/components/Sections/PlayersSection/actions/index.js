@@ -11,11 +11,13 @@ const ActionButton = ({
   carStarted,
   combineItemSelected,
   combinePair,
-  enterCar,
+  interactWithCar,
   noise,
   setNoise,
   startCar,
-  type
+  type,
+  changeActionLabel,
+  label
 }) => {
   const [isActive, activate] = useStateWithLabel(false, 'isActive');
   const path = `${SOUNDS_PATH}/actions/`;
@@ -31,10 +33,13 @@ const ActionButton = ({
       soundName = actionType && type && `${path}/${actionType}-${type}.mp3`;
       break;
     case 'endTurn':
-      iconType = 'fas fa-times-circle';
+      iconType = 'fas fa-ban';
       break;
     case 'combine':
       iconType = 'fas fa-wrench';
+      break;
+    case 'objective':
+      iconType = 'far fa-times-circle';
       break;
     case 'open-door':
       iconSize = 'small';
@@ -70,7 +75,27 @@ const ActionButton = ({
         actionType &&
         type &&
         `${path}/found-${type}${Math.ceil(Math.random() * 6)}.mp3`;
-
+      break;
+    case 'give-orders':
+      iconType = 'far fa-comment'; // fas
+      iconType2 = 'fas fa-running';
+      // sound go go go
+      break;
+    case 'lock':
+      iconType = 'fas fa-lock';
+      // sound lock
+      break;
+    case 'make-noise':
+      iconType = 'fas fa-volume-up';
+      // sound making noise
+      break;
+    case 'reload':
+      iconType = 'fas fa-sync-alt';
+      // sound reloading
+      break;
+    case 'heal':
+      iconType = 'fas fa-hand-holding-medical';
+      // sound bandaging
       break;
     default:
       break;
@@ -97,9 +122,9 @@ const ActionButton = ({
 
     if (actionType === 'car-enter' && !carStarted) {
       startCar(true);
-      enterCar(true);
+      interactWithCar(true);
     } else if (actionType === 'car-exit') {
-      enterCar(false);
+      interactWithCar(false);
     }
 
     if (sound) {
@@ -127,6 +152,8 @@ const ActionButton = ({
         <CarIconWrapper
           isActive={isActive}
           onClick={isActive ? () => null : onClickIcon}
+          onMouseOut={() => changeActionLabel('')}
+          onMouseOver={() => changeActionLabel(label)}
         >
           <CarIcon className={iconType2} />
           <CarActionIcon actionType={actionType} className={iconType} />
@@ -141,6 +168,8 @@ const ActionButton = ({
           isActive={isActive}
           onClick={isActive ? () => null : event => onClickIcon(event)}
           iconSize={iconSize}
+          onMouseOut={() => changeActionLabel('')}
+          onMouseOver={() => changeActionLabel(label)}
         />
       )}
     </>
@@ -153,22 +182,26 @@ ActionButton.propTypes = {
   carStarted: bool,
   combineItemSelected: bool,
   combinePair: bool,
-  enterCar: func,
+  interactWithCar: func,
   noise: number,
   setNoise: func,
   startCar: func,
-  type: string
+  type: string,
+  changeActionLabel: func,
+  label: string
 };
 
 ActionButton.defaultProps = {
   carStarted: false,
   combineItemSelected: false,
   combinePair: false,
-  enterCar: false,
+  interactWithCar: false,
   noise: 0,
   setNoise: null,
   startCar: null,
-  type: null
+  type: null,
+  changeActionLabel: () => null,
+  label: null
 };
 
 export default ActionButton;

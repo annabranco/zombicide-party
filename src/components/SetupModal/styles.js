@@ -21,20 +21,48 @@ ButtonsArea.displayName = 'ButtonsArea';
 
 export const ModalButton = styled(SelectionButton)`
   label: ModalButton;
-  margin: 0 40px;
+  margin: 10px 40px;
+  min-height: 40px;
   width: 190px;
   background: gray;
   padding: 5px 15px;
-  font-family: 'Grandstander', cursive;
-  font-size: 0.9rem;
+  font-size: 1.1rem;
   font-weight: 700;
   color: black;
+  font-family: 'Grandstander', cursive;
 
-  ${({ type }) =>
-    type === 'go-on' &&
-    css`
-      background: red;
-    `}
+  &: hover {
+    color: yellow;
+    filter: brightness(1.2);
+  }
+
+  ${({ type }) => {
+    if (type === 'go-on') {
+      return css`
+        background: red;
+      `;
+    }
+    if (type === 'confirm') {
+      return css`
+        background: lightgreen;
+      `;
+    }
+    if (type === 'option') {
+      return css`
+        min-height: 80px;
+        background: lightgray;
+        font-size: 1.15rem;
+        font-family: 'Grandstander', cursive;
+
+        &: hover {
+          color: purple;
+          filter: brightness(1.2);
+          font-size: 1.2rem;
+        }
+      `;
+    }
+    return null;
+  }}
   ${({ inactive }) =>
     inactive &&
     css`
@@ -44,6 +72,13 @@ export const ModalButton = styled(SelectionButton)`
 `;
 ModalButton.displayName = 'ModalButton';
 
+export const ModalCharFace = styled.img`
+  label: ModalCharFace;
+  margin: -50px auto;
+  width: 160px;
+`;
+ModalCharFace.displayName = 'ModalCharFace';
+
 export const ModalMessage = styled.p`
   label: ModalMessage;
   font-size: 1.2rem;
@@ -52,8 +87,25 @@ export const ModalMessage = styled.p`
   text-align: center;
   line-height: 2;
   white-space: pre;
+  font-family: 'Cairo', sans-serif;
+  ${({ type }) =>
+    type === 'option' &&
+    css`
+      height: 160px;
+      white-space: normal;
+      font-size: 1.3rem;
+      color: yellow;
+    `}
 `;
 ModalMessage.displayName = 'ModalMessage';
+
+export const ModalMessageWrapper = styled.div`
+  label: ModalMessageWrapper;
+  margin: -50px auto;
+  height: 160px;
+  width: 80%;
+`;
+ModalMessageWrapper.displayName = 'ModalMessageWrapper';
 
 export const ModalMessageSecondary = styled.p`
   label: ModalMessageSecondary;
@@ -77,6 +129,12 @@ export const ModalTitle = styled.h1`
   font-size: 2rem;
   color: red;
   text-shadow: 0 0 2px white;
+
+  ${({ uppercase }) =>
+    uppercase &&
+    css`
+      text-transform: uppercase;
+    `}
 `;
 ModalTitle.displayName = 'ModalTitle';
 
@@ -88,11 +146,11 @@ export const ModalWindow = styled.div`
   top: 50%;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
+  justify-content: space-around;
   border-radius: 15px;
-  height: 100%;
-  width: 100%;
-  background: rgba(0, 0, 0, 0.7);
+  height: 120%;
+  width: 120%;
+  background: rgba(0, 0, 0, 0.75);
   overflow: hidden;
   transform: translate(0, -50%);
 

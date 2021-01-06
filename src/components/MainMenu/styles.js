@@ -64,11 +64,16 @@ export const ButtonsArea = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  animation-name: ${Appear};
-  animation-delay: 3s;
-  animation-duration: 3s;
-  animation-iteration-count: 1;
-  animation-fill-mode: both;
+
+  ${({ delay }) =>
+    delay &&
+    css`
+      animation-name: ${Appear};
+      animation-delay: 3s;
+      animation-duration: 3s;
+      animation-iteration-count: 1;
+      animation-fill-mode: both;
+    `}
 `;
 ButtonsArea.displayName = 'ButtonsArea';
 

@@ -1,0 +1,12 @@
+export const FEMALE = 'female';
+export const IN_BACKPACK = 'inBackpack';
+export const IN_HAND = 'inHand';
+export const ITEMS = 'items';
+export const ITEMS_SELECTOR = 'itemsSelector';
+export const MALE = 'male';
+export const WEAPONS = 'weapons';
+export const SPECIAL = 'special';
+export const NOISY = 'noisy';
+export const MELEE = 'melee';
+export const RANGED = 'ranged';
+export const MELEE_RANGED = 'melee&ranged';

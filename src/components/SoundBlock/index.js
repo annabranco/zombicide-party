@@ -18,6 +18,7 @@ import { IN_BACKPACK, ITEMS, WEAPONS } from '../../constants';
 import ActionButton from '../Sections/PlayersSection/actions';
 
 const SoundBlock = ({
+  activateKillButtons,
   callback,
   canAttack,
   canCombine,
@@ -65,6 +66,7 @@ const SoundBlock = ({
       setTimeout(() => {
         quickAttackDebounce.current = false;
       }, 1000);
+      activateKillButtons();
       callback('attack');
     }
     if (sound && ((type === WEAPONS && canAttack) || type !== WEAPONS)) {
@@ -107,6 +109,8 @@ const SoundBlock = ({
     }
     return <PlayText>{label || name}</PlayText>;
   };
+
+  const temp = () => console.log('click temp');
 
   return (
     <Block damageMode={damageMode} type={type} wounded={wounded}>
@@ -154,6 +158,7 @@ const SoundBlock = ({
 };
 
 SoundBlock.propTypes = {
+  activateKillButtons: func,
   callback: func,
   canAttack: bool,
   canCombine: bool,
@@ -180,6 +185,7 @@ SoundBlock.propTypes = {
 };
 
 SoundBlock.defaultProps = {
+  activateKillButtons: null,
   callback: null,
   canAttack: false,
   canCombine: false,
