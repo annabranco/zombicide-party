@@ -445,6 +445,7 @@ const PlayersSection = ({
     const updatedCharacter = cloneDeep(character);
     updatedCharacter.actionsLeft = [0, 0, 0, 0];
     updateData(updatedCharacter);
+    setTimeout(() => changeToAnotherPlayer(NEXT), 1000);
   };
 
   const onClickObjective = () => {
