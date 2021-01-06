@@ -33,7 +33,7 @@ const ActionButton = ({
       soundName = actionType && type && `${path}/${actionType}-${type}.mp3`;
       break;
     case 'endTurn':
-      iconType = 'fas fa-hand-paper';
+      iconType = 'fas fa-ban';
       break;
     case 'combine':
       iconType = 'fas fa-wrench';
@@ -75,7 +75,27 @@ const ActionButton = ({
         actionType &&
         type &&
         `${path}/found-${type}${Math.ceil(Math.random() * 6)}.mp3`;
-
+      break;
+    case 'give-orders':
+      iconType = 'far fa-comment'; // fas
+      iconType2 = 'fas fa-running';
+      // sound go go go
+      break;
+    case 'lock':
+      iconType = 'fas fa-lock';
+      // sound lock
+      break;
+    case 'make-noise':
+      iconType = 'fas fa-volume-up';
+      // sound making noise
+      break;
+    case 'reload':
+      iconType = 'fas fa-sync-alt';
+      // sound reloading
+      break;
+    case 'heal':
+      iconType = 'fas fa-hand-holding-medical';
+      // sound bandaging
       break;
     default:
       break;
