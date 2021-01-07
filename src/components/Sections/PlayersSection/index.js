@@ -335,7 +335,7 @@ const PlayersSection = ({
     );
     let nextPlayerIndex;
 
-    if (charactersNumber && remainingCharacters.length) {
+    if (charactersNumber !== remainingCharacters.length) {
       updateCharacters(remainingCharacters);
     }
 
@@ -634,9 +634,19 @@ const PlayersSection = ({
 
   const onClickEndTurn = () => {
     const updatedCharacter = cloneDeep(character);
+    // eslint-disable-next-line no-debugger
+    debugger;
+    const charsStillToAct = characters.filter(
+      char =>
+        char.name !== updatedCharacter.name &&
+        checkIfHasAnyActionLeft(char.actionsLeft || [3])
+    );
+
     updatedCharacter.actionsLeft = [0, 0, 0, 0];
     updateData(updatedCharacter);
-    setTimeout(() => changeToAnotherPlayer(NEXT), 1000);
+    if (charsStillToAct.length > 0) {
+      setTimeout(() => changeToAnotherPlayer(NEXT), 800);
+    }
   };
 
   const onClickObjective = () => {
@@ -762,7 +772,7 @@ const PlayersSection = ({
         if (nextChar.abilities.length === 0) {
           nextChar = advancingLevel(nextChar.experience, nextChar);
         }
-        console.log('$$$ nextChar', nextChar);
+
         if (nextChar.experience > highestXp.xp) {
           updateHighestXp({ name: nextChar.name, xp: nextChar.experience });
         }
