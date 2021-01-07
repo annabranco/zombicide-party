@@ -14,7 +14,7 @@ import {
   ItemIcon
 } from './styles';
 import { ZombieLabel } from '../Sections/ZombiesSection/styles';
-import { IN_BACKPACK, ITEMS, WEAPONS } from '../../constants';
+import { IN_BACKPACK, IN_HAND, ITEMS, WEAPONS } from '../../constants';
 import ActionButton from '../Sections/PlayersSection/actions';
 
 const SoundBlock = ({
@@ -90,24 +90,26 @@ const SoundBlock = ({
   };
 
   const play = () => {
-    if (type === WEAPONS && !quickAttackDebounce.current) {
-      quickAttackDebounce.current = true;
-      setTimeout(() => {
-        quickAttackDebounce.current = false;
-      }, 1000);
-      activateKillButtons();
-      callback('attack');
-    }
-    if (sound && ((type === WEAPONS && canAttack) || type !== WEAPONS)) {
-      activate(true);
-      sound.currentTime = 0;
-      sound.play();
-      if (makeNoise) {
-        makeNoise(name);
+    if (slotType === IN_HAND) {
+      if (type === WEAPONS && !quickAttackDebounce.current) {
+        quickAttackDebounce.current = true;
+        setTimeout(() => {
+          quickAttackDebounce.current = false;
+        }, 1000);
+        activateKillButtons();
+        callback('attack');
       }
-      setTimeout(() => {
-        activate(false);
-      }, 4000);
+      if (sound && ((type === WEAPONS && canAttack) || type !== WEAPONS)) {
+        activate(true);
+        sound.currentTime = 0;
+        sound.play();
+        if (makeNoise) {
+          makeNoise(name);
+        }
+        setTimeout(() => {
+          activate(false);
+        }, 4000);
+      }
     }
   };
 
