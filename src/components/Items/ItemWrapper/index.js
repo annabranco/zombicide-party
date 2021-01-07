@@ -75,59 +75,6 @@ const ItemsArea = ({
 
   const itemsType = getItemType(item);
 
-  const onClickChange = () => {
-    toggleActive(false);
-    selectSlot(index + (itemsType === WEAPONS ? 1 : 3));
-  };
-
-  const onClickCard = () => {
-    const slot = getSlotNumber(index);
-    if (damageMode) {
-      causeDamage(slot);
-    } else if (trade) {
-      if (isSelected) {
-        select(false);
-        tradeItem({ item: null, slot, char: charName });
-      } else {
-        tradeItem({ item, slot, char: charName });
-        if (!itemSelected) {
-          select(true);
-        }
-      }
-    } else {
-      onClickChange();
-    }
-  };
-
-  const getSlotNumber = itemIndex => {
-    const adj = slotType === IN_HAND ? 1 : 3;
-    return itemIndex + adj;
-  };
-
-  const onClickEmptyCard = () => {
-    const slot = getSlotNumber(index);
-    if (damageMode) {
-      if (allSlotsAreEmpty) {
-        causeDamage(slot);
-      }
-    } else if (trade) {
-      if (isSelected) {
-        select(false);
-        tradeItem({ item: null, slot, char: charName });
-      } else {
-        tradeItem({ item: 'none', slot, char: charName });
-        if (!itemSelected) {
-          select(true);
-        }
-      }
-    } else if (canSearch || setupMode) {
-      selectSlot(slot);
-      if (!setupMode) {
-        handleSearch();
-      }
-    }
-  };
-
   const activateKillButtons = () => {
     if (WEAPONS_S1[item].dice === SPECIAL) {
       gainCustomXp(index);
@@ -156,6 +103,59 @@ const ItemsArea = ({
       totalDices = totalDices + ranged + melee;
     }
     return [...Array(totalDices).keys()];
+  };
+
+  const getSlotNumber = itemIndex => {
+    const adj = slotType === IN_HAND ? 1 : 3;
+    return itemIndex + adj;
+  };
+
+  const onClickCard = () => {
+    const slot = getSlotNumber(index);
+    if (damageMode) {
+      causeDamage(slot);
+    } else if (trade) {
+      if (isSelected) {
+        select(false);
+        tradeItem({ item: null, slot, char: charName });
+      } else {
+        tradeItem({ item, slot, char: charName });
+        if (!itemSelected) {
+          select(true);
+        }
+      }
+    } else {
+      onClickChange();
+    }
+  };
+
+  const onClickChange = () => {
+    toggleActive(false);
+    selectSlot(index + (itemsType === WEAPONS ? 1 : 3));
+  };
+
+  const onClickEmptyCard = () => {
+    const slot = getSlotNumber(index);
+    if (damageMode) {
+      if (allSlotsAreEmpty) {
+        causeDamage(slot);
+      }
+    } else if (trade) {
+      if (isSelected) {
+        select(false);
+        tradeItem({ item: null, slot, char: charName });
+      } else {
+        tradeItem({ item: 'none', slot, char: charName });
+        if (!itemSelected) {
+          select(true);
+        }
+      }
+    } else if (canSearch || setupMode) {
+      selectSlot(slot);
+      if (!setupMode) {
+        handleSearch();
+      }
+    }
   };
 
   const killOneZombie = pressedButton => {

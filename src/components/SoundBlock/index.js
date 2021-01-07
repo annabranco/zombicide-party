@@ -49,6 +49,7 @@ const SoundBlock = ({
   const quickAttackDebounce = useRef();
 
   const randomNumber = max => Math.floor(Math.random() * max + 1);
+
   const filename = name === 'SniperRifle' ? 'Rifle' : name;
   const filePath = `${SOUNDS_PATH}${type}/${filename}${
     differentSounds ? randomNumber(differentSounds) : ''
@@ -59,28 +60,6 @@ const SoundBlock = ({
     type !== ITEMS &&
     type !== 'wound' &&
     new Audio(filePath);
-
-  const play = () => {
-    if (type === WEAPONS && !quickAttackDebounce.current) {
-      quickAttackDebounce.current = true;
-      setTimeout(() => {
-        quickAttackDebounce.current = false;
-      }, 1000);
-      activateKillButtons();
-      callback('attack');
-    }
-    if (sound && ((type === WEAPONS && canAttack) || type !== WEAPONS)) {
-      activate(true);
-      sound.currentTime = 0;
-      sound.play();
-      if (makeNoise) {
-        makeNoise(name);
-      }
-      setTimeout(() => {
-        activate(false);
-      }, 4000);
-    }
-  };
 
   const getImage = () => {
     if (trade) {
@@ -110,7 +89,27 @@ const SoundBlock = ({
     return <PlayText>{label || name}</PlayText>;
   };
 
-  const temp = () => console.log('click temp');
+  const play = () => {
+    if (type === WEAPONS && !quickAttackDebounce.current) {
+      quickAttackDebounce.current = true;
+      setTimeout(() => {
+        quickAttackDebounce.current = false;
+      }, 1000);
+      activateKillButtons();
+      callback('attack');
+    }
+    if (sound && ((type === WEAPONS && canAttack) || type !== WEAPONS)) {
+      activate(true);
+      sound.currentTime = 0;
+      sound.play();
+      if (makeNoise) {
+        makeNoise(name);
+      }
+      setTimeout(() => {
+        activate(false);
+      }, 4000);
+    }
+  };
 
   return (
     <Block damageMode={damageMode} type={type} wounded={wounded}>
