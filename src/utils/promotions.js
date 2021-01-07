@@ -30,6 +30,15 @@ export const handlePromotionEffects = (char, level, actionsLeft, index) => {
       updatedChar.actionsLeft = updatedChar.promotions.blue.effect(
         actionsLeft || updatedChar.actions
       );
+    } else if (
+      (updatedChar.promotions.blue.name === DIE_COMBAT.name ||
+        updatedChar.promotions.blue.name === DIE_MELEE.name ||
+        updatedChar.promotions.blue.name === DIE_RANGED.name) &&
+      updatedChar.promotions.blue.effect
+    ) {
+      updatedChar.bonusDices = updatedChar.promotions.red[index].effect(
+        updatedChar.bonusDices
+      );
     }
     updatedChar.abilities.push(updatedChar.promotions.blue.name);
   } else if (level === 'yellow') {
@@ -46,6 +55,15 @@ export const handlePromotionEffects = (char, level, actionsLeft, index) => {
       updatedChar.actionsLeft = updatedChar.promotions.yellow.effect(
         actionsLeft || updatedChar.actions
       );
+    } else if (
+      (updatedChar.promotions.yellow.name === DIE_COMBAT.name ||
+        updatedChar.promotions.yellow.name === DIE_MELEE.name ||
+        updatedChar.promotions.yellow.name === DIE_RANGED.name) &&
+      updatedChar.promotions.yellow.effect
+    ) {
+      updatedChar.bonusDices = updatedChar.promotions.red[index].effect(
+        updatedChar.bonusDices
+      );
     }
     updatedChar.abilities.push(char.promotions.yellow.name);
   } else if (level === 'orange') {
@@ -61,6 +79,15 @@ export const handlePromotionEffects = (char, level, actionsLeft, index) => {
       );
       updatedChar.actionsLeft = updatedChar.promotions.orange[index].effect(
         actionsLeft || updatedChar.actions
+      );
+    } else if (
+      (updatedChar.promotions.orange[index].name === DIE_COMBAT.name ||
+        updatedChar.promotions.orange[index].name === DIE_MELEE.name ||
+        updatedChar.promotions.orange[index].name === DIE_RANGED.name) &&
+      updatedChar.promotions.orange[index].effect
+    ) {
+      updatedChar.bonusDices = updatedChar.promotions.orange[index].effect(
+        updatedChar.bonusDices
       );
     }
     updatedChar.abilities.push(char.promotions.orange[index].name);
