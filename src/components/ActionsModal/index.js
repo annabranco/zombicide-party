@@ -100,7 +100,6 @@ const ActionsModal = ({
               }}
             />
           )}
-          {console.log(modalMessage.data)}
           {modalMessage.type === 'option' && modalMessage.data.img && (
             <>
               {modalState ? (

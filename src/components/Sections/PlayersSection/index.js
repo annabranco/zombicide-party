@@ -776,12 +776,10 @@ const PlayersSection = ({
     if (character.experience >= 0) {
       const charClone = cloneDeep(character);
       const newXpBar = calculateXpBar(charClone.experience, highestXp.xp);
-      if (!isEqual(newXpBar, xpCounter) || setupMode) {
-        const updatedChar = advancingLevel(charClone.experience, charClone);
+      const updatedChar = advancingLevel(charClone.experience, charClone);
 
-        updateXpCounter(newXpBar);
-        updateData(updatedChar);
-      }
+      updateXpCounter(newXpBar);
+      updateData(updatedChar);
     }
   }, [character.experience, updateXpCounter]);
 
