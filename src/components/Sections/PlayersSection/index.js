@@ -494,6 +494,11 @@ const PlayersSection = ({
     }
     const updatedCharacter = cloneDeep(character);
     updatedCharacter.experience = updatedXp;
+
+    if (updatedXp > highestXp.xp || highestXp.name === character.name) {
+      updateHighestXp({ name: character.name, xp: updatedXp });
+    }
+
     updateData(updatedCharacter);
   };
   /* --- */
@@ -756,6 +761,10 @@ const PlayersSection = ({
 
         if (nextChar.abilities.length === 0) {
           nextChar = advancingLevel(nextChar.experience, nextChar);
+        }
+        console.log('$$$ nextChar', nextChar);
+        if (nextChar.experience > highestXp.xp) {
+          updateHighestXp({ name: nextChar.name, xp: nextChar.experience });
         }
 
         changeCharacter(nextChar);
