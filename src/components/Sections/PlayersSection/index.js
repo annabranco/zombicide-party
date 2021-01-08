@@ -145,7 +145,10 @@ const PlayersSection = ({
     false,
     'selectCharOverlay'
   );
-  const [setupMode, toggleSetupMode] = useStateWithLabel(true, 'setupMode');
+  const [setupMode, toggleSetupMode] = useStateWithLabel(
+    'initial',
+    'setupMode'
+  );
   const [slot, selectSlot] = useStateWithLabel(null, 'slot');
   const [trade, startTrade] = useStateWithLabel(false, 'trade');
   const [xpCounter, updateXpCounter] = useStateWithLabel([], 'xpCounter');
@@ -644,6 +647,9 @@ const PlayersSection = ({
   };
 
   const onClickMainButton = () => {
+    if (setupMode === 'initial') {
+      changeCharIndex(0);
+    }
     if (setupMode) {
       toggleSetupMode(false);
     } else {
