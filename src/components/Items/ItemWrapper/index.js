@@ -4,7 +4,7 @@ import { isEqual } from 'lodash';
 import { useStateWithLabel } from '../../../utils/hooks';
 import { getItemPhoto, getItemType } from '../../../utils/items';
 import SoundBlock from '../../SoundBlock';
-import ActionButton from '../../Sections/PlayersSection/actions';
+import ActionButton from '../../ActionButton';
 import { WEAPONS_S1 } from '../../../setup/weapons';
 
 import { AppButton } from '../../Sections/PlayersSection/styles';

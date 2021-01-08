@@ -19,7 +19,7 @@ import {
 } from '../../../utils/items';
 import { useStateWithLabel, useTurnsCounter } from '../../../utils/hooks';
 import ItemsSelectorModal from '../../Items/ItemsSelectorModal';
-import ActionButton from './actions';
+import ActionButton from '../../ActionButton';
 import ItemsArea from '../../Items/ItemWrapper';
 import Blood from '../../../assets/images/blood.png';
 import Exit from '../../../assets/images/exit.png';
@@ -59,7 +59,6 @@ import {
   TopActionsLabelWrapper
 } from './styles';
 import { CharacterType } from '../../../interfaces/types';
-import { SOUNDS_PATH } from '../../../setup/endpoints';
 import TradeArea from '../../TradeArea';
 import NewGame from '../../NewGame';
 import {
@@ -97,6 +96,7 @@ import {
 } from '../../../utils/xp';
 import { WEAPONS_S1 } from '../../../setup/weapons';
 import ActionsModal from '../../ActionsModal';
+import { SOUNDS } from '../../../assets/sounds';
 
 const PlayersSection = ({
   damageMode,
@@ -544,6 +544,9 @@ const PlayersSection = ({
 
       woundedCharacter.wounded = 'killed';
       damage = 'kill';
+      if (firstPlayer.includes(woundedCharacter.name)) {
+        changeFirstPlayer(`next-${characters[charIndex + 1].name}`);
+      }
 
       if (remainingCharacters.length === 0) {
         updateCharacters(remainingCharacters);
@@ -556,9 +559,8 @@ const PlayersSection = ({
       woundedCharacter.inBackpack[selectedSlot - 3] = 'Wounded';
     }
 
-    const filename = `${SOUNDS_PATH}/attacks/${
-      character.voice
-    }-${damage}-${attacker.toLowerCase()}.mp3`;
+    const filename =
+      SOUNDS[`${character.voice}-${damage}-${attacker.toLowerCase()}`];
     const sound = new Audio(filename);
     sound.currentTime = 0;
     sound.play();
@@ -609,6 +611,13 @@ const PlayersSection = ({
             }
           }
         });
+        if (!nextFirstPlayer) {
+          const nextPlayerName = firstPlayer.replace('next-', '');
+          nextFirstPlayer = updatedCharacters.findIndex(
+            char => char.name === nextPlayerName
+          );
+        }
+
         setNoise(0);
         changeFirstPlayer(updatedCharacters[nextFirstPlayer].name);
         updateCharacters(updatedCharacters);
@@ -634,8 +643,6 @@ const PlayersSection = ({
 
   const onClickEndTurn = () => {
     const updatedCharacter = cloneDeep(character);
-    // eslint-disable-next-line no-debugger
-    debugger;
     const charsStillToAct = characters.filter(
       char =>
         char.name !== updatedCharacter.name &&

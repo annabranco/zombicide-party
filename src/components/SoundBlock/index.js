@@ -1,9 +1,7 @@
-import React, { useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { bool, func, number, string } from 'prop-types';
 import { useStateWithLabel } from '../../utils/hooks';
 import { checkIfItemCanBeCombined } from '../../utils/items';
-
-import { SOUNDS_PATH } from '../../setup/endpoints';
 import {
   Action,
   Block,
@@ -15,7 +13,8 @@ import {
 } from './styles';
 import { ZombieLabel } from '../Sections/ZombiesSection/styles';
 import { IN_BACKPACK, IN_HAND, ITEMS, WEAPONS } from '../../constants';
-import ActionButton from '../Sections/PlayersSection/actions';
+import ActionButton from '../ActionButton';
+import { SOUNDS } from '../../assets/sounds';
 
 const SoundBlock = ({
   activateKillButtons,
@@ -47,19 +46,17 @@ const SoundBlock = ({
   const [isHighlighted, highlight] = useStateWithLabel(false, 'isHighlighted');
 
   const quickAttackDebounce = useRef();
+  const sound = useRef();
 
   const randomNumber = max => Math.floor(Math.random() * max + 1);
-
-  const filename = name === 'SniperRifle' ? 'Rifle' : name;
-  const filePath = `${SOUNDS_PATH}${type}/${filename}${
-    differentSounds ? randomNumber(differentSounds) : ''
-  }.mp3`;
-  const sound =
+  const filename =
     !noAudio &&
     slotType !== IN_BACKPACK &&
     type !== ITEMS &&
     type !== 'wound' &&
-    new Audio(filePath);
+    name === 'SniperRifle'
+      ? 'Rifle'
+      : name;
 
   const getImage = () => {
     if (trade) {
@@ -90,28 +87,46 @@ const SoundBlock = ({
   };
 
   const play = () => {
-    if (slotType === IN_HAND) {
-      if (type === WEAPONS && !quickAttackDebounce.current) {
-        quickAttackDebounce.current = true;
-        setTimeout(() => {
-          quickAttackDebounce.current = false;
-        }, 1000);
-        activateKillButtons();
-        callback('attack');
+    if (
+      type === WEAPONS &&
+      slotType === IN_HAND &&
+      !quickAttackDebounce.current
+    ) {
+      quickAttackDebounce.current = true;
+      setTimeout(() => {
+        quickAttackDebounce.current = false;
+      }, 1000);
+      activateKillButtons();
+      callback('attack');
+    }
+    if (filename && ((type === WEAPONS && canAttack) || type !== WEAPONS)) {
+      if (type === 'activations') {
+        sound.current = new Audio(
+          SOUNDS[
+            `${filename}${differentSounds ? randomNumber(differentSounds) : ''}`
+          ]
+        );
       }
-      if (sound && ((type === WEAPONS && canAttack) || type !== WEAPONS)) {
-        activate(true);
-        sound.currentTime = 0;
-        sound.play();
-        if (makeNoise) {
-          makeNoise(name);
-        }
-        setTimeout(() => {
-          activate(false);
-        }, 4000);
+      activate(true);
+      sound.current.currentTime = 0;
+      sound.current.play();
+
+      if (makeNoise) {
+        makeNoise(name);
       }
+      setTimeout(() => {
+        activate(false);
+      }, 4000);
     }
   };
+
+  useEffect(() => {
+    sound.current = new Audio(
+      SOUNDS[
+        `${filename}${differentSounds ? randomNumber(differentSounds) : ''}`
+      ]
+    );
+  }, [filename, differentSounds]);
 
   return (
     <Block damageMode={damageMode} type={type} wounded={wounded}>

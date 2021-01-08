@@ -4,8 +4,6 @@ import appInfo from '../../../package.json';
 import { useStateWithLabel } from '../../utils/hooks';
 import BG from '../../assets/images/background/background.jpg';
 import Logo from '../../assets/images/logo.png';
-import Storm from '../../assets/sounds/intro/intro.mp3';
-import Horde from '../../assets/sounds/activations/Horde1.mp3';
 import {
   SelectionButton,
   ButtonsArea,
@@ -21,6 +19,7 @@ import {
 } from './styles';
 import { ZOMBIES_INTRO } from '../../setup/zombies';
 import { STOP_SOUND, TEST_SOUND } from '../../constants';
+import { SOUNDS } from '../../assets/sounds';
 
 const MainMenu = ({ loadedGame }) => {
   const [testSound, toggleTestSound] = useStateWithLabel(false, 'testSound');
@@ -30,8 +29,8 @@ const MainMenu = ({ loadedGame }) => {
   );
 
   useEffect(() => {
-    const storm = new Audio(Storm);
-    const horde = new Audio(Horde);
+    const storm = new Audio(SOUNDS.intro);
+    const horde = new Audio(SOUNDS.Horde1);
     if (testSound) {
       storm.currentTime = 0;
       horde.currentTime = 0;

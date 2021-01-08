@@ -14,10 +14,10 @@ export const ActionIcon = styled.i`
   cursor: ${({ isActive }) => (isActive ? 'not-allowed' : 'pointer')};
   transition: background ease 5s opacity ease 5s;
   opacity: ${({ isActive }) => (isActive ? 0.2 : 1)};
-  font-size: ${({ iconSize }) => (iconSize ? '2.5rem' : '3rem')};
+  font-size: ${({ iconSize }) => (iconSize ? '2rem' : '2.5rem')};
   line-height: ${({ iconSize }) =>
     // eslint-disable-next-line no-nested-ternary
-    iconSize === 'medium' ? '1.4' : iconSize ? '1.2' : '1'};
+    iconSize === 'medium' ? '1.4' : iconSize ? '1.2' : '1.3'};
   text-align: center;
   color: black;
   text-shadow: none;
@@ -42,19 +42,28 @@ export const ActionIcon = styled.i`
         -webkit-text-stroke: 1px black;
       `;
     }
+    if (actionType === 'move') {
+      return css`
+        font-size: 2.2rem;
+        line-height: 1.4;
+      `;
+    }
+
     if (actionType === 'endTurn') {
       return css`
-        color: black;
+        color: maroon;
+        font-size: 3rem;
+        line-height: 1;
         &:hover {
-          color: darkred;
+          color: red;
         }
       `;
     }
     if (actionType === 'objective') {
       return css`
-        color: black;
+        color: darkgreen;
         &:hover {
-          color: green;
+          color: limegreen;
         }
       `;
     }
