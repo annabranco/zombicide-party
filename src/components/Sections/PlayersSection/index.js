@@ -609,7 +609,7 @@ const PlayersSection = ({
         }
         changeCharacter(updatedCharacter);
         if (!setupMode) {
-          spendAction('general');
+          spendAction('upgrade weapon');
         }
         setCombiningItem();
       } else {
@@ -1096,6 +1096,7 @@ const PlayersSection = ({
                         selectSlot={selectSlot}
                         setupMode={setupMode}
                         slotType="inHand"
+                        spendAction={spendAction}
                         startTrade={startTrade}
                         wounded={character.wounded}
                       />

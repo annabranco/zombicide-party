@@ -27,9 +27,19 @@ export const ActionIcon = styled.i`
     text-shadow: 0 0 2px black;
   }
 
-  ${({ actionType }) => {
-    if (actionType === 'search') {
+  ${({ type }) => {
+    if (type === 'center') {
       return css`
+        top: 90px;
+      `;
+    }
+    return null;
+  }}
+
+  ${({ actionType }) => {
+    if (actionType === 'search' || actionType === 'reload') {
+      return css`
+        z-index: 10;
         background: none;
         position: absolute;
         left: 50%;

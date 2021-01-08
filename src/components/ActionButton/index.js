@@ -180,6 +180,7 @@ const ActionButton = ({
           iconSize={iconSize}
           onMouseOut={() => changeActionLabel('')}
           onMouseOver={() => changeActionLabel(label)}
+          type={type}
         />
       )}
     </>

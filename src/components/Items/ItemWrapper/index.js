@@ -57,21 +57,24 @@ const ItemsArea = ({
   selectSlot,
   setupMode,
   slotType,
+  spendAction,
   startTrade,
   trade,
   tradeItem,
   wounded
 }) => {
-  const [isActive, toggleActive] = useStateWithLabel(false, 'isActive');
-  const [isSelected, select] = useStateWithLabel(false, 'isSelected');
-  const [killButtons, changeKillButtons] = useStateWithLabel([], 'killButtons');
   const [displayKillButtons, toggleDisplayKillButtons] = useStateWithLabel(
     false,
     'displayKillButtons'
   );
-  const killButtonsTimer = useRef();
+  const [isActive, toggleActive] = useStateWithLabel(false, 'isActive');
+  const [isSelected, select] = useStateWithLabel(false, 'isSelected');
+  const [killButtons, changeKillButtons] = useStateWithLabel([], 'killButtons');
+  const [needReload, toggleNeedReload] = useStateWithLabel([], 'needReload');
+
   const bonusDiceRef = useRef();
   const dicesRef = useRef();
+  const killButtonsTimer = useRef();
 
   const itemsType = getItemType(item);
 
@@ -104,6 +107,8 @@ const ItemsArea = ({
     }
     return [...Array(totalDices).keys()];
   };
+
+  const checkIfReloadIsNeeded = () => item === WEAPONS_S1.SawedOff.name;
 
   const getSlotNumber = itemIndex => {
     const adj = slotType === IN_HAND ? 1 : 3;
@@ -170,6 +175,17 @@ const ItemsArea = ({
     gainXp(1);
   };
 
+  const reload = weapon => {
+    if (needReload) {
+      spendAction('reload');
+      toggleNeedReload(false);
+    }
+  };
+
+  const spendAmmo = () => {
+    toggleNeedReload(true);
+  };
+
   useEffect(() => {
     if (dice && bonusDices) {
       if (
@@ -180,6 +196,10 @@ const ItemsArea = ({
       }
     }
   }, [dice, bonusDices, item, changeKillButtons]);
+
+  useEffect(() => {
+    toggleNeedReload(false);
+  }, [charName, toggleNeedReload]);
 
   return (
     <ItemWrapper
@@ -205,23 +225,18 @@ const ItemsArea = ({
             isSelected={isSelected}
             makeNoise={makeNoise}
             name={item}
+            needsToBeReloaded={checkIfReloadIsNeeded()}
             onClickCard={setupMode ? onClickEmptyCard : onClickCard}
             onClickCombine={onClickCombine}
             setupMode={setupMode}
             slot={getSlotNumber(index)}
             slotType={slotType}
+            spendAmmo={spendAmmo}
             trade={trade}
             type={itemsType}
+            unloaded={needReload}
             wounded={wounded}
-          >
-            {canSearch && !damageMode && !setupMode && (
-              <ActionButton
-                actionType="search"
-                callback={onClickEmptyCard}
-                type={charVoice}
-              />
-            )}
-          </SoundBlock>
+          />
         ) : (
           <ItemBlank
             allSlotsAreEmpty={allSlotsAreEmpty}
@@ -248,6 +263,9 @@ const ItemsArea = ({
           <AppButton onClick={() => startTrade(true)} type="button" trade>
             <ActionButtonIcon className="fas fa-exchange-alt" type="trade" />
           </AppButton>
+        )}
+        {needReload && (
+          <ActionButton actionType="reload" callback={reload} type="center" />
         )}
         {item && !damageMode && (
           <AppButton
@@ -309,6 +327,7 @@ ItemsArea.propTypes = {
   selectSlot: func.isRequired,
   setupMode: bool,
   slotType: string.isRequired,
+  spendAction: func,
   startTrade: func.isRequired,
   trade: bool.isRequired,
   tradeItem: func,
@@ -327,6 +346,7 @@ ItemsArea.defaultProps = {
   gainCustomXp: () => null,
   gainXp: () => null,
   item: null,
+  spendAction: () => null,
   setupMode: false,
   tradeItem: () => null
 };

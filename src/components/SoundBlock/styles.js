@@ -180,6 +180,12 @@ export const PlayIcon = styled.img`
       }
     `;
   }}
+
+  ${({ unloaded }) =>
+    unloaded &&
+    css`
+      filter: sepia(2) brightness(1.2) contrast(0.6) opacity(0.5);
+    `}
 `;
 PlayIcon.displayName = 'PlayIcon';
 

@@ -30,6 +30,7 @@ const SoundBlock = ({
   label,
   makeNoise,
   name,
+  needsToBeReloaded,
   noAudio,
   onClickCard,
   onClickCombine,
@@ -37,9 +38,11 @@ const SoundBlock = ({
   slot,
   slotType,
   special,
+  spendAmmo,
   toggleDamageMode,
   trade,
   type,
+  unloaded,
   wounded
 }) => {
   const [isActive, activate] = useStateWithLabel(false, 'isActive');
@@ -78,6 +81,7 @@ const SoundBlock = ({
           active={isActive}
           onMouseOut={() => highlight(false)}
           onMouseOver={() => highlight(true)}
+          unloaded={unloaded}
           src={img}
           type={type}
         />
@@ -114,6 +118,11 @@ const SoundBlock = ({
       if (makeNoise) {
         makeNoise(name);
       }
+
+      if (needsToBeReloaded) {
+        spendAmmo();
+      }
+
       setTimeout(() => {
         activate(false);
       }, 4000);
@@ -187,6 +196,7 @@ SoundBlock.propTypes = {
   label: string,
   makeNoise: func.isRequired,
   name: string.isRequired,
+  needsToBeReloaded: bool,
   noAudio: bool,
   onClickCard: func.isRequired,
   onClickCombine: func,
@@ -194,9 +204,11 @@ SoundBlock.propTypes = {
   slot: number,
   slotType: string,
   special: string,
+  spendAmmo: func,
   toggleDamageMode: func.isRequired,
   trade: bool.isRequired,
   type: string.isRequired,
+  unloaded: bool,
   wounded: bool.isRequired
 };
 
@@ -212,11 +224,14 @@ SoundBlock.defaultProps = {
   img: null,
   isSelected: false,
   label: null,
+  needsToBeReloaded: false,
   noAudio: false,
   onClickCombine: null,
   slot: null,
   special: null,
-  slotType: null
+  spendAmmo: () => null,
+  slotType: null,
+  unloaded: false
 };
 
 export default SoundBlock;
