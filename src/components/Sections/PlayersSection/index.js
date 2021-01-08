@@ -504,30 +504,6 @@ const PlayersSection = ({
   /* --- */
 
   /* ------- ACTION BUTTONS METHODS ------- */
-  const handleSearch = () => {
-    if (canUseFlashlight && canSearch && !character.hasUsedFlashlight) {
-      const updatedCharacter = cloneDeep(character);
-      updatedCharacter.hasUsedFlashlight = true;
-      updateData(updatedCharacter);
-    } else if (canSearch) {
-      spendAction('search');
-    }
-  };
-
-  const interactWithCar = enter => {
-    const updatedCharacter = cloneDeep(character);
-    if (enter) {
-      updatedCharacter.location = 'car';
-    } else {
-      updatedCharacter.location = null;
-    }
-    changeCharacter(updatedCharacter);
-  };
-
-  const onClickGainBonusXp = bonusXp => {
-    gainXp(Number(bonusXp));
-    toggleActionsModal(false);
-  };
 
   const causeDamage = selectedSlot => {
     const woundedCharacter = cloneDeep(character);
@@ -567,6 +543,10 @@ const PlayersSection = ({
 
     toggleDamageMode(false);
     updateData(woundedCharacter);
+
+    if (remainingCharacters.length > 0) {
+      setTimeout(() => changeToAnotherPlayer(NEXT), 2000);
+    }
   };
 
   const confirmTrade = (updatedCharacter, updatedCharacters) => {
@@ -586,10 +566,81 @@ const PlayersSection = ({
     localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(updatedCharacters));
   };
 
-  const setNewChar = updatedCharacters => {
-    addNewChar(false);
-    updateCharacters(updatedCharacters);
-    localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(updatedCharacters));
+  const handleSearch = () => {
+    if (canUseFlashlight && canSearch && !character.hasUsedFlashlight) {
+      const updatedCharacter = cloneDeep(character);
+      updatedCharacter.hasUsedFlashlight = true;
+      updateData(updatedCharacter);
+    } else if (canSearch) {
+      spendAction('search');
+    }
+  };
+
+  const interactWithCar = enter => {
+    const updatedCharacter = cloneDeep(character);
+    if (enter) {
+      updatedCharacter.location = 'car';
+    } else {
+      updatedCharacter.location = null;
+    }
+    changeCharacter(updatedCharacter);
+  };
+
+  const onClickCombine = ([item, itemSlot], event) => {
+    event.stopPropagation();
+    if (combiningItem) {
+      const { firstSlot, pair, finalItem } = combiningItem;
+      if (item === pair) {
+        const updatedCharacter = cloneDeep(character);
+        const secondSlot = itemSlot;
+
+        if (firstSlot <= 2) {
+          updatedCharacter.inHand[firstSlot - 1] = '';
+        } else {
+          updatedCharacter.inBackpack[firstSlot - 3] = '';
+        }
+        if (secondSlot <= 2) {
+          updatedCharacter.inHand[secondSlot - 1] = finalItem;
+        } else {
+          updatedCharacter.inBackpack[secondSlot - 3] = finalItem;
+        }
+        changeCharacter(updatedCharacter);
+        if (!setupMode) {
+          spendAction('general');
+        }
+        setCombiningItem();
+      } else {
+        setCombiningItem();
+      }
+    } else {
+      setCombiningItem(getCombiningReference([item, itemSlot]));
+      setTimeout(() => setCombiningItem(), 3000);
+    }
+  };
+
+  const onClickEdit = () => {
+    toggleSetupMode(true);
+    changeTopActionLabel('');
+  };
+
+  const onClickEndTurn = () => {
+    const updatedCharacter = cloneDeep(character);
+    const charsStillToAct = characters.filter(
+      char =>
+        char.name !== updatedCharacter.name &&
+        checkIfHasAnyActionLeft(char.actionsLeft || [3])
+    );
+
+    updatedCharacter.actionsLeft = [0, 0, 0, 0];
+    updateData(updatedCharacter);
+    if (charsStillToAct.length > 0) {
+      setTimeout(() => changeToAnotherPlayer(NEXT), 800);
+    }
+  };
+
+  const onClickGainBonusXp = bonusXp => {
+    gainXp(Number(bonusXp));
+    toggleActionsModal(false);
   };
 
   const onClickMainButton = () => {
@@ -641,61 +692,15 @@ const PlayersSection = ({
     }
   };
 
-  const onClickEndTurn = () => {
-    const updatedCharacter = cloneDeep(character);
-    const charsStillToAct = characters.filter(
-      char =>
-        char.name !== updatedCharacter.name &&
-        checkIfHasAnyActionLeft(char.actionsLeft || [3])
-    );
-
-    updatedCharacter.actionsLeft = [0, 0, 0, 0];
-    updateData(updatedCharacter);
-    if (charsStillToAct.length > 0) {
-      setTimeout(() => changeToAnotherPlayer(NEXT), 800);
-    }
-  };
-
   const onClickObjective = () => {
     spendAction('get objective');
     gainXp(5);
   };
 
-  const onClickCombine = ([item, itemSlot], event) => {
-    event.stopPropagation();
-    if (combiningItem) {
-      const { firstSlot, pair, finalItem } = combiningItem;
-      if (item === pair) {
-        const updatedCharacter = cloneDeep(character);
-        const secondSlot = itemSlot;
-
-        if (firstSlot <= 2) {
-          updatedCharacter.inHand[firstSlot - 1] = '';
-        } else {
-          updatedCharacter.inBackpack[firstSlot - 3] = '';
-        }
-        if (secondSlot <= 2) {
-          updatedCharacter.inHand[secondSlot - 1] = finalItem;
-        } else {
-          updatedCharacter.inBackpack[secondSlot - 3] = finalItem;
-        }
-        changeCharacter(updatedCharacter);
-        if (!setupMode) {
-          spendAction('general');
-        }
-        setCombiningItem();
-      } else {
-        setCombiningItem();
-      }
-    } else {
-      setCombiningItem(getCombiningReference([item, itemSlot]));
-      setTimeout(() => setCombiningItem(), 3000);
-    }
-  };
-
-  const onClickEdit = () => {
-    toggleSetupMode(true);
-    changeTopActionLabel('');
+  const setNewChar = updatedCharacters => {
+    addNewChar(false);
+    updateCharacters(updatedCharacters);
+    localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(updatedCharacters));
   };
   /* --- */
 
