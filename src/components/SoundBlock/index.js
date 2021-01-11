@@ -26,6 +26,7 @@ const SoundBlock = ({
   damageMode,
   differentSounds,
   img,
+  isMobile,
   isSelected,
   label,
   makeNoise,
@@ -62,13 +63,14 @@ const SoundBlock = ({
       : name;
 
   const getImage = () => {
-    if (trade) {
+    if (trade || isMobile) {
       return (
         <ItemIcon
           active={isActive}
           onMouseOut={() => highlight(false)}
           onMouseOver={() => highlight(true)}
           img={img}
+          isMobile={isMobile}
           isSelected={isSelected}
           name={name}
           type={type}
@@ -192,6 +194,7 @@ SoundBlock.propTypes = {
   damageMode: bool,
   differentSounds: number,
   img: string,
+  isMobile: bool.isRequired,
   isSelected: bool,
   label: string,
   makeNoise: func.isRequired,

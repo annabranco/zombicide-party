@@ -36,19 +36,30 @@ CharacterTrading.displayName = 'CharacterTrading';
 export const ConfirmButton = styled.button`
   label: ConfirmButton;
   margin: 0 auto;
-  height: 25px;
+  height: 35px;
   width: 120px;
   background: green;
   border: 1px solid black;
   font-weight: 700;
   font-family: 'Grandstander', cursive;
   cursor: pointer;
+  font-size: 1rem;
+
+  @media all and (min-width: 768px) {
+    height: 25px;
+  }
 `;
 ConfirmButton.displayName = 'ConfirmButton';
 
 export const CancelButton = styled(ConfirmButton)`
   label: CancelButton;
-  background: red;
+  background: lightgray;
+  margin: 10px auto;
+  border-radius: 10px;
+
+  @media all and (min-width: 768px) {
+    margin: auto;
+  }
 `;
 CancelButton.displayName = 'CancelButton';
 

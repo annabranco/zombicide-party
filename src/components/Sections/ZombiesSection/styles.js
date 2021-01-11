@@ -1,3 +1,4 @@
+import { css } from '@emotion/core';
 import styled from '@emotion/styled';
 import { SelectionButton } from '../../MainMenu/styles';
 
@@ -99,3 +100,22 @@ export const ZombiesTurnSign = styled(AttackInstructions)`
   opacity: 0.7;
 `;
 ZombiesTurnSign.displayName = 'ZombiesTurnSign';
+
+export const ZombiesArea = styled.div`
+  label: ZombiesArea;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  height: 100%;
+  width: 100%;
+  display: none;
+
+  ${({ visible }) =>
+    visible &&
+    css`
+      visibility: block;
+    `}
+`;
+ZombiesArea.displayName = 'ZombiesArea';

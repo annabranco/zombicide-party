@@ -38,8 +38,8 @@ export const Item = styled.div`
   label: Item;
   border: ${({ damageMode }) => !damageMode && '2px solid black'};
   border-radius: 14px;
-  height: 273px;
-  width: 200px;
+  height: 100px;
+  width: 65px;
   overflow: hidden;
 
   ${({ trade }) =>
@@ -49,6 +49,15 @@ export const Item = styled.div`
       height: 120px;
       width: 120px;
     `}
+
+  @media all and (min-width: 360px) {
+    width: 75px;
+  }
+
+  @media all and (min-width: 768px) {
+    height: 273px;
+    width: 200px;
+  }
 `;
 Item.displayName = 'Item';
 
@@ -59,17 +68,18 @@ export const ItemBlank = styled.div`
     damageMode && !allSlotsAreEmpty ? 'none' : 'flex'};
   flex-direction: column;
   align-items: center;
-  justify-content: flex-start;
-  height: 273px;
-  width: 200px;
+  justify-content: center;
+  height: 100px;
+  /* width: 70px; */
   background: rgba(255, 255, 255, 0.2);
-  padding-top: 50px;
+  padding-top: 0;
   font-family: 'Grandstander', cursive;
   font-size: 1.1rem;
   font-weight: 500;
   text-transform: uppercase;
   color: rgba(255, 255, 255, 0.5);
   text-shadow: 0 0 12px black;
+  text-align: center;
   cursor: ${({ allSlotsAreEmpty, damageMode, canSearch, setupMode, trade }) =>
     (damageMode && !allSlotsAreEmpty) || (!canSearch && !trade && !setupMode)
       ? 'not-allowed'
@@ -101,6 +111,12 @@ export const ItemBlank = styled.div`
         background: rgba(29, 211, 72, 0.4);
       }
     `}
+
+  @media all and (min-width: 768px) {
+    height: 273px;
+    width: 200px;
+    padding-top: 50px;
+  }
 `;
 ItemBlank.displayName = 'ItemBlank';
 
@@ -112,7 +128,7 @@ export const ItemWrapper = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  margin: 50px 20px 0;
+  margin: 50px 5px 0;
 
   ${({ slotType, isActive, isSelected, type }) => {
     if (isActive && type === 'wound') {
@@ -142,6 +158,10 @@ export const ItemWrapper = styled.div`
     }
     return null;
   }}
+
+  @media all and (min-width: 768px) {
+    margin: 50px 20px 0;
+  }
 `;
 ItemWrapper.displayName = 'ItemWrapper';
 

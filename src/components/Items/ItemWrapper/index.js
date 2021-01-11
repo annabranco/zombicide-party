@@ -24,6 +24,7 @@ import {
   ITEM_IN_HAND,
   MELEE,
   MELEE_RANGED,
+  MOBILE,
   RANGED,
   SPECIAL,
   WEAPONS
@@ -44,6 +45,7 @@ const ItemsArea = ({
   combineItemSelected,
   combinePair,
   damageMode,
+  device,
   dice,
   gainCustomXp,
   gainXp,
@@ -225,6 +227,7 @@ const ItemsArea = ({
             combinePair={combinePair}
             damageMode={damageMode}
             img={getItemPhoto(item)}
+            isMobile={device === MOBILE}
             isSelected={isSelected}
             makeNoise={makeNoise}
             name={item}
@@ -317,6 +320,7 @@ ItemsArea.propTypes = {
   combineItemSelected: bool,
   combinePair: bool,
   damageMode: bool.isRequired,
+  device: string.isRequired,
   dice: number,
   gainCustomXp: func,
   gainXp: func,

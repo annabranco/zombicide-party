@@ -2,7 +2,7 @@ import styled from '@emotion/styled';
 import { css } from '@emotion/core';
 import { AttackInstructions } from '../ZombiesSection/styles';
 import { Appear } from '../../../styles';
-import { IN_BACKPACK } from '../../../constants';
+import { IN_BACKPACK, MOBILE } from '../../../constants';
 
 export const Abilities = styled.p`
   label: Abilities;
@@ -20,7 +20,7 @@ export const AbilitiesWrapper = styled.div`
   label: AbilitiesWrapper;
   z-index: 10;
   position: absolute;
-  bottom: 50px;
+  bottom: 20px;
   left: 50%;
   transform: translate(-50%, 0);
   display: flex;
@@ -29,6 +29,14 @@ export const AbilitiesWrapper = styled.div`
   justify-content: center;
   height: 14%;
   width: 90%;
+
+  @media all and (min-width: 360px) {
+    bottom: 30px;
+  }
+
+  @media all and (min-width: 768px) {
+    bottom: 50px;
+  }
 `;
 AbilitiesWrapper.displayName = 'AbilitiesWrapper';
 
@@ -83,13 +91,26 @@ export const ActionsWrapper = styled.div`
   label: ActionsWrapper;
   z-index: 4;
   position: absolute;
-  top: 15%;
-  right: 30px;
+  height: 76%;
+  top: 22%;
+  right: 20px;
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   align-items: flex-end;
-  justify-content: flex-end;
+  justify-content: flex-start;
   width: 90%;
+
+  @media all and (min-width: 360px) {
+    top: 20%;
+  }
+
+  @media all and (min-width: 768px) {
+    top: 15%;
+    right: 30px;
+    flex-direction: row;
+    justify-content: flex-end;
+    height: auto;
+  }
 `;
 ActionsWrapper.displayName = 'ActionsWrapper';
 
@@ -113,25 +134,41 @@ export const AddNewChar = styled(AppButton)`
 `;
 AddNewChar.displayName = 'AddNewChar';
 
+export const ArrowSign = styled.i`
+  label: ArrowSign;
+  font-size: 1.8rem;
+  line-height: 1;
+
+  @media all and (min-width: 360px) {
+    font-size: 2.5rem;
+    line-height: 0.7;
+  }
+`;
+ArrowSign.displayName = 'ArrowSign';
+
 export const CharacterOverlay = styled.div`
   label: CharacterOverlay;
   z-index: 2;
-  position: absolute;
+  /* position: absolute;
   top: 0;
-  left: 0;
+  left: 0; */
   height: 100%;
   width: 100%;
-  background: #232222;
+  background: #4444;
   opacity: 0.7;
   filter: ${({ damageMode }) =>
     damageMode
       ? 'contrast(2.5) brightness(0.7)'
       : 'contrast(0.7) saturate(1.6)'};
 
-  ${({ img, position = 'center top' }) => css`
+  @media all and (min-width: 768px) {
+    background: #232222;
+  }
+
+  ${({ img, position = '20% top' }) => css`
     background-image: ${`url(${img})`};
     background-position: ${position};
-    background-size: 100%;
+    background-size: ${`${window.innerHeight}px`};
     background-repeat: no-repeat;
   `}
 `;
@@ -145,9 +182,19 @@ export const CharacterSheet = styled.div`
   align-items: center;
   justify-content: center;
   height: ${`${window.innerHeight - 40}px`};
-  width: 90%;
+  width: 100%;
   background: black;
-  /* overflow: hidden; */
+  display: none;
+
+  @media all and (min-width: 768px) {
+    width: 90%;
+  }
+
+  ${({ visible }) =>
+    visible &&
+    css`
+      display: block;
+    `}
 `;
 CharacterSheet.displayName = 'CharacterSheet';
 
@@ -155,8 +202,8 @@ export const CharName = styled.h1`
   label: CharName;
   z-index: 3;
   position: absolute;
-  top: 0;
-  right: 80px;
+  top: 25px;
+  right: 20px;
   margin: 10px auto 20px;
   border-radius: 50px;
   font-size: 3rem;
@@ -164,6 +211,12 @@ export const CharName = styled.h1`
   text-shadow: 0 0 4px black;
   line-height: 1.2;
   text-transform: uppercase;
+
+  @media all and (min-width: 768px) {
+    position: initial;
+    top: 0;
+    right: 80px;
+  }
 `;
 CharName.displayName = 'CharName';
 
@@ -174,8 +227,10 @@ export const CharItems = styled.div`
   flex-direction: row;
   align-items: center;
   justify-content: center;
+  top: 180px;
   margin-top: 65px;
-  width: 90%;
+  margin-left: 10px;
+  width: 70%;
 
   ${({ slotType }) =>
     slotType === IN_BACKPACK &&
@@ -187,6 +242,16 @@ export const CharItems = styled.div`
     css`
       top: 80px;
     `}
+
+      @media all and (min-width: 360px) {
+    top: 240px;
+  }
+
+  @media all and (min-width: 768px) {
+    top: unset;
+    margin-top: 65px;
+    width: 90%;
+  }
 `;
 CharItems.displayName = 'CharItems';
 
@@ -211,15 +276,27 @@ FirstPlayerStar.displayName = 'FirstPlayerStar';
 
 export const FirstPlayerToken = styled.img`
   label: FirstPlayerToken;
-  margin-top: -530px;
-  width: 500px;
+  margin-top: -280px;
+  margin-left: 30px;
+  width: 180px;
   border-radius: 50%;
-  filter: contrast(1.8) brightness(1.2) opacity(0.2);
+  filter: contrast(0.8) brightness(1.5) opacity(0.1);
+  transform: scaleX(-1);
+
+  @media all and (min-width: 768px) {
+    filter: contrast(1.8) brightness(1.2) opacity(0.2);
+    margin-left: 0;
+    margin-top: -530px;
+    width: 500px;
+    transform: none;
+  }
 `;
 FirstPlayerToken.displayName = 'FirstPlayerToken';
 
 export const FirstPlayerWrapper = styled.div`
   label: FirstPlayerWrapper;
+  position: absolute;
+  top: 0;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -227,22 +304,35 @@ export const FirstPlayerWrapper = styled.div`
   height: 100%;
   width: 100%;
   overflow: hidden;
+
+  @media all and (min-width: 768px) {
+    position: initial;
+  }
 `;
 FirstPlayerWrapper.displayName = 'FirstPlayerWrapper';
 
-export const HishestXpTag = styled.span`
-  label: HishestXpTag;
+export const HighestXpTag = styled.span`
+  label: HighestXpTag;
+  z-index: 15;
   position: absolute;
-  top: 20px;
+  top: 10px;
   left: 50%;
   transform: translate(-50%, 0);
   font-family: 'Cairo', sans-serif;
   text-transform: uppercase;
-  font-size: 0.8rem;
-  color: white;
+  font-size: 0.5rem;
+  color: black;
+  font-weight: 900;
   user-select: none;
+
+  @media all and (min-width: 768px) {
+    top: 19px;
+    top: 20px;
+    font-size: 0.8rem;
+    color: white;
+  }
 `;
-HishestXpTag.displayName = 'HishestXpTag';
+HighestXpTag.displayName = 'HighestXpTag';
 
 export const IndicatorsWrapper = styled.div`
   label: IndicatorsWrapper;
@@ -253,17 +343,33 @@ export const IndicatorsWrapper = styled.div`
   display: flex;
   flex-direction: row;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
   opacity: 0.7;
+  padding-left: 5px;
+  height: 14px;
+  background: #5a5454;
+
+  @media all and (min-width: 768px) {
+    height: 20px;
+    background: none;
+    position: absolute;
+  }
 
   ${({ header }) =>
     header &&
     css`
       top: 0;
       left: 0;
+      height: 26px;
       width: 100%;
       justify-content: space-around;
-      padding: 0 50px 0 20px;
+      padding: 0 10px 0 10px;
+
+      @media all and (min-width: 768px) {
+        position: absolute;
+
+        padding: 0 50px 0 20px;
+      }
     `}
 `;
 IndicatorsWrapper.displayName = 'IndicatorsWrapper';
@@ -312,12 +418,12 @@ ModalSignText.displayName = 'ModalSignText';
 
 export const ModalSignButton = styled(AppButton)`
   label: ModalSignButton;
-  z-index: 10;
+  z-index: 15;
   position: absolute;
   top: unset;
   bottom: 20px;
-  height: 30px;
-  width: 200px;
+  height: 38px;
+  width: 50%;
   line-height: 0.9;
   text-align: center;
   font-family: 'Cairo', sans-serif;
@@ -330,9 +436,13 @@ export const ModalSignButton = styled(AppButton)`
     noOverlay &&
     css`
       bottom: unset;
-      bottom: 15px;
+      bottom: 0;
       left: 50%;
       transform: translate(-50%, 0);
+
+      @media all and (min-width: 768px) {
+        bottom: 15px;
+      }
     `}
 
   ${({ setupMode }) =>
@@ -347,6 +457,16 @@ export const ModalSignButton = styled(AppButton)`
       color: black;
       background: red;
     `}
+
+    @media all and (min-width: 360px) {
+    height: 45px;
+  }
+
+  @media all and (min-width: 768px) {
+    bottom: 20px;
+    height: 30px;
+    width: 200px;
+  }
 `;
 ModalSignButton.displayName = 'ModalSignButton';
 
@@ -411,12 +531,24 @@ export const NextButton = styled(AppButton)`
   z-index: 11;
   position: absolute;
   top: unset;
-  bottom: 20px;
-  right: 20px;
-  height: 20px;
+  bottom: 0;
+  right: 0;
+  height: 40px;
   background: ${({ damageMode }) => damageMode && 'red'};
   color: ${({ damageMode }) => damageMode && 'black'};
   box-shadow: ${({ damageMode }) => damageMode && '0 0 5px white'};
+  font-size: 0.9rem;
+
+  @media all and (min-width: 360px) {
+    font-size: 1.1rem;
+  }
+
+  @media all and (min-width: 768px) {
+    bottom: 20px;
+    right: 20px;
+    font-size: inherit;
+    height: 20px;
+  }
 
   ${({ trade }) =>
     trade &&
@@ -465,10 +597,10 @@ export const PlayerTag = styled.div`
   label: PlayerTag;
   z-index: 6;
   position: absolute;
-  top: 70px;
+  top: 85px;
   right: 0;
-  height: 20px;
-  width: 30%;
+  height: 15px;
+  width: 40%;
   border: 1px solid black;
   border-radius: 20px 0 0 20px;
   padding: 5px 20px;
@@ -483,13 +615,30 @@ export const PlayerTag = styled.div`
   line-height: 0.6;
   text-transform: uppercase;
   color: white;
+
+  @media all and (min-width: 360px) {
+    top: 87px;
+    height: 20px;
+  }
+
+  @media all and (min-width: 768px) {
+    position: initial;
+    top: 70px;
+    right: 0;
+    width: 30%;
+  }
   filter: brightness(0.8);
 `;
 PlayerTag.displayName = 'PlayerTag';
 
 export const PreviousButton = styled(NextButton)`
   label: PreviousButton;
-  left: 20px;
+  right: unset;
+  left: 0;
+
+  @media all and (min-width: 768px) {
+    left: 20px;
+  }
 
   ${({ trade }) =>
     trade &&
@@ -557,8 +706,19 @@ export const XpIcon = styled(MovementIcon)`
   user-select: none;
   /* color: black; */
   color: black;
-  font-size: ${({ currentXp, highestXp }) =>
-    (currentXp || highestXp) && '1.1rem'};
+  font-size: ${({ currentXp, device, highestXp }) => {
+    if (device === MOBILE) {
+      if (currentXp) {
+        return '1.1rem';
+      }
+      if (highestXp) {
+        return '0.6rem';
+      }
+    } else if (currentXp || highestXp) {
+      return '1.1rem';
+    }
+    return null;
+  }};
   line-height: ${({ currentXp, highestXp }) =>
     currentXp || highestXp ? '1' : '1.2'};
 
@@ -610,5 +770,8 @@ export const XpIcon = styled(MovementIcon)`
     css`
       cursor: pointer;
     `}
+
+  @media all and (min-width: 768px) {
+  }
 `;
 XpIcon.displayName = 'XPIcon';

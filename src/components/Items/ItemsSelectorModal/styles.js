@@ -50,11 +50,12 @@ export const SelectorWrapper = styled.div`
   display: flex;
   flex-direction: row;
   align-items: center;
-  justify-content: space-around;
+  justify-content: center;
   border: 1px solid #4c4c4c;
   border-radius: 10px;
+  margin: 0 10px;
   height: 30px;
-  width: 80%;
+  width: calc(100% - 22px);
   overflow: hidden;
   background: black;
   cursor: pointer;
@@ -65,6 +66,12 @@ export const SelectorWrapper = styled.div`
       position: absolute;
       top: 10px;
     `}
+
+  @media all and (min-width: 768px) {
+    justify-content: space-around;
+    margin: 0;
+    width: 80%;
+  }
 `;
 SelectorWrapper.displayName = 'SelectorWrapper';
 

@@ -3,12 +3,13 @@ import { bool, func } from 'prop-types';
 import { DOGZ, ZOMBIES_S1 } from '../../../setup/zombies';
 import { useStateWithLabel } from '../../../utils/hooks';
 import SoundBlock from '../../SoundBlock';
-import { SelectorArea, ZombiesArea } from '../../SoundBlock/styles';
+import { SelectorArea } from '../../SoundBlock/styles';
 import {
   AttackInstructions,
   CancelAttackButton,
   NoSelectOverlay,
   SubSectionWrapper,
+  ZombiesArea,
   ZombiesTurnSign
 } from './styles';
 
@@ -16,6 +17,7 @@ const ZombiesSection = ({
   damageMode,
   roundEnded,
   toggleDamageMode,
+  visible,
   zombiesTurn
 }) => {
   const [zombies, changeZombies] = useStateWithLabel(
@@ -24,7 +26,7 @@ const ZombiesSection = ({
   );
 
   return (
-    <ZombiesArea>
+    <ZombiesArea visible={visible}>
       {damageMode && <NoSelectOverlay />}
       {damageMode && (
         <AttackInstructions>
@@ -62,6 +64,7 @@ ZombiesSection.propTypes = {
   damageMode: bool.isRequired,
   roundEnded: bool.isRequired,
   toggleDamageMode: func.isRequired,
+  visible: bool.isRequired,
   zombiesTurn: bool.isRequired
 };
 

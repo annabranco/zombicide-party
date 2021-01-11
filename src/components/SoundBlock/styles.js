@@ -73,6 +73,12 @@ export const ItemIcon = styled.div`
   background-repeat: no-repeat;
   cursor: pointer;
 
+  ${({ isMobile }) =>
+    isMobile &&
+    css`
+      background-position: center -10px;
+    `}
+
   ${({ isSelected }) =>
     isSelected &&
     css`
@@ -81,37 +87,85 @@ export const ItemIcon = styled.div`
       transition: all ease 0.2s;
     `}
 
-  ${({ active, name }) => {
+  ${({ active, name, isMobile }) => {
     if (name === 'Rifle') {
+      if (isMobile) {
+        return css`
+          background-size: 140%;
+          background-position: center 35%;
+        `;
+      }
+      return css`
+        background-size: 130%;
+        background-position: center 42%;
+      `;
+    }
+    if (name === 'SniperRifle') {
+      if (isMobile) {
+        return css`
+          background-size: 125%;
+          background-position: center top;
+        `;
+      }
       return css`
         background-size: 130%;
         background-position: center 42%;
       `;
     }
     if (name === 'Flashlight') {
+      if (isMobile) {
+        return css`
+          background-size: 145%;
+          background-position: center 25%;
+        `;
+      }
       return css`
         background-size: 165%;
       `;
     }
     if (name === 'EvilTwins' || name === 'MasShotgun' || name === 'SawedOff') {
+      if (isMobile) {
+        return css`
+          background-position: center 35%;
+          background-size: 150%;
+        `;
+      }
       return css`
         background-position: center 51%;
         background-size: 165%;
       `;
     }
     if (name === 'PlentyOfAmmo') {
+      if (isMobile) {
+        return css`
+          background-position: center 15%;
+          background-size: 155%;
+        `;
+      }
       return css`
         background-position: center 45%;
         background-size: 165%;
       `;
     }
     if (name === 'Scope') {
+      if (isMobile) {
+        return css`
+          background-position: center 25%;
+          background-size: 155%;
+        `;
+      }
       return css`
         background-position: center 35%;
         background-size: 140%;
       `;
     }
     if (name === 'PlentyOfAmmoShotgun') {
+      if (isMobile) {
+        return css`
+          background-position: center 15%;
+          background-size: 160%;
+        `;
+      }
       return css`
         background-position: center 45%;
         background-size: 190%;
@@ -280,20 +334,12 @@ export const SelectorArea = styled.div`
     }
     return null;
   }}
+
+  @media all and (min-width: 768px) {
+    overflow: hidden;
+  }
 `;
 SelectorArea.displayName = 'SelectorArea';
-
-export const ZombiesArea = styled.div`
-  label: ZombiesArea;
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: flex-start;
-  height: 100%;
-  width: 100%;
-`;
-ZombiesArea.displayName = 'ZombiesArea';
 
 export const ZombieActions = styled.div`
   label: ZombieActions;
