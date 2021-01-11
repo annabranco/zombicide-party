@@ -9,9 +9,13 @@ export const CharacterArea = styled.div`
   flex-direction: row;
   align-items: center;
   justify-content: center;
+  flex-wrap: wrap;
   height: 100%;
   width: 100%;
 
+  @media all and (min-width: 768px) {
+    margin: 0 -25px;
+  }
   ${({ dynamic }) =>
     dynamic &&
     css`
@@ -48,8 +52,7 @@ CharImage.displayName = 'CharImage';
 export const CharName = styled.h1`
   label: CharName;
   position: absolute;
-  bottom: 0;
-  left: -25px;
+  bottom: -40px;
   margin: 20px auto 30px;
   width: calc(90vw / 6);
   font-size: 1.5rem;
@@ -57,6 +60,11 @@ export const CharName = styled.h1`
   text-shadow: 0 0 3px black;
   text-align: center;
   text-transform: uppercase;
+
+  @media all and (min-width: 768px) {
+    bottom: 0;
+    left: -25px;
+  }
 
   ${({ active }) =>
     active &&
@@ -70,7 +78,7 @@ export const PlayerTag = styled.div`
   label: PlayerTag;
   z-index: 6;
   position: absolute;
-  top: 15px;
+  bottom: -10px;
   right: -3px;
 
   height: 20px;
@@ -87,6 +95,11 @@ export const PlayerTag = styled.div`
   line-height: 1.1;
   text-transform: uppercase;
   color: white;
+
+  @media all and (min-width: 768px) {
+    bottom: unset;
+    top: 15px;
+  }
 `;
 PlayerTag.displayName = 'PlayerTag';
 
@@ -94,8 +107,12 @@ export const Selector = styled.div`
   label: Selector;
   position: relative;
   width: calc(90vw / 6);
-  margin: 0 -25px;
+  margin: 0 20px;
   cursor: pointer;
+
+  @media all and (min-width: 768px) {
+    margin: 0 -25px;
+  }
 `;
 Selector.displayName = 'Selector';
 

@@ -4,8 +4,8 @@ import { SelectionButton } from '../MainMenu/styles';
 
 export const ButtonsArea = styled.div`
   label: ButtonsArea;
-  position: absolute;
-  bottom: 0;
+  /* position: absolute;
+  bottom: 0; */
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -21,7 +21,7 @@ ButtonsArea.displayName = 'ButtonsArea';
 
 export const ModalButton = styled(SelectionButton)`
   label: ModalButton;
-  margin: 10px 40px;
+  margin: 10px 10px;
   min-height: 40px;
   width: 190px;
   background: gray;
@@ -69,6 +69,14 @@ export const ModalButton = styled(SelectionButton)`
       color: #707070;
       cursor: not-allowed;
     `}
+
+      @media all and (min-width: 768px) {
+    width: 200px;
+    background-size: 100% 100%;
+    margin: 20px 40px 100px;
+    padding: 10px 25px;
+    font-size: 1.5rem;
+  }
 `;
 ModalButton.displayName = 'ModalButton';
 
@@ -86,8 +94,10 @@ export const ModalMessage = styled.p`
   text-shadow: 0 0 2px white;
   text-align: center;
   line-height: 2;
-  white-space: pre;
   font-family: 'Cairo', sans-serif;
+  white-space: auto;
+  width: 100%;
+
   ${({ type }) =>
     type === 'option' &&
     css`
@@ -96,6 +106,10 @@ export const ModalMessage = styled.p`
       font-size: 1.3rem;
       color: yellow;
     `}
+
+  @media all and (min-width: 768px) {
+    white-space: pre;
+  }
 `;
 ModalMessage.displayName = 'ModalMessage';
 
@@ -118,22 +132,33 @@ ModalMessageSecondary.displayName = 'ModalMessageSecondary';
 
 export const ModalTitle = styled.h1`
   label: ModalTitle;
-  position: absolute;
-  top: 0;
+  /* position: absolute;
+  top: 0; */
   margin: 0 auto 50px;
   height: 60px;
   width: 100%;
   background: rgba(0, 0, 0, 0.7);
   line-height: 2.5;
   text-align: center;
-  font-size: 2rem;
+  font-size: 3rem;
   color: red;
-  text-shadow: 0 0 2px white;
+  font-family: Crackhouse, 'Grandstander', cursive;
+  text-transform: uppercase;
+
+  @media all and (min-width: 768px) {
+    font-size: 5rem;
+  }
 
   ${({ uppercase }) =>
     uppercase &&
     css`
       text-transform: uppercase;
+    `}
+
+  ${({ type }) =>
+    type === 'Warning' &&
+    css`
+      font-size: 5rem;
     `}
 `;
 ModalTitle.displayName = 'ModalTitle';
@@ -146,7 +171,7 @@ export const ModalWindow = styled.div`
   top: 50%;
   flex-direction: column;
   align-items: center;
-  justify-content: space-around;
+  justify-content: space-between;
   border-radius: 15px;
   height: 100%;
   width: 100%;

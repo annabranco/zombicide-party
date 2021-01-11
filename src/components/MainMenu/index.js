@@ -65,11 +65,11 @@ const MainMenu = ({ loadedGame }) => {
             <SelectionButton>Continue</SelectionButton>
           </StyledLink>
         )}
-        <TestButton onClick={() => toggleTestSound(!testSound)}>
-          {testSound ? STOP_SOUND : TEST_SOUND}
-        </TestButton>
       </ButtonsArea>
 
+      <TestButton onClick={() => toggleTestSound(!testSound)}>
+        {testSound ? STOP_SOUND : TEST_SOUND}
+      </TestButton>
       <Version>{APP_VERSION}</Version>
     </MenuScreen>
   );

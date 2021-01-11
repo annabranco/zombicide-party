@@ -69,11 +69,14 @@ export const ButtonsArea = styled.div`
     delay &&
     css`
       animation-name: ${Appear};
-      animation-delay: 3s;
+      animation-delay: 2s;
       animation-duration: 3s;
       animation-iteration-count: 1;
       animation-fill-mode: both;
     `}
+  @media all and (min-width: 768px) {
+    flex-direction: row;
+  }
 `;
 ButtonsArea.displayName = 'ButtonsArea';
 
@@ -85,8 +88,32 @@ export const LogoArea = styled.div`
   flex-direction: column;
   align-items: flex-end;
   justify-content: center;
+  width: 80%;
+
+  @media all and (min-width: 768px) {
+    align-items: flex-end;
+    justify-content: center;
+    width: auto;
+  }
 `;
 LogoArea.displayName = 'LogoArea';
+
+export const MainTitle = styled.h1`
+  label: MainTitle;
+  margin-top: -25px;
+  margin-right: 10px;
+  font-size: 2rem;
+  color: white;
+  text-shadow: 0 0 2px black;
+  font-family: Crackhouse;
+  text-shadow: 0 0 2px red;
+
+  @media all and (min-width: 768px) {
+    margin-top: -35px;
+    font-size: 3.5rem;
+  }
+`;
+MainTitle.displayName = 'MenuScreen';
 
 export const MenuScreen = styled.div`
   label: MenuScreen;
@@ -95,7 +122,7 @@ export const MenuScreen = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: flex-end;
-  height: 100vh;
+  height: ${`${window.innerHeight}px`};
   width: 100%;
   background: #232222;
   filter: ${({ type }) => type === 'main' && 'brightness(0.7) contrast(2)'};
@@ -103,35 +130,41 @@ export const MenuScreen = styled.div`
   ${({ img, position = 'center top' }) => css`
     background-image: ${`url(${img})`};
     background-position: ${position};
-    background-size: 100%;
+    background-size: auto 100%;
     background-repeat: no-repeat;
-  `}
-`;
-MenuScreen.displayName = 'MenuScreen';
 
-export const MainTitle = styled.h1`
-  label: MainTitle;
-  z-index: 10;
-  margin-top: -35px;
-  margin-right: 10px;
-  font-size: 3.5rem;
-  color: white;
-  text-shadow: 0 0 2px black;
-  font-family: Crackhouse;
-  text-shadow: 0 0 2px red;
+    @media all and (min-width: 768px) {
+      height: 100vh;
+      background-size: 100% 100%;
+    }
+  `}
 `;
 MenuScreen.displayName = 'MenuScreen';
 
 export const SelectionButton = styled.button`
   label: SelectionButton;
-  margin: 20px auto;
-  width: 300px;
-  padding: 10px 25px;
-  font-family: 'Grandstander', cursive;
-  font-size: 2.5rem;
+  margin: 10px auto;
+  width: 250px;
+  padding: 2px 25px;
+  font-family: Crackhouse, 'Grandstander', cursive;
+  font-size: 2rem;
   border-radius: 20px;
   background: red;
   cursor: pointer;
+  text-transform: uppercase;
+
+  @media all and (min-width: 768px) {
+    width: 300px;
+    background-size: 100% 100%;
+    margin: 20px 40px;
+    padding: 10px 25px;
+    font-size: 2.5rem;
+  }
+
+  &: hover {
+    color: yellow;
+    folter: brightness(1.8);
+  }
 `;
 SelectionButton.displayName = 'SelectionButton';
 
@@ -144,13 +177,20 @@ StyledLink.displayName = 'Link';
 export const TestButton = styled(SelectionButton)`
   label: TestButton;
   z-index: 5;
-  font-size: 1rem;
+  font-size: 0.8rem;
   padding: 5px;
   background: white;
   height: 20px;
   width: 120px;
   border-radius: 10px;
   line-height: 0.5;
+  font-family: 'Grandstander', cursive;
+
+  @media all and (min-width: 768px) {
+    width: 180px;
+    font-size: 1rem;
+    line-height: 0.2;
+  }
 `;
 TestButton.displayName = 'TestButton';
 
@@ -172,17 +212,26 @@ ThunderOverlay.displayName = 'ThunderOverlay';
 export const Version = styled.p`
   label: Version;
   position: absolute;
-  bottom: 50px;
-  right: 100px;
-  font-size: 0.8rem;
+  bottom: 10px;
+  right: 10px;
+  font-size: 0.9rem;
   color: white;
+
+  @media all and (min-width: 768px) {
+    bottom: 20px;
+    right: 40px;
+  }
 `;
 Version.displayName = 'Version';
 
 export const ZombicideLogo = styled.img`
   label: ZombicideLogo;
-  width: 500px;
+  width: 100%;
   display: block;
+
+  @media all and (min-width: 768px) {
+    width: 400px;
+  }
 `;
 ZombicideLogo.displayName = 'ZombicideLogo';
 
@@ -190,10 +239,19 @@ export const ZombieIntro = styled.img`
   label: ZombieIntro;
   position: absolute;
   top: 60px;
-  width: 500px;
+  width: 300px;
   animation-name: ${Appear};
   animation-duration: 4s;
   animation-iteration-count: 1;
   animation-fill-mode: forwards;
+
+  @media all and (min-width: 768px) {
+    top: 40px;
+    width: 400px;
+  }
+  @media all and (min-width: 1500px) {
+    top: 60px;
+    width: 500px;
+  }
 `;
 ZombieIntro.displayName = 'ZombieIntro';

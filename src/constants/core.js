@@ -9,3 +9,7 @@ export const LOCAL_STORAGE_PLAYERS_KEY = 'ZombicideParty Players';
 export const NEXT = 'next';
 export const PREVIOUS = 'previous';
 export const WARNING = 'Warning';
+
+export const MOBILE = 'mobile';
+export const TABLET = 'tablet';
+export const DESKTOP = 'desktop';

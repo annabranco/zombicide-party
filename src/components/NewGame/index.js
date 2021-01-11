@@ -18,7 +18,8 @@ import {
 } from './styles';
 import { MenuScreen } from '../MainMenu/styles';
 import { CharacterType } from '../../interfaces/types';
-import { LOCAL_STORAGE_KEY } from '../../constants';
+import { LOCAL_STORAGE_KEY, MOBILE } from '../../constants';
+import { getMediaQuery } from '../../utils/devices';
 
 const NewGame = ({
   currentChars,
@@ -150,7 +151,7 @@ const NewGame = ({
               <CharImage
                 active={charactersSelected.has(char.name)}
                 dynamic={dynamic}
-                src={char.selector}
+                src={getMediaQuery() === MOBILE ? char.face : char.selector}
               />
               <CharName active={charactersSelected.has(char.name)}>
                 {char.name}
