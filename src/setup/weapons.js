@@ -1,8 +1,11 @@
 import BaseballBat from '../assets/images/weapons/baseball-bat.jpg';
+import Baton from '../assets/images/weapons/baton.jpg';
+import BatteringRam from '../assets/images/weapons/battering-ram.jpg';
 import Chainsaw from '../assets/images/weapons/chainsaw.jpg';
 import Crowbar from '../assets/images/weapons/crowbar.jpg';
 import EvilTwins from '../assets/images/weapons/evil-twins.jpg';
 import FireAxe from '../assets/images/weapons/fire-axe.jpg';
+import Flashbang from '../assets/images/weapons/flashbang.jpg';
 import Katana from '../assets/images/weapons/katana.jpg';
 import MasShotgun from '../assets/images/weapons/mas-shotgun.jpg';
 import Machete from '../assets/images/weapons/machete.jpg';
@@ -23,7 +26,7 @@ import {
   MELEE_RANGED
 } from '../constants';
 
-export const WEAPONS_S1 = {
+export const WEAPONS_S1_ORIGINAL = {
   BaseballBat: {
     attack: MELEE,
     dice: 1,
@@ -97,7 +100,8 @@ export const WEAPONS_S1 = {
     img: Molotov,
     name: 'Molotov',
     noise: false,
-    type: WEAPONS
+    type: WEAPONS,
+    useOnce: true
   },
   Pan: {
     attack: MELEE,
@@ -157,3 +161,39 @@ export const WEAPONS_S1 = {
     type: WEAPONS
   }
 };
+
+export const WEAPONS_TD = {
+  Baton: {
+    attack: MELEE,
+    dice: 1,
+    img: Baton,
+    name: 'Baton',
+    noise: false,
+    type: WEAPONS
+  },
+  BatteringRam: {
+    canOpenDoor: NOISY,
+    attack: MELEE,
+    dice: 2,
+    img: BatteringRam,
+    name: 'BatteringRam',
+    noise: false,
+    type: WEAPONS
+  },
+  Flashbang: {
+    attack: RANGED,
+    dice: 0,
+    img: Flashbang,
+    name: 'Flashbang',
+    noise: true,
+    type: WEAPONS,
+    useOnce: true
+  }
+};
+
+export const WEAPONS_S1 = {
+  ...WEAPONS_S1_ORIGINAL,
+  ...WEAPONS_TD
+};
+
+console.log('$$$ WEAPONS_S1', WEAPONS_S1);

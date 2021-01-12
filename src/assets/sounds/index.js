@@ -1,11 +1,14 @@
 import AssaultRifle from './weapons/AssaultRifle.mp3';
 import AutomaticShotgun from './weapons/AutomaticShotgun.mp3';
 import BaseballBat from './weapons/BaseballBat.mp3';
+import Baton from './weapons/Baton.mp3';
+import BatteringRam from './weapons/BatteringRam.mp3';
 import Chainsaw from './weapons/Chainsaw.mp3';
 import Crowbar from './weapons/Crowbar.mp3';
 import DesertEagle from './weapons/DesertEagle.mp3';
 import EvilTwins from './weapons/EvilTwins.mp3';
 import FireAxe from './weapons/FireAxe.mp3';
+import Flashbang from './weapons/Flashbang.mp3';
 import Handgun from './weapons/Handgun.mp3';
 import Katana from './weapons/Katana.mp3';
 import Knife from './weapons/Knife.mp3';
@@ -45,6 +48,7 @@ import MoveRolling from './actions/move-rolling.mp3';
 import MoveSkating from './actions/move-skating.mp3';
 import MoveSlow from './actions/move-slow.mp3';
 import MoveTactical from './actions/move-tactical.mp3';
+import OpenDoorBatteringRam from './actions/open-door-BatteringRam.mp3';
 import OpenDoorChainsaw from './actions/open-door-Chainsaw.mp3';
 import OpenDoorCrowbar from './actions/open-door-Crowbar.mp3';
 import OpenDoorFireAxe from './actions/open-door-FireAxe.mp3';
@@ -120,11 +124,14 @@ export const SOUNDS = {
   AssaultRifle,
   AutomaticShotgun,
   BaseballBat,
+  Baton,
+  BatteringRam,
   Chainsaw,
   Crowbar,
   DesertEagle,
   EvilTwins,
   FireAxe,
+  Flashbang,
   Handgun,
   Katana,
   Knife,
@@ -163,6 +170,7 @@ export const SOUNDS = {
   'move-skating': MoveSkating,
   'move-slow': MoveSlow,
   'move-tactical': MoveTactical,
+  'open-door-BatteringRam': OpenDoorBatteringRam,
   'open-door-Chainsaw': OpenDoorChainsaw,
   'open-door-Crowbar': OpenDoorCrowbar,
   'open-door-FireAxe': OpenDoorFireAxe,
