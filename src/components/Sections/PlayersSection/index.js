@@ -660,6 +660,8 @@ const PlayersSection = ({
         updatedCharacters.forEach((char, index) => {
           char.actionsLeft = char.actions; // eslint-disable-line no-param-reassign
           char.hasUsedFlashlight = false; // eslint-disable-line no-param-reassign
+          // eslint-disable-next-line no-debugger
+          debugger;
           if (char.name === firstPlayer) {
             if (index + 1 === characters.length) {
               nextFirstPlayer = 0;
@@ -668,7 +670,7 @@ const PlayersSection = ({
             }
           }
         });
-        if (!nextFirstPlayer) {
+        if (!nextFirstPlayer && nextFirstPlayer !== 0) {
           const nextPlayerName = firstPlayer.replace('next-', '');
           nextFirstPlayer = updatedCharacters.findIndex(
             char => char.name === nextPlayerName
