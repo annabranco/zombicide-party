@@ -177,7 +177,6 @@ const ItemsArea = ({
     updatedKillButtons[pressedButton] = `${pressedButton}`;
     changeKillButtons(updatedKillButtons);
     gainXp(1);
-    // setTimeout(() => gainXp(1), 500);
   };
 
   const reload = weapon => {

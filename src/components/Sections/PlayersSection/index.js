@@ -52,11 +52,12 @@ import {
   ModalSignExitButton,
   ModalSignText,
   XpIcon,
-  HishestXpTag,
+  HighestXpTag,
   AbilitiesWrapper,
   Abilities,
   ActionsLabelWrapper,
-  TopActionsLabelWrapper
+  TopActionsLabelWrapper,
+  ArrowSign
 } from './styles';
 import { CharacterType } from '../../../interfaces/types';
 import TradeArea from '../../TradeArea';
@@ -85,7 +86,8 @@ import {
   XP_GAIN,
   XP_GAIN_SELECT,
   LEARNED_NEW_ABILITY,
-  BURNEM_ALL
+  BURNEM_ALL,
+  MOBILE
 } from '../../../constants';
 import {
   blueThreatThresold,
@@ -94,6 +96,8 @@ import {
   orangeThreatThresold,
   yellowThreatThresold
 } from '../../../utils/xp';
+import { getMediaQuery } from '../../../utils/devices';
+
 import { ALL_WEAPONS } from '../../../setup/weapons';
 import ActionsModal from '../../ActionsModal';
 import { SOUNDS } from '../../../assets/sounds';
@@ -103,9 +107,10 @@ const PlayersSection = ({
   initialCharacters,
   loadGame,
   loadedGame,
+  nextGameRound,
   setZombiesTurn,
   toggleDamageMode,
-  nextGameRound
+  visible
 }) => {
   /* ------- COMPONENT STATES ------- */
   const [actionsCount, updateActionsCount] = useStateWithLabel(
@@ -168,6 +173,8 @@ const PlayersSection = ({
   const noiseDebounce = useRef();
   const prevCharIndex = useRef();
   const abilitiesRef = useRef();
+  const device = useRef(getMediaQuery());
+
   const {
     generalActions,
     extraMovementActions,
@@ -375,6 +382,7 @@ const PlayersSection = ({
 
   const changeInBackpack = (name, currentSlot = slot - 3) => {
     const updatedCharacter = cloneDeep(character);
+    // const updatedCharacters = cloneDeep(characters);
     const newItems = [...updatedCharacter.inBackpack];
     newItems[currentSlot] = name;
     const openDoors = checkIfCharacterCanOpenDoors(newItems);
@@ -429,7 +437,7 @@ const PlayersSection = ({
     }
   };
 
-  const gainCustomXp = specialSlot => {
+  const gainCustomXp = () => {
     toggleActionsModal('xp');
   };
 
@@ -806,6 +814,7 @@ const PlayersSection = ({
         setCanOpenDoor(openDoors);
         changeCanUseFlashlight(hasFlashlight);
         toggleCanCombine(charCanCombineItems);
+        changeActionLabel('');
         prevCharIndex.current = charIndex;
         localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(characters));
 
@@ -819,7 +828,11 @@ const PlayersSection = ({
   useEffect(() => {
     if (character.experience >= 0) {
       const charClone = cloneDeep(character);
-      const newXpBar = calculateXpBar(charClone.experience, highestXp.xp);
+      const newXpBar = calculateXpBar(
+        charClone.experience,
+        highestXp.xp,
+        device.current
+      );
       const updatedChar = advancingLevel(charClone.experience, charClone);
 
       updateXpCounter(newXpBar);
@@ -837,438 +850,435 @@ const PlayersSection = ({
   }
 
   return (
-    <>
-      <CharacterSheet>
-        {/* ----- XP BAR ----- */}
-        {!trade && character.wounded !== 'killed' && (
-          <IndicatorsWrapper header>
-            {xpCounter &&
-              xpCounter.map((level, index) => (
-                <XpIcon
-                  activeColor={
-                    (level <= character.experience ||
-                      xpCounter[index - 1] < character.experience) &&
-                    getXpColor(level, xpCounter[index - 1], true)
-                  }
-                  color={getXpColor(level, xpCounter[index - 1])}
-                  currentXp={character.experience === level}
-                  highestXp={highestXp.xp === level}
-                  key={`xp-${level}-${xpCounter[index - 1]}`}
-                  onClick={
-                    setupMode
-                      ? () =>
-                          setCustomXp(
-                            level,
-                            xpCounter[index - 1],
-                            xpCounter[index + 1]
-                          )
-                      : () => null
-                  }
-                  setupMode={setupMode}
-                  size={xpCounter.length}
-                  type={level}
-                >
-                  {level}
-                  {highestXp.xp === level &&
-                    highestXp.name !== character.name && (
-                      <HishestXpTag>{highestXp.name}</HishestXpTag>
-                    )}
-                </XpIcon>
-              ))}
-          </IndicatorsWrapper>
-        )}
-
-        {/* ----- MOVEMENTS BAR ----- */}
-        {!trade && character.wounded !== 'killed' && (
-          <IndicatorsWrapper>
-            {actionsCount.map((action, index) => (
-              <MovementIcon
-                color={getActionColor(action)}
-                key={`${action}-${index}`} // eslint-disable-line react/no-array-index-key
-                type={action}
-              >
-                {action}
-              </MovementIcon>
-            ))}
-          </IndicatorsWrapper>
-        )}
-
-        {/* ----- MAIN SECTION ----- */}
-        {trade ? (
-          <TradeArea
-            character={character}
-            characters={characters}
-            confirmTrade={confirmTrade}
-            spendAction={spendAction}
-            startTrade={startTrade}
-          />
-        ) : (
-          <>
-            <CharacterOverlay damageMode={damageMode} img={character.img} />
-
-            {/* ----- TOP BAR ----- */}
-            {!damageMode && setupMode && characters.length < CHARACTERS.length && (
-              <AddNewChar
-                type="button"
-                onClick={() => addNewChar(true)}
-                onMouseOver={() => changeTopActionLabel(ADD_CHARACTER)}
-                onMouseOut={() => changeTopActionLabel('')}
-              >
-                <i className="fas fa-user-plus" />
-              </AddNewChar>
-            )}
-            {!damageMode && !setupMode && (
-              <AddNewChar
-                type="button"
-                onClick={onClickEdit}
-                onMouseOver={() => changeTopActionLabel(EDIT_CHARACTERS)}
-                onMouseOut={() => changeTopActionLabel('')}
-              >
-                <i className="far fa-edit" />
-              </AddNewChar>
-            )}
-            <TopActionsLabelWrapper>{topActionsLabel}</TopActionsLabelWrapper>
-
-            {/* ----- CHAR IDENTIFICATION ----- */}
-            {firstPlayer === character.name && (
-              <FirstPlayerWrapper>
-                <FirstPlayerToken src={FirstPlayer} alt="First Player Token" />
-              </FirstPlayerWrapper>
-            )}
-            <CharName>
-              {firstPlayer === character.name && (
-                <FirstPlayerStar>⭐</FirstPlayerStar>
-              )}
-              {character.name}
-            </CharName>
-            <PlayerTag color={getCharacterColor(character.name)}>
-              {character.player}
-            </PlayerTag>
-
-            {/* ----- ACTION BUTTONS ----- */}
-            {character.wounded !== 'killed' && (
-              <>
-                {!damageMode && !setupMode && (
-                  <>
-                    <ActionsWrapper>
-                      {!finishedTurn && generalActions && (
-                        <ActionButton
-                          actionType="objective"
-                          callback={onClickObjective}
-                          changeActionLabel={changeActionLabel}
-                          label={GET_OBJECTIVE}
-                        />
-                      )}
-                      {canMove && (
-                        <ActionButton
-                          actionType={
-                            character.location === 'car'
-                              ? 'car-exit'
-                              : 'car-enter'
-                          }
-                          callback={() => spendAction('move')}
-                          car={car}
-                          interactWithCar={interactWithCar}
-                          startCar={startCar}
-                          type={character.location !== 'car' && !car && 'start'}
-                          changeActionLabel={changeActionLabel}
-                          label={
-                            character.location === 'car' ? EXIT_CAR : ENTER_CAR
-                          }
-                        />
-                      )}
-                      {canMove && character.location === 'car' && (
-                        <>
-                          <ActionButton
-                            actionType="car-move"
-                            callback={() => spendAction('move')}
-                            changeActionLabel={changeActionLabel}
-                            label={MOVE_CAR}
-                          />
-                          <ActionButton
-                            actionType="car-attack"
-                            callback={() => spendAction('move')}
-                            changeActionLabel={changeActionLabel}
-                            label={RUN_OVER}
-                          />
-                        </>
-                      )}
-
-                      {canMove && character.location !== 'car' && (
-                        <ActionButton
-                          actionType="move"
-                          callback={() => spendAction('move')}
-                          type={character.movement}
-                          changeActionLabel={changeActionLabel}
-                          label={MOVE}
-                        />
-                      )}
-
-                      {canOpenDoor && generalActions && (
-                        <ActionButton
-                          actionType="open-door"
-                          callback={spendAction}
-                          noise={noise}
-                          setNoise={setNoise}
-                          type={canOpenDoor}
-                          changeActionLabel={changeActionLabel}
-                          label={noise ? BREAK_DOOR : OPEN_DOOR}
-                        />
-                      )}
-                      {!finishedTurn && (
-                        <ActionButton
-                          actionType="endTurn"
-                          callback={onClickEndTurn}
-                          changeActionLabel={changeActionLabel}
-                          label={END_CHAR_TURN(character.name)}
-                        />
-                      )}
-                    </ActionsWrapper>
-                    {!finishedTurn && (
-                      <ActionsLabelWrapper>{actionsLabel}</ActionsLabelWrapper>
-                    )}
-                  </>
-                )}
-              </>
-            )}
-
-            {/* ----- INDICATORS ON CHAR SHEET ----- */}
-            <NoiseWrapper>
-              {Array.from({ length: noise }, (_, index) => index).map(key => (
-                <NoiseIcon key={key} src={Noise} />
-              ))}
-            </NoiseWrapper>
-            {character.wounded && (
-              <WoundedWrapper>
-                <WoundedSign src={Blood} />
-              </WoundedWrapper>
-            )}
-            {finishedTurn && character.wounded !== 'killed' && (
-              <FinishedTurnTag>
-                {`${character.name}${TURN_FINISHED}`}
-              </FinishedTurnTag>
-            )}
-
-            {character.wounded === 'killed' && (
-              <>
-                <ModalSign killed>
-                  {!characters || characters.length === 0 ? (
-                    <ModalSignText>{KILLED_EM_ALL}</ModalSignText>
-                  ) : (
-                    <ModalSignText>
-                      {`${character.name} ${KILLED}`}
-                    </ModalSignText>
-                  )}
-                </ModalSign>
-                {characters.length === 0 && (
-                  <ModalSignExitButton onClick={exitGame} src={Exit} />
-                )}
-              </>
-            )}
-
-            {/* ----- ITEMS AREA ----- */}
-            {character.wounded !== 'killed' && (
-              <>
-                <CharItems slotType="inHand">
-                  {character.inHand &&
-                    character.inHand.map((item, index) => (
-                      <ItemsArea
-                        actionsLeft={generalActions}
-                        allSlotsAreEmpty={checkIfAllSlotsAreEmpty([
-                          ...character.inHand,
-                          ...character.inBackpack
-                        ])}
-                        bonusDices={character.bonusDices}
-                        callback={spendAction}
-                        canAttack={canAttack}
-                        canCombine={generalActions && canCombine}
-                        canSearch={canSearch}
-                        causeDamage={causeDamage}
-                        combineItemSelected={
-                          combiningItem && combiningItem.item === item
-                        }
-                        combinePair={
-                          combiningItem && combiningItem.pair === item
-                        }
-                        charVoice={character.voice}
-                        damageMode={damageMode}
-                        dice={ALL_WEAPONS[item] && ALL_WEAPONS[item].dice}
-                        gainCustomXp={gainCustomXp}
-                        gainXp={gainXp}
-                        handleSearch={handleSearch}
-                        index={index}
-                        item={item}
-                        key={`${item}-${index + 1}`}
-                        makeNoise={makeNoise}
-                        onClickCombine={onClickCombine}
-                        onClickDrop={changeInHand}
-                        selectSlot={selectSlot}
-                        setupMode={setupMode}
-                        slotType="inHand"
-                        spendAction={spendAction}
-                        spendSingleUseWeapon={spendSingleUseWeapon}
-                        startTrade={startTrade}
-                        wounded={character.wounded}
-                      />
-                    ))}
-                </CharItems>
-                <CharItems slotType="inBackpack">
-                  {character.inBackpack &&
-                    character.inBackpack.map((item, index) => (
-                      <ItemsArea
-                        actionsLeft={generalActions}
-                        allSlotsAreEmpty={checkIfAllSlotsAreEmpty([
-                          ...character.inHand,
-                          ...character.inBackpack
-                        ])}
-                        callback={spendAction}
-                        canCombine={generalActions && canCombine}
-                        canSearch={canSearch}
-                        causeDamage={causeDamage}
-                        charVoice={character.voice}
-                        combineItemSelected={
-                          combiningItem && combiningItem.item === item
-                        }
-                        combinePair={
-                          combiningItem && combiningItem.pair === item
-                        }
-                        damageMode={damageMode}
-                        handleSearch={handleSearch}
-                        index={index}
-                        item={item}
-                        key={`${item}-${index + 3}`}
-                        makeNoise={makeNoise}
-                        noAudio
-                        onClickCombine={onClickCombine}
-                        onClickDrop={changeInBackpack}
-                        selectSlot={selectSlot}
-                        setupMode={setupMode}
-                        slotType="inBackpack"
-                        startTrade={startTrade}
-                        wounded={character.wounded}
-                      />
-                    ))}
-                </CharItems>
-              </>
-            )}
-
-            {/* ----- BOTTOM BUTTONS ----- */}
-            {(setupMode || roundEnded) && (
-              <ModalSignButton
-                noOverlay
-                onClick={onClickMainButton}
-                roundEnded={roundEnded}
-                setupMode={setupMode}
-              >
-                {setupMode ? 'FINISH SETUP' : 'START NEXT ROUND'}
-              </ModalSignButton>
-            )}
-
-            {(characters.length > 1 || prevCharIndex.current === null) && (
-              <>
-                <PreviousButton
-                  damageMode={damageMode}
-                  onClick={() => changeToAnotherPlayer(PREVIOUS)}
-                  type="button"
-                >
-                  PREVIOUS
-                </PreviousButton>
-                <NextButton
-                  damageMode={damageMode}
-                  onClick={() => changeToAnotherPlayer(NEXT)}
-                  type="button"
-                >
-                  NEXT
-                </NextButton>
-              </>
-            )}
-            {selectCharOverlay && (
-              <SelectButton onClick={selectCharacter} type="button">
-                SELECT
-              </SelectButton>
-            )}
-
-            {/* ----- ABILITIES DISPLAY ----- */}
-            <AbilitiesWrapper>
-              {character &&
-                character.abilities &&
-                character.abilities.map((ability, index) => (
-                  // eslint-disable-next-line react/no-array-index-key
-                  <Abilities key={`${character}-${index}-${ability}`}>
-                    {ability}
-                  </Abilities>
-                ))}
-            </AbilitiesWrapper>
-          </>
-        )}
-
-        {/* ----- DYNAMIC MODALS ----- */}
-
-        {/* --- Item selector --- */}
-        {slot && slot <= 2 && (
-          <ItemsSelectorModal
-            onSelect={changeInHand}
-            selectSlot={selectSlot}
-            slotType="inHand"
-          />
-        )}
-        {slot && slot >= 3 && (
-          <ItemsSelectorModal
-            onSelect={changeInBackpack}
-            selectSlot={selectSlot}
-            slotType="inBackpack"
-          />
-        )}
-
-        {/* --- Add new character --- */}
-        {newChar && (
-          <NewGame currentChars={characters} dynamic setNewChar={setNewChar} />
-        )}
-
-        {/* --- Select custom XP --- */}
-        {displayActionsModal === 'xp' && (
-          <ActionsModal
-            toggleVisibility={toggleActionsModal}
-            visible={displayActionsModal}
-            content={{
-              data: { maxXp: 43, currentXp: character.experience || 0 },
-              title: XP_GAIN,
-              text: XP_GAIN_SELECT,
-              type: 'slider',
-              buttons: [
-                {
-                  text: BURNEM_ALL,
-                  type: 'confirm'
+    <CharacterSheet visible={visible}>
+      {/* ----- XP BAR ----- */}
+      {!trade && character.wounded !== 'killed' && (
+        <IndicatorsWrapper header>
+          {xpCounter &&
+            xpCounter.map((level, index) => (
+              <XpIcon
+                activeColor={
+                  (level <= character.experience ||
+                    xpCounter[index - 1] < character.experience) &&
+                  getXpColor(level, xpCounter[index - 1], true)
                 }
-              ]
-            }}
-            onConfirmModal={onClickGainBonusXp}
-          />
-        )}
+                color={getXpColor(level, xpCounter[index - 1])}
+                currentXp={character.experience === level}
+                highestXp={highestXp.xp === level}
+                key={`xp-${level}-${xpCounter[index - 1]}`}
+                onClick={
+                  setupMode
+                    ? () =>
+                        setCustomXp(
+                          level,
+                          xpCounter[index - 1],
+                          xpCounter[index + 1]
+                        )
+                    : () => null
+                }
+                setupMode={setupMode}
+                size={xpCounter.length}
+                type={level}
+              >
+                {level}
+                {highestXp.xp === level &&
+                  highestXp.name !== character.name && (
+                    <HighestXpTag>{highestXp.name}</HighestXpTag>
+                  )}
+              </XpIcon>
+            ))}
+        </IndicatorsWrapper>
+      )}
 
-        {/* --- Select promotion ability --- */}
-        {(displayActionsModal === 'orange' ||
-          displayActionsModal === 'red') && (
-          <ActionsModal
-            toggleVisibility={toggleActionsModal}
-            visible={displayActionsModal}
-            content={{
-              data: { img: character.face, level: displayActionsModal },
-              title: LEARNED_NEW_ABILITY,
+      {/* ----- MOVEMENTS BAR ----- */}
+      {!trade && character.wounded !== 'killed' && (
+        <IndicatorsWrapper>
+          {actionsCount.map((action, index) => (
+            <MovementIcon
+              color={getActionColor(action)}
+              key={`${action}-${index}`} // eslint-disable-line react/no-array-index-key
+              type={action}
+            >
+              {action}
+            </MovementIcon>
+          ))}
+        </IndicatorsWrapper>
+      )}
+
+      {/* ----- MAIN SECTION ----- */}
+      {trade ? (
+        <TradeArea
+          character={character}
+          characters={characters}
+          confirmTrade={confirmTrade}
+          spendAction={spendAction}
+          startTrade={startTrade}
+        />
+      ) : (
+        <>
+          <CharacterOverlay damageMode={damageMode} img={character.img} />
+
+          {/* ----- TOP BAR ----- */}
+          {!damageMode && setupMode && characters.length < CHARACTERS.length && (
+            <AddNewChar
+              type="button"
+              onClick={() => addNewChar(true)}
+              onMouseOver={() => changeTopActionLabel(ADD_CHARACTER)}
+              onMouseOut={() => changeTopActionLabel('')}
+            >
+              <i className="fas fa-user-plus" />
+            </AddNewChar>
+          )}
+          {!damageMode && !setupMode && (
+            <AddNewChar
+              type="button"
+              onClick={onClickEdit}
+              onMouseOver={() => changeTopActionLabel(EDIT_CHARACTERS)}
+              onMouseOut={() => changeTopActionLabel('')}
+            >
+              <i className="far fa-edit" />
+            </AddNewChar>
+          )}
+          <TopActionsLabelWrapper>{topActionsLabel}</TopActionsLabelWrapper>
+
+          {/* ----- CHAR IDENTIFICATION ----- */}
+          {firstPlayer === character.name && (
+            <FirstPlayerWrapper>
+              <FirstPlayerToken src={FirstPlayer} alt="First Player Token" />
+            </FirstPlayerWrapper>
+          )}
+          <CharName>
+            {firstPlayer === character.name && (
+              <FirstPlayerStar>⭐</FirstPlayerStar>
+            )}
+            {character.name}
+          </CharName>
+          <PlayerTag color={getCharacterColor(character.name)}>
+            {character.player}
+          </PlayerTag>
+
+          {/* ----- ACTION BUTTONS ----- */}
+          {character.wounded !== 'killed' && (
+            <>
+              {!damageMode && !setupMode && (
+                <>
+                  <ActionsWrapper>
+                    {!finishedTurn && generalActions && (
+                      <ActionButton
+                        actionType="objective"
+                        callback={onClickObjective}
+                        changeActionLabel={changeActionLabel}
+                        label={GET_OBJECTIVE}
+                      />
+                    )}
+                    {canMove && (
+                      <ActionButton
+                        actionType={
+                          character.location === 'car'
+                            ? 'car-exit'
+                            : 'car-enter'
+                        }
+                        callback={() => spendAction('move')}
+                        car={car}
+                        interactWithCar={interactWithCar}
+                        startCar={startCar}
+                        type={character.location !== 'car' && !car && 'start'}
+                        changeActionLabel={changeActionLabel}
+                        label={
+                          character.location === 'car' ? EXIT_CAR : ENTER_CAR
+                        }
+                      />
+                    )}
+                    {canMove && character.location === 'car' && (
+                      <>
+                        <ActionButton
+                          actionType="car-move"
+                          callback={() => spendAction('move')}
+                          changeActionLabel={changeActionLabel}
+                          label={MOVE_CAR}
+                        />
+                        <ActionButton
+                          actionType="car-attack"
+                          callback={() => spendAction('move')}
+                          changeActionLabel={changeActionLabel}
+                          label={RUN_OVER}
+                        />
+                      </>
+                    )}
+
+                    {canMove && character.location !== 'car' && (
+                      <ActionButton
+                        actionType="move"
+                        callback={() => spendAction('move')}
+                        type={character.movement}
+                        changeActionLabel={changeActionLabel}
+                        label={MOVE}
+                      />
+                    )}
+
+                    {canOpenDoor && generalActions && (
+                      <ActionButton
+                        actionType="open-door"
+                        callback={spendAction}
+                        noise={noise}
+                        setNoise={setNoise}
+                        type={canOpenDoor}
+                        changeActionLabel={changeActionLabel}
+                        label={noise ? BREAK_DOOR : OPEN_DOOR}
+                      />
+                    )}
+                    {!finishedTurn && (
+                      <ActionButton
+                        actionType="endTurn"
+                        callback={onClickEndTurn}
+                        changeActionLabel={changeActionLabel}
+                        label={END_CHAR_TURN(character.name)}
+                      />
+                    )}
+                  </ActionsWrapper>
+                  {!finishedTurn && (
+                    <ActionsLabelWrapper>{actionsLabel}</ActionsLabelWrapper>
+                  )}
+                </>
+              )}
+            </>
+          )}
+
+          {/* ----- INDICATORS ON CHAR SHEET ----- */}
+          <NoiseWrapper>
+            {Array.from({ length: noise }, (_, index) => index).map(key => (
+              <NoiseIcon key={key} src={Noise} />
+            ))}
+          </NoiseWrapper>
+          {character.wounded && (
+            <WoundedWrapper>
+              <WoundedSign src={Blood} />
+            </WoundedWrapper>
+          )}
+          {finishedTurn && character.wounded !== 'killed' && (
+            <FinishedTurnTag>
+              {`${character.name}${TURN_FINISHED}`}
+            </FinishedTurnTag>
+          )}
+
+          {character.wounded === 'killed' && (
+            <>
+              <ModalSign killed>
+                {!characters || characters.length === 0 ? (
+                  <ModalSignText>{KILLED_EM_ALL}</ModalSignText>
+                ) : (
+                  <ModalSignText>{`${character.name} ${KILLED}`}</ModalSignText>
+                )}
+              </ModalSign>
+              {characters.length === 0 && (
+                <ModalSignExitButton onClick={exitGame} src={Exit} />
+              )}
+            </>
+          )}
+
+          {/* ----- ITEMS AREA ----- */}
+          {character.wounded !== 'killed' && (
+            <>
+              <CharItems slotType="inHand">
+                {character.inHand &&
+                  character.inHand.map((item, index) => (
+                    <ItemsArea
+                      actionsLeft={generalActions}
+                      allSlotsAreEmpty={checkIfAllSlotsAreEmpty([
+                        ...character.inHand,
+                        ...character.inBackpack
+                      ])}
+                      bonusDices={character.bonusDices}
+                      callback={spendAction}
+                      canAttack={canAttack}
+                      canCombine={generalActions && canCombine}
+                      canSearch={canSearch}
+                      causeDamage={causeDamage}
+                      combineItemSelected={
+                        combiningItem && combiningItem.item === item
+                      }
+                      combinePair={combiningItem && combiningItem.pair === item}
+                      charVoice={character.voice}
+                      damageMode={damageMode}
+                      dice={WEAPONS_S1[item] && WEAPONS_S1[item].dice}
+                      gainCustomXp={gainCustomXp}
+                      gainXp={gainXp}
+                      handleSearch={handleSearch}
+                      index={index}
+                      item={item}
+                      key={`${item}-${index + 1}`}
+                      makeNoise={makeNoise}
+                      onClickCombine={onClickCombine}
+                      onClickDrop={changeInHand}
+                      selectSlot={selectSlot}
+                      setupMode={setupMode}
+                      slotType="inHand"
+                      spendAction={spendAction}
+                                              spendSingleUseWeapon={spendSingleUseWeapon}
+                      startTrade={startTrade}
+                      wounded={character.wounded}
+                    />
+                  ))}
+              </CharItems>
+              <CharItems slotType="inBackpack">
+                {character.inBackpack &&
+                  character.inBackpack.map((item, index) => (
+                    <ItemsArea
+                      actionsLeft={generalActions}
+                      allSlotsAreEmpty={checkIfAllSlotsAreEmpty([
+                        ...character.inHand,
+                        ...character.inBackpack
+                      ])}
+                      callback={spendAction}
+                      canCombine={generalActions && canCombine}
+                      canSearch={canSearch}
+                      causeDamage={causeDamage}
+                      charVoice={character.voice}
+                      combineItemSelected={
+                        combiningItem && combiningItem.item === item
+                      }
+                      combinePair={combiningItem && combiningItem.pair === item}
+                      damageMode={damageMode}
+                      handleSearch={handleSearch}
+                      index={index}
+                      item={item}
+                      key={`${item}-${index + 3}`}
+                      makeNoise={makeNoise}
+                      noAudio
+                      onClickCombine={onClickCombine}
+                      onClickDrop={changeInBackpack}
+                      selectSlot={selectSlot}
+                      setupMode={setupMode}
+                      slotType="inBackpack"
+                      startTrade={startTrade}
+                      wounded={character.wounded}
+                    />
+                  ))}
+              </CharItems>
+            </>
+          )}
+
+          {/* ----- BOTTOM BUTTONS ----- */}
+          {(setupMode || roundEnded) && (
+            <ModalSignButton
+              noOverlay
+              onClick={onClickMainButton}
+              roundEnded={roundEnded}
+              setupMode={setupMode}
+            >
+              {setupMode ? 'FINISH SETUP' : 'START NEXT ROUND'}
+            </ModalSignButton>
+          )}
+
+          {(characters.length > 1 || prevCharIndex.current === null) && (
+            <>
+              <PreviousButton
+                damageMode={damageMode}
+                onClick={() => changeToAnotherPlayer(PREVIOUS)}
+                type="button"
+              >
+                {device.current === MOBILE ? (
+                  <ArrowSign className="fas fa-caret-left" />
+                ) : (
+                  PREVIOUS
+                )}
+              </PreviousButton>
+              <NextButton
+                damageMode={damageMode}
+                onClick={() => changeToAnotherPlayer(NEXT)}
+                type="button"
+              >
+                {device.current === MOBILE ? (
+                  <ArrowSign className="fas fa-caret-right" />
+                ) : (
+                  NEXT
+                )}
+              </NextButton>
+            </>
+          )}
+          {selectCharOverlay && (
+            <SelectButton onClick={selectCharacter} type="button">
+              SELECT
+            </SelectButton>
+          )}
+
+          {/* ----- ABILITIES DISPLAY ----- */}
+          <AbilitiesWrapper>
+            {character &&
+              character.abilities &&
+              character.abilities.map((ability, index) => (
+                // eslint-disable-next-line react/no-array-index-key
+                <Abilities key={`${character}-${index}-${ability}`}>
+                  {ability}
+                </Abilities>
+              ))}
+          </AbilitiesWrapper>
+        </>
+      )}
+
+      {/* ----- DYNAMIC MODALS ----- */}
+
+      {/* --- Item selector --- */}
+      {slot && slot <= 2 && (
+        <ItemsSelectorModal
+          onSelect={changeInHand}
+          selectSlot={selectSlot}
+          slotType="inHand"
+        />
+      )}
+      {slot && slot >= 3 && (
+        <ItemsSelectorModal
+          onSelect={changeInBackpack}
+          selectSlot={selectSlot}
+          slotType="inBackpack"
+        />
+      )}
+
+      {/* --- Add new character --- */}
+      {newChar && (
+        <NewGame currentChars={characters} dynamic setNewChar={setNewChar} />
+      )}
+
+      {/* --- Select custom XP --- */}
+      {displayActionsModal === 'xp' && (
+        <ActionsModal
+          toggleVisibility={toggleActionsModal}
+          visible={displayActionsModal}
+          content={{
+            data: { maxXp: 43, currentXp: character.experience || 0 },
+            title: XP_GAIN,
+            text: XP_GAIN_SELECT,
+            type: 'slider',
+            buttons: [
+              {
+                text: BURNEM_ALL,
+                type: 'confirm'
+              }
+            ]
+          }}
+          onConfirmModal={onClickGainBonusXp}
+        />
+      )}
+
+      {/* --- Select promotion ability --- */}
+      {(displayActionsModal === 'orange' || displayActionsModal === 'red') && (
+        <ActionsModal
+          toggleVisibility={toggleActionsModal}
+          visible={displayActionsModal}
+          content={{
+            data: { img: character.face, level: displayActionsModal },
+            title: LEARNED_NEW_ABILITY,
+            type: 'option',
+            buttons: character.promotions[displayActionsModal].map(button => ({
+              text: button.name,
               type: 'option',
-              buttons: character.promotions[displayActionsModal].map(
-                button => ({
-                  text: button.name,
-                  type: 'option',
-                  details: button.description
-                })
-              )
-            }}
-            onConfirmModal={learnNewAbility}
-          />
-        )}
-      </CharacterSheet>
-    </>
+              details: button.description
+            }))
+          }}
+          onConfirmModal={learnNewAbility}
+        />
+      )}
+    </CharacterSheet>
   );
 };
 
@@ -1277,9 +1287,10 @@ PlayersSection.propTypes = {
   initialCharacters: arrayOf(CharacterType),
   loadGame: func.isRequired,
   loadedGame: arrayOf(CharacterType),
+  nextGameRound: func.isRequired,
   setZombiesTurn: func.isRequired,
   toggleDamageMode: func.isRequired,
-  nextGameRound: func.isRequired
+  visible: bool.isRequired
 };
 
 PlayersSection.defaultProps = {

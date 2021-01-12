@@ -177,9 +177,8 @@ export const CharacterSheet = styled.div`
   label: CharacterSheet;
   z-index: 1;
   position: relative;
-  display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
   height: ${`${window.innerHeight - 40}px`};
   width: 100%;
@@ -187,13 +186,14 @@ export const CharacterSheet = styled.div`
   display: none;
 
   @media all and (min-width: 768px) {
+    align-items: center;
     width: 90%;
   }
 
   ${({ visible }) =>
     visible &&
     css`
-      display: block;
+      display: flex;
     `}
 `;
 CharacterSheet.displayName = 'CharacterSheet';
@@ -348,6 +348,7 @@ export const IndicatorsWrapper = styled.div`
   padding-left: 5px;
   height: 14px;
   background: #5a5454;
+  width: 100%;
 
   @media all and (min-width: 768px) {
     height: 20px;
