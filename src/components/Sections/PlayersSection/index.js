@@ -300,7 +300,7 @@ const PlayersSection = ({
             'blue',
             (char.actionsLeft && [...char.actionsLeft]) || [...char.actions]
           );
-        } else {
+        } else if (updatedChar.abilities.length !== 1) {
           updatedChar.abilities = [];
           updatedChar.actions = [3, 0, 0, 0];
           updatedChar.bonusDices = { combat: 0, melee: 0, ranged: 0 };
@@ -1022,7 +1022,9 @@ const PlayersSection = ({
                         />
                       )}
                     </ActionsWrapper>
-                    <ActionsLabelWrapper>{actionsLabel}</ActionsLabelWrapper>
+                    {!finishedTurn && (
+                      <ActionsLabelWrapper>{actionsLabel}</ActionsLabelWrapper>
+                    )}
                   </>
                 )}
               </>
