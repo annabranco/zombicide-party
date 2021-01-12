@@ -2,18 +2,12 @@ import React, { useEffect } from 'react';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import { Global } from '@emotion/core';
 import { useStateWithLabel } from '../../utils/hooks';
-import {
-  LOCAL_STORAGE_KEY,
-  SECTION_PLAYERS,
-  SECTION_ZOMBIES
-} from '../../constants';
+import { LOCAL_STORAGE_KEY } from '../../constants';
 import MainMenu from '../MainMenu';
 import NewGame from '../NewGame';
-import Section from '../Sections';
-import PlayersSection from '../Sections/PlayersSection';
-import ZombiesSection from '../Sections/ZombiesSection';
+
 import { globalStyles } from '../../styles';
-import { MainScreen } from './styles';
+import MainScreen from '../MainScreen';
 
 const App = () => {
   const [initialCharacters, setInitialCharacters] = useStateWithLabel(
@@ -55,25 +49,15 @@ const App = () => {
         <Route
           path="/play"
           render={() => (
-            <MainScreen>
-              <Section name={SECTION_PLAYERS}>
-                <PlayersSection
-                  damageMode={damageMode}
-                  initialCharacters={initialCharacters}
-                  loadGame={loadGame}
-                  loadedGame={loadedGame}
-                  toggleDamageMode={toggleDamageMode}
-                  setZombiesTurn={setZombiesTurn}
-                />
-              </Section>
-              <Section name={SECTION_ZOMBIES}>
-                <ZombiesSection
-                  damageMode={damageMode}
-                  toggleDamageMode={toggleDamageMode}
-                  zombiesTurn={zombiesTurn}
-                />
-              </Section>
-            </MainScreen>
+            <MainScreen
+              damageMode={damageMode}
+              initialCharacters={initialCharacters}
+              loadGame={loadGame}
+              loadedGame={loadedGame}
+              toggleDamageMode={toggleDamageMode}
+              setZombiesTurn={setZombiesTurn}
+              zombiesTurn={zombiesTurn}
+            />
           )}
         />
       </Switch>

@@ -17,3 +17,5 @@ export const PLAYERS_DB_EMPTY =
 export const TURN_FINISHED = "'s turn has finished";
 
 export const LEARNED_NEW_ABILITY = 'New ability learned';
+
+export const LESS_THAN_1_MIN = `Less than 1 minute`;

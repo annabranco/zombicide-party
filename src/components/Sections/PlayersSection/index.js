@@ -104,7 +104,8 @@ const PlayersSection = ({
   loadGame,
   loadedGame,
   setZombiesTurn,
-  toggleDamageMode
+  toggleDamageMode,
+  nextGameRound
 }) => {
   /* ------- COMPONENT STATES ------- */
   const [actionsCount, updateActionsCount] = useStateWithLabel(
@@ -652,6 +653,7 @@ const PlayersSection = ({
     }
     if (setupMode) {
       toggleSetupMode(false);
+      nextGameRound();
     } else {
       const updatedCharacters = cloneDeep(characters);
       if (roundEnded) {
@@ -660,8 +662,7 @@ const PlayersSection = ({
         updatedCharacters.forEach((char, index) => {
           char.actionsLeft = char.actions; // eslint-disable-line no-param-reassign
           char.hasUsedFlashlight = false; // eslint-disable-line no-param-reassign
-          // eslint-disable-next-line no-debugger
-          debugger;
+
           if (char.name === firstPlayer) {
             if (index + 1 === characters.length) {
               nextFirstPlayer = 0;
@@ -680,6 +681,8 @@ const PlayersSection = ({
         setNoise(0);
         changeFirstPlayer(updatedCharacters[nextFirstPlayer].name);
         updateCharacters(updatedCharacters);
+        nextGameRound();
+
         if (charIndex === nextFirstPlayer) {
           changeCharacter(updatedCharacters[nextFirstPlayer]);
         } else {
@@ -1270,7 +1273,8 @@ PlayersSection.propTypes = {
   loadGame: func.isRequired,
   loadedGame: arrayOf(CharacterType),
   setZombiesTurn: func.isRequired,
-  toggleDamageMode: func.isRequired
+  toggleDamageMode: func.isRequired,
+  nextGameRound: func.isRequired
 };
 
 PlayersSection.defaultProps = {
