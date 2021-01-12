@@ -2,7 +2,7 @@ import React, { useEffect, useRef } from 'react';
 import { bool, func, arrayOf } from 'prop-types';
 import PlayersSection from '../Sections/PlayersSection';
 import ZombiesSection from '../Sections/ZombiesSection';
-import { MainArea } from './styles';
+import { MainArea, RoundTag } from './styles';
 import { CharacterType } from '../../interfaces/types';
 import { useStateWithLabel } from '../../utils/hooks';
 import { LESS_THAN_1_MIN } from '../../constants';
@@ -21,6 +21,10 @@ const MainScreen = ({
     'activeSection'
   );
   const [rounds, updateRounds] = useStateWithLabel([], 'round');
+  const [displayRounds, toggleDisplayRounds] = useStateWithLabel(
+    false,
+    'displayRounds'
+  );
 
   const gameTime = useRef();
 
@@ -28,6 +32,10 @@ const MainScreen = ({
     const updRounds = [...rounds];
     updRounds.push(gameTime.current);
     updateRounds(updRounds);
+    toggleDisplayRounds(true);
+    setTimeout(() => {
+      toggleDisplayRounds(false);
+    }, 3000);
   };
 
   useEffect(() => {
@@ -47,7 +55,6 @@ const MainScreen = ({
       clearInterval(timer);
     };
   }, []);
-
   return (
     <MainArea>
       <PlayersSection
@@ -66,7 +73,7 @@ const MainScreen = ({
         visible={activeSection === 'ZombiesSection'}
         zombiesTurn={zombiesTurn}
       />
-      <p>Round: {rounds.length}</p>
+      {displayRounds && <RoundTag>Round: {rounds.length}</RoundTag>}
     </MainArea>
   );
 };

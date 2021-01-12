@@ -2,12 +2,25 @@ import styled from '@emotion/styled';
 
 export const MainArea = styled.main`
   label: MainArea;
-  height: 100vh;
+  height: ${`${window.innerHeight}px`};
   width: 100vw;
   background: black;
   display: flex;
   flex-direction: row;
-  align-items: center;
-  justify-content: center;
   overflow: hidden;
 `;
+MainArea.displayName = 'MainArea';
+
+export const RoundTag = styled.p`
+  label: RoundTag;
+  z-index: 14;
+  position: fixed;
+  bottom: 10px;
+  left: 50%;
+  transform: translate(-50%, 0);
+  color: white;
+  text-transform: uppercase;
+  font-family: 'Grandstander', cursive;
+  font-size: 1.6rem;
+`;
+RoundTag.displayName = 'RoundTag';
