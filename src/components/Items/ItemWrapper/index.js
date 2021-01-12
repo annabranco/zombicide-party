@@ -86,7 +86,7 @@ const ItemsArea = ({
       killButtonsTimer.current = setTimeout(() => {
         toggleDisplayKillButtons(false);
         changeKillButtons(calculateTotalDices());
-      }, 3000);
+      }, 4000);
     }
   };
 
@@ -172,7 +172,8 @@ const ItemsArea = ({
     }, 3000);
     updatedKillButtons[pressedButton] = `${pressedButton}`;
     changeKillButtons(updatedKillButtons);
-    setTimeout(() => gainXp(1), 500);
+    gainXp(1);
+    // setTimeout(() => gainXp(1), 500);
   };
 
   const reload = weapon => {

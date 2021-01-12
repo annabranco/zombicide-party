@@ -148,8 +148,8 @@ export const ModalWindow = styled.div`
   align-items: center;
   justify-content: space-around;
   border-radius: 15px;
-  height: 120%;
-  width: 120%;
+  height: 100%;
+  width: 100%;
   background: rgba(0, 0, 0, 0.75);
   overflow: hidden;
   transform: translate(0, -50%);
