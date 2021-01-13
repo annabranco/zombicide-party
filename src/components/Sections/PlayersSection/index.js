@@ -375,7 +375,6 @@ const PlayersSection = ({
 
   const changeInBackpack = (name, currentSlot = slot - 3) => {
     const updatedCharacter = cloneDeep(character);
-    // const updatedCharacters = cloneDeep(characters);
     const newItems = [...updatedCharacter.inBackpack];
     newItems[currentSlot] = name;
     const openDoors = checkIfCharacterCanOpenDoors(newItems);
@@ -389,7 +388,7 @@ const PlayersSection = ({
     toggleCanCombine(charCanCombineItems);
     updatedCharacter.inBackpack = newItems;
 
-    changeCharacter(updatedCharacter);
+    updateData(updatedCharacter);
     selectSlot();
   };
 
@@ -422,12 +421,15 @@ const PlayersSection = ({
     return count;
   };
 
-  const gainCustomXp = specialSlot => {
-    if (specialSlot === 0 || specialSlot === 1) {
+  const spendSingleUseWeapon = (weaponSlot, weapon) => {
+    if (WEAPONS_S1[weapon].useOnce) {
       const updatedCharacter = cloneDeep(character);
-      updatedCharacter.inHand[specialSlot] = '';
+      updatedCharacter.inHand[weaponSlot] = '';
       changeCharacter(updatedCharacter);
     }
+  };
+
+  const gainCustomXp = specialSlot => {
     toggleActionsModal('xp');
   };
 
@@ -1104,6 +1106,7 @@ const PlayersSection = ({
                         setupMode={setupMode}
                         slotType="inHand"
                         spendAction={spendAction}
+                        spendSingleUseWeapon={spendSingleUseWeapon}
                         startTrade={startTrade}
                         wounded={character.wounded}
                       />
