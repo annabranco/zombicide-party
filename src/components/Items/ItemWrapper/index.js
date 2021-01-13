@@ -58,6 +58,7 @@ const ItemsArea = ({
   setupMode,
   slotType,
   spendAction,
+  spendSingleUseWeapon,
   startTrade,
   trade,
   tradeItem,
@@ -79,6 +80,7 @@ const ItemsArea = ({
   const itemsType = getItemType(item);
 
   const activateKillButtons = () => {
+    spendSingleUseWeapon(index, item);
     if (WEAPONS_S1[item].dice === SPECIAL) {
       gainCustomXp(index);
     } else {
@@ -86,7 +88,7 @@ const ItemsArea = ({
       killButtonsTimer.current = setTimeout(() => {
         toggleDisplayKillButtons(false);
         changeKillButtons(calculateTotalDices());
-      }, 4000);
+      }, 3000);
     }
   };
 
@@ -169,7 +171,7 @@ const ItemsArea = ({
     killButtonsTimer.current = setTimeout(() => {
       toggleDisplayKillButtons(false);
       changeKillButtons(calculateTotalDices());
-    }, 3000);
+    }, 2000);
     updatedKillButtons[pressedButton] = `${pressedButton}`;
     changeKillButtons(updatedKillButtons);
     gainXp(1);
@@ -329,6 +331,7 @@ ItemsArea.propTypes = {
   setupMode: bool,
   slotType: string.isRequired,
   spendAction: func,
+  spendSingleUseWeapon: func,
   startTrade: func.isRequired,
   trade: bool.isRequired,
   tradeItem: func,
@@ -349,6 +352,7 @@ ItemsArea.defaultProps = {
   item: null,
   spendAction: () => null,
   setupMode: false,
+  spendSingleUseWeapon: () => null,
   tradeItem: () => null
 };
 
