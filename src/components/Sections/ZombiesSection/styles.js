@@ -59,7 +59,7 @@ export const SubSectionWrapper = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: flex-start;
-  height: calc(100vh - 80px);
+  height: ${`${window.innerHeight}px`};
   width: 90%;
   overflow: hidden;
 `;

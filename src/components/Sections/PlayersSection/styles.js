@@ -97,7 +97,7 @@ export const AddNewChar = styled(AppButton)`
   label: AddNewChar;
   z-index: 11;
   position: absolute;
-  top: -40px;
+  top: 0;
   right: 10px;
   height: 30px;
   width: 30px;
@@ -144,7 +144,7 @@ export const CharacterSheet = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  height: calc(100vh - 80px);
+  height: ${`${window.innerHeight}px`};
   width: 90%;
   background: black;
   /* overflow: hidden; */
@@ -248,7 +248,7 @@ export const IndicatorsWrapper = styled.div`
   label: IndicatorsWrapper;
   z-index: 10;
   position: absolute;
-  top: 0;
+  top: 20px;
   left: 20px;
   display: flex;
   flex-direction: row;
@@ -259,7 +259,7 @@ export const IndicatorsWrapper = styled.div`
   ${({ header }) =>
     header &&
     css`
-      top: -35px;
+      top: 0;
       left: 0;
       width: 100%;
       justify-content: space-around;
@@ -516,7 +516,7 @@ SelectButton.displayName = 'SelectButton';
 
 export const TopActionsLabelWrapper = styled(ActionsLabelWrapper)`
   label: TopActionsLabelWrapper;
-  top: 0;
+  top: 25px;
   right: 0;
   align-items: flex-end;
   height: 20px;
