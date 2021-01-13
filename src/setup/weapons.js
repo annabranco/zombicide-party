@@ -1,5 +1,5 @@
 import BaseballBat from '../assets/images/weapons/baseball-bat.jpg';
-import Baton from '../assets/images/weapons/baton.jpg';
+import NightStick from '../assets/images/weapons/night-stick.jpg';
 import BatteringRam from '../assets/images/weapons/battering-ram.jpg';
 import Chainsaw from '../assets/images/weapons/chainsaw.jpg';
 import Crowbar from '../assets/images/weapons/crowbar.jpg';
@@ -17,6 +17,15 @@ import SawedOff from '../assets/images/weapons/sawed-off.jpg';
 import Shotgun from '../assets/images/weapons/shotgun.jpg';
 import SniperRifle from '../assets/images/weapons/sniper-rifle.jpg';
 import SubMG from '../assets/images/weapons/sub-mg.jpg';
+import AssaultRifle from '../assets/images/weapons/assault-rifle.jpg';
+import AutomaticShotgun from '../assets/images/weapons/automatic-shotgun.jpg';
+import DoubleBarrel from '../assets/images/weapons/double-barreled-shotgun.jpg';
+import Mp5 from '../assets/images/weapons/mp5.jpg';
+import DesertEagle from '../assets/images/weapons/desert-eagle.jpg';
+import SamuraiEdge from '../assets/images/weapons/samurai-edge.jpg';
+import SmokeGrenade from '../assets/images/weapons/smoke-grenade.jpg';
+import TaserGun from '../assets/images/weapons/taser-gun.jpg';
+
 import {
   SPECIAL,
   WEAPONS,
@@ -26,7 +35,7 @@ import {
   MELEE_RANGED
 } from '../constants';
 
-export const WEAPONS_S1_ORIGINAL = {
+export const WEAPONS_S1 = {
   BaseballBat: {
     attack: MELEE,
     dice: 1,
@@ -162,13 +171,73 @@ export const WEAPONS_S1_ORIGINAL = {
   }
 };
 
-export const WEAPONS_TD = {
-  Baton: {
+export const WEAPONS_MALL = {
+  AssaultRifle: {
+    attack: RANGED,
+    dice: 3,
+    img: AssaultRifle,
+    name: 'AssaultRifle',
+    noise: true,
+    type: WEAPONS
+  }
+};
+
+export const WEAPONS_S2 = {
+  AutomaticShotgun: {
+    attack: RANGED,
+    dice: 3,
+    img: AutomaticShotgun,
+    name: 'AutomaticShotgun',
+    noise: true,
+    type: WEAPONS
+  },
+  NightStick: {
     attack: MELEE,
     dice: 1,
-    img: Baton,
-    name: 'Baton',
+    img: NightStick,
+    name: 'NightStick',
     noise: false,
+    type: WEAPONS
+  }
+};
+
+export const WEAPONS_S3 = {
+  DoubleBarrel: {
+    attack: MELEE,
+    dice: 1,
+    img: DoubleBarrel,
+    name: 'DoubleBarrel',
+    noise: false,
+    type: WEAPONS
+  },
+  Mp5: {
+    attack: MELEE,
+    dice: 1,
+    img: Mp5,
+    name: 'Mp5',
+    noise: false,
+    type: WEAPONS
+  }
+};
+
+export const WEAPONS_OTHERS = {
+  DesertEagle: {
+    attack: RANGED,
+    dice: 1,
+    img: DesertEagle,
+    name: 'DesertEagle',
+    noise: false,
+    type: WEAPONS
+  }
+};
+
+export const WEAPONS_TD = {
+  AutomaticShotgun: {
+    attack: RANGED,
+    dice: 3,
+    img: AutomaticShotgun,
+    name: 'AutomaticShotgun',
+    noise: true,
     type: WEAPONS
   },
   BatteringRam: {
@@ -188,12 +257,64 @@ export const WEAPONS_TD = {
     noise: true,
     type: WEAPONS,
     useOnce: true
+  },
+  Mp5: {
+    attack: MELEE,
+    dice: 1,
+    img: Mp5,
+    name: 'Mp5',
+    noise: false,
+    type: WEAPONS
+  },
+  NightStick: {
+    attack: MELEE,
+    dice: 1,
+    img: NightStick,
+    name: 'NightStick',
+    noise: false,
+    type: WEAPONS
+  },
+  SamuraiEdge: {
+    attack: RANGED,
+    dice: 1,
+    img: SamuraiEdge,
+    name: 'SamuraiEdge',
+    noise: false,
+    type: WEAPONS
+  },
+  SmokeGrenade: {
+    attack: RANGED,
+    dice: 1,
+    img: SmokeGrenade,
+    name: 'SmokeGrenade',
+    noise: false,
+    type: WEAPONS
+  },
+  TaserGun: {
+    attack: RANGED,
+    dice: 1,
+    img: TaserGun,
+    name: 'TaserGun',
+    noise: false,
+    type: WEAPONS
   }
 };
 
-export const WEAPONS_S1 = {
-  ...WEAPONS_S1_ORIGINAL,
-  ...WEAPONS_TD
+const selectedSets = [
+  WEAPONS_S1,
+  WEAPONS_MALL,
+  WEAPONS_S2,
+  WEAPONS_S3,
+  WEAPONS_OTHERS,
+  WEAPONS_TD
+];
+
+export const setupWeapons = sets => {
+  let allWeapons = {};
+  sets.forEach(set => {
+    allWeapons = { ...allWeapons, ...set };
+  });
+  return allWeapons;
 };
 
-console.log('$$$ WEAPONS_S1', WEAPONS_S1);
+export const ALL_WEAPONS = setupWeapons(selectedSets);

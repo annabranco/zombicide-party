@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { func, string } from 'prop-types';
-import { WEAPONS_S1 } from '../../../setup/weapons';
+import { ALL_WEAPONS } from '../../../setup/weapons';
 import { ITEMS_S1 } from '../../../setup/items';
 import { useStateWithLabel } from '../../../utils/hooks';
 import SelectionItem from '../ItemSelector';
@@ -20,7 +20,7 @@ const ItemsSelectorModal = ({ onSelect, selectSlot, slotType }) => {
 
   const changeType = () => {
     if (itemsType === ITEMS) {
-      changeItems(WEAPONS_S1);
+      changeItems(ALL_WEAPONS);
       changeItemsType(WEAPONS);
     } else {
       changeItems(ITEMS_S1);
@@ -30,7 +30,7 @@ const ItemsSelectorModal = ({ onSelect, selectSlot, slotType }) => {
 
   useEffect(() => {
     if (slotType === IN_HAND) {
-      changeItems(WEAPONS_S1);
+      changeItems(ALL_WEAPONS);
       changeItemsType(WEAPONS);
     }
   }, [changeItems, slotType, changeItemsType]);
