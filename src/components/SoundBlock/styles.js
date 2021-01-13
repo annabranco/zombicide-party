@@ -260,8 +260,9 @@ export const SelectorArea = styled.div`
   flex-direction: row;
   align-items: flex-start;
   justify-content: center;
-  overflow: hidden;
-  padding-top: 20px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 20px 10px 30px;
 
   ${({ columns }) => {
     if (columns === 'big') {
@@ -273,7 +274,8 @@ export const SelectorArea = styled.div`
       return css`
         display: grid;
         width: 90%;
-        grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+        grid-gap: 10px;
+        grid-template-columns: repeat(${columns}, minmax(100px, 1fr));
       `;
     }
     return null;

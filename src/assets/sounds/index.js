@@ -1,11 +1,12 @@
 import AssaultRifle from './weapons/AssaultRifle.mp3';
 import AutomaticShotgun from './weapons/AutomaticShotgun.mp3';
 import BaseballBat from './weapons/BaseballBat.mp3';
-import Baton from './weapons/Baton.mp3';
 import BatteringRam from './weapons/BatteringRam.mp3';
 import Chainsaw from './weapons/Chainsaw.mp3';
+import ColtPython from './weapons/ColtPython.mp3';
 import Crowbar from './weapons/Crowbar.mp3';
 import DesertEagle from './weapons/DesertEagle.mp3';
+import DoubleBarrel from './weapons/DoubleBarrel.mp3';
 import EvilTwins from './weapons/EvilTwins.mp3';
 import FireAxe from './weapons/FireAxe.mp3';
 import Flashbang from './weapons/Flashbang.mp3';
@@ -15,12 +16,17 @@ import Knife from './weapons/Knife.mp3';
 import Machete from './weapons/Machete.mp3';
 import MasShotgun from './weapons/MasShotgun.mp3';
 import Molotov from './weapons/Molotov.mp3';
+import Mp5 from './weapons/Mp5.mp3';
+import NightStick from './weapons/NightStick.mp3';
 import Pan from './weapons/Pan.mp3';
 import Pistol from './weapons/Pistol.mp3';
 import Rifle from './weapons/Rifle.mp3';
+import SamuraiEdge from './weapons/SamuraiEdge.mp3';
 import SawedOff from './weapons/SawedOff.mp3';
 import Shotgun from './weapons/Shotgun.mp3';
+import SmokeGrenade from './weapons/SmokeGrenade.mp3';
 import SubMG from './weapons/SubMG.mp3';
+import TaserGun from './weapons/TaserGun.mp3';
 
 import CarAttack from './actions/car-attack.mp3';
 import CarEnterStart from './actions/car-enter-start.mp3';
@@ -124,11 +130,12 @@ export const SOUNDS = {
   AssaultRifle,
   AutomaticShotgun,
   BaseballBat,
-  Baton,
   BatteringRam,
   Chainsaw,
+  ColtPython,
   Crowbar,
   DesertEagle,
+  DoubleBarrel,
   EvilTwins,
   FireAxe,
   Flashbang,
@@ -138,12 +145,17 @@ export const SOUNDS = {
   Machete,
   MasShotgun,
   Molotov,
+  Mp5,
+  NightStick,
   Pan,
   Pistol,
   Rifle,
+  SamuraiEdge,
   SawedOff,
   Shotgun,
+  SmokeGrenade,
   SubMG,
+  TaserGun,
   'car-attack': CarAttack,
   'car-enter-start': CarEnterStart,
   'car-enter': CarEnter,

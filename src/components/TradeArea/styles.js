@@ -4,6 +4,7 @@ import { CharName } from '../Sections/PlayersSection/styles';
 
 export const ButtonsWrapper = styled.div`
   label: ButtonsWrapper;
+  margin: 15px auto;
   z-index: 10;
   display: flex;
   flex-direction: row;
