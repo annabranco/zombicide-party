@@ -5,7 +5,7 @@ import { useStateWithLabel } from '../../../utils/hooks';
 import { getItemPhoto, getItemType } from '../../../utils/items';
 import SoundBlock from '../../SoundBlock';
 import ActionButton from '../../ActionButton';
-import { WEAPONS_S1 } from '../../../setup/weapons';
+import { ALL_WEAPONS } from '../../../setup/weapons';
 
 import { AppButton } from '../../Sections/PlayersSection/styles';
 import {
@@ -81,7 +81,7 @@ const ItemsArea = ({
 
   const activateKillButtons = () => {
     spendSingleUseWeapon(index, item);
-    if (WEAPONS_S1[item].dice === SPECIAL) {
+    if (ALL_WEAPONS[item].dice === SPECIAL) {
       gainCustomXp(index);
     } else {
       toggleDisplayKillButtons(true);
@@ -100,17 +100,17 @@ const ItemsArea = ({
 
     totalDices = dice + combat;
 
-    if (WEAPONS_S1[item].attack === MELEE) {
+    if (ALL_WEAPONS[item].attack === MELEE) {
       totalDices += melee;
-    } else if (WEAPONS_S1[item].attack === RANGED) {
+    } else if (ALL_WEAPONS[item].attack === RANGED) {
       totalDices += ranged;
-    } else if (WEAPONS_S1[item].attack === MELEE_RANGED) {
+    } else if (ALL_WEAPONS[item].attack === MELEE_RANGED) {
       totalDices = totalDices + ranged + melee;
     }
     return [...Array(totalDices).keys()];
   };
 
-  const checkIfReloadIsNeeded = () => item === WEAPONS_S1.SawedOff.name;
+  const checkIfReloadIsNeeded = () => item === ALL_WEAPONS.SawedOff.name;
 
   const getSlotNumber = itemIndex => {
     const adj = slotType === IN_HAND ? 1 : 3;

@@ -94,7 +94,7 @@ import {
   orangeThreatThresold,
   yellowThreatThresold
 } from '../../../utils/xp';
-import { WEAPONS_S1 } from '../../../setup/weapons';
+import { ALL_WEAPONS } from '../../../setup/weapons';
 import ActionsModal from '../../ActionsModal';
 import { SOUNDS } from '../../../assets/sounds';
 
@@ -422,7 +422,7 @@ const PlayersSection = ({
   };
 
   const spendSingleUseWeapon = (weaponSlot, weapon) => {
-    if (WEAPONS_S1[weapon].useOnce) {
+    if (ALL_WEAPONS[weapon].useOnce) {
       const updatedCharacter = cloneDeep(character);
       updatedCharacter.inHand[weaponSlot] = '';
       changeCharacter(updatedCharacter);
@@ -1092,7 +1092,7 @@ const PlayersSection = ({
                         }
                         charVoice={character.voice}
                         damageMode={damageMode}
-                        dice={WEAPONS_S1[item] && WEAPONS_S1[item].dice}
+                        dice={ALL_WEAPONS[item] && ALL_WEAPONS[item].dice}
                         gainCustomXp={gainCustomXp}
                         gainXp={gainXp}
                         handleSearch={handleSearch}

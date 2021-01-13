@@ -24,7 +24,6 @@ import SelectorJosh from '../assets/images/selectors/selector-josh.png';
 import SelectorDoug from '../assets/images/selectors/selector-doug.png';
 import { FEMALE, MALE } from '../constants';
 import { ABILITIES_S1, ABILITIES_S2, ABILITIES_MALL } from './abilities';
-import { WEAPONS_S1 } from './weapons';
 
 const {
   ACTION,
@@ -67,8 +66,6 @@ const {
 
 const { REAPER_RANGED, BLITZ } = ABILITIES_S2;
 const { ACTION_RANGED } = ABILITIES_MALL;
-
-const { Pistol } = WEAPONS_S1;
 
 const AMY = {
   abilities: [],
@@ -235,7 +232,7 @@ const PHIL = {
   player: null,
   selector: SelectorPhil,
   promotions: {
-    blue: STARTS_WITH(Pistol.name),
+    blue: STARTS_WITH('Pistol'),
     yellow: ACTION,
     orange: [DICE_ROLL_RANGED, SEARCH_ACTION],
     red: [DIE_RANGED, BORN_LEADER, SNIPER]
