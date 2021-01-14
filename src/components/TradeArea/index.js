@@ -211,10 +211,10 @@ const TradeArea = ({
                 trade
                 type="button"
               >
-                ◄
+                <i className="fas fa-caret-left" />
               </PreviousButton>
               <NextButton onClick={changeToNextPlayer} trade type="button">
-                ►
+                <i className="fas fa-caret-right" />
               </NextButton>
             </>
           )}

@@ -150,7 +150,6 @@ export const CarIconWrapper = styled.div`
   border: 1px solid black;
   padding: 7px;
   border-radius: 15px;
-  cursor: ${({ isActive }) => (isActive ? 'not-allowed' : 'pointer')};
   transition: all ease 5s;
   opacity: ${({ isActive }) => (isActive ? 0.2 : 1)};
   display: flex;
@@ -158,6 +157,11 @@ export const CarIconWrapper = styled.div`
   align-items: center;
   justify-content: center;
   text-align: center;
+
+  @media all and (min-width: 768px) {
+    cursor: ${({ isActive }) => (isActive ? 'not-allowed' : 'pointer')};
+  }
+
   &:hover {
     & > i {
       color: ${({ isActive }) => (isActive ? 'red' : 'yellow')};

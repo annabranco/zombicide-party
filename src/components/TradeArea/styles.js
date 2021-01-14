@@ -14,6 +14,31 @@ export const ButtonsWrapper = styled.div`
 `;
 ButtonsWrapper.displayName = 'ButtonsWrapper';
 
+export const CharacterId = styled.div`
+  label: CharacterId;
+  position: absolute;
+  left: 10px;
+  top: 30px;
+
+  @media all and (min-width: 768px) {
+    left: 30px;
+  }
+`;
+CharacterId.displayName = 'CharacterId';
+
+export const CharacterName = styled(CharName)`
+  label: CharacterName;
+  right: unset;
+  left: 50%;
+  top: 45px;
+  transform: translate(-50%, 0);
+
+  @media all and (min-width: 768px) {
+    top: 60px;
+  }
+`;
+CharacterName.displayName = 'CharacterName';
+
 export const CharacterTrading = styled.div`
   label: CharacterTrading;
   position: relative;
@@ -30,6 +55,9 @@ export const CharacterTrading = styled.div`
   &:nth-child(2) {
     background: rgba(0, 163, 21, 0.15);
   }
+
+  @media all and (min-width: 768px) {
+  }
 `;
 CharacterTrading.displayName = 'CharacterTrading';
 
@@ -40,6 +68,7 @@ export const ConfirmButton = styled.button`
   width: 120px;
   background: green;
   border: 1px solid black;
+  border-radius: 10px;
   font-weight: 700;
   font-family: 'Grandstander', cursive;
   cursor: pointer;
@@ -62,23 +91,6 @@ export const CancelButton = styled(ConfirmButton)`
   }
 `;
 CancelButton.displayName = 'CancelButton';
-
-export const CharacterId = styled.div`
-  label: CharacterId;
-  position: absolute;
-  left: 30px;
-  top: 30px;
-`;
-CharacterId.displayName = 'CharacterId';
-
-export const CharacterName = styled(CharName)`
-  label: CharacterName;
-  right: unset;
-  left: 50%;
-  top: 60px;
-  transform: translate(-50%, 0);
-`;
-CharacterName.displayName = 'CharacterName';
 
 export const CurrentCharacterTag = styled.p`
   label: CurrentCharacterTag;
@@ -105,7 +117,11 @@ CurrentPartnerTag.displayName = 'CurrentPartnerTag';
 
 export const Face = styled.img`
   label: Face;
-  width: 100px;
+  width: 80px;
+
+  @media all and (min-width: 768px) {
+    width: 100px;
+  }
 `;
 Face.displayName = 'Face';
 
@@ -129,6 +145,10 @@ export const TradeWrapper = styled.div`
   align-items: flex-end;
   justify-content: flex-end;
   height: 100%;
-  width: 90%;
+  width: 100%;
+
+  @media all and (min-width: 768px) {
+    width: 90%;
+  }
 `;
 TradeWrapper.displayName = 'TradeWrapper';

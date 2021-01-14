@@ -77,17 +77,68 @@ export const ItemIcon = styled.div`
     isMobile &&
     css`
       background-position: center -10px;
+      border: 0;
     `}
 
-  ${({ isSelected }) =>
-    isSelected &&
-    css`
-      border: 5px solid rgba(29, 211, 72, 0.5);
-      border-radius: 20px;
-      transition: all ease 0.2s;
-    `}
+  @media all and (min-width: 768px) {
+    ${({ isSelected }) =>
+      isSelected &&
+      css`
+        border: 5px solid rgba(29, 211, 72, 0.5);
+        border-radius: 20px;
+        transition: all ease 0.2s;
+      `}
+  }
 
   ${({ active, name, isMobile }) => {
+    if (
+      name === 'AutomaticShotgun' ||
+      name === 'AssaultRifle' ||
+      name === 'NightStick'
+    ) {
+      if (isMobile) {
+        return css`
+          background-size: 140%;
+          background-position: center 28%;
+        `;
+      }
+    }
+    if (name === 'DoubleBarrel') {
+      if (isMobile) {
+        return css`
+          background-size: 140%;
+          background-position: center 10%;
+        `;
+      }
+    }
+    if (
+      name === 'DesertEagle' ||
+      name === 'TaserGun' ||
+      name === 'SmokeGrenade'
+    ) {
+      if (isMobile) {
+        return css`
+          background-size: 160%;
+          background-position: center 4%;
+        `;
+      }
+    }
+    if (name === 'ColtPython' || name === 'SamuraiEdge') {
+      if (isMobile) {
+        return css`
+          background-size: 150%;
+          background-position: center 10%;
+        `;
+      }
+    }
+    if (name === 'BatteringRam' || name === 'Flashbang') {
+      if (isMobile) {
+        return css`
+          background-size: 140%;
+          background-position: center 2%;
+        `;
+      }
+    }
     if (name === 'Rifle') {
       if (isMobile) {
         return css`
@@ -126,49 +177,49 @@ export const ItemIcon = styled.div`
     if (name === 'EvilTwins' || name === 'MasShotgun' || name === 'SawedOff') {
       if (isMobile) {
         return css`
-          background-position: center 35%;
           background-size: 150%;
+          background-position: center 35%;
         `;
       }
       return css`
-        background-position: center 51%;
         background-size: 165%;
+        background-position: center 51%;
       `;
     }
-    if (name === 'PlentyOfAmmo') {
+    if (name === 'PlentyOfAmmo' || name === 'Mp5') {
       if (isMobile) {
         return css`
-          background-position: center 15%;
           background-size: 155%;
+          background-position: center 15%;
         `;
       }
       return css`
-        background-position: center 45%;
         background-size: 165%;
+        background-position: center 45%;
       `;
     }
     if (name === 'Scope') {
       if (isMobile) {
         return css`
-          background-position: center 25%;
           background-size: 155%;
+          background-position: center 25%;
         `;
       }
       return css`
-        background-position: center 35%;
         background-size: 140%;
+        background-position: center 35%;
       `;
     }
     if (name === 'PlentyOfAmmoShotgun') {
       if (isMobile) {
         return css`
-          background-position: center 15%;
           background-size: 160%;
+          background-position: center 15%;
         `;
       }
       return css`
-        background-position: center 45%;
         background-size: 190%;
+        background-position: center 45%;
       `;
     }
     return null;
@@ -186,9 +237,11 @@ export const PlayIcon = styled.img`
     if (type === 'wound') {
       return css`
         width: 100%;
-        &:hover {
-          transform: scale(1.01);
-          transition: all ease 0.4s;
+        @media all and (min-width: 768px) {
+          &:hover {
+            transform: scale(1.01);
+            transition: all ease 0.4s;
+          }
         }
       `;
     }
@@ -196,9 +249,11 @@ export const PlayIcon = styled.img`
       return css`
         max-height: 90%;
         max-width: 90%;
-        &:hover {
-          transform: scale(1.15);
-          transition: all ease 0.8s;
+        @media all and (min-width: 768px) {
+          &:hover {
+            transform: scale(1.15);
+            transition: all ease 0.8s;
+          }
         }
       `;
     }
@@ -207,20 +262,25 @@ export const PlayIcon = styled.img`
         border: 1px solid black;
         border-radius: 8px;
 
-        &:hover {
-          transform: scale(1.01);
-          transition: all ease 0.4s;
+        @media all and (min-width: 768px) {
+          &:hover {
+            transform: scale(1.01);
+            transition: all ease 0.4s;
+          }
         }
       `;
     }
     if (active) {
       return css`
         ${activeZombie}
-        transform: scale(1.05);
-        transition: all ease 0.8s;
-        &:hover {
+
+        @media all and (min-width: 768px) {
           transform: scale(1.05);
           transition: all ease 0.8s;
+          &:hover {
+            transform: scale(1.05);
+            transition: all ease 0.8s;
+          }
         }
       `;
     }
@@ -228,9 +288,12 @@ export const PlayIcon = styled.img`
       ${inactiveZombie}
       height: auto;
       transition: all ease 0.8s;
-      &:hover {
-        transform: scale(1.05);
-        transition: all ease 0.8s;
+
+      @media all and (min-width: 768px) {
+        &:hover {
+          transform: scale(1.05);
+          transition: all ease 0.8s;
+        }
       }
     `;
   }}

@@ -12,9 +12,9 @@ import {
   SubSectionTitle
 } from './styles';
 import { ButtonsWrapper, CancelButton } from '../../TradeArea/styles';
-import { IN_HAND, ITEMS, WEAPONS } from '../../../constants';
+import { IN_HAND, ITEMS, MOBILE, WEAPONS } from '../../../constants';
 
-const ItemsSelectorModal = ({ onSelect, selectSlot, slotType }) => {
+const ItemsSelectorModal = ({ device, onSelect, selectSlot, slotType }) => {
   const [items, changeItems] = useStateWithLabel(ALL_ITEMS, ITEMS);
   const [itemsType, changeItemsType] = useStateWithLabel(ITEMS, 'itemsType');
 
@@ -45,7 +45,7 @@ const ItemsSelectorModal = ({ onSelect, selectSlot, slotType }) => {
         <SubSectionTitle opened={itemsType === ITEMS}>Items</SubSectionTitle>
       </SelectorWrapper>
       <SelectorModal>
-        <SelectorArea columns={4}>
+        <SelectorArea columns={device === MOBILE ? 3 : 4}>
           {Object.keys(items)
             .sort()
             .map(name => (
@@ -69,6 +69,7 @@ const ItemsSelectorModal = ({ onSelect, selectSlot, slotType }) => {
 };
 
 ItemsSelectorModal.propTypes = {
+  device: string.isRequired,
   onSelect: func.isRequired,
   selectSlot: func.isRequired,
   slotType: string.isRequired

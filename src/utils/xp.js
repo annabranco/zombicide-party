@@ -39,7 +39,11 @@ export const calculateXpBar = (currentXp, highestXp, device) => {
       xpLevels.push(orangeThreatThresold + 1);
     }
   } else if (currentXp <= yellowThreatThresold) {
-    xpLevels = [0, '...'];
+    if (device === MOBILE) {
+      xpLevels = [0];
+    } else {
+      xpLevels = [0, '...'];
+    }
     for (let x = blueThreatThresold + 1; x <= yellowThreatThresold; x++) {
       xpLevels.push(x);
     }
@@ -47,13 +51,16 @@ export const calculateXpBar = (currentXp, highestXp, device) => {
     xpLevels.push('...');
     if (!xpLevels.includes(highestXp)) {
       xpLevels.push(highestXp);
-      xpLevels.push('...');
     }
     if (!xpLevels.includes(orangeThreatThresold + 1)) {
       xpLevels.push(orangeThreatThresold + 1);
     }
   } else if (currentXp <= midOrangeThresold) {
-    xpLevels = [0, '...', yellowThreatThresold];
+    if (device === MOBILE) {
+      xpLevels = [0, blueThreatThresold + 1];
+    } else {
+      xpLevels = [0, '...', yellowThreatThresold];
+    }
 
     for (let x = yellowThreatThresold + 1; x <= midOrangeThresold; x++) {
       xpLevels.push(x);
@@ -68,7 +75,7 @@ export const calculateXpBar = (currentXp, highestXp, device) => {
     }
   } else {
     if (device === MOBILE) {
-      xpLevels = [0, '...', blueThreatThresold + 1, '...', midOrangeThresold];
+      xpLevels = [0, blueThreatThresold + 1, midOrangeThresold];
     } else {
       xpLevels = [
         0,

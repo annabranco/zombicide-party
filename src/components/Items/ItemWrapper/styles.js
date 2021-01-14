@@ -18,7 +18,7 @@ export const ActionButtonsWrapper = styled.div`
   label: ActionButtonsWrapper;
   z-index: 5;
   position: absolute;
-  top: 10px;
+  top: 1px;
   display: none;
   flex-direction: rows;
   align-items: flex-start;
@@ -31,6 +31,10 @@ export const ActionButtonsWrapper = styled.div`
       top: 55px;
       left: -38px;
     `}
+
+  @media all and (min-width: 768px) {
+    top: 10px;
+  }
 `;
 ActionButtonsWrapper.displayName = 'ActionButtonsWrapper';
 
@@ -51,7 +55,8 @@ export const Item = styled.div`
     `}
 
   @media all and (min-width: 360px) {
-    width: 75px;
+    height: 110px;
+    width: 85px;
   }
 
   @media all and (min-width: 768px) {
@@ -80,13 +85,20 @@ export const ItemBlank = styled.div`
   color: rgba(255, 255, 255, 0.5);
   text-shadow: 0 0 12px black;
   text-align: center;
-  cursor: ${({ allSlotsAreEmpty, damageMode, canSearch, setupMode, trade }) =>
-    (damageMode && !allSlotsAreEmpty) || (!canSearch && !trade && !setupMode)
-      ? 'not-allowed'
-      : 'pointer'};
+
+  @media all and (min-width: 768px) {
+    cursor: ${({ allSlotsAreEmpty, damageMode, canSearch, setupMode, trade }) =>
+      (damageMode && !allSlotsAreEmpty) || (!canSearch && !trade && !setupMode)
+        ? 'not-allowed'
+        : 'pointer'};
+  }
 
   & > i {
     display: none;
+  }
+
+  @media all and (min-width: 360px) {
+    height: 110px;
   }
 
   &:hover {

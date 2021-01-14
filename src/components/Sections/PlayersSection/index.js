@@ -57,7 +57,8 @@ import {
   Abilities,
   ActionsLabelWrapper,
   TopActionsLabelWrapper,
-  ArrowSign
+  ArrowSign,
+  LevelIndicator
 } from './styles';
 import { CharacterType } from '../../../interfaces/types';
 import TradeArea from '../../TradeArea';
@@ -853,7 +854,7 @@ const PlayersSection = ({
     <CharacterSheet visible={visible}>
       {/* ----- XP BAR ----- */}
       {!trade && character.wounded !== 'killed' && (
-        <IndicatorsWrapper header>
+        <IndicatorsWrapper header setupMode={setupMode}>
           {xpCounter &&
             xpCounter.map((level, index) => (
               <XpIcon
@@ -864,6 +865,7 @@ const PlayersSection = ({
                 }
                 color={getXpColor(level, xpCounter[index - 1])}
                 currentXp={character.experience === level}
+                device={device.current}
                 highestXp={highestXp.xp === level}
                 key={`xp-${level}-${xpCounter[index - 1]}`}
                 onClick={
@@ -929,7 +931,7 @@ const PlayersSection = ({
               <i className="fas fa-user-plus" />
             </AddNewChar>
           )}
-          {!damageMode && !setupMode && (
+          {!damageMode && !setupMode && character.wounded !== 'killed' && (
             <AddNewChar
               type="button"
               onClick={onClickEdit}
@@ -947,15 +949,19 @@ const PlayersSection = ({
               <FirstPlayerToken src={FirstPlayer} alt="First Player Token" />
             </FirstPlayerWrapper>
           )}
-          <CharName>
-            {firstPlayer === character.name && (
-              <FirstPlayerStar>⭐</FirstPlayerStar>
-            )}
-            {character.name}
-          </CharName>
-          <PlayerTag color={getCharacterColor(character.name)}>
-            {character.player}
-          </PlayerTag>
+          {character.wounded !== 'killed' && (
+            <>
+              <CharName>
+                {firstPlayer === character.name && (
+                  <FirstPlayerStar>⭐</FirstPlayerStar>
+                )}
+                {character.name}
+              </CharName>
+              <PlayerTag color={getCharacterColor(character.name)}>
+                {character.player}
+              </PlayerTag>
+            </>
+          )}
 
           {/* ----- ACTION BUTTONS ----- */}
           {character.wounded !== 'killed' && (
@@ -1045,11 +1051,13 @@ const PlayersSection = ({
           )}
 
           {/* ----- INDICATORS ON CHAR SHEET ----- */}
-          <NoiseWrapper>
-            {Array.from({ length: noise }, (_, index) => index).map(key => (
-              <NoiseIcon key={key} src={Noise} />
-            ))}
-          </NoiseWrapper>
+          {character.wounded !== 'killed' && !setupMode && (
+            <NoiseWrapper>
+              {Array.from({ length: noise }, (_, index) => index).map(key => (
+                <NoiseIcon key={key} src={Noise} />
+              ))}
+            </NoiseWrapper>
+          )}
           {character.wounded && (
             <WoundedWrapper>
               <WoundedSign src={Blood} />
@@ -1100,7 +1108,8 @@ const PlayersSection = ({
                       combinePair={combiningItem && combiningItem.pair === item}
                       charVoice={character.voice}
                       damageMode={damageMode}
-                      dice={WEAPONS_S1[item] && WEAPONS_S1[item].dice}
+                      device={device.current}
+                      dice={ALL_WEAPONS[item] && ALL_WEAPONS[item].dice}
                       gainCustomXp={gainCustomXp}
                       gainXp={gainXp}
                       handleSearch={handleSearch}
@@ -1114,7 +1123,7 @@ const PlayersSection = ({
                       setupMode={setupMode}
                       slotType="inHand"
                       spendAction={spendAction}
-                                              spendSingleUseWeapon={spendSingleUseWeapon}
+                      spendSingleUseWeapon={spendSingleUseWeapon}
                       startTrade={startTrade}
                       wounded={character.wounded}
                     />
@@ -1159,7 +1168,7 @@ const PlayersSection = ({
           )}
 
           {/* ----- BOTTOM BUTTONS ----- */}
-          {(setupMode || roundEnded) && (
+          {(setupMode || roundEnded) && !slot && (
             <ModalSignButton
               noOverlay
               onClick={onClickMainButton}
@@ -1203,16 +1212,27 @@ const PlayersSection = ({
           )}
 
           {/* ----- ABILITIES DISPLAY ----- */}
-          <AbilitiesWrapper>
-            {character &&
-              character.abilities &&
-              character.abilities.map((ability, index) => (
-                // eslint-disable-next-line react/no-array-index-key
-                <Abilities key={`${character}-${index}-${ability}`}>
-                  {ability}
-                </Abilities>
-              ))}
-          </AbilitiesWrapper>
+          {character.wounded !== 'killed' && !setupMode && (
+            <AbilitiesWrapper number={character.abilities.length}>
+              {character &&
+                character.abilities &&
+                character.abilities.map((ability, index) => (
+                  <Abilities
+                    // eslint-disable-next-line react/no-array-index-key
+                    key={`${character}-${index}-${ability}`}
+                    level={index}
+                  >
+                    {device.current === MOBILE && !(index % 2) && (
+                      <LevelIndicator level={index} />
+                    )}
+                    {ability}
+                    {device.current === MOBILE && Boolean(index % 2) && (
+                      <LevelIndicator level={index} />
+                    )}
+                  </Abilities>
+                ))}
+            </AbilitiesWrapper>
+          )}
         </>
       )}
 
@@ -1221,6 +1241,7 @@ const PlayersSection = ({
       {/* --- Item selector --- */}
       {slot && slot <= 2 && (
         <ItemsSelectorModal
+          device={device.current}
           onSelect={changeInHand}
           selectSlot={selectSlot}
           slotType="inHand"

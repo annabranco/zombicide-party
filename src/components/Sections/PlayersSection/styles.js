@@ -6,13 +6,25 @@ import { IN_BACKPACK, MOBILE } from '../../../constants';
 
 export const Abilities = styled.p`
   label: Abilities;
-  margin: 2px auto;
   font-family: 'Grandstander', cursive;
   text-transform: uppercase;
-  font-weight: 700;
-  font-size: 1.2rem;
+  font-weight: 500;
   color: rgba(255, 255, 0, 0.6);
-  -webkit-text-stroke: 1px black;
+  letter-spacing: 0.05rem;
+  text-align: left;
+  font-size: 0.6rem;
+  text-align: ${({ level }) => (level % 2 ? 'right' : 'left')};
+
+  @media all and (min-width: 360px) {
+    font-size: 0.9rem;
+  }
+
+  @media all and (min-width: 768px) {
+    margin: 2px auto;
+    font-weight: 700;
+    font-size: 1.2rem;
+    -webkit-text-stroke: 1px black;
+  }
 `;
 Abilities.displayName = 'Abilities';
 
@@ -20,22 +32,46 @@ export const AbilitiesWrapper = styled.div`
   label: AbilitiesWrapper;
   z-index: 10;
   position: absolute;
-  bottom: 20px;
+  bottom: 36px;
   left: 50%;
   transform: translate(-50%, 0);
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  height: 44px;
+  width: 100%;
+  background: rgba(0, 0, 0, 0.7);
+  padding: 2px 5px;
   align-items: center;
-  justify-content: center;
-  height: 14%;
-  width: 90%;
+
+  grid-template-columns: ${({ number }) => {
+    if (number >= 2) {
+      return 'repeat(2, minmax(100px, 1fr));';
+    }
+    return 'repeat(1, minmax(100px, 1fr));';
+  }};
+
+  font-size: ${({ number }) => {
+    if (number > 2) {
+      return '0.8rem;';
+    }
+    if (number === 2) {
+      return '1rem;';
+    }
+    return '1.3rem;';
+  }};
 
   @media all and (min-width: 360px) {
-    bottom: 30px;
+    bottom: 46px;
+    height: 54px;
   }
 
   @media all and (min-width: 768px) {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
     bottom: 50px;
+    height: 14%;
+    width: 90%;
   }
 `;
 AbilitiesWrapper.displayName = 'AbilitiesWrapper';
@@ -119,7 +155,7 @@ export const AddNewChar = styled(AppButton)`
   z-index: 11;
   position: absolute;
   top: 0;
-  right: 10px;
+  right: 0;
   height: 30px;
   width: 30px;
   font-size: 1.2rem;
@@ -127,6 +163,11 @@ export const AddNewChar = styled(AppButton)`
   /* background: ${({ damageMode }) => damageMode && 'red'};
   color: ${({ damageMode }) => damageMode && 'black'};
   box-shadow: ${({ damageMode }) => damageMode && '0 0 5px white'}; */
+
+  @media all and (min-width: 768px) {
+    top: -40px;
+    right: 10px;
+  }
 
   &:hover {
     color: yellow;
@@ -152,6 +193,7 @@ export const CharacterOverlay = styled.div`
   /* position: absolute;
   top: 0;
   left: 0; */
+  margin-top: 40px;
   height: 100%;
   width: 100%;
   background: #4444;
@@ -180,13 +222,14 @@ export const CharacterSheet = styled.div`
   flex-direction: column;
   align-items: flex-start;
   justify-content: center;
-  height: ${`${window.innerHeight - 40}px`};
+  height: ${`${window.innerHeight}px`};
   width: 100%;
   background: black;
   display: none;
-
   @media all and (min-width: 768px) {
     align-items: center;
+    height: ${`${window.innerHeight - 40}px`};
+
     width: 90%;
   }
 
@@ -197,6 +240,13 @@ export const CharacterSheet = styled.div`
     `}
 `;
 CharacterSheet.displayName = 'CharacterSheet';
+
+/* ${() =>
+    window.navigator.userAgent.includes('iPhone') &&
+    css`
+      margin-top: 10px;
+      height: ${`${window.innerHeight - 10}px`};
+    `} */
 
 export const CharName = styled.h1`
   label: CharName;
@@ -232,19 +282,19 @@ export const CharItems = styled.div`
   margin-left: 10px;
   width: 70%;
 
-  ${({ slotType }) =>
-    slotType === IN_BACKPACK &&
-    css`
-      margin-top: -10px;
-    `}
-  ${({ trade }) =>
-    trade &&
-    css`
-      top: 80px;
-    `}
+  @media all and (min-width: 360px) {
+    top: 220px;
 
-      @media all and (min-width: 360px) {
-    top: 240px;
+    ${({ trade }) =>
+      trade &&
+      css`
+        top: 18px;
+        right: 10px;
+
+        @media all and (min-width: 768px) {
+          top: 100px;
+        }
+      `}
   }
 
   @media all and (min-width: 768px) {
@@ -252,6 +302,18 @@ export const CharItems = styled.div`
     margin-top: 65px;
     width: 90%;
   }
+
+  ${({ slotType }) =>
+    slotType === IN_BACKPACK &&
+    css`
+      margin-top: -10px;
+    `}
+
+  ${({ trade }) =>
+    trade &&
+    css`
+      top: 80px;
+    `}
 `;
 CharItems.displayName = 'CharItems';
 
@@ -338,8 +400,8 @@ export const IndicatorsWrapper = styled.div`
   label: IndicatorsWrapper;
   z-index: 10;
   position: absolute;
-  top: 20px;
-  left: 20px;
+  top: 26px;
+  left: 0;
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -356,24 +418,52 @@ export const IndicatorsWrapper = styled.div`
     position: absolute;
   }
 
-  ${({ header }) =>
+  ${({ header, setupMode }) =>
     header &&
     css`
+      z-index: 11;
       top: 0;
       left: 0;
       height: 26px;
-      width: 100%;
+      width: ${setupMode ? '100%' : 'calc(100% - 30px)'};
+
       justify-content: space-around;
       padding: 0 10px 0 10px;
 
       @media all and (min-width: 768px) {
         position: absolute;
-
         padding: 0 50px 0 20px;
       }
     `}
 `;
 IndicatorsWrapper.displayName = 'IndicatorsWrapper';
+
+export const LevelIndicator = styled.div`
+  label: LevelIndicator;
+  display: inline-block;
+  margin-right: 10px;
+  /* margin-left: -20px; */
+  height: 15px;
+  width: 15px;
+  border-radius: 50%;
+  border: 1px solid black;
+  transform: translate(0, 2px);
+  margin: ${({ level }) => (level % 2 ? '0 0 0 10px' : '0 10px 0 0')};
+
+  background: ${({ level }) => {
+    switch (level) {
+      case 1:
+        return '#ffff00';
+      case 2:
+        return '#ff6600';
+      case 3:
+        return '#ff0000';
+      default:
+        return '#4d79ff';
+    }
+  }};
+`;
+LevelIndicator.displayName = 'LevelIndicator';
 
 export const ModalSign = styled(AttackInstructions)`
   label: ModalSign;
@@ -384,9 +474,6 @@ export const ModalSign = styled(AttackInstructions)`
   height: 100%;
   background: ${({ noOverlay }) => (noOverlay ? 'none' : 'rgba(0, 0, 0, 0.6)')};
   /* background: rgba(0, 0, 0, 0.6); */
-  font-family: Crackhouse, 'Grandstander', cursive;
-  font-size: 4rem;
-  text-align: right;
 
   ${({ noOverlay }) =>
     noOverlay &&
@@ -401,6 +488,8 @@ export const ModalSign = styled(AttackInstructions)`
   ${({ killed }) =>
     killed &&
     css`
+      @media all and (min-width: 768px) {
+      }
       width: 100%;
     `}
 `;
@@ -409,11 +498,20 @@ ModalSign.displayName = 'ModalSign';
 export const ModalSignText = styled.p`
   label: ModalSignText;
   position: absolute;
-  top: 180px;
-  right: 100px;
+  top: 120px;
   width: 100%;
   opacity: 0.9;
   white-space: pre;
+  font-size: 3rem;
+  font-family: Crackhouse, 'Grandstander', cursive;
+  text-align: center;
+
+  @media all and (min-width: 768px) {
+    top: 180px;
+    right: 100px;
+    font-size: 4rem;
+    text-align: right;
+  }
 `;
 ModalSignText.displayName = 'ModalSignText';
 
@@ -441,6 +539,9 @@ export const ModalSignButton = styled(AppButton)`
       left: 50%;
       transform: translate(-50%, 0);
 
+      @media all and (min-width: 320px) {
+        transform: translate(-50%, -5px);
+      }
       @media all and (min-width: 768px) {
         bottom: 15px;
       }
@@ -460,7 +561,7 @@ export const ModalSignButton = styled(AppButton)`
     `}
 
     @media all and (min-width: 360px) {
-    height: 45px;
+    height: 40px;
   }
 
   @media all and (min-width: 768px) {
@@ -542,6 +643,15 @@ export const NextButton = styled(AppButton)`
 
   @media all and (min-width: 360px) {
     font-size: 1.1rem;
+
+    ${({ trade }) =>
+      trade &&
+      css`
+        height: 30px;
+        width: 30px;
+        font-size: 2rem;
+        padding: 0 0 4px 5px;
+      `}
   }
 
   @media all and (min-width: 768px) {
@@ -583,14 +693,22 @@ export const NoiseWrapper = styled.div`
   label: NoiseWrapper;
   z-index: 10;
   position: absolute;
-  top: calc(18% + 50px);
-  right: 30px;
+  top: 20%;
+  right: 95px;
   display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: flex-end;
-  height: 45px;
-  width: 300px;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
+
+  @media all and (min-width: 768px) {
+    top: calc(18% + 50px);
+    right: 30px;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-end;
+    height: 45px;
+    width: 300px;
+  }
 `;
 NoiseWrapper.displayName = 'NoiseWrapper';
 
@@ -637,6 +755,14 @@ export const PreviousButton = styled(NextButton)`
   right: unset;
   left: 0;
 
+  @media all and (min-width: 360px) {
+    ${({ trade }) =>
+      trade &&
+      css`
+        padding: 0 4px 0 0;
+      `}
+  }
+
   @media all and (min-width: 768px) {
     left: 20px;
   }
@@ -646,7 +772,6 @@ export const PreviousButton = styled(NextButton)`
     css`
       left: 10px;
       padding-left: 0;
-      padding-right: 6px;
     `}
 `;
 PreviousButton.displayName = 'PreviousButton';
