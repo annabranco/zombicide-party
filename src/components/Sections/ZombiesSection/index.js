@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import { bool, func } from 'prop-types';
-import { DOGZ, ZOMBIES_S1 } from '../../../setup/zombies';
+import { ALL_ZOMBIES, DOGZ, ZOMBIES_S1 } from '../../../setup/zombies';
 import { useStateWithLabel } from '../../../utils/hooks';
 import SoundBlock from '../../SoundBlock';
 import { SelectorArea } from '../../SoundBlock/styles';
@@ -10,20 +10,38 @@ import {
   NoSelectOverlay,
   SubSectionWrapper,
   ZombiesArea,
-  ZombiesTurnSign
+  ZombiesTurnSign,
+  AttackBurronsWrapper,
+  ConfirmAttackButton
 } from './styles';
+import { getMediaQuery } from '../../../utils/devices';
+import { MOBILE } from '../../../constants';
 
 const ZombiesSection = ({
   damageMode,
   roundEnded,
+  setZombiesTurn,
   toggleDamageMode,
   visible,
   zombiesTurn
 }) => {
-  const [zombies, changeZombies] = useStateWithLabel(
-    [...ZOMBIES_S1, DOGZ],
-    'zombies'
-  );
+  const [zombies, changeZombies] = useStateWithLabel(ALL_ZOMBIES, 'zombies');
+  const [turnLabel, toggleTurnLabel] = useStateWithLabel(true, 'turnLabel');
+
+  const device = useRef(getMediaQuery());
+
+  const endZombiesTurn = () => {
+    setZombiesTurn(false);
+    toggleTurnLabel(true);
+  };
+
+  useEffect(() => {
+    if (turnLabel && zombiesTurn) {
+      setTimeout(() => {
+        toggleTurnLabel(false);
+      }, 2000);
+    }
+  }, [zombiesTurn]);
 
   return (
     <ZombiesArea visible={visible}>
@@ -35,14 +53,18 @@ const ZombiesSection = ({
       )}
 
       <SubSectionWrapper>
-        <SelectorArea columns="big">
-          {zombies.map(zombie => (
-            <div key={zombie.name}>
+        <SelectorArea columns={device.current === MOBILE ? 3 : 'big'} zombies>
+          {Object.keys(zombies).map(zombie => (
+            <div key={ALL_ZOMBIES[zombie].name}>
               <SoundBlock
-                differentSounds={zombie.sounds}
-                img={zombie.img}
-                name={zombie.name}
-                special={zombie.special}
+                differentSounds={ALL_ZOMBIES[zombie].sounds}
+                img={ALL_ZOMBIES[zombie].img}
+                isMobile={device.current === MOBILE}
+                name={ALL_ZOMBIES[zombie].name}
+                rows={
+                  device.current === MOBILE && Object.keys(zombies).length / 3
+                }
+                special={ALL_ZOMBIES[zombie].special}
                 toggleDamageMode={toggleDamageMode}
                 type="activations"
               />
@@ -50,12 +72,24 @@ const ZombiesSection = ({
           ))}
         </SelectorArea>
         {damageMode && (
-          <CancelAttackButton onClick={() => toggleDamageMode(false)}>
-            Cancel
-          </CancelAttackButton>
+          <AttackBurronsWrapper>
+            <CancelAttackButton onClick={() => toggleDamageMode(false)}>
+              Cancel
+            </CancelAttackButton>
+            {device.current === MOBILE && (
+              <ConfirmAttackButton onClick={() => setZombiesTurn(false)}>
+                OK
+              </ConfirmAttackButton>
+            )}
+          </AttackBurronsWrapper>
         )}
-        {zombiesTurn && <ZombiesTurnSign>Zombies round</ZombiesTurnSign>}
+        {zombiesTurn && turnLabel && (
+          <ZombiesTurnSign>Zombies round</ZombiesTurnSign>
+        )}
       </SubSectionWrapper>
+      <ConfirmAttackButton type="button" onClick={endZombiesTurn}>
+        END
+      </ConfirmAttackButton>
     </ZombiesArea>
   );
 };
@@ -63,6 +97,7 @@ const ZombiesSection = ({
 ZombiesSection.propTypes = {
   damageMode: bool.isRequired,
   roundEnded: bool.isRequired,
+  setZombiesTurn: func.isRequired,
   toggleDamageMode: func.isRequired,
   visible: bool.isRequired,
   zombiesTurn: bool.isRequired

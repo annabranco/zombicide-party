@@ -11,7 +11,10 @@ import {
   ZombieActions,
   ItemIcon
 } from './styles';
-import { ZombieLabel } from '../Sections/ZombiesSection/styles';
+import {
+  ZombieLabel,
+  ZombieImageForMobile
+} from '../Sections/ZombiesSection/styles';
 import { IN_BACKPACK, IN_HAND, ITEMS, WEAPONS } from '../../constants';
 import ActionButton from '../ActionButton';
 import { SOUNDS } from '../../assets/sounds';
@@ -35,6 +38,7 @@ const SoundBlock = ({
   noAudio,
   onClickCard,
   onClickCombine,
+  rows,
   setupMode,
   slot,
   slotType,
@@ -63,7 +67,7 @@ const SoundBlock = ({
       : name;
 
   const getImage = () => {
-    if (trade || isMobile) {
+    if ((trade || isMobile) && type !== 'activations') {
       return (
         <ItemIcon
           active={isActive}
@@ -78,6 +82,9 @@ const SoundBlock = ({
       );
     }
     if (img) {
+      if (isMobile) {
+        return <ZombieImageForMobile name={name} img={img} rows={rows} />;
+      }
       return (
         <PlayIcon
           active={isActive}
@@ -203,6 +210,7 @@ SoundBlock.propTypes = {
   noAudio: bool,
   onClickCard: func.isRequired,
   onClickCombine: func,
+  rows: number,
   setupMode: bool.isRequired,
   slot: number,
   slotType: string,
@@ -230,6 +238,7 @@ SoundBlock.defaultProps = {
   needsToBeReloaded: false,
   noAudio: false,
   onClickCombine: null,
+  rows: null,
   slot: null,
   special: null,
   spendAmmo: () => null,

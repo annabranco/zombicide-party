@@ -16,10 +16,6 @@ const MainScreen = ({
   setZombiesTurn,
   zombiesTurn
 }) => {
-  const [activeSection, changeActiveSection] = useStateWithLabel(
-    'PlayersSection',
-    'activeSection'
-  );
   const [rounds, updateRounds] = useStateWithLabel([], 'round');
   const [displayRounds, toggleDisplayRounds] = useStateWithLabel(
     false,
@@ -69,6 +65,7 @@ const MainScreen = ({
       />
       <ZombiesSection
         damageMode={damageMode}
+        setZombiesTurn={setZombiesTurn}
         toggleDamageMode={toggleDamageMode}
         visible={zombiesTurn}
         zombiesTurn={zombiesTurn}

@@ -233,6 +233,11 @@ export const PlayIcon = styled.img`
   max-width: 100%;
   transition: transform ease 0.5s;
 
+  @media all and (min-width: 768px) {
+    max-height: 100%;
+    max-width: 100%;
+  }
+
   ${({ type, active }) => {
     if (type === 'wound') {
       return css`
@@ -371,17 +376,17 @@ PlayText.displayName = 'PlayText';
 export const SelectorArea = styled.div`
   label: SelectorArea;
   position: relative;
-  height: calc(100vh - 80px);
+  height: ${`${window.innerHeight}px`};
   background: #232222;
   display: flex;
   flex-direction: row;
   align-items: flex-start;
   justify-content: center;
-  overflow-y: auto;
+  overflow-y: ${({ zombies }) => (zombies ? 'hidden' : 'auto')};
   overflow-x: hidden;
   padding: 20px 10px 30px;
 
-  ${({ columns }) => {
+  ${({ columns, zombies }) => {
     if (columns === 'big') {
       return css`
         height: calc(100vh - 30px);
@@ -390,7 +395,7 @@ export const SelectorArea = styled.div`
     if (columns) {
       return css`
         display: grid;
-        width: 90%;
+        width: ${zombies ? '100%' : '90%'};
         grid-gap: 10px;
         grid-template-columns: repeat(${columns}, minmax(100px, 1fr));
       `;
@@ -399,6 +404,7 @@ export const SelectorArea = styled.div`
   }}
 
   @media all and (min-width: 768px) {
+    height: calc(100vh - 80px);
     overflow: hidden;
   }
 `;

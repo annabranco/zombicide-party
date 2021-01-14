@@ -16,7 +16,7 @@ const App = () => {
   );
   const [damageMode, toggleDamageMode] = useStateWithLabel(false, 'damageMode');
   const [loadedGame, loadGame] = useStateWithLabel(null, 'damageMode');
-  const [zombiesTurn, setZombiesTurn] = useStateWithLabel(null, 'zombiesTurn');
+  const [zombiesTurn, setZombiesTurn] = useStateWithLabel(false, 'zombiesTurn');
 
   useEffect(() => {
     const game = JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY));

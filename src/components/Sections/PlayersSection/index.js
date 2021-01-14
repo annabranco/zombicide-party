@@ -556,11 +556,18 @@ const PlayersSection = ({
     sound.currentTime = 0;
     sound.play();
 
-    toggleDamageMode(false);
     updateData(woundedCharacter);
 
-    if (remainingCharacters.length > 0) {
-      setTimeout(() => changeToAnotherPlayer(NEXT), 2000);
+    if (device.current === MOBILE) {
+      setTimeout(() => {
+        setZombiesTurn(true);
+        toggleDamageMode(false);
+      }, 4000);
+    } else if (woundedCharacter.wounded === 'killed') {
+      toggleDamageMode(false);
+      if (remainingCharacters.length > 0) {
+        setTimeout(() => changeToAnotherPlayer(NEXT), 2000);
+      }
     }
   };
 
@@ -776,9 +783,12 @@ const PlayersSection = ({
 
   useEffect(() => {
     if (characters) {
-      checkIfRoundHasFinished();
-
       let nextChar = cloneDeep(characters[charIndex]);
+
+      if (!damageMode) {
+        checkIfRoundHasFinished();
+      }
+
       if (
         nextChar &&
         (charIndex !== prevCharIndex.current ||
@@ -1168,7 +1178,7 @@ const PlayersSection = ({
           )}
 
           {/* ----- BOTTOM BUTTONS ----- */}
-          {(setupMode || roundEnded) && !slot && (
+          {(setupMode || roundEnded) && !slot && !damageMode && (
             <ModalSignButton
               noOverlay
               onClick={onClickMainButton}
