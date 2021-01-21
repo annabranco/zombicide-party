@@ -106,10 +106,10 @@ export const ItemBlank = styled.div`
     damageMode && !allSlotsAreEmpty ? 'none' : 'flex'};
   flex-direction: column;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
   height: 100px;
   /* width: 70px; */
-  background: rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.25);
   padding-top: 0;
   font-family: 'Grandstander', cursive;
   font-size: 1.1rem;
@@ -118,6 +118,7 @@ export const ItemBlank = styled.div`
   color: rgba(255, 255, 255, 0.5);
   text-shadow: 0 0 12px black;
   text-align: center;
+  box-shadow: inset 1px 1px 15px rgba(0, 0, 0, 0.4);
 
   @media all and (min-width: 768px) {
     cursor: ${({ allSlotsAreEmpty, damageMode, canSearch, setupMode, trade }) =>

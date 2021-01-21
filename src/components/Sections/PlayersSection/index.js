@@ -32,8 +32,10 @@ import {
   CharName,
   CharacterOverlay,
   CharacterSheet,
+  PromoWrapper,
   ModalSignButton,
   NextButton,
+  AbilitiesInnerSeparator,
   PlayerTag,
   PreviousButton,
   SelectButton,
@@ -61,6 +63,7 @@ import {
   CardsActions,
   CardsActionsText,
   CharacterOverlayImage,
+  AbilitiesWrapperDesktop,
   NavIconsWrapper,
   NavIcons
 } from './styles';
@@ -375,18 +378,26 @@ const PlayersSection = ({
         return `${result}-${char.name}`;
       })
       .split('-');
-    const charsBeforeCurrent = charNames.splice(0, firstPlayerIndex);
 
-    const currentChar = charNames.shift();
-    const orderedNames = [currentChar, ...charNames, ...charsBeforeCurrent];
+    const updatedCharNames = [...charNames];
+    const charsBeforeCurrent = updatedCharNames.splice(0, firstPlayerIndex);
+
+    const currentChar = updatedCharNames.shift();
+    const orderedNames = [
+      currentChar,
+      ...updatedCharNames,
+      ...charsBeforeCurrent
+    ];
     const orderedChars = [];
 
     orderedNames.forEach(name => {
       orderedChars.push({
         name,
-        face: charsByName[name]
+        face: charsByName[name],
+        index: charNames.indexOf(name)
       });
     });
+    console.log('$$$ orderedChars', orderedChars);
     return orderedChars;
   };
 
@@ -1198,7 +1209,7 @@ const PlayersSection = ({
           {/* ----- ITEMS AREA ----- */}
           {character.wounded !== KILLED && (
             <>
-              {!dropMode && (
+              {!dropMode && checkIfHasAnyActionLeft(character.actionsLeft) && (
                 <CardsActions>
                   <CardsActionsText onClick={startTrade}>
                     {TRADE}
@@ -1317,6 +1328,7 @@ const PlayersSection = ({
                   alt={`Change character to ${char.name}`}
                   currentChar={character.name === char.name}
                   key={`charNav-${char.name}`}
+                  onClick={() => changeCharIndex(char.index)}
                   src={char.face}
                   played={charIfCharHasPlayed(char.name)}
                 />
@@ -1372,6 +1384,54 @@ const PlayersSection = ({
                 ))}
             </AbilitiesWrapper>
           )}
+          {character &&
+            character.wounded !== KILLED &&
+            device.current === DESKTOP && (
+              <AbilitiesWrapperDesktop>
+                <AbilitiesInnerSeparator>
+                  <PromoWrapper
+                    active={character.abilities.includes(
+                      character.promotions.blue.name
+                    )}
+                  >
+                    <LevelIndicator level={0} />
+                    {character.promotions.blue.name}
+                  </PromoWrapper>
+                </AbilitiesInnerSeparator>
+                <AbilitiesInnerSeparator>
+                  <PromoWrapper
+                    active={character.abilities.includes(
+                      character.promotions.yellow.name
+                    )}
+                  >
+                    <LevelIndicator level={1} />
+                    {character.promotions.yellow.name}
+                  </PromoWrapper>
+                </AbilitiesInnerSeparator>
+                <AbilitiesInnerSeparator>
+                  {character.promotions.orange.map(promo => (
+                    <PromoWrapper
+                      active={character.abilities.includes(promo.name)}
+                      key={`promo-orange-${promo.name.replace(' ', '-')}`}
+                    >
+                      <LevelIndicator level={2} />
+                      {promo.name}
+                    </PromoWrapper>
+                  ))}
+                </AbilitiesInnerSeparator>
+                <AbilitiesInnerSeparator>
+                  {character.promotions.red.map(promo => (
+                    <PromoWrapper
+                      active={character.abilities.includes(promo.name)}
+                      key={`promo-orange-${promo.name.replace(' ', '-')}`}
+                    >
+                      <LevelIndicator level={3} />
+                      {promo.name}
+                    </PromoWrapper>
+                  ))}
+                </AbilitiesInnerSeparator>
+              </AbilitiesWrapperDesktop>
+            )}
         </>
       )}
 

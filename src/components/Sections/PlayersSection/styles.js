@@ -29,6 +29,22 @@ export const Abilities = styled.p`
 `;
 Abilities.displayName = 'Abilities';
 
+export const AbilitiesInnerSeparator = styled.div`
+  label: AbilitiesInnerSeparator;
+  z-index: 10;
+  padding: 10px 10px;
+  width: 90%;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.3);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  &:last-of-type {
+    border: none;
+  }
+`;
+AbilitiesInnerSeparator.displayName = 'AbilitiesInnerSeparator';
+
 export const AbilitiesWrapper = styled.div`
   label: AbilitiesWrapper;
   z-index: 10;
@@ -77,6 +93,27 @@ export const AbilitiesWrapper = styled.div`
   }
 `;
 AbilitiesWrapper.displayName = 'AbilitiesWrapper';
+
+export const AbilitiesWrapperDesktop = styled.div`
+  label: AbilitiesWrapperDesktop;
+  z-index: 10;
+  position: absolute;
+  padding: 20px 0;
+  bottom: 90px;
+  right: 20px;
+  background: rgba(0, 0, 0, 0.15);
+  border: 1px solid rgba(0, 0, 0, 0.5);
+  height: 55%;
+  width: 20%;
+  border-radius: 10px;
+  box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.2),
+    inset 1px 1px 5px rgba(0, 0, 0, 0.3);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-around;
+`;
+AbilitiesWrapperDesktop.displayName = 'AbilitiesWrapperDesktop';
 
 export const ActionsLabelWrapper = styled.div`
   label: ActionsLabelWrapper;
@@ -638,11 +675,16 @@ export const LevelIndicator = styled.div`
       case 2:
         return '#ff6600';
       case 3:
-        return '#ff0000';
+        return '#b1002c';
       default:
         return '#4d79ff';
     }
   }};
+
+  @media all and (min-width: 1200px) {
+    margin: 0 10px 0 0;
+    transform: translate(0, -2px);
+  }
 `;
 LevelIndicator.displayName = 'LevelIndicator';
 
@@ -815,17 +857,21 @@ export const NavIcons = styled.img`
   z-index: 15;
   width: 45px;
   margin: 0 2px;
+  cursor: pointer;
 
   ${({ played }) =>
     played &&
     css`
-      filter: grayscale(1) contrast(0.5);
+      filter: grayscale(1) brightness(1.3) contrast(0.6);
+      width: 30px;
     `}
 
-  ${({ currentChar, played }) =>
+  ${({ currentChar }) =>
     currentChar &&
     css`
       width: 70px;
+      filter: grayscale(100%) brightness(120%) sepia(90%) hue-rotate(5deg)
+        saturate(500%) contrast(0.7);
     `}
 `;
 NavIcons.displayName = 'NavIcons';
@@ -1015,6 +1061,34 @@ export const PreviousButton = styled(NextButton)`
     `}
 `;
 PreviousButton.displayName = 'PreviousButton';
+
+export const PromoWrapper = styled.div`
+  label: PromoWrapper;
+  display: inline-block;
+  padding: 5px 2px 3px;
+  border-radius: 5px;
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  font-family: 'Grandstander', cursive;
+  text-transform: uppercase;
+  color: gray;
+  font-weight: 300;
+  letter-spacing: 0.1rem;
+  font-size: 0.9rem;
+
+  ${({ active }) =>
+    active &&
+    css`
+      color: white;
+      font-size: 1rem;
+      font-weight: 700;
+      -webkit-text-stroke: 1px black;
+    `}
+`;
+PromoWrapper.displayName = 'PromoWrapper';
 
 export const SelectButton = styled(NextButton)`
   label: SelectButton;
