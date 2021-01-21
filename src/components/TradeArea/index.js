@@ -22,13 +22,21 @@ import {
   PlayerName,
   TradeWrapper
 } from './styles';
-import { IN_BACKPACK, IN_HAND } from '../../constants';
+import {
+  IN_BACKPACK,
+  IN_HAND,
+  SELECT_TRADE_PARTNER,
+  TRADING_WITH,
+  WOUNDED,
+  NONE
+} from '../../constants';
 
 const TradeArea = ({
   spendAction,
   character,
   characters,
   confirmTrade,
+  device,
   startTrade
 }) => {
   const [updatedCharacter, updateCharacter] = useStateWithLabel(
@@ -115,28 +123,28 @@ const TradeArea = ({
         const index2 = slot <= 2 ? slot - 1 : slot - 3;
         if (selectedItem1.char === char) {
           if (updChar.name === char) {
-            updChar[typeItem1][index1] = item === 'none' ? null : item;
+            updChar[typeItem1][index1] = item === NONE ? null : item;
             updChar[typeItem2][index2] =
-              selectedItem1.item === 'none' ? null : selectedItem1.item;
+              selectedItem1.item === NONE ? null : selectedItem1.item;
             updateCharacter(updChar);
           } else {
-            updPartn[typeItem1][index1] = item === 'none' ? null : item;
+            updPartn[typeItem1][index1] = item === NONE ? null : item;
             updPartn[typeItem2][index2] =
-              selectedItem1.item === 'none' ? null : selectedItem1.item;
+              selectedItem1.item === NONE ? null : selectedItem1.item;
             updatePartner(updPartn);
           }
-        } else if (selectedItem1.item === 'Wounded' || item === 'Wounded') {
+        } else if (selectedItem1.item === WOUNDED || item === WOUNDED) {
           console.log('NOT');
         } else if (selectedItem1.char === updChar.name) {
-          updChar[typeItem1][index1] = item === 'none' ? null : item;
+          updChar[typeItem1][index1] = item === NONE ? null : item;
           updPartn[typeItem2][index2] =
-            selectedItem1.item === 'none' ? null : selectedItem1.item;
+            selectedItem1.item === NONE ? null : selectedItem1.item;
           updateCharacter(updChar);
           updatePartner(updPartn);
         } else {
-          updPartn[typeItem1][index1] = item === 'none' ? null : item;
+          updPartn[typeItem1][index1] = item === NONE ? null : item;
           updChar[typeItem2][index2] =
-            selectedItem1.item === 'none' ? null : selectedItem1.item;
+            selectedItem1.item === NONE ? null : selectedItem1.item;
           updateCharacter(updChar);
           updatePartner(updPartn);
         }
@@ -171,33 +179,35 @@ const TradeArea = ({
           <PlayerName color={getCharacterColor(tradePartner.name)}>
             {tradePartner.player}
           </PlayerName>
-          <CharItems slotType="inHand" trade>
+          <CharItems slotType={IN_HAND} trade>
             {tradePartner.inHand.map((item, index) => (
               <ItemsArea
                 charName={tradePartner.name}
+                device={device}
                 index={index}
                 item={item}
                 itemSelected={Boolean(selectedItem1)}
                 key={`${item}-${index + 1}`}
                 onClickDrop={onClickDrop}
-                slotType="inHand"
+                slotType={IN_HAND}
                 trade
                 tradeItem={onTrade}
                 wounded={tradePartner.wounded}
               />
             ))}
           </CharItems>
-          <CharItems slotType="inBackpack" trade>
+          <CharItems slotType={IN_BACKPACK} trade>
             {tradePartner.inBackpack.map((item, index) => (
               <ItemsArea
                 charName={tradePartner.name}
+                device={device}
                 index={index}
                 item={item}
                 itemSelected={Boolean(selectedItem1)}
                 key={`${item}-${index + 3}`}
                 noAudio
                 onClickDrop={onClickDrop}
-                slotType="inBackpack"
+                slotType={IN_BACKPACK}
                 trade
                 tradeItem={onTrade}
                 wounded={tradePartner.wounded}
@@ -221,8 +231,8 @@ const TradeArea = ({
 
           <CurrentPartnerTag>
             {tradeEstablished
-              ? `Trading with ${tradePartner.name}`
-              : 'Select character to trade with'}
+              ? TRADING_WITH(tradePartner.name)
+              : SELECT_TRADE_PARTNER}
           </CurrentPartnerTag>
         </CharacterTrading>
       )}
@@ -235,7 +245,7 @@ const TradeArea = ({
               {updatedCharacter.player}
             </PlayerName>
           </CharacterId>
-          <CharItems slotType="inHand" trade>
+          <CharItems slotType={IN_HAND} trade>
             {updatedCharacter.inHand.map((item, index) => (
               <ItemsArea
                 charName={updatedCharacter.name}
@@ -244,14 +254,14 @@ const TradeArea = ({
                 itemSelected={Boolean(selectedItem1)}
                 key={`${item}-${index + 1}`}
                 onClickDrop={onClickDrop}
-                slotType="inHand"
+                slotType={IN_HAND}
                 trade
                 tradeItem={onTrade}
                 wounded={updatedCharacter.wounded}
               />
             ))}
           </CharItems>
-          <CharItems slotType="inBackpack" trade>
+          <CharItems slotType={IN_BACKPACK} trade>
             {updatedCharacter.inBackpack.map((item, index) => (
               <ItemsArea
                 charName={updatedCharacter.name}
@@ -261,7 +271,7 @@ const TradeArea = ({
                 key={`${item}-${index + 3}`}
                 noAudio
                 onClickDrop={onClickDrop}
-                slotType="inBackpack"
+                slotType={IN_BACKPACK}
                 trade
                 tradeItem={onTrade}
                 wounded={updatedCharacter.wounded}
@@ -289,6 +299,7 @@ TradeArea.propTypes = {
   character: string.isRequired,
   characters: string.isRequired,
   confirmTrade: func.isRequired,
+  device: string.isRequired,
   spendAction: func.isRequired,
   startTrade: func.isRequired
 };

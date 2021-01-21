@@ -1,5 +1,14 @@
 import styled from '@emotion/styled';
 import { css } from '@emotion/core';
+import {
+  CAR_ENTER_ACTION,
+  COMBINE_ACTION,
+  END_TURN_ACTION,
+  MOVE_ACTION,
+  OBJECTIVE_ACTION,
+  RELOAD_ACTION,
+  SEARCH_ACTION
+} from '../../constants';
 
 export const ActionIcon = styled.i`
   z-index: 5;
@@ -11,6 +20,8 @@ export const ActionIcon = styled.i`
   border: 1px solid black;
   padding: 7px;
   border-radius: 15px;
+  box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.5);
+
   cursor: ${({ isActive }) => (isActive ? 'not-allowed' : 'pointer')};
   transition: background ease 5s opacity ease 5s;
   opacity: ${({ isActive }) => (isActive ? 0.2 : 1)};
@@ -37,12 +48,13 @@ export const ActionIcon = styled.i`
   }}
 
   ${({ actionType }) => {
-    if (actionType === 'search' || actionType === 'reload') {
+    if (actionType === SEARCH_ACTION || actionType === RELOAD_ACTION) {
       return css`
         z-index: 10;
         background: none;
         position: absolute;
-        left: 50%;
+        top: -70px;
+        left: 42%;
         transform: translate(-50%, 0);
         padding: 0;
         line-height: 0.9;
@@ -50,16 +62,31 @@ export const ActionIcon = styled.i`
         font-size: 4rem;
         color: rgba(255, 255, 255, 0.7);
         -webkit-text-stroke: 1px black;
+
+        @media all and (min-width: 768px) {
+          cursor: ${({ isActive }) => (isActive ? 'not-allowed' : 'pointer')};
+          z-index: 10;
+          background: none;
+          position: absolute;
+          left: 50%;
+          transform: translate(-50%, 0);
+          padding: 0;
+          line-height: 0.9;
+          border: none;
+          font-size: 4rem;
+          color: rgba(255, 255, 255, 0.7);
+          -webkit-text-stroke: 1px black;
+        }
       `;
     }
-    if (actionType === 'move') {
+    if (actionType === MOVE_ACTION) {
       return css`
         font-size: 2.2rem;
         line-height: 1.4;
       `;
     }
 
-    if (actionType === 'endTurn') {
+    if (actionType === END_TURN_ACTION) {
       return css`
         color: maroon;
         font-size: 3rem;
@@ -69,7 +96,7 @@ export const ActionIcon = styled.i`
         }
       `;
     }
-    if (actionType === 'objective') {
+    if (actionType === OBJECTIVE_ACTION) {
       return css`
         color: darkgreen;
         &:hover {
@@ -77,7 +104,7 @@ export const ActionIcon = styled.i`
         }
       `;
     }
-    if (actionType === 'combine') {
+    if (actionType === COMBINE_ACTION) {
       return css`
         display: none;
         background: none;
@@ -119,6 +146,14 @@ export const ActionIcon = styled.i`
     }
     return null;
   }}
+
+  ${({ manyButtons }) =>
+    manyButtons &&
+    css`
+      height: 40px;
+      width: 40px;
+      font-size: 2rem;
+    `}
 `;
 ActionIcon.displayName = 'ActionIcon';
 
@@ -128,7 +163,13 @@ export const CarActionIcon = styled.i`
   font-size: 1.8rem;
   line-height: 0.3;
   transform: ${({ actionType }) =>
-    actionType === 'car-enter' && 'rotateY(180deg)'};
+    actionType === CAR_ENTER_ACTION && 'rotateY(180deg)'};
+
+  ${({ manyButtons }) =>
+    manyButtons &&
+    css`
+      font-size: 1.5rem;
+    `}
 `;
 CarActionIcon.displayName = 'CarActionIcon';
 
@@ -138,6 +179,12 @@ export const CarIcon = styled.i`
   font-size: 2.5rem;
   line-height: 1;
   text-align: center;
+
+  ${({ manyButtons }) =>
+    manyButtons &&
+    css`
+      font-size: 2rem;
+    `}
 `;
 CarIcon.displayName = 'CarIcon';
 
@@ -150,7 +197,7 @@ export const CarIconWrapper = styled.div`
   border: 1px solid black;
   padding: 7px;
   border-radius: 15px;
-  transition: all ease 5s;
+  transition: background ease 5s;
   opacity: ${({ isActive }) => (isActive ? 0.2 : 1)};
   display: flex;
   flex-direction: row;
@@ -169,5 +216,13 @@ export const CarIconWrapper = styled.div`
       color: yellow;
     }
   }
+
+  ${({ manyButtons }) =>
+    manyButtons &&
+    css`
+      height: 56px;
+      width: 55px;
+      font-size: 2rem;
+    `}
 `;
 CarIconWrapper.displayName = 'CarIconWrapper';

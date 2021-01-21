@@ -15,7 +15,18 @@ import {
   ZombieLabel,
   ZombieImageForMobile
 } from '../Sections/ZombiesSection/styles';
-import { IN_BACKPACK, IN_HAND, ITEMS, WEAPONS } from '../../constants';
+import {
+  ACTIVATE,
+  ACTIVATIONS,
+  ATTACK,
+  COMBINE_ACTION,
+  IN_BACKPACK,
+  IN_HAND,
+  ITEMS,
+  KILL,
+  WEAPONS,
+  WOUND
+} from '../../constants';
 import ActionButton from '../ActionButton';
 import { SOUNDS } from '../../assets/sounds';
 
@@ -61,13 +72,13 @@ const SoundBlock = ({
     !noAudio &&
     slotType !== IN_BACKPACK &&
     type !== ITEMS &&
-    type !== 'wound' &&
+    type !== WOUND &&
     name === 'SniperRifle'
       ? 'Rifle'
       : name;
 
   const getImage = () => {
-    if ((trade || isMobile) && type !== 'activations') {
+    if ((trade || isMobile) && type !== ACTIVATIONS) {
       return (
         <ItemIcon
           active={isActive}
@@ -77,6 +88,7 @@ const SoundBlock = ({
           isMobile={isMobile}
           isSelected={isSelected}
           name={name}
+          slotType={slotType}
           type={type}
         />
       );
@@ -110,10 +122,10 @@ const SoundBlock = ({
         quickAttackDebounce.current = false;
       }, 1000);
       activateKillButtons();
-      callback('attack');
+      callback(ATTACK);
     }
     if (filename && ((type === WEAPONS && canAttack) || type !== WEAPONS)) {
-      if (type === 'activations') {
+      if (type === ACTIVATIONS) {
         sound.current = new Audio(
           SOUNDS[
             `${filename}${differentSounds ? randomNumber(differentSounds) : ''}`
@@ -148,7 +160,7 @@ const SoundBlock = ({
 
   return (
     <Block damageMode={damageMode} type={type} wounded={wounded}>
-      {(isActive || isHighlighted) && type === 'activations' && (
+      {(isActive || isHighlighted) && type === ACTIVATIONS && (
         <ZombieLabel isActive={isActive}>{name || label}</ZombieLabel>
       )}
       <PlayImageButton
@@ -162,21 +174,21 @@ const SoundBlock = ({
       >
         {checkIfItemCanBeCombined(name) && canCombine && (
           <ActionButton
-            actionType="combine"
+            actionType={COMBINE_ACTION}
             callback={event => onClickCombine([name, slot], event)}
             combineItemSelected={combineItemSelected}
             combinePair={combinePair}
           />
         )}
-        {type === 'activations' && (
+        {type === ACTIVATIONS && (
           <ZombieActions>
-            <Action action="activate">Activate</Action>
-            <Action action="attack" onClick={() => toggleDamageMode(name)}>
+            <Action action={ACTIVATE}>Activate</Action>
+            <Action action={ATTACK} onClick={() => toggleDamageMode(name)}>
               Attack survivor!
             </Action>
             {special && (
               <Action
-                action="kill"
+                action={KILL}
                 onClick={() => toggleDamageMode(`${name}-instant`)}
               >
                 {special}

@@ -154,11 +154,15 @@ export const SelectionButton = styled.button`
   text-transform: uppercase;
 
   @media all and (min-width: 768px) {
-    width: 300px;
+    width: 200px;
     background-size: 100% 100%;
     margin: 20px 40px;
     padding: 10px 25px;
-    font-size: 2.5rem;
+  }
+
+  @media all and (min-width: 1200px) {
+    width: 180px;
+    font-size: 1.6rem;
   }
 
   &: hover {
@@ -249,6 +253,12 @@ export const ZombieIntro = styled.img`
     top: 40px;
     width: 400px;
   }
+
+  @media all and (min-height: 1000px) {
+    top: 15%;
+    width: 75%;
+  }
+
   @media all and (min-width: 1500px) {
     top: 60px;
     width: 500px;

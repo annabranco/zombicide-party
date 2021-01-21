@@ -5,6 +5,7 @@ import { activeImage, inactiveImage } from '../../styles';
 
 export const CharacterArea = styled.div`
   label: CharacterArea;
+  /* display: flex; */
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -14,15 +15,59 @@ export const CharacterArea = styled.div`
   width: 100%;
 
   @media all and (min-width: 768px) {
-    margin: 0 -25px;
+    margin: 0 25px;
+    ${({ number }) => {
+      if (number >= 8) {
+        return css`
+          ${'' /* position: absolute; */}
+          margin-top: 20px;
+          display: grid;
+          width: 90%;
+          grid-template-columns: repeat(4, 150px);
+          grid-template-rows: repeat(auto-fill, 1fr);
+          ${'' /* & div:nth-child(n + 5) {
+            margin-left: 5px;
+          } */}
+          justify-items: center;
+          align-items: start;
+        `;
+      }
+      if (number) {
+        return css`
+          display: grid;
+          width: 90%;
+          grid-template-columns: repeat(${number}, 1fr);
+        `;
+      }
+      return null;
+    }}
   }
-  ${({ dynamic }) =>
-    dynamic &&
-    css`
-      z-index: 15;
-      position: absolute;
-      background: rgba(0, 0, 0, 0.8);
-    `}
+
+  @media all and (min-width: 1200px) {
+    ${({ number }) => {
+      if (number >= 8) {
+        return css`
+          ${'' /* position: absolute; */}
+          top: 200px;
+          display: grid;
+          width: 90%;
+          grid-template-columns: repeat(8, 120px);
+          grid-template-rows: repeat(auto-fill, 100px);
+          & div:nth-child(n + 9) {
+            ${'' /* margin-left: 30px; */}
+          }
+        `;
+      }
+      if (number) {
+        return css`
+          display: grid;
+          width: 90%;
+          grid-template-columns: repeat(${number}, 1fr);
+        `;
+      }
+      return null;
+    }}
+  }
 `;
 CharacterArea.displayName = 'CharacterArea';
 
@@ -36,8 +81,7 @@ export const CharImage = styled.img`
     css`
       filter: sepia(1) opacity(0.7);
       &:hover {
-        filter: sepia(0.3) brightness(1.4) opacity(0.7) contrast(1.1)
-          saturate(2);
+        filter: sepia(0.3) brightness(1.4) opacity(1) contrast(1.1) saturate(2);
       }
     `}
 
@@ -63,7 +107,28 @@ export const CharName = styled.h1`
 
   @media all and (min-width: 768px) {
     bottom: 0;
-    left: -25px;
+    left: -10%;
+
+    ${({ number }) =>
+      number > 8 &&
+      css`
+        bottom: unset;
+        top: 40px;
+        left: -30%;
+      `}
+  }
+
+  @media all and (min-width: 1024px) {
+    bottom: 0;
+    left: -15%;
+
+    ${({ number }) =>
+      number > 8 &&
+      css`
+        bottom: unset;
+        top: 40px;
+        left: -30%;
+      `}
   }
 
   ${({ active }) =>
@@ -106,7 +171,7 @@ PlayerTag.displayName = 'PlayerTag';
 export const Selector = styled.div`
   label: Selector;
   position: relative;
-  width: calc(90vw / 6);
+  width: ${({ number }) => number && `calc(100vw / ${number} + 30px)`};
   margin: 0 20px;
   cursor: pointer;
 

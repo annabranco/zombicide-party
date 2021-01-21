@@ -1,8 +1,10 @@
 import styled from '@emotion/styled';
 import { css } from '@emotion/core';
+import { rgba } from 'emotion-rgba';
 import { AttackInstructions } from '../ZombiesSection/styles';
 import { Appear } from '../../../styles';
 import { IN_BACKPACK, MOBILE } from '../../../constants';
+import Background from '../../../assets/images/background/background.jpg';
 
 export const Abilities = styled.p`
   label: Abilities;
@@ -11,7 +13,6 @@ export const Abilities = styled.p`
   font-weight: 500;
   color: rgba(255, 255, 0, 0.6);
   letter-spacing: 0.05rem;
-  text-align: left;
   font-size: 0.6rem;
   text-align: ${({ level }) => (level % 2 ? 'right' : 'left')};
 
@@ -22,7 +23,7 @@ export const Abilities = styled.p`
   @media all and (min-width: 768px) {
     margin: 2px auto;
     font-weight: 700;
-    font-size: 1.2rem;
+    font-size: 1.4rem;
     -webkit-text-stroke: 1px black;
   }
 `;
@@ -39,6 +40,7 @@ export const AbilitiesWrapper = styled.div`
   height: 44px;
   width: 100%;
   background: rgba(0, 0, 0, 0.7);
+  /* background: ${({ color }) => color && `${rgba(color, 0.6)}`}; */
   padding: 2px 5px;
   align-items: center;
 
@@ -69,9 +71,9 @@ export const AbilitiesWrapper = styled.div`
     align-items: center;
     justify-content: center;
     flex-direction: column;
-    bottom: 50px;
-    height: 14%;
-    width: 90%;
+    bottom: 0;
+    height: 10%;
+    width: 100%;
   }
 `;
 AbilitiesWrapper.displayName = 'AbilitiesWrapper';
@@ -120,6 +122,12 @@ export const AppButton = styled.button`
     css`
       background: rgba(0, 0, 0, 0.9);
     `}
+
+  ${({ isMobile }) =>
+    isMobile &&
+    css`
+      background: rgba(0, 0, 0, 0.9);
+    `}
 `;
 AppButton.displayName = 'AppButton';
 
@@ -127,53 +135,70 @@ export const ActionsWrapper = styled.div`
   label: ActionsWrapper;
   z-index: 4;
   position: absolute;
-  height: 76%;
-  top: 22%;
+  height: 55%;
+  bottom: 100px;
   right: 20px;
   display: flex;
   flex-direction: column;
   align-items: flex-end;
-  justify-content: flex-start;
+  justify-content: space-around;
   width: 90%;
 
   @media all and (min-width: 360px) {
-    top: 20%;
+    height: 60%;
   }
 
   @media all and (min-width: 768px) {
-    top: 15%;
+    bottom: unset;
+    top: %;
+    right: 30px;
+    flex-direction: column;
+    justify-content: flex-end;
+    height: auto;
+  }
+
+  @media all and (min-width: 1024px) {
+    z-index: 15;
+    top: unset;
+    bottom: 0;
     right: 30px;
     flex-direction: row;
     justify-content: flex-end;
     height: auto;
+    width: auto;
   }
 `;
 ActionsWrapper.displayName = 'ActionsWrapper';
 
-export const AddNewChar = styled(AppButton)`
-  label: AddNewChar;
+export const AdmButton = styled(AppButton)`
+  label: AdmButton;
   z-index: 11;
   position: absolute;
-  top: 0;
-  right: 0;
+  top: 50px;
+  right: -5px;
   height: 30px;
   width: 30px;
   font-size: 1.2rem;
   padding: 1px;
+  background: none;
+  border: none;
   /* background: ${({ damageMode }) => damageMode && 'red'};
   color: ${({ damageMode }) => damageMode && 'black'};
   box-shadow: ${({ damageMode }) => damageMode && '0 0 5px white'}; */
 
   @media all and (min-width: 768px) {
-    top: -40px;
-    right: 10px;
+    top: 90px;
+    right: 20px;
+    background: none;
+    border: none;
+    font-size: 1.6rem;
   }
 
   &:hover {
     color: yellow;
   }
 `;
-AddNewChar.displayName = 'AddNewChar';
+AdmButton.displayName = 'AdmButton';
 
 export const ArrowSign = styled.i`
   label: ArrowSign;
@@ -187,6 +212,104 @@ export const ArrowSign = styled.i`
 `;
 ArrowSign.displayName = 'ArrowSign';
 
+export const CardsActions = styled.div`
+  label: CardsActions;
+  z-index: 10;
+  background: linear-gradient(
+    60deg,
+    rgba(0, 0, 0, 0.5),
+    rgba(237, 237, 4, 0.5),
+    rgba(0, 0, 0, 0.5),
+    rgba(237, 237, 4, 0.5),
+    rgba(0, 0, 0, 0.5),
+    rgba(237, 237, 4, 0.5),
+    rgba(0, 0, 0, 0.5)
+  );
+  box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.5);
+  position: absolute;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  bottom: 50px;
+  left: 10px;
+  height: 30px;
+  width: 80px;
+  transform: rotate(270deg);
+  transform-origin: top left;
+  font-family: 'Grandstander', cursive;
+  padding: 2px 10px;
+  color: white;
+  opacity: 1;
+  -webkit-text-stroke: 1px black;
+  border: 1px solid black;
+  border-radius: 10px;
+  font-weight: 900;
+  cursor: pointer;
+  font-size: 1rem;
+
+  @media all and (min-width: 360px) {
+    bottom: 80px;
+    left: 10px;
+    font-size: 1.2rem;
+    line-height: 2;
+
+    ${({ drop }) =>
+      drop &&
+      css`
+        transform: rotate(90deg);
+        transform-origin: top right;
+        left: unset;
+        right: 100px;
+      `}
+  }
+
+  @media all and (min-width: 410px) {
+    bottom: 100px;
+  }
+
+  @media all and (min-height: 800px) {
+    bottom: 200px;
+  }
+
+  @media all and (min-width: 768px) {
+    transform: none;
+    bottom: 150px;
+    left: 25%;
+
+    ${({ drop }) =>
+      drop &&
+      css`
+        left: unset;
+        right: 25%;
+      `}
+  }
+
+  ${({ drop }) =>
+    drop &&
+    css`
+      transform: rotate(90deg);
+      transform-origin: top right;
+      left: unset;
+      right: 90px;
+    `}
+
+  ${({ dropMode }) =>
+    dropMode &&
+    css`
+      background: green;
+    `}
+`;
+CardsActions.displayName = 'CardsActions';
+
+export const CardsActionsText = styled.div`
+  label: CardsActionsText;
+  z-index: 10;
+  margin-top: 4px;
+  text-transform: uppercase;
+`;
+CardsActionsText.displayName = 'CardsActionsText';
+
 export const CharacterOverlay = styled.div`
   label: CharacterOverlay;
   z-index: 2;
@@ -194,7 +317,7 @@ export const CharacterOverlay = styled.div`
   top: 0;
   left: 0; */
   margin-top: 40px;
-  height: 100%;
+  height: ${`${window.innerHeight}px`};
   width: 100%;
   background: #4444;
   opacity: 0.7;
@@ -203,16 +326,33 @@ export const CharacterOverlay = styled.div`
       ? 'contrast(2.5) brightness(0.7)'
       : 'contrast(0.7) saturate(1.6)'};
 
-  @media all and (min-width: 768px) {
-    background: #232222;
-  }
-
-  ${({ img, position = '20% top' }) => css`
-    background-image: ${`url(${img})`};
+  ${({ img, position = 'left top', color }) => css`
+    background-image: ${color
+      ? `linear-gradient(to top, ${rgba(color, 0.8)}, ${rgba(
+          color,
+          0.2
+        )}, rgba(0,0,0,0)), url(${Background})`
+      : `url(${Background})`};
+    ${'' /* background-image: ${`url(${Background})`}; */}
     background-position: ${position};
     background-size: ${`${window.innerHeight}px`};
     background-repeat: no-repeat;
   `}
+
+  @media all and (min-width: 768px) {
+    position: absolute;
+    margin-top: 50px;
+
+    ${({ img, position = '20% top' }) => css`
+      background-size: cover;
+    `}
+  }
+`;
+
+export const CharacterOverlayImage = styled.img`
+  label: CharacterOverlayImage;
+  width: 28%;
+  margin-left: 2%;
 `;
 
 export const CharacterSheet = styled.div`
@@ -226,12 +366,6 @@ export const CharacterSheet = styled.div`
   width: 100%;
   background: black;
   display: none;
-  @media all and (min-width: 768px) {
-    align-items: center;
-    height: ${`${window.innerHeight - 40}px`};
-
-    width: 90%;
-  }
 
   ${({ visible }) =>
     visible &&
@@ -253,7 +387,7 @@ export const CharName = styled.h1`
   z-index: 3;
   position: absolute;
   top: 25px;
-  right: 20px;
+  right: 30px;
   margin: 10px auto 20px;
   border-radius: 50px;
   font-size: 3rem;
@@ -263,9 +397,11 @@ export const CharName = styled.h1`
   text-transform: uppercase;
 
   @media all and (min-width: 768px) {
-    position: initial;
-    top: 0;
+    top: 50px;
     right: 80px;
+    font-size: 5rem;
+    color: black;
+    text-shadow: 0 0 1px white;
   }
 `;
 CharName.displayName = 'CharName';
@@ -282,8 +418,35 @@ export const CharItems = styled.div`
   margin-left: 10px;
   width: 70%;
 
+  ${({ slotType }) =>
+    slotType === IN_BACKPACK &&
+    css`
+      margin-top: -10px;
+    `}
+
+  ${({ trade }) =>
+    trade &&
+    css`
+      top: 80px;
+    `}
+
   @media all and (min-width: 360px) {
-    top: 220px;
+    top: 38%;
+
+    ${({ trade }) =>
+      trade &&
+      css`
+        top: 18px;
+        right: 10px;
+
+        @media all and (min-width: 768px) {
+          top: 100px;
+        }
+      `}
+  }
+
+  @media all and (min-width: 410px) {
+    top: 50%;
 
     ${({ trade }) =>
       trade &&
@@ -298,22 +461,24 @@ export const CharItems = styled.div`
   }
 
   @media all and (min-width: 768px) {
-    top: unset;
-    margin-top: 65px;
-    width: 90%;
+    top: 20%;
+    /* margin: 65px 0 0 20px; */
+    width: 100%;
+    margin-left: 0;
+
+    ${({ slotType }) =>
+      slotType === IN_BACKPACK &&
+      css`
+        margin-top: -50px;
+      `}
+
+    ${({ trade }) =>
+      trade &&
+      css`
+        top: 100px;
+        right: 10px;
+      `}
   }
-
-  ${({ slotType }) =>
-    slotType === IN_BACKPACK &&
-    css`
-      margin-top: -10px;
-    `}
-
-  ${({ trade }) =>
-    trade &&
-    css`
-      top: 80px;
-    `}
 `;
 CharItems.displayName = 'CharItems';
 
@@ -327,14 +492,6 @@ export const FinishedTurnTag = styled(AttackInstructions)`
     2px 0 2px black, 2px 2px 2px black;
 `;
 FinishedTurnTag.displayName = 'FinishedTurnTag';
-
-export const FirstPlayerStar = styled.span`
-  label: FirstPlayerStar;
-  color: #cea616;
-  font-size: 2.3rem;
-  margin-right: 10px;
-`;
-FirstPlayerStar.displayName = 'FirstPlayerStar';
 
 export const FirstPlayerToken = styled.img`
   label: FirstPlayerToken;
@@ -352,6 +509,11 @@ export const FirstPlayerToken = styled.img`
     width: 500px;
     transform: none;
   }
+
+  @media all and (min-width: 1200px) {
+    margin: 0 -50px 0 0;
+    transform: scaleX(-1);
+  }
 `;
 FirstPlayerToken.displayName = 'FirstPlayerToken';
 
@@ -362,13 +524,18 @@ export const FirstPlayerWrapper = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
   height: 100%;
   width: 100%;
   overflow: hidden;
 
   @media all and (min-width: 768px) {
     position: initial;
+  }
+
+  @media all and (min-width: 1200px) {
+    justify-content: flex-start;
+    align-items: flex-end;
   }
 `;
 FirstPlayerWrapper.displayName = 'FirstPlayerWrapper';
@@ -409,23 +576,17 @@ export const IndicatorsWrapper = styled.div`
   opacity: 0.7;
   padding-left: 5px;
   height: 14px;
-  background: #5a5454;
+  background: #5f5c5c;
   width: 100%;
 
-  @media all and (min-width: 768px) {
-    height: 20px;
-    background: none;
-    position: absolute;
-  }
-
-  ${({ header, setupMode }) =>
+  ${({ header }) =>
     header &&
     css`
       z-index: 11;
       top: 0;
       left: 0;
       height: 26px;
-      width: ${setupMode ? '100%' : 'calc(100% - 30px)'};
+      width: 100%;
 
       justify-content: space-around;
       padding: 0 10px 0 10px;
@@ -435,6 +596,26 @@ export const IndicatorsWrapper = styled.div`
         padding: 0 50px 0 20px;
       }
     `}
+
+  @media all and (min-width: 768px) {
+    height: 20px;
+    position: absolute;
+    top: 26px;
+    background: none;
+
+    ${({ header }) =>
+      header &&
+      css`
+        z-index: 11;
+        top: 0;
+        left: 0;
+        height: 26px;
+        width: 100%;
+
+        justify-content: space-around;
+        padding: 0 10px 0 10px;
+      `}
+  }
 `;
 IndicatorsWrapper.displayName = 'IndicatorsWrapper';
 
@@ -530,6 +711,7 @@ export const ModalSignButton = styled(AppButton)`
   cursor: pointer;
   border: 1px solid black;
   border-radius: 5px;
+  text-transform: uppercase;
 
   ${({ noOverlay }) =>
     noOverlay &&
@@ -543,7 +725,7 @@ export const ModalSignButton = styled(AppButton)`
         transform: translate(-50%, -5px);
       }
       @media all and (min-width: 768px) {
-        bottom: 15px;
+        bottom: 10px;
       }
     `}
 
@@ -565,7 +747,7 @@ export const ModalSignButton = styled(AppButton)`
   }
 
   @media all and (min-width: 768px) {
-    bottom: 20px;
+    bottom: 12px;
     height: 30px;
     width: 200px;
   }
@@ -573,7 +755,7 @@ export const ModalSignButton = styled(AppButton)`
 ModalSignButton.displayName = 'ModalSignButton';
 
 export const ModalSignExitButton = styled.img`
-  label: ModalSignButton;
+  label: ModalSignExitButton;
   z-index: 10;
   position: absolute;
   bottom: 52%;
@@ -585,7 +767,7 @@ export const ModalSignExitButton = styled.img`
   animation-iteration-count: 1;
   animation-fill-mode: forwards;
 `;
-ModalSignButton.displayName = 'ModalSignButton';
+ModalSignExitButton.displayName = 'ModalSignExitButton';
 
 export const MovementIcon = styled.div`
   label: MovementIcon;
@@ -628,6 +810,39 @@ export const MovementIcon = styled.div`
 `;
 MovementIcon.displayName = 'MovementIcon';
 
+export const NavIcons = styled.img`
+  label: NavIcons;
+  z-index: 15;
+  width: 45px;
+  margin: 0 2px;
+
+  ${({ played }) =>
+    played &&
+    css`
+      filter: grayscale(1) contrast(0.5);
+    `}
+
+  ${({ currentChar, played }) =>
+    currentChar &&
+    css`
+      width: 70px;
+    `}
+`;
+NavIcons.displayName = 'NavIcons';
+
+export const NavIconsWrapper = styled.div`
+  label: NavIconsWrapper;
+  z-index: 15;
+  position: absolute;
+  bottom: 2px;
+  left: 60px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+`;
+NavIconsWrapper.displayName = 'NavIconsWrapper';
+
 export const NextButton = styled(AppButton)`
   label: NextButton;
   z-index: 11;
@@ -640,6 +855,7 @@ export const NextButton = styled(AppButton)`
   color: ${({ damageMode }) => damageMode && 'black'};
   box-shadow: ${({ damageMode }) => damageMode && '0 0 5px white'};
   font-size: 0.9rem;
+  outline: none;
 
   @media all and (min-width: 360px) {
     font-size: 1.1rem;
@@ -658,7 +874,7 @@ export const NextButton = styled(AppButton)`
     bottom: 20px;
     right: 20px;
     font-size: inherit;
-    height: 20px;
+    height: 35px;
   }
 
   ${({ trade }) =>
@@ -680,6 +896,13 @@ export const NextButton = styled(AppButton)`
         background: rgba(255, 255, 255, 0.4);
       }
     `}
+
+  ${({ numOfChars }) =>
+    numOfChars &&
+    css`
+      right: unset;
+      left: calc(130px + ${numOfChars} * 45px);
+    `}
 `;
 NextButton.displayName = 'NextButton';
 
@@ -699,6 +922,16 @@ export const NoiseWrapper = styled.div`
   flex-direction: column;
   align-items: flex-start;
   justify-content: flex-start;
+
+  @media all and (min-width: 768px) {
+    top: 28%;
+    right: 30px;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-end;
+    height: auto;
+    width: auto;
+  }
 
   @media all and (min-width: 768px) {
     top: calc(18% + 50px);
@@ -740,11 +973,18 @@ export const PlayerTag = styled.div`
     height: 20px;
   }
 
-  @media all and (min-width: 768px) {
-    position: initial;
-    top: 70px;
-    right: 0;
-    width: 30%;
+  @media all and (min-width: 1024px) {
+    top: 22px;
+    right: -40px;
+    height: 30px;
+    width: 20%;
+    font-size: 1.4rem;
+    line-height: 1;
+    color: ${({ color }) => color || 'rgba(255,255,255,0.8)'};
+    background: rgba(0, 0, 0, 0.2);
+    border: none;
+    border-radius: 10px 0 0 10px;
+    -webkit-text-stroke: 1px black;
   }
   filter: brightness(0.8);
 `;

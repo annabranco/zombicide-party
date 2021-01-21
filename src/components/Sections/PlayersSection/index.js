@@ -39,7 +39,7 @@ import {
   SelectButton,
   WoundedSign,
   ModalSign,
-  AddNewChar,
+  AdmButton,
   NoiseWrapper,
   NoiseIcon,
   IndicatorsWrapper,
@@ -48,7 +48,6 @@ import {
   FirstPlayerToken,
   WoundedWrapper,
   FirstPlayerWrapper,
-  FirstPlayerStar,
   ModalSignExitButton,
   ModalSignText,
   XpIcon,
@@ -58,7 +57,12 @@ import {
   ActionsLabelWrapper,
   TopActionsLabelWrapper,
   ArrowSign,
-  LevelIndicator
+  LevelIndicator,
+  CardsActions,
+  CardsActionsText,
+  CharacterOverlayImage,
+  NavIconsWrapper,
+  NavIcons
 } from './styles';
 import { CharacterType } from '../../../interfaces/types';
 import TradeArea from '../../TradeArea';
@@ -66,10 +70,15 @@ import NewGame from '../../NewGame';
 import {
   KILLED,
   KILLED_EM_ALL,
+  KILL,
+  HIT,
   LOCAL_STORAGE_KEY,
   NEXT,
   PREVIOUS,
   TURN_FINISHED,
+  FINISH_SETUP,
+  START_NEXT_ROUND,
+  HAS_BEEN_KILLED,
   WEAPONS,
   GET_OBJECTIVE,
   ENTER_CAR,
@@ -88,7 +97,33 @@ import {
   XP_GAIN_SELECT,
   LEARNED_NEW_ABILITY,
   BURNEM_ALL,
-  MOBILE
+  MOBILE,
+  TRADE,
+  DROP,
+  WOUNDED,
+  FREE_ATTACK,
+  FREE_MOVE,
+  FREE_SEARCH,
+  INITIAL,
+  CAR,
+  OBJECTIVE,
+  SEARCH_ACTION,
+  END_TURN_ACTION,
+  CAR_ENTER_ACTION,
+  CAR_EXIT_ACTION,
+  CAR_MOVE_ACTION,
+  CAR_ATTACK_ACTION,
+  SEARCH,
+  UPGRADE_WEAPON,
+  OBJECTIVE_ACTION,
+  MOVE_ACTION,
+  OPEN_DOOR_ACTION,
+  START,
+  IN_BACKPACK,
+  IN_HAND,
+  XP,
+  FIRST_PLAYER_TOKEN,
+  DESKTOP
 } from '../../../constants';
 import {
   blueThreatThresold,
@@ -137,6 +172,8 @@ const PlayersSection = ({
     'combiningItem'
   );
   const [dataLoaded, setDataLoaded] = useStateWithLabel(false, 'dataLoaded');
+  const [dropMode, toggleDropMode] = useStateWithLabel(false, 'dropMode');
+
   const [firstPlayer, changeFirstPlayer] = useStateWithLabel(
     null,
     'firstPlayer'
@@ -152,10 +189,7 @@ const PlayersSection = ({
     false,
     'selectCharOverlay'
   );
-  const [setupMode, toggleSetupMode] = useStateWithLabel(
-    'initial',
-    'setupMode'
-  );
+  const [setupMode, toggleSetupMode] = useStateWithLabel(INITIAL, 'setupMode');
   const [slot, selectSlot] = useStateWithLabel(null, 'slot');
   const [trade, startTrade] = useStateWithLabel(false, 'trade');
   const [xpCounter, updateXpCounter] = useStateWithLabel([], 'xpCounter');
@@ -325,6 +359,47 @@ const PlayersSection = ({
     return updatedChar;
   };
 
+  const calculateCharactersOrder = () => {
+    const charsByName = {};
+    const firstPlayerIndex = characters.findIndex(
+      char => char.name === firstPlayer
+    );
+    const charNames = characters
+      .reduce((result, char, index) => {
+        if (result.name) {
+          charsByName[result.name] = result.face;
+          charsByName[char.name] = char.face;
+          return `${result.name}-${char.name}`;
+        }
+        charsByName[char.name] = char.face;
+        return `${result}-${char.name}`;
+      })
+      .split('-');
+    const charsBeforeCurrent = charNames.splice(0, firstPlayerIndex);
+
+    const currentChar = charNames.shift();
+    const orderedNames = [currentChar, ...charNames, ...charsBeforeCurrent];
+    const orderedChars = [];
+
+    orderedNames.forEach(name => {
+      orderedChars.push({
+        name,
+        face: charsByName[name]
+      });
+    });
+    return orderedChars;
+  };
+
+  const charIfCharHasPlayed = name => {
+    let hasPlayed;
+    characters.forEach(char => {
+      if (char.name === name) {
+        hasPlayed = !checkIfHasAnyActionLeft(char.actionsLeft || [3, 0, 0, 0]);
+      }
+    });
+    return hasPlayed;
+  };
+
   const checkIfRoundHasFinished = () => {
     if (
       characters.every(
@@ -343,7 +418,7 @@ const PlayersSection = ({
   const changeToAnotherPlayer = type => {
     const charactersNumber = characters.length;
     const remainingCharacters = characters.filter(
-      char => char.wounded !== 'killed'
+      char => char.wounded !== KILLED
     );
     let nextPlayerIndex;
 
@@ -372,10 +447,19 @@ const PlayersSection = ({
       ...newItems,
       ...updatedCharacter.inBackpack
     ]);
+
     setCanOpenDoor(openDoors);
     changeCanUseFlashlight(hasFlashlight);
     toggleCanCombine(charCanCombineItems);
     updatedCharacter.inHand = newItems;
+
+    if (
+      dropMode &&
+      checkIfAllSlotsAreEmpty(updatedCharacter.inHand) &&
+      checkIfAllSlotsAreEmpty(updatedCharacter.inBackpack)
+    ) {
+      toggleDropMode(false);
+    }
 
     updateData(updatedCharacter);
     selectSlot();
@@ -396,6 +480,14 @@ const PlayersSection = ({
     changeCanUseFlashlight(hasFlashlight);
     toggleCanCombine(charCanCombineItems);
     updatedCharacter.inBackpack = newItems;
+
+    if (
+      dropMode &&
+      checkIfAllSlotsAreEmpty(updatedCharacter.inHand) &&
+      checkIfAllSlotsAreEmpty(updatedCharacter.inBackpack)
+    ) {
+      toggleDropMode(false);
+    }
 
     updateData(updatedCharacter);
     selectSlot();
@@ -419,13 +511,13 @@ const PlayersSection = ({
       count.push(i);
     }
     for (let i = 1; i <= actions.mov; i++) {
-      count.push('free move');
+      count.push(FREE_MOVE);
     }
     for (let i = 1; i <= actions.att; i++) {
-      count.push('free attack');
+      count.push(FREE_ATTACK);
     }
     for (let i = 1; i <= actions.sea; i++) {
-      count.push('free search');
+      count.push(FREE_SEARCH);
     }
     return count;
   };
@@ -439,7 +531,7 @@ const PlayersSection = ({
   };
 
   const gainCustomXp = () => {
-    toggleActionsModal('xp');
+    toggleActionsModal(XP);
   };
 
   const gainXp = (xp = 1) => {
@@ -524,17 +616,17 @@ const PlayersSection = ({
     const woundedCharacter = cloneDeep(character);
     const [attacker, oneActionKill] = damageMode.split('-');
     let remainingCharacters = characters.filter(
-      char => char.wounded !== 'killed'
+      char => char.wounded !== KILLED
     );
 
-    let damage = 'hit';
+    let damage = HIT;
     if (woundedCharacter.wounded || oneActionKill) {
       remainingCharacters = characters.filter(
         char => char.name !== woundedCharacter.name
       );
 
-      woundedCharacter.wounded = 'killed';
-      damage = 'kill';
+      woundedCharacter.wounded = KILLED;
+      damage = KILL;
       if (firstPlayer.includes(woundedCharacter.name)) {
         changeFirstPlayer(`next-${characters[charIndex + 1].name}`);
       }
@@ -544,10 +636,10 @@ const PlayersSection = ({
       }
     } else if (selectedSlot <= 2) {
       woundedCharacter.wounded = true;
-      woundedCharacter.inHand[selectedSlot - 1] = 'Wounded';
+      woundedCharacter.inHand[selectedSlot - 1] = WOUNDED;
     } else {
       woundedCharacter.wounded = true;
-      woundedCharacter.inBackpack[selectedSlot - 3] = 'Wounded';
+      woundedCharacter.inBackpack[selectedSlot - 3] = WOUNDED;
     }
 
     const filename =
@@ -563,7 +655,7 @@ const PlayersSection = ({
         setZombiesTurn(true);
         toggleDamageMode(false);
       }, 4000);
-    } else if (woundedCharacter.wounded === 'killed') {
+    } else if (woundedCharacter.wounded === KILLED) {
       toggleDamageMode(false);
       if (remainingCharacters.length > 0) {
         setTimeout(() => changeToAnotherPlayer(NEXT), 2000);
@@ -594,14 +686,14 @@ const PlayersSection = ({
       updatedCharacter.hasUsedFlashlight = true;
       updateData(updatedCharacter);
     } else if (canSearch) {
-      spendAction('search');
+      spendAction(SEARCH);
     }
   };
 
   const interactWithCar = enter => {
     const updatedCharacter = cloneDeep(character);
     if (enter) {
-      updatedCharacter.location = 'car';
+      updatedCharacter.location = CAR;
     } else {
       updatedCharacter.location = null;
     }
@@ -628,7 +720,7 @@ const PlayersSection = ({
         }
         changeCharacter(updatedCharacter);
         if (!setupMode) {
-          spendAction('upgrade weapon');
+          spendAction(UPGRADE_WEAPON);
         }
         setCombiningItem();
       } else {
@@ -666,7 +758,7 @@ const PlayersSection = ({
   };
 
   const onClickMainButton = () => {
-    if (setupMode === 'initial') {
+    if (setupMode === INITIAL) {
       changeCharIndex(0);
     }
     if (setupMode) {
@@ -722,7 +814,7 @@ const PlayersSection = ({
   };
 
   const onClickObjective = () => {
-    spendAction('get objective');
+    spendAction(GET_OBJECTIVE);
     gainXp(5);
   };
 
@@ -863,8 +955,8 @@ const PlayersSection = ({
   return (
     <CharacterSheet visible={visible}>
       {/* ----- XP BAR ----- */}
-      {!trade && character.wounded !== 'killed' && (
-        <IndicatorsWrapper header setupMode={setupMode}>
+      {!trade && character.wounded !== KILLED && (
+        <IndicatorsWrapper header>
           {xpCounter &&
             xpCounter.map((level, index) => (
               <XpIcon
@@ -903,7 +995,7 @@ const PlayersSection = ({
       )}
 
       {/* ----- MOVEMENTS BAR ----- */}
-      {!trade && character.wounded !== 'killed' && (
+      {!trade && character.wounded !== KILLED && (
         <IndicatorsWrapper>
           {actionsCount.map((action, index) => (
             <MovementIcon
@@ -923,136 +1015,145 @@ const PlayersSection = ({
           character={character}
           characters={characters}
           confirmTrade={confirmTrade}
+          device={device.current}
           spendAction={spendAction}
           startTrade={startTrade}
         />
       ) : (
         <>
-          <CharacterOverlay damageMode={damageMode} img={character.img} />
+          <CharacterOverlay
+            color={getCharacterColor(character.name)}
+            damageMode={damageMode}
+          >
+            <CharacterOverlayImage src={character.img} />
+          </CharacterOverlay>
 
           {/* ----- TOP BAR ----- */}
           {!damageMode && setupMode && characters.length < CHARACTERS.length && (
-            <AddNewChar
+            <AdmButton
               type="button"
               onClick={() => addNewChar(true)}
               onMouseOver={() => changeTopActionLabel(ADD_CHARACTER)}
               onMouseOut={() => changeTopActionLabel('')}
             >
               <i className="fas fa-user-plus" />
-            </AddNewChar>
+            </AdmButton>
           )}
-          {!damageMode && !setupMode && character.wounded !== 'killed' && (
-            <AddNewChar
+          {!damageMode && !setupMode && character.wounded !== KILLED && (
+            <AdmButton
               type="button"
               onClick={onClickEdit}
               onMouseOver={() => changeTopActionLabel(EDIT_CHARACTERS)}
               onMouseOut={() => changeTopActionLabel('')}
             >
               <i className="far fa-edit" />
-            </AddNewChar>
+            </AdmButton>
           )}
           <TopActionsLabelWrapper>{topActionsLabel}</TopActionsLabelWrapper>
 
           {/* ----- CHAR IDENTIFICATION ----- */}
           {firstPlayer === character.name && (
             <FirstPlayerWrapper>
-              <FirstPlayerToken src={FirstPlayer} alt="First Player Token" />
+              <FirstPlayerToken src={FirstPlayer} alt={FIRST_PLAYER_TOKEN} />
             </FirstPlayerWrapper>
           )}
-          {character.wounded !== 'killed' && (
+          {character.wounded !== KILLED && (
             <>
-              <CharName>
-                {firstPlayer === character.name && (
-                  <FirstPlayerStar>⭐</FirstPlayerStar>
-                )}
-                {character.name}
-              </CharName>
-              <PlayerTag color={getCharacterColor(character.name)}>
-                {character.player}
-              </PlayerTag>
+              <CharName>{character.name}</CharName>
+              <PlayerTag>{character.player}</PlayerTag>
             </>
           )}
 
           {/* ----- ACTION BUTTONS ----- */}
-          {character.wounded !== 'killed' && (
+          {character.wounded !== KILLED && !dropMode && (
             <>
-              {!damageMode && !setupMode && (
+              {!damageMode && !setupMode && !slot && (
                 <>
                   <ActionsWrapper>
                     {!finishedTurn && generalActions && (
                       <ActionButton
-                        actionType="objective"
+                        actionType={OBJECTIVE_ACTION}
                         callback={onClickObjective}
                         changeActionLabel={changeActionLabel}
                         label={GET_OBJECTIVE}
+                        manyButtons={character.location === CAR}
                       />
                     )}
                     {canMove && (
                       <ActionButton
                         actionType={
-                          character.location === 'car'
-                            ? 'car-exit'
-                            : 'car-enter'
+                          character.location === CAR
+                            ? CAR_EXIT_ACTION
+                            : CAR_ENTER_ACTION
                         }
-                        callback={() => spendAction('move')}
+                        callback={() => spendAction(MOVE)}
                         car={car}
                         interactWithCar={interactWithCar}
                         startCar={startCar}
-                        type={character.location !== 'car' && !car && 'start'}
+                        type={character.location !== CAR && !car && START}
                         changeActionLabel={changeActionLabel}
                         label={
-                          character.location === 'car' ? EXIT_CAR : ENTER_CAR
+                          character.location === CAR ? EXIT_CAR : ENTER_CAR
                         }
+                        manyButtons={character.location === CAR}
                       />
                     )}
-                    {canMove && character.location === 'car' && (
+                    {canMove && character.location === CAR && (
                       <>
                         <ActionButton
-                          actionType="car-move"
-                          callback={() => spendAction('move')}
+                          actionType={CAR_MOVE_ACTION}
+                          callback={() => spendAction(MOVE)}
                           changeActionLabel={changeActionLabel}
                           label={MOVE_CAR}
+                          manyButtons={character.location === CAR}
                         />
                         <ActionButton
-                          actionType="car-attack"
-                          callback={() => spendAction('move')}
+                          actionType={CAR_ATTACK_ACTION}
+                          callback={() => spendAction(MOVE)}
                           changeActionLabel={changeActionLabel}
                           label={RUN_OVER}
+                          manyButtons={character.location === CAR}
                         />
                       </>
                     )}
 
-                    {canMove && character.location !== 'car' && (
+                    {canMove && character.location !== CAR && (
                       <ActionButton
-                        actionType="move"
-                        callback={() => spendAction('move')}
+                        actionType={MOVE_ACTION}
+                        callback={() => spendAction(MOVE)}
                         type={character.movement}
                         changeActionLabel={changeActionLabel}
                         label={MOVE}
+                        manyButtons={character.location === CAR}
                       />
                     )}
 
                     {canOpenDoor && generalActions && (
                       <ActionButton
-                        actionType="open-door"
+                        actionType={OPEN_DOOR_ACTION}
                         callback={spendAction}
                         noise={noise}
                         setNoise={setNoise}
                         type={canOpenDoor}
                         changeActionLabel={changeActionLabel}
                         label={noise ? BREAK_DOOR : OPEN_DOOR}
+                        manyButtons={character.location === CAR}
                       />
                     )}
                     {!finishedTurn && (
                       <ActionButton
-                        actionType="endTurn"
+                        actionType={END_TURN_ACTION}
                         callback={onClickEndTurn}
                         changeActionLabel={changeActionLabel}
                         label={END_CHAR_TURN(character.name)}
+                        manyButtons={
+                          device.current === MOBILE &&
+                          character.location === CAR
+                        }
                       />
                     )}
                   </ActionsWrapper>
-                  {!finishedTurn && (
+                  {!finishedTurn && !device.current === MOBILE && (
                     <ActionsLabelWrapper>{actionsLabel}</ActionsLabelWrapper>
                   )}
                 </>
@@ -1061,7 +1162,7 @@ const PlayersSection = ({
           )}
 
           {/* ----- INDICATORS ON CHAR SHEET ----- */}
-          {character.wounded !== 'killed' && !setupMode && (
+          {character.wounded !== KILLED && !setupMode && (
             <NoiseWrapper>
               {Array.from({ length: noise }, (_, index) => index).map(key => (
                 <NoiseIcon key={key} src={Noise} />
@@ -1073,19 +1174,19 @@ const PlayersSection = ({
               <WoundedSign src={Blood} />
             </WoundedWrapper>
           )}
-          {finishedTurn && character.wounded !== 'killed' && (
+          {finishedTurn && character.wounded !== KILLED && (
             <FinishedTurnTag>
               {`${character.name}${TURN_FINISHED}`}
             </FinishedTurnTag>
           )}
 
-          {character.wounded === 'killed' && (
+          {character.wounded === KILLED && (
             <>
               <ModalSign killed>
                 {!characters || characters.length === 0 ? (
                   <ModalSignText>{KILLED_EM_ALL}</ModalSignText>
                 ) : (
-                  <ModalSignText>{`${character.name} ${KILLED}`}</ModalSignText>
+                  <ModalSignText>{`${character.name} ${HAS_BEEN_KILLED}`}</ModalSignText>
                 )}
               </ModalSign>
               {characters.length === 0 && (
@@ -1095,9 +1196,16 @@ const PlayersSection = ({
           )}
 
           {/* ----- ITEMS AREA ----- */}
-          {character.wounded !== 'killed' && (
+          {character.wounded !== KILLED && (
             <>
-              <CharItems slotType="inHand">
+              {!dropMode && (
+                <CardsActions>
+                  <CardsActionsText onClick={startTrade}>
+                    {TRADE}
+                  </CardsActionsText>
+                </CardsActions>
+              )}
+              <CharItems slotType={IN_HAND}>
                 {character.inHand &&
                   character.inHand.map((item, index) => (
                     <ItemsArea
@@ -1120,6 +1228,7 @@ const PlayersSection = ({
                       damageMode={damageMode}
                       device={device.current}
                       dice={ALL_WEAPONS[item] && ALL_WEAPONS[item].dice}
+                      dropMode={dropMode}
                       gainCustomXp={gainCustomXp}
                       gainXp={gainXp}
                       handleSearch={handleSearch}
@@ -1131,7 +1240,7 @@ const PlayersSection = ({
                       onClickDrop={changeInHand}
                       selectSlot={selectSlot}
                       setupMode={setupMode}
-                      slotType="inHand"
+                      slotType={IN_HAND}
                       spendAction={spendAction}
                       spendSingleUseWeapon={spendSingleUseWeapon}
                       startTrade={startTrade}
@@ -1139,7 +1248,7 @@ const PlayersSection = ({
                     />
                   ))}
               </CharItems>
-              <CharItems slotType="inBackpack">
+              <CharItems slotType={IN_BACKPACK}>
                 {character.inBackpack &&
                   character.inBackpack.map((item, index) => (
                     <ItemsArea
@@ -1158,6 +1267,8 @@ const PlayersSection = ({
                       }
                       combinePair={combiningItem && combiningItem.pair === item}
                       damageMode={damageMode}
+                      device={device.current}
+                      dropMode={dropMode}
                       handleSearch={handleSearch}
                       index={index}
                       item={item}
@@ -1168,12 +1279,22 @@ const PlayersSection = ({
                       onClickDrop={changeInBackpack}
                       selectSlot={selectSlot}
                       setupMode={setupMode}
-                      slotType="inBackpack"
+                      slotType={IN_BACKPACK}
                       startTrade={startTrade}
                       wounded={character.wounded}
                     />
                   ))}
               </CharItems>
+              {character.inHand &&
+                character.inBackpack &&
+                (!checkIfAllSlotsAreEmpty(character.inHand) ||
+                  !checkIfAllSlotsAreEmpty(character.inBackpack)) && (
+                  <CardsActions drop dropMode={dropMode}>
+                    <CardsActionsText onClick={() => toggleDropMode(!dropMode)}>
+                      {dropMode ? OK : DROP}
+                    </CardsActionsText>
+                  </CardsActions>
+                )}
             </>
           )}
 
@@ -1185,33 +1306,42 @@ const PlayersSection = ({
               roundEnded={roundEnded}
               setupMode={setupMode}
             >
-              {setupMode ? 'FINISH SETUP' : 'START NEXT ROUND'}
+              {setupMode ? FINISH_SETUP : START_NEXT_ROUND}
             </ModalSignButton>
           )}
 
-          {(characters.length > 1 || prevCharIndex.current === null) && (
+          {device.current === DESKTOP && !slot && characters.length > 0 && (
+            <NavIconsWrapper>
+              {calculateCharactersOrder().map(char => (
+                <NavIcons
+                  alt={`Change character to ${char.name}`}
+                  currentChar={character.name === char.name}
+                  key={`charNav-${char.name}`}
+                  src={char.face}
+                  played={charIfCharHasPlayed(char.name)}
+                />
+              ))}
+            </NavIconsWrapper>
+          )}
+
+          {((device.current !== MOBILE &&
+            (characters.length > 1 || prevCharIndex.current === null)) ||
+            (device.current === MOBILE && !dropMode)) && (
             <>
               <PreviousButton
                 damageMode={damageMode}
                 onClick={() => changeToAnotherPlayer(PREVIOUS)}
                 type="button"
               >
-                {device.current === MOBILE ? (
-                  <ArrowSign className="fas fa-caret-left" />
-                ) : (
-                  PREVIOUS
-                )}
+                <ArrowSign className="fas fa-caret-left" />
               </PreviousButton>
               <NextButton
                 damageMode={damageMode}
+                numOfChars={device.current === DESKTOP && characters.length}
                 onClick={() => changeToAnotherPlayer(NEXT)}
                 type="button"
               >
-                {device.current === MOBILE ? (
-                  <ArrowSign className="fas fa-caret-right" />
-                ) : (
-                  NEXT
-                )}
+                <ArrowSign className="fas fa-caret-right" />
               </NextButton>
             </>
           )}
@@ -1222,23 +1352,22 @@ const PlayersSection = ({
           )}
 
           {/* ----- ABILITIES DISPLAY ----- */}
-          {character.wounded !== 'killed' && !setupMode && (
-            <AbilitiesWrapper number={character.abilities.length}>
+          {character.wounded !== KILLED && (
+            <AbilitiesWrapper
+              number={character.abilities && character.abilities.length}
+            >
               {character &&
                 character.abilities &&
+                device.current !== DESKTOP &&
                 character.abilities.map((ability, index) => (
                   <Abilities
                     // eslint-disable-next-line react/no-array-index-key
                     key={`${character}-${index}-${ability}`}
                     level={index}
                   >
-                    {device.current === MOBILE && !(index % 2) && (
-                      <LevelIndicator level={index} />
-                    )}
+                    {!(index % 2) && <LevelIndicator level={index} />}
                     {ability}
-                    {device.current === MOBILE && Boolean(index % 2) && (
-                      <LevelIndicator level={index} />
-                    )}
+                    {Boolean(index % 2) && <LevelIndicator level={index} />}
                   </Abilities>
                 ))}
             </AbilitiesWrapper>
@@ -1254,14 +1383,15 @@ const PlayersSection = ({
           device={device.current}
           onSelect={changeInHand}
           selectSlot={selectSlot}
-          slotType="inHand"
+          slotType={IN_HAND}
         />
       )}
       {slot && slot >= 3 && (
         <ItemsSelectorModal
+          device={device.current}
           onSelect={changeInBackpack}
           selectSlot={selectSlot}
-          slotType="inBackpack"
+          slotType={IN_BACKPACK}
         />
       )}
 
@@ -1271,7 +1401,7 @@ const PlayersSection = ({
       )}
 
       {/* --- Select custom XP --- */}
-      {displayActionsModal === 'xp' && (
+      {displayActionsModal === XP && (
         <ActionsModal
           toggleVisibility={toggleActionsModal}
           visible={displayActionsModal}

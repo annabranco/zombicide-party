@@ -2,7 +2,7 @@ import React, { useEffect, useRef } from 'react';
 import { bool } from 'prop-types';
 import appInfo from '../../../package.json';
 import { useStateWithLabel } from '../../utils/hooks';
-import BG from '../../assets/images/background/background.jpg';
+import BG from '../../assets/images/background/background2.jpg';
 import Logo from '../../assets/images/logo.png';
 import {
   SelectionButton,
@@ -18,14 +18,14 @@ import {
   ZombieIntro
 } from './styles';
 import { ZOMBIES_INTRO } from '../../setup/zombies';
-import { STOP_SOUND, TEST_SOUND } from '../../constants';
+import { CONTINUE, NEW_GAME, STOP_SOUND, TEST_SOUND } from '../../constants';
 import { SOUNDS } from '../../assets/sounds';
 
 const MainMenu = ({ loadedGame }) => {
   const [testSound, toggleTestSound] = useStateWithLabel(false, 'testSound');
   const APP_VERSION = appInfo.version;
   const zombieImage = useRef(
-    ZOMBIES_INTRO[Math.ceil(Math.random() * ZOMBIES_INTRO.length)]
+    ZOMBIES_INTRO[Math.floor(Math.random() * ZOMBIES_INTRO.length)]
   );
 
   useEffect(() => {
@@ -58,11 +58,11 @@ const MainMenu = ({ loadedGame }) => {
       <ZombieIntro src={zombieImage.current} />
       <ButtonsArea delay>
         <StyledLink to="/new">
-          <SelectionButton>New Game</SelectionButton>
+          <SelectionButton>{NEW_GAME}</SelectionButton>
         </StyledLink>
         {loadedGame && (
           <StyledLink to="/play">
-            <SelectionButton>Continue</SelectionButton>
+            <SelectionButton>{CONTINUE}</SelectionButton>
           </StyledLink>
         )}
       </ButtonsArea>

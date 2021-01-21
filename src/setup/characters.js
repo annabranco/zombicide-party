@@ -1,11 +1,11 @@
-import Amy from '../assets/images/survivors/amy.jpg';
-import Ben from '../assets/images/survivors/ben.jpg';
-import Mary from '../assets/images/survivors/mary.jpg';
-import Ned from '../assets/images/survivors/ned.jpg';
-import Phil from '../assets/images/survivors/phil.jpg';
-import Wanda from '../assets/images/survivors/wanda.jpg';
-import Josh from '../assets/images/survivors/josh.jpg';
-import Doug from '../assets/images/survivors/doug.jpg';
+import Amy from '../assets/images/survivors/amy.png';
+import Ben from '../assets/images/survivors/ben.png';
+import Mary from '../assets/images/survivors/mary.png';
+import Ned from '../assets/images/survivors/ned.png';
+import Phil from '../assets/images/survivors/phil.png';
+import Wanda from '../assets/images/survivors/wanda.png';
+import Josh from '../assets/images/survivors/josh.png';
+import Doug from '../assets/images/survivors/doug.png';
 import AmyFace from '../assets/images/survivors/amy-face.png';
 import BenFace from '../assets/images/survivors/ben-face.png';
 import MaryFace from '../assets/images/survivors/mary-face.png';
@@ -269,17 +269,20 @@ const WANDA = {
 export const CHARACTERS_KOPINSKI = [BEN, MARY];
 export const CHARACTERS_S1 = [AMY, DOUG, JOSH, NED, PHIL, WANDA];
 
-export const CHARACTERS = [...CHARACTERS_S1, ...CHARACTERS_KOPINSKI].sort(
-  (a, b) => {
-    const nameA = a.name.toUpperCase();
-    const nameB = b.name.toUpperCase();
-    if (nameA < nameB) {
-      return -1;
-    }
-    if (nameA > nameB) {
-      return 1;
-    }
-    // names must be equal
-    return 0;
+export const CHARACTERS = [
+  ...CHARACTERS_S1,
+  ...CHARACTERS_KOPINSKI
+  // ...CHARACTERS_KOPINSKI,
+  // ...CHARACTERS_S1
+].sort((a, b) => {
+  const nameA = a.name.toUpperCase();
+  const nameB = b.name.toUpperCase();
+  if (nameA < nameB) {
+    return -1;
   }
-);
+  if (nameA > nameB) {
+    return 1;
+  }
+  // names must be equal
+  return 0;
+});

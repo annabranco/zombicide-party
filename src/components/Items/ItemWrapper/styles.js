@@ -1,6 +1,6 @@
 import styled from '@emotion/styled';
 import { css } from '@emotion/core';
-import { IN_BACKPACK } from '../../../constants';
+import { IN_BACKPACK, WOUND } from '../../../constants';
 import { AppButton } from '../../Sections/PlayersSection/styles';
 
 export const ActionButtonIcon = styled.i`
@@ -10,6 +10,9 @@ export const ActionButtonIcon = styled.i`
   /* color: ${({ type }) => (type === 'drop' ? 'firebrick' : 'green')}; */
   &:hover {
     color: ${({ type }) => (type === 'drop' ? 'red' : 'lawngreen')};
+  }
+  @media all and (min-width: 768px) {
+    font-size: 3rem;
   }
 `;
 ActionButtonIcon.displayName = 'ActionButtonIcon';
@@ -32,9 +35,38 @@ export const ActionButtonsWrapper = styled.div`
       left: -38px;
     `}
 
+  ${({ mobile, slotType }) => {
+    if (mobile && slotType === IN_BACKPACK) {
+      return css`
+        top: -35px;
+        left: 50%;
+        transform: translate(-50%, 0);
+        display: flex;
+      `;
+    }
+    if (mobile) {
+      return css`
+        top: unset;
+        bottom: -35px;
+        left: 50%;
+        transform: translate(-50%, 0);
+        display: flex;
+      `;
+    }
+    return null;
+  }}
+
   @media all and (min-width: 768px) {
-    top: 10px;
+    top: 50%;
   }
+
+  ${({ visible }) =>
+    visible &&
+    css`
+      display: flex;
+      top: 50%;
+      transform: translate(0, -50%);
+    `}
 `;
 ActionButtonsWrapper.displayName = 'ActionButtonsWrapper';
 
@@ -45,6 +77,7 @@ export const Item = styled.div`
   height: 100px;
   width: 65px;
   overflow: hidden;
+  box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.5);
 
   ${({ trade }) =>
     trade &&
@@ -143,7 +176,7 @@ export const ItemWrapper = styled.div`
   margin: 50px 5px 0;
 
   ${({ slotType, isActive, isSelected, type }) => {
-    if (isActive && type === 'wound') {
+    if (isActive && type === WOUND) {
       return css`
         z-index: 5;
         filter: none;
@@ -172,6 +205,10 @@ export const ItemWrapper = styled.div`
   }}
 
   @media all and (min-width: 768px) {
+    margin: 50px 10px 0;
+  }
+
+  @media all and (min-width: 1024px) {
     margin: 50px 20px 0;
   }
 `;

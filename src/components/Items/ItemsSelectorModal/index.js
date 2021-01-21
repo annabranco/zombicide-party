@@ -12,7 +12,14 @@ import {
   SubSectionTitle
 } from './styles';
 import { ButtonsWrapper, CancelButton } from '../../TradeArea/styles';
-import { IN_HAND, ITEMS, MOBILE, WEAPONS } from '../../../constants';
+import {
+  DESKTOP,
+  IN_HAND,
+  ITEMS,
+  MOBILE,
+  TABLET,
+  WEAPONS
+} from '../../../constants';
 
 const ItemsSelectorModal = ({ device, onSelect, selectSlot, slotType }) => {
   const [items, changeItems] = useStateWithLabel(ALL_ITEMS, ITEMS);
@@ -25,6 +32,18 @@ const ItemsSelectorModal = ({ device, onSelect, selectSlot, slotType }) => {
     } else {
       changeItems(ALL_ITEMS);
       changeItemsType(ITEMS);
+    }
+  };
+
+  const calculateColumns = () => {
+    switch (device) {
+      case MOBILE:
+        return 3;
+      case TABLET:
+        return 4;
+      case DESKTOP:
+      default:
+        return 6;
     }
   };
 
@@ -45,7 +64,7 @@ const ItemsSelectorModal = ({ device, onSelect, selectSlot, slotType }) => {
         <SubSectionTitle opened={itemsType === ITEMS}>Items</SubSectionTitle>
       </SelectorWrapper>
       <SelectorModal>
-        <SelectorArea columns={device === MOBILE ? 3 : 4}>
+        <SelectorArea columns={calculateColumns()}>
           {Object.keys(items)
             .sort()
             .map(name => (

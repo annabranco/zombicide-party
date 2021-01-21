@@ -1,7 +1,17 @@
 import styled from '@emotion/styled';
 import { css } from '@emotion/core';
 import { inactiveZombie, activeZombie } from '../../styles';
-import { IN_HAND, ITEMS, WEAPONS } from '../../constants';
+import {
+  ATTACK,
+  ACTIVATE,
+  IN_HAND,
+  ITEMS,
+  KILL,
+  WEAPONS,
+  WOUND,
+  ACTIVATIONS,
+  SELECTION
+} from '../../constants';
 
 export const Action = styled.p`
   label: Action;
@@ -23,17 +33,17 @@ export const Action = styled.p`
   font-family: 'Grandstander', cursive;
 
   ${({ action }) => {
-    if (action === 'activate') {
+    if (action === ACTIVATE) {
       return css`
         background: rgba(11, 196, 33, 0.8);
       `;
     }
-    if (action === 'attack') {
+    if (action === ATTACK) {
       return css`
         background: rgba(209, 90, 0, 0.8);
       `;
     }
-    if (action === 'kill') {
+    if (action === KILL) {
       return css`
         background: rgba(214, 6, 6, 0.8);
       `;
@@ -56,7 +66,7 @@ export const Block = styled.div`
   border-radius: 5px;
   box-shadow: 0 0 5px 0 black;
   display: ${({ damageMode, type, wounded }) =>
-    damageMode && type !== 'wound' && wounded ? 'none' : 'flex'};
+    damageMode && type !== WOUND && wounded ? 'none' : 'flex'};
 `;
 Block.displayName = 'Block';
 
@@ -68,10 +78,19 @@ export const ItemIcon = styled.div`
   max-width: 100%;
   transition: transform ease 0.5s, border ease 0.2s;
   background-image: ${({ img }) => img && `url(${img})`};
-  background-position: center center;
-  background-size: 150%;
+  /* background-position: center center;
+  background-size: 150%; */
   background-repeat: no-repeat;
   cursor: pointer;
+  transition: all ease 0.2s;
+
+  ${({ isSelected }) =>
+    isSelected &&
+    css`
+      filter: contrast(80%) brightness(150%);
+      background-size: 180%;
+      transition: all ease 0.2s;
+    `}
 
   ${({ isMobile }) =>
     isMobile &&
@@ -222,7 +241,10 @@ export const ItemIcon = styled.div`
         background-position: center 45%;
       `;
     }
-    return null;
+    return css`
+      background-size: 150%;
+      background-position: center center;
+    `;
   }}
 `;
 ItemIcon.displayName = 'ItemIcon';
@@ -239,7 +261,7 @@ export const PlayIcon = styled.img`
   }
 
   ${({ type, active }) => {
-    if (type === 'wound') {
+    if (type === WOUND) {
       return css`
         width: 100%;
         @media all and (min-width: 768px) {
@@ -324,7 +346,7 @@ export const PlayImageButton = styled.button`
 
   &:hover {
     filter: ${({ damageMode, type }) =>
-      damageMode && type !== 'wound' && 'sepia(0.8) brightness(0.6)'};
+      damageMode && type !== WOUND && 'sepia(0.8) brightness(0.6)'};
     & > div > p {
       display: block;
     }
@@ -339,8 +361,8 @@ export const PlayImageButton = styled.button`
     switch (true) {
       case !!damageMode:
       case !!setupMode:
-      case type === 'activations':
-      case slotType === 'selection':
+      case type === ACTIVATIONS:
+      case slotType === SELECTION:
         return css`
           cursor: pointer;
         `;
@@ -383,7 +405,7 @@ export const SelectorArea = styled.div`
   align-items: flex-start;
   justify-content: center;
   overflow-y: ${({ zombies }) => (zombies ? 'hidden' : 'auto')};
-  overflow-x: hidden;
+  overflow-x: auto;
   padding: 20px 10px 30px;
 
   ${({ columns, zombies }) => {
@@ -405,7 +427,6 @@ export const SelectorArea = styled.div`
 
   @media all and (min-width: 768px) {
     height: calc(100vh - 80px);
-    overflow: hidden;
   }
 `;
 SelectorArea.displayName = 'SelectorArea';

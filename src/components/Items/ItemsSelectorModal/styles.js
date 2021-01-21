@@ -67,10 +67,10 @@ export const SelectorWrapper = styled.div`
       top: 10px;
     `}
 
-  @media all and (min-width: 768px) {
-    justify-content: space-around;
-    margin: 0;
-    width: 80%;
+  @media all and (min-width: 1200px) {
+    width: 50%;
+    left: 50%;
+    transform: translate(-50%, 0);
   }
 `;
 SelectorWrapper.displayName = 'SelectorWrapper';

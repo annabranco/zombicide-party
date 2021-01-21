@@ -131,14 +131,14 @@ export const globalStyles = css`
 `;
 
 export const activeImage = css`
-  filter: brightness(1.3);
+  filter: brightness(1.3) opacity(1);
 `;
 
 export const inactiveImage = css`
-  filter: sepia(1) opacity(0.3);
+  filter: sepia(1) opacity(0.6);
 
   &:hover {
-    filter: sepia(0.3) brightness(1.8) opacity(0.4) contrast(1.1) saturate(2);
+    filter: sepia(0.3) brightness(1.5) opacity(0.7) contrast(1.2) saturate(2);
   }
 `;
 

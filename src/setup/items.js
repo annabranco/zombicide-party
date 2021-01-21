@@ -131,7 +131,6 @@ export const setupItems = sets => {
   sets.forEach(set => {
     allItems = { ...allItems, ...set };
   });
-  console.log('$$$ allItems', allItems);
   return allItems;
 };
 

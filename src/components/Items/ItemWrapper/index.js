@@ -19,14 +19,20 @@ import {
   KillButtonIcon
 } from './styles';
 import {
+  DROP,
   IN_HAND,
   ITEM_IN_BACKPACK,
   ITEM_IN_HAND,
   MELEE,
   MELEE_RANGED,
   MOBILE,
+  NONE,
   RANGED,
+  RELOAD,
+  RELOAD_ACTION,
+  SEARCH_ACTION,
   SPECIAL,
+  TRADE,
   WEAPONS
 } from '../../../constants';
 import { BonusDicesType } from '../../../interfaces/types';
@@ -47,6 +53,7 @@ const ItemsArea = ({
   damageMode,
   device,
   dice,
+  dropMode,
   gainCustomXp,
   gainXp,
   handleSearch,
@@ -154,7 +161,7 @@ const ItemsArea = ({
         select(false);
         tradeItem({ item: null, slot, char: charName });
       } else {
-        tradeItem({ item: 'none', slot, char: charName });
+        tradeItem({ item: NONE, slot, char: charName });
         if (!itemSelected) {
           select(true);
         }
@@ -181,7 +188,7 @@ const ItemsArea = ({
 
   const reload = weapon => {
     if (needReload) {
-      spendAction('reload');
+      spendAction(RELOAD);
       toggleNeedReload(false);
     }
   };
@@ -210,12 +217,13 @@ const ItemsArea = ({
       id={`${item}-${index + 1}`}
       isActive={isActive}
       key={`${item}-${index + 1}`}
-      onMouseOut={() => toggleActive(false)}
-      onMouseOver={() => toggleActive(true)}
+      onMouseOut={!device === MOBILE ? () => toggleActive(false) : null}
+      onMouseOver={!device === MOBILE ? () => toggleActive(true) : null}
       slotType={slotType}
       type={itemsType}
     >
       <Item damageMode={damageMode} trade={trade}>
+        {/* {isActive && trade && <p>CONFIRM</p>} */}
         {item ? (
           <SoundBlock
             activateKillButtons={activateKillButtons}
@@ -255,22 +263,23 @@ const ItemsArea = ({
             {!trade && (slotType === IN_HAND ? ITEM_IN_HAND : ITEM_IN_BACKPACK)}
             {canSearch && !damageMode && !setupMode && (
               <ActionButton
-                actionType="search"
+                actionType={SEARCH_ACTION}
                 callback={onClickEmptyCard}
+                device={device}
                 type={charVoice}
               />
             )}
           </ItemBlank>
         )}
       </Item>
-      <ActionButtonsWrapper trade={trade}>
-        {!trade && !damageMode && actionsLeft > 0 && (
-          <AppButton onClick={() => startTrade(true)} type="button" trade>
-            <ActionButtonIcon className="fas fa-exchange-alt" type="trade" />
-          </AppButton>
-        )}
+      <ActionButtonsWrapper trade={trade} visible={dropMode}>
         {needReload && (
-          <ActionButton actionType="reload" callback={reload} type="center" />
+          <ActionButton
+            actionType={RELOAD_ACTION}
+            callback={reload}
+            device={device}
+            type="center"
+          />
         )}
         {item && !damageMode && (
           <AppButton
@@ -282,7 +291,7 @@ const ItemsArea = ({
             type="button"
             trade
           >
-            <ActionButtonIcon className="far fa-trash-alt" type="drop" />
+            <ActionButtonIcon className="far fa-trash-alt" type={DROP} />
           </AppButton>
         )}
       </ActionButtonsWrapper>
@@ -321,6 +330,7 @@ ItemsArea.propTypes = {
   damageMode: bool.isRequired,
   device: string.isRequired,
   dice: number,
+  dropMode: bool.isRequired,
   gainCustomXp: func,
   gainXp: func,
   handleSearch: func.isRequired,
