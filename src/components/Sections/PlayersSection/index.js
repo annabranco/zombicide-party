@@ -397,7 +397,6 @@ const PlayersSection = ({
         index: charNames.indexOf(name)
       });
     });
-    console.log('$$$ orderedChars', orderedChars);
     return orderedChars;
   };
 
@@ -839,13 +838,16 @@ const PlayersSection = ({
   /* ------- EFFECTS HOOKS ------- */
   useEffect(() => {
     if (!dataLoaded) {
+      const game = JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY));
       const updatedCharacters =
-        (initialCharacters.length > 0 && [...initialCharacters]) ||
+        (initialCharacters && [...initialCharacters]) ||
         (loadedGame && cloneDeep(loadedGame)) ||
+        game ||
         cloneDeep(CHARACTERS);
       updateCharacters(updatedCharacters);
       prevCharIndex.current = charIndex;
       changeFirstPlayer(updatedCharacters[0].name);
+      setDataLoaded(true);
     }
   }, [charIndex, dataLoaded, initialCharacters, loadedGame]);
 
@@ -888,7 +890,7 @@ const PlayersSection = ({
     if (characters) {
       let nextChar = cloneDeep(characters[charIndex]);
 
-      if (!damageMode) {
+      if (!damageMode && setupMode !== INITIAL) {
         checkIfRoundHasFinished();
       }
 
@@ -931,13 +933,9 @@ const PlayersSection = ({
         changeActionLabel('');
         prevCharIndex.current = charIndex;
         localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(characters));
-
-        if (!dataLoaded) {
-          setDataLoaded(true);
-        }
       }
     }
-  }, [charIndex, characters, dataLoaded]);
+  }, [charIndex, characters]);
 
   useEffect(() => {
     if (character.experience >= 0) {
@@ -1209,13 +1207,15 @@ const PlayersSection = ({
           {/* ----- ITEMS AREA ----- */}
           {character.wounded !== KILLED && (
             <>
-              {!dropMode && checkIfHasAnyActionLeft(character.actionsLeft) && (
-                <CardsActions>
-                  <CardsActionsText onClick={startTrade}>
-                    {TRADE}
-                  </CardsActionsText>
-                </CardsActions>
-              )}
+              {!dropMode &&
+                character.actionsLeft &&
+                checkIfHasAnyActionLeft(character.actionsLeft) && (
+                  <CardsActions>
+                    <CardsActionsText onClick={startTrade}>
+                      {TRADE}
+                    </CardsActionsText>
+                  </CardsActions>
+                )}
               <CharItems slotType={IN_HAND}>
                 {character.inHand &&
                   character.inHand.map((item, index) => (
@@ -1385,14 +1385,17 @@ const PlayersSection = ({
             </AbilitiesWrapper>
           )}
           {character &&
+            character.abilities &&
+            character.promotions &&
             character.wounded !== KILLED &&
             device.current === DESKTOP && (
               <AbilitiesWrapperDesktop>
                 <AbilitiesInnerSeparator>
                   <PromoWrapper
-                    active={character.abilities.includes(
-                      character.promotions.blue.name
-                    )}
+                    active={
+                      character.abilities &&
+                      character.abilities[0] === character.promotions.blue.name
+                    }
                   >
                     <LevelIndicator level={0} />
                     {character.promotions.blue.name}
@@ -1400,9 +1403,11 @@ const PlayersSection = ({
                 </AbilitiesInnerSeparator>
                 <AbilitiesInnerSeparator>
                   <PromoWrapper
-                    active={character.abilities.includes(
-                      character.promotions.yellow.name
-                    )}
+                    active={
+                      character.abilities &&
+                      character.abilities[1] ===
+                        character.promotions.yellow.name
+                    }
                   >
                     <LevelIndicator level={1} />
                     {character.promotions.yellow.name}
@@ -1411,7 +1416,10 @@ const PlayersSection = ({
                 <AbilitiesInnerSeparator>
                   {character.promotions.orange.map(promo => (
                     <PromoWrapper
-                      active={character.abilities.includes(promo.name)}
+                      active={
+                        character.abilities &&
+                        character.abilities[2] === promo.name
+                      }
                       key={`promo-orange-${promo.name.replace(' ', '-')}`}
                     >
                       <LevelIndicator level={2} />
@@ -1422,7 +1430,10 @@ const PlayersSection = ({
                 <AbilitiesInnerSeparator>
                   {character.promotions.red.map(promo => (
                     <PromoWrapper
-                      active={character.abilities.includes(promo.name)}
+                      active={
+                        character.abilities &&
+                        character.abilities[3] === promo.name
+                      }
                       key={`promo-orange-${promo.name.replace(' ', '-')}`}
                     >
                       <LevelIndicator level={3} />

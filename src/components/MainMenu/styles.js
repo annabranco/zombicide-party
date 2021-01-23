@@ -1,7 +1,7 @@
 import styled from '@emotion/styled';
 import { css, keyframes } from '@emotion/core';
 import { Link } from 'react-router-dom';
-import { Appear } from '../../styles';
+import { Appear, Shadow } from '../../styles';
 
 const ThunderFlash = keyframes`
   3% {
@@ -59,7 +59,7 @@ const ThunderFlash = keyframes`
 
 export const ButtonsArea = styled.div`
   label: ButtonsArea;
-  z-index: 5;
+  z-index: 12;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -149,9 +149,13 @@ export const SelectionButton = styled.button`
   font-family: Crackhouse, 'Grandstander', cursive;
   font-size: 2rem;
   border-radius: 20px;
-  background: red;
+  background: linear-gradient(red, tomato, maroon);
   cursor: pointer;
   text-transform: uppercase;
+  outline: none;
+  box-shadow: 0 2px 10px 0 rgba(0, 0, 0, 0.6),
+    inset 1px 1px 3px rgba(255, 0, 0, 0.5);
+  border: 1px solid black;
 
   @media all and (min-width: 768px) {
     width: 200px;
@@ -189,6 +193,8 @@ export const TestButton = styled(SelectionButton)`
   border-radius: 10px;
   line-height: 0.5;
   font-family: 'Grandstander', cursive;
+  box-shadow: 0 1px 10px 0 rgba(0, 0, 0, 0.6),
+    inset 1px 1px 3px rgba(255, 0, 0, 0.5);
 
   @media all and (min-width: 768px) {
     width: 180px;
@@ -241,6 +247,7 @@ ZombicideLogo.displayName = 'ZombicideLogo';
 
 export const ZombieIntro = styled.img`
   label: ZombieIntro;
+  z-index: 11;
   position: absolute;
   top: 60px;
   width: 300px;
@@ -259,9 +266,54 @@ export const ZombieIntro = styled.img`
     width: 75%;
   }
 
+  @media all and (min-width: 1024px) {
+    top: 100px;
+    width: 400px;
+  }
+
   @media all and (min-width: 1500px) {
     top: 60px;
     width: 500px;
   }
 `;
 ZombieIntro.displayName = 'ZombieIntro';
+
+export const ZombieIntroShadow = styled(ZombieIntro)`
+  label: ZombieIntroShadow;
+  position: absolute;
+  z-index: 10;
+  top: 60px;
+  width: 300px;
+  margin: 60px 0 0 -60px;
+
+  animation-name: ${Appear};
+  animation-duration: 4s;
+  animation-iteration-count: 1;
+  animation-fill-mode: forwards;
+  ${Shadow}
+
+  @media all and (min-width: 768px) {
+    top: 40px;
+    width: 400px;
+    margin: 85px 0 0 -82px;
+  }
+
+  @media all and (min-height: 1000px) {
+    top: 17%;
+    width: 75%;
+    margin: 100px 0 0 -105px;
+  }
+
+  @media all and (min-width: 1024px) {
+    top: 100px;
+    width: 400px;
+    margin: 85px 0 0 -82px;
+  }
+
+  @media all and (min-width: 1500px) {
+    top: 40px;
+    width: 500px;
+    margin: 100px 0 0 -100px;
+  }
+`;
+ZombieIntroShadow.displayName = 'ZombieIntroShadow';

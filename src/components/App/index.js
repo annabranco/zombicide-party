@@ -11,7 +11,7 @@ import MainScreen from '../MainScreen';
 
 const App = () => {
   const [initialCharacters, setInitialCharacters] = useStateWithLabel(
-    [],
+    null,
     'initialCharacters'
   );
   const [damageMode, toggleDamageMode] = useStateWithLabel(false, 'damageMode');
@@ -26,7 +26,7 @@ const App = () => {
     } else {
       localStorage.removeItem(LOCAL_STORAGE_KEY);
     }
-  }, []);
+  }, [loadGame]);
 
   return (
     <Router>
@@ -35,7 +35,12 @@ const App = () => {
         <Route
           exact
           path="/"
-          render={() => <MainMenu loadedGame={Boolean(loadedGame)} />}
+          render={() => (
+            <MainMenu
+              loadedGame={loadedGame}
+              setInitialCharacters={setInitialCharacters}
+            />
+          )}
         />
         <Route
           path="/new"

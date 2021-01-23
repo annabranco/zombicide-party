@@ -63,13 +63,15 @@ const MainScreen = ({
         nextGameRound={nextGameRound}
         visible={!zombiesTurn}
       />
-      <ZombiesSection
-        damageMode={damageMode}
-        setZombiesTurn={setZombiesTurn}
-        toggleDamageMode={toggleDamageMode}
-        visible={zombiesTurn}
-        zombiesTurn={zombiesTurn}
-      />
+      {zombiesTurn && (
+        <ZombiesSection
+          damageMode={damageMode}
+          setZombiesTurn={setZombiesTurn}
+          toggleDamageMode={toggleDamageMode}
+          visible={zombiesTurn}
+          zombiesTurn={zombiesTurn}
+        />
+      )}
       {displayRounds && <RoundTag>Round: {rounds.length}</RoundTag>}
     </MainArea>
   );

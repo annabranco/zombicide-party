@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from 'react';
-import { bool } from 'prop-types';
+import { bool, func } from 'prop-types';
 import appInfo from '../../../package.json';
 import { useStateWithLabel } from '../../utils/hooks';
 import BG from '../../assets/images/background/background2.jpg';
@@ -15,13 +15,14 @@ import {
   ThunderOverlay,
   Version,
   ZombicideLogo,
-  ZombieIntro
+  ZombieIntro,
+  ZombieIntroShadow
 } from './styles';
 import { ZOMBIES_INTRO } from '../../setup/zombies';
 import { CONTINUE, NEW_GAME, STOP_SOUND, TEST_SOUND } from '../../constants';
 import { SOUNDS } from '../../assets/sounds';
 
-const MainMenu = ({ loadedGame }) => {
+const MainMenu = ({ loadedGame, setInitialCharacters }) => {
   const [testSound, toggleTestSound] = useStateWithLabel(false, 'testSound');
   const APP_VERSION = appInfo.version;
   const zombieImage = useRef(
@@ -56,12 +57,16 @@ const MainMenu = ({ loadedGame }) => {
         <MainTitle>PARTY</MainTitle>
       </LogoArea>
       <ZombieIntro src={zombieImage.current} />
+      <ZombieIntroShadow src={zombieImage.current} />
       <ButtonsArea delay>
         <StyledLink to="/new">
           <SelectionButton>{NEW_GAME}</SelectionButton>
         </StyledLink>
         {loadedGame && (
-          <StyledLink to="/play">
+          <StyledLink
+            to="/play"
+            onClick={() => setInitialCharacters(loadedGame)}
+          >
             <SelectionButton>{CONTINUE}</SelectionButton>
           </StyledLink>
         )}
@@ -76,7 +81,8 @@ const MainMenu = ({ loadedGame }) => {
 };
 
 MainMenu.propTypes = {
-  loadedGame: bool.isRequired
+  loadedGame: bool.isRequired,
+  setInitialCharacters: func.isRequired
 };
 
 export default MainMenu;
