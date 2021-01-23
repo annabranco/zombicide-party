@@ -2,6 +2,7 @@ import React, { useEffect, useRef } from 'react';
 import { cloneDeep } from 'lodash';
 import { func, string } from 'prop-types';
 import {
+  ArrowSign,
   CharItems,
   NextButton,
   PreviousButton
@@ -20,7 +21,8 @@ import {
   CurrentPartnerTag,
   Face,
   PlayerName,
-  TradeWrapper
+  TradeWrapper,
+  NavButtonsWrapper
 } from './styles';
 import {
   IN_BACKPACK,
@@ -170,72 +172,6 @@ const TradeArea = ({
 
   return (
     <TradeWrapper>
-      {tradePartner && (
-        <CharacterTrading>
-          <CharacterId>
-            <Face src={tradePartner.face} alt="" />
-            <CharacterName trade>{tradePartner.name}</CharacterName>
-          </CharacterId>
-          <PlayerName color={getCharacterColor(tradePartner.name)}>
-            {tradePartner.player}
-          </PlayerName>
-          <CharItems slotType={IN_HAND} trade>
-            {tradePartner.inHand.map((item, index) => (
-              <ItemsArea
-                charName={tradePartner.name}
-                device={device}
-                index={index}
-                item={item}
-                itemSelected={Boolean(selectedItem1)}
-                key={`${item}-${index + 1}`}
-                onClickDrop={onClickDrop}
-                slotType={IN_HAND}
-                trade
-                tradeItem={onTrade}
-                wounded={tradePartner.wounded}
-              />
-            ))}
-          </CharItems>
-          <CharItems slotType={IN_BACKPACK} trade>
-            {tradePartner.inBackpack.map((item, index) => (
-              <ItemsArea
-                charName={tradePartner.name}
-                device={device}
-                index={index}
-                item={item}
-                itemSelected={Boolean(selectedItem1)}
-                key={`${item}-${index + 3}`}
-                noAudio
-                onClickDrop={onClickDrop}
-                slotType={IN_BACKPACK}
-                trade
-                tradeItem={onTrade}
-                wounded={tradePartner.wounded}
-              />
-            ))}
-          </CharItems>
-          {!tradeEstablished && (
-            <>
-              <PreviousButton
-                onClick={changeToPreviousPlayer}
-                trade
-                type="button"
-              >
-                <i className="fas fa-caret-left" />
-              </PreviousButton>
-              <NextButton onClick={changeToNextPlayer} trade type="button">
-                <i className="fas fa-caret-right" />
-              </NextButton>
-            </>
-          )}
-
-          <CurrentPartnerTag>
-            {tradeEstablished
-              ? TRADING_WITH(tradePartner.name)
-              : SELECT_TRADE_PARTNER}
-          </CurrentPartnerTag>
-        </CharacterTrading>
-      )}
       {updatedCharacter && (
         <CharacterTrading>
           <CharacterId>
@@ -278,9 +214,72 @@ const TradeArea = ({
               />
             ))}
           </CharItems>
-          {/* <CurrentCharacterTag color={getCharacterColor(updatedCharacter.name)}>
-            Current Character
-          </CurrentCharacterTag> */}
+        </CharacterTrading>
+      )}
+      {tradePartner && (
+        <CharacterTrading>
+          <CharacterId>
+            <Face src={tradePartner.face} alt="" />
+            <CharacterName trade>{tradePartner.name}</CharacterName>
+            <PlayerName color={getCharacterColor(tradePartner.name)}>
+              {tradePartner.player}
+            </PlayerName>
+          </CharacterId>
+          <CharItems slotType={IN_HAND} trade>
+            {tradePartner.inHand.map((item, index) => (
+              <ItemsArea
+                charName={tradePartner.name}
+                device={device}
+                index={index}
+                item={item}
+                itemSelected={Boolean(selectedItem1)}
+                key={`${item}-${index + 1}`}
+                onClickDrop={onClickDrop}
+                slotType={IN_HAND}
+                trade
+                tradeItem={onTrade}
+                wounded={tradePartner.wounded}
+              />
+            ))}
+          </CharItems>
+          <CharItems slotType={IN_BACKPACK} trade>
+            {tradePartner.inBackpack.map((item, index) => (
+              <ItemsArea
+                charName={tradePartner.name}
+                device={device}
+                index={index}
+                item={item}
+                itemSelected={Boolean(selectedItem1)}
+                key={`${item}-${index + 3}`}
+                noAudio
+                onClickDrop={onClickDrop}
+                slotType={IN_BACKPACK}
+                trade
+                tradeItem={onTrade}
+                wounded={tradePartner.wounded}
+              />
+            ))}
+          </CharItems>
+          {!tradeEstablished && (
+            <NavButtonsWrapper>
+              <ArrowSign
+                className="fas fa-caret-left"
+                onClick={changeToPreviousPlayer}
+                role="button"
+              />
+              <ArrowSign
+                className="fas fa-caret-right"
+                onClick={changeToNextPlayer}
+                role="button"
+              />
+            </NavButtonsWrapper>
+          )}
+
+          <CurrentPartnerTag>
+            {tradeEstablished
+              ? TRADING_WITH(tradePartner.name)
+              : SELECT_TRADE_PARTNER}
+          </CurrentPartnerTag>
         </CharacterTrading>
       )}
       <ButtonsWrapper>

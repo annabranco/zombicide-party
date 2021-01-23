@@ -162,3 +162,8 @@ export const Appear = keyframes`
     opacity: 1;
   }
 `;
+
+export const Shadow = css`
+  filter: grayscale(1) brightness(0) opacity(0.2);
+  transform: skew(42deg, -7deg) rotate(7deg) scaleY(0.5) scaleX(0.85);
+`;

@@ -134,7 +134,6 @@ export const MenuScreen = styled.div`
     background-repeat: no-repeat;
 
     @media all and (min-width: 768px) {
-      height: 100vh;
       background-size: 100% 100%;
     }
   `}
@@ -257,17 +256,22 @@ export const ZombieIntro = styled.img`
   animation-fill-mode: forwards;
 
   @media all and (min-width: 768px) {
-    top: 40px;
-    width: 400px;
+    top: 150px;
+    width: 576px;
   }
 
-  @media all and (min-height: 1000px) {
+  /* @media all and (min-height: 1000px) {
     top: 15%;
     width: 75%;
-  }
+  } */
 
   @media all and (min-width: 1024px) {
     top: 100px;
+    width: 400px;
+  }
+
+  @media all and (min-width: 1200px) {
+    top: 40px;
     width: 400px;
   }
 
@@ -293,16 +297,17 @@ export const ZombieIntroShadow = styled(ZombieIntro)`
   ${Shadow}
 
   @media all and (min-width: 768px) {
-    top: 40px;
-    width: 400px;
-    margin: 85px 0 0 -82px;
+    top: 460px;
+    height: 480px;
+    width: 576px;
+    margin: 0 0 0 -75px;
   }
 
-  @media all and (min-height: 1000px) {
+  /* @media all and (min-height: 1000px) {
     top: 17%;
     width: 75%;
     margin: 100px 0 0 -105px;
-  }
+  } */
 
   @media all and (min-width: 1024px) {
     top: 100px;
@@ -310,10 +315,18 @@ export const ZombieIntroShadow = styled(ZombieIntro)`
     margin: 85px 0 0 -82px;
   }
 
+  @media all and (min-width: 1200px) {
+    top: 260px;
+    height: 340px;
+    width: 400px;
+    margin: 0 0 0 -50px;
+  }
+
   @media all and (min-width: 1500px) {
-    top: 40px;
+    top: 360px;
+    height: 390px;
     width: 500px;
-    margin: 100px 0 0 -100px;
+    margin: 0 0 0 -60px;
   }
 `;
 ZombieIntroShadow.displayName = 'ZombieIntroShadow';

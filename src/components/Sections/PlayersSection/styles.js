@@ -2,7 +2,7 @@ import styled from '@emotion/styled';
 import { css } from '@emotion/core';
 import { rgba } from 'emotion-rgba';
 import { AttackInstructions } from '../ZombiesSection/styles';
-import { Appear } from '../../../styles';
+import { Appear, Shadow } from '../../../styles';
 import { IN_BACKPACK, MOBILE } from '../../../constants';
 import Background from '../../../assets/images/background/background.jpg';
 
@@ -21,6 +21,11 @@ export const Abilities = styled.p`
   }
 
   @media all and (min-width: 768px) {
+    font-size: 1rem;
+    padding: 0 80px;
+  }
+
+  @media all and (min-width: 1200px) {
     margin: 2px auto;
     font-weight: 700;
     font-size: 1.4rem;
@@ -78,17 +83,15 @@ export const AbilitiesWrapper = styled.div`
   }};
 
   @media all and (min-width: 360px) {
-    bottom: 46px;
-    height: 54px;
+    bottom: 0;
+    height: 100px;
+    align-items: flex-start;
+    padding: 10px 20px 50px 20px;
   }
 
   @media all and (min-width: 768px) {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-direction: column;
     bottom: 0;
-    height: 10%;
+    height: 12%;
     width: 100%;
   }
 `;
@@ -182,12 +185,13 @@ export const ActionsWrapper = styled.div`
   width: 90%;
 
   @media all and (min-width: 360px) {
-    height: 60%;
+    height: 58%;
+    justify-content: flex-start;
   }
 
   @media all and (min-width: 768px) {
     bottom: unset;
-    top: %;
+    top: 18%;
     right: 30px;
     flex-direction: column;
     justify-content: flex-end;
@@ -211,7 +215,7 @@ export const AdmButton = styled(AppButton)`
   label: AdmButton;
   z-index: 11;
   position: absolute;
-  top: 50px;
+  top: 70px;
   right: -5px;
   height: 30px;
   width: 30px;
@@ -241,6 +245,12 @@ export const ArrowSign = styled.i`
   label: ArrowSign;
   font-size: 1.8rem;
   line-height: 1;
+  color: white;
+  cursor: pointer;
+
+  &:hover {
+    color: yellow;
+  }
 
   @media all and (min-width: 360px) {
     font-size: 2.5rem;
@@ -311,6 +321,19 @@ export const CardsActions = styled.div`
 
   @media all and (min-width: 768px) {
     transform: none;
+    bottom: 200px;
+    left: 20px;
+
+    ${({ drop }) =>
+      drop &&
+      css`
+        left: unset;
+        right: 15%;
+      `}
+  }
+
+  @media all and (min-width: 1024px) {
+    transform: none;
     bottom: 150px;
     left: 25%;
 
@@ -319,6 +342,19 @@ export const CardsActions = styled.div`
       css`
         left: unset;
         right: 25%;
+      `}
+  }
+
+  @media all and (min-width: 1400px) {
+    transform: none;
+    bottom: 270px;
+    left: 27%;
+
+    ${({ drop }) =>
+      drop &&
+      css`
+        left: unset;
+        right: 27%;
       `}
   }
 
@@ -350,10 +386,7 @@ CardsActionsText.displayName = 'CardsActionsText';
 export const CharacterOverlay = styled.div`
   label: CharacterOverlay;
   z-index: 2;
-  /* position: absolute;
-  top: 0;
-  left: 0; */
-  margin-top: 40px;
+  margin-top: 45px;
   height: ${`${window.innerHeight}px`};
   width: 100%;
   background: #4444;
@@ -372,7 +405,7 @@ export const CharacterOverlay = styled.div`
       : `url(${Background})`};
     ${'' /* background-image: ${`url(${Background})`}; */}
     background-position: ${position};
-    background-size: ${`${window.innerHeight}px`};
+    background-size: cover;
     background-repeat: no-repeat;
   `}
 
@@ -384,13 +417,54 @@ export const CharacterOverlay = styled.div`
       background-size: cover;
     `}
   }
+
+  /* @media all and (min-width: 1200px) {
+    position: absolute;
+    margin-top: 50px;
+
+    ${({ img, position = '20% top' }) => css`
+    background-size: cover;
+  `}
+  } */
 `;
 
 export const CharacterOverlayImage = styled.img`
   label: CharacterOverlayImage;
-  width: 28%;
-  margin-left: 2%;
+  z-index: 3;
+  position: absolute;
+  bottom: 0;
+  width: 90%;
+
+  @media all and (min-width: 768px) {
+    bottom: 10%;
+    width: 80%;
+  }
+
+  @media all and (min-width: 1200px) {
+    width: 28%;
+    margin-left: 2%;
+  }
 `;
+CharacterOverlayImage.displayName = 'CharacterOverlayImage';
+
+export const CharacterOverlayImageShadow = styled(CharacterOverlayImage)`
+  label: CharacterOverlayImageShadow;
+  z-index: 2;
+  ${Shadow}
+  height: 65%;
+  margin: 0 0 -75px -75px;
+
+  @media all and (min-width: 768px) {
+    height: 65%;
+    margin: 0 0 -115px -110px;
+  }
+
+  @media all and (min-width: 1200px) {
+    height: 70%;
+    margin: 0 0 -100px -60px;
+  }
+`;
+CharacterOverlayImageShadow.displayName = 'CharacterOverlayImageShadow';
 
 export const CharacterSheet = styled.div`
   label: CharacterSheet;
@@ -419,30 +493,6 @@ CharacterSheet.displayName = 'CharacterSheet';
       height: ${`${window.innerHeight - 10}px`};
     `} */
 
-export const CharName = styled.h1`
-  label: CharName;
-  z-index: 3;
-  position: absolute;
-  top: 25px;
-  right: 30px;
-  margin: 10px auto 20px;
-  border-radius: 50px;
-  font-size: 3rem;
-  color: rgba(255, 255, 255, 0.8);
-  text-shadow: 0 0 4px black;
-  line-height: 1.2;
-  text-transform: uppercase;
-
-  @media all and (min-width: 768px) {
-    top: 50px;
-    right: 80px;
-    font-size: 5rem;
-    color: black;
-    text-shadow: 0 0 1px white;
-  }
-`;
-CharName.displayName = 'CharName';
-
 export const CharItems = styled.div`
   label: CharItems;
   position: absolute;
@@ -450,7 +500,7 @@ export const CharItems = styled.div`
   flex-direction: row;
   align-items: center;
   justify-content: center;
-  top: 180px;
+  top: 35%;
   margin-top: 65px;
   margin-left: 10px;
   width: 70%;
@@ -464,23 +514,9 @@ export const CharItems = styled.div`
   ${({ trade }) =>
     trade &&
     css`
-      top: 80px;
+      top: 2px;
+      right: 10px;
     `}
-
-  @media all and (min-width: 360px) {
-    top: 38%;
-
-    ${({ trade }) =>
-      trade &&
-      css`
-        top: 18px;
-        right: 10px;
-
-        @media all and (min-width: 768px) {
-          top: 100px;
-        }
-      `}
-  }
 
   @media all and (min-width: 410px) {
     top: 50%;
@@ -490,14 +526,31 @@ export const CharItems = styled.div`
       css`
         top: 18px;
         right: 10px;
-
-        @media all and (min-width: 768px) {
-          top: 100px;
-        }
       `}
   }
 
   @media all and (min-width: 768px) {
+    top: 48%;
+    /* margin: 65px 0 0 20px; */
+    width: 100%;
+    margin-left: -50px;
+
+    ${({ slotType }) =>
+      slotType === IN_BACKPACK &&
+      css`
+        margin-top: -50px;
+      `}
+
+    ${({ trade }) =>
+      trade &&
+      css`
+        top: 90px;
+        right: 10px;
+        width: 80%;
+      `}
+  }
+
+  @media all and (min-width: 1200px) {
     top: 20%;
     /* margin: 65px 0 0 20px; */
     width: 100%;
@@ -512,12 +565,50 @@ export const CharItems = styled.div`
     ${({ trade }) =>
       trade &&
       css`
-        top: 100px;
+        top: 200px;
+        right: 10px;
+      `}
+  }
+
+  @media all and (min-width: 1400px) {
+    ${({ trade }) =>
+      trade &&
+      css`
+        top: 250px;
         right: 10px;
       `}
   }
 `;
 CharItems.displayName = 'CharItems';
+
+export const CharName = styled.h1`
+  label: CharName;
+  z-index: 3;
+  position: absolute;
+  top: 50px;
+  right: 30px;
+  margin: 10px auto 20px;
+  border-radius: 50px;
+  font-size: 3rem;
+  color: rgba(255, 255, 255, 0.8);
+  text-shadow: 0 0 4px black;
+  line-height: 1.2;
+  text-transform: uppercase;
+
+  @media all and (min-width: 768px) {
+    top: 50px;
+    right: 80px;
+    font-size: 5rem;
+  }
+
+  @media all and (min-width: 1024px) {
+    top: 50px;
+    right: 80px;
+    font-size: 5rem;
+    color: rgba(255, 255, 255, 0.7);
+  }
+`;
+CharName.displayName = 'CharName';
 
 export const FinishedTurnTag = styled(AttackInstructions)`
   label: FinishedTurnTag;
@@ -612,7 +703,7 @@ export const IndicatorsWrapper = styled.div`
   justify-content: flex-start;
   opacity: 0.7;
   padding-left: 5px;
-  height: 14px;
+  height: 20px;
   background: #5f5c5c;
   width: 100%;
 
@@ -738,8 +829,8 @@ export const ModalSignText = styled.p`
 `;
 ModalSignText.displayName = 'ModalSignText';
 
-export const ModalSignButton = styled(AppButton)`
-  label: ModalSignButton;
+export const MainButton = styled(AppButton)`
+  label: MainButton;
   z-index: 15;
   position: absolute;
   top: unset;
@@ -754,6 +845,8 @@ export const ModalSignButton = styled(AppButton)`
   border: 1px solid black;
   border-radius: 5px;
   text-transform: uppercase;
+  box-shadow: 0 1px 10px 0 rgba(0, 0, 0, 0.6),
+    inset 1px 1px 3px rgba(255, 255, 255, 0.5);
 
   ${({ noOverlay }) =>
     noOverlay &&
@@ -794,7 +887,7 @@ export const ModalSignButton = styled(AppButton)`
     width: 200px;
   }
 `;
-ModalSignButton.displayName = 'ModalSignButton';
+MainButton.displayName = 'MainButton';
 
 export const ModalSignExitButton = styled.img`
   label: ModalSignExitButton;
@@ -897,11 +990,12 @@ export const NextButton = styled(AppButton)`
   bottom: 0;
   right: 0;
   height: 40px;
-  background: ${({ damageMode }) => damageMode && 'red'};
+  background: ${({ damageMode }) => (damageMode ? 'red' : 'none')};
   color: ${({ damageMode }) => damageMode && 'black'};
   box-shadow: ${({ damageMode }) => damageMode && '0 0 5px white'};
   font-size: 0.9rem;
   outline: none;
+  border: 0;
 
   @media all and (min-width: 360px) {
     font-size: 1.1rem;
@@ -998,12 +1092,8 @@ export const PlayerTag = styled.div`
   top: 85px;
   right: 0;
   height: 15px;
-  width: 40%;
-  border: 1px solid black;
-  border-radius: 20px 0 0 20px;
+  width: 30%;
   padding: 5px 20px;
-  background: ${({ color }) => color || 'black'};
-  /* cursor: pointer; */
   font-family: 'Grandstander', cursive;
   text-align: center;
   font-size: 1.1rem;
@@ -1012,11 +1102,17 @@ export const PlayerTag = styled.div`
   font-weight: 900;
   line-height: 0.6;
   text-transform: uppercase;
-  color: white;
+  color: black;
 
   @media all and (min-width: 360px) {
-    top: 87px;
+    top: 110px;
     height: 20px;
+  }
+
+  @media all and (min-width: 768px) {
+    top: 150px;
+    height: 20px;
+    font-size: 1.5rem;
   }
 
   @media all and (min-width: 1024px) {

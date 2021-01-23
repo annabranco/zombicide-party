@@ -31,7 +31,7 @@ const ActionButton = ({
   carStarted,
   combineItemSelected,
   combinePair,
-  device,
+  isMobile,
   interactWithCar,
   noise,
   setNoise,
@@ -177,14 +177,14 @@ const ActionButton = ({
         break;
     }
   }, [actionType, type, setIconType, setIconType2, setIconSize]);
-  console.log('$$$ device', device);
+  console.log('$$$ isMobile', isMobile);
   return (
     <>
       {iconType2 ? (
         <CarIconWrapper
           isActive={isActive}
           onClick={isActive ? () => null : onClickIcon}
-          manyButtons={device === MOBILE && manyButtons}
+          manyButtons={isMobile && manyButtons}
           onMouseOut={() => changeActionLabel('')}
           onMouseOver={() => changeActionLabel(label)}
         >
@@ -192,7 +192,7 @@ const ActionButton = ({
           <CarActionIcon
             actionType={actionType}
             className={iconType}
-            manyButtons={device === MOBILE && manyButtons}
+            manyButtons={isMobile && manyButtons}
           />
         </CarIconWrapper>
       ) : (
@@ -205,7 +205,7 @@ const ActionButton = ({
           isActive={isActive}
           onClick={isActive ? () => null : event => onClickIcon(event)}
           iconSize={iconSize}
-          manyButtons={device === MOBILE && manyButtons}
+          manyButtons={isMobile && manyButtons}
           onMouseOut={() => changeActionLabel('')}
           onMouseOver={() => changeActionLabel(label)}
           type={type}
@@ -221,7 +221,7 @@ ActionButton.propTypes = {
   carStarted: bool,
   combineItemSelected: bool,
   combinePair: bool,
-  device: string,
+  isMobile: bool,
   interactWithCar: func,
   noise: number,
   setNoise: func,
@@ -236,7 +236,7 @@ ActionButton.defaultProps = {
   carStarted: false,
   combineItemSelected: false,
   combinePair: false,
-  device: null,
+  isMobile: null,
   interactWithCar: false,
   noise: 0,
   setNoise: null,

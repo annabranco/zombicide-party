@@ -6,7 +6,6 @@ import { getItemPhoto, getItemType } from '../../../utils/items';
 import SoundBlock from '../../SoundBlock';
 import ActionButton from '../../ActionButton';
 import { ALL_WEAPONS } from '../../../setup/weapons';
-
 import { AppButton } from '../../Sections/PlayersSection/styles';
 import {
   ActionButtonIcon,
@@ -36,6 +35,7 @@ import {
   WEAPONS
 } from '../../../constants';
 import { BonusDicesType } from '../../../interfaces/types';
+import ZombieFace from '../../../assets/images/zombieFace.png';
 
 const ItemsArea = ({
   actionsLeft,
@@ -73,14 +73,14 @@ const ItemsArea = ({
   tradeItem,
   wounded
 }) => {
-  const [displayKillButtons, toggleDisplayKillButtons] = useStateWithLabel(
-    false,
-    'displayKillButtons'
-  );
   const [isActive, toggleActive] = useStateWithLabel(false, 'isActive');
   const [isSelected, select] = useStateWithLabel(false, 'isSelected');
   const [killButtons, changeKillButtons] = useStateWithLabel([], 'killButtons');
   const [needReload, toggleNeedReload] = useStateWithLabel([], 'needReload');
+  const [displaySplash, toggleDisplaySplash] = useStateWithLabel(
+    false,
+    'displaySplash'
+  );
 
   const bonusDiceRef = useRef();
   const dicesRef = useRef();
@@ -93,11 +93,17 @@ const ItemsArea = ({
     if (ALL_WEAPONS[item].dice === SPECIAL) {
       gainCustomXp(index);
     } else {
-      toggleDisplayKillButtons(true);
+      const totalDices = calculateTotalDices();
+      const currentPool = killButtons.length;
+      const newArray = [...Array(totalDices).keys()].map(
+        value => value + currentPool
+      );
+
+      clearTimeout(killButtonsTimer.current);
+      changeKillButtons([...killButtons, ...newArray]);
       killButtonsTimer.current = setTimeout(() => {
-        toggleDisplayKillButtons(false);
-        changeKillButtons(calculateTotalDices());
-      }, 3000);
+        changeKillButtons([]);
+      }, 10000);
     }
   };
 
@@ -116,7 +122,7 @@ const ItemsArea = ({
     } else if (ALL_WEAPONS[item].attack === MELEE_RANGED) {
       totalDices = totalDices + ranged + melee;
     }
-    return [...Array(totalDices).keys()];
+    return totalDices;
   };
 
   const checkIfReloadIsNeeded = () => item === ALL_WEAPONS.SawedOff.name;
@@ -176,11 +182,16 @@ const ItemsArea = ({
 
   const killOneZombie = pressedButton => {
     const updatedKillButtons = [...killButtons];
+
+    toggleDisplaySplash(true);
+    setTimeout(() => {
+      toggleDisplaySplash(false);
+    }, 350);
+
     clearTimeout(killButtonsTimer.current);
     killButtonsTimer.current = setTimeout(() => {
-      toggleDisplayKillButtons(false);
-      changeKillButtons(calculateTotalDices());
-    }, 2000);
+      changeKillButtons([]);
+    }, 3000);
     updatedKillButtons[pressedButton] = `${pressedButton}`;
     changeKillButtons(updatedKillButtons);
     gainXp(1);
@@ -199,19 +210,19 @@ const ItemsArea = ({
 
   useEffect(() => {
     if (dice && bonusDices) {
-      if (
-        !isEqual(bonusDiceRef.current, bonusDices) ||
-        dicesRef.current !== dice
-      ) {
-        changeKillButtons(calculateTotalDices());
-      }
+      // if (
+      //   !isEqual(bonusDiceRef.current, bonusDices) ||
+      //   dicesRef.current !== dice
+      // ) {
+      //   changeKillButtons(calculateTotalDices());
+      // }
     }
   }, [dice, bonusDices, item, changeKillButtons]);
 
   useEffect(() => {
     toggleNeedReload(false);
   }, [charName, toggleNeedReload]);
-
+  console.log('$$$ device', device);
   return (
     <ItemWrapper
       id={`${item}-${index + 1}`}
@@ -265,7 +276,7 @@ const ItemsArea = ({
               <ActionButton
                 actionType={SEARCH_ACTION}
                 callback={onClickEmptyCard}
-                device={device}
+                isMobile={device === MOBILE}
                 type={charVoice}
               />
             )}
@@ -273,14 +284,6 @@ const ItemsArea = ({
         )}
       </Item>
       <ActionButtonsWrapper trade={trade} visible={dropMode}>
-        {needReload && (
-          <ActionButton
-            actionType={RELOAD_ACTION}
-            callback={reload}
-            device={device}
-            type="center"
-          />
-        )}
         {item && !damageMode && (
           <AppButton
             onClick={() =>
@@ -295,21 +298,28 @@ const ItemsArea = ({
           </AppButton>
         )}
       </ActionButtonsWrapper>
-      {displayKillButtons && (
-        <KillButtonsWrapper>
-          {killButtons.map(key => (
-            <KillButton
-              key={`kill-${item}-${key}`}
-              onClick={() => killOneZombie(key)}
-              type="button"
-              trade
-              visible={typeof key === 'number'}
-            >
-              <KillButtonIcon className="fas fa-skull" type="kill" />
-            </KillButton>
-          ))}
-        </KillButtonsWrapper>
+      {needReload && (
+        <ActionButton
+          actionType={RELOAD_ACTION}
+          callback={reload}
+          isMobile={device === MOBILE}
+          type="center"
+        />
       )}
+      <KillButtonsWrapper displaySplash={displaySplash}>
+        {killButtons.map(key => (
+          <KillButton
+            attack={ALL_WEAPONS[item] && ALL_WEAPONS[item].attack}
+            key={`kill-${item}-${key}`}
+            onClick={() => killOneZombie(key)}
+            type="button"
+            trade
+            visible={typeof key === 'number'}
+          >
+            <KillButtonIcon src={ZombieFace} type="kill" />
+          </KillButton>
+        ))}
+      </KillButtonsWrapper>
     </ItemWrapper>
   );
 };

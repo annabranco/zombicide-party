@@ -99,16 +99,6 @@ export const ItemIcon = styled.div`
       border: 0;
     `}
 
-  @media all and (min-width: 768px) {
-    ${({ isSelected }) =>
-      isSelected &&
-      css`
-        border: 5px solid rgba(29, 211, 72, 0.5);
-        border-radius: 20px;
-        transition: all ease 0.2s;
-      `}
-  }
-
   ${({ active, name, isMobile }) => {
     if (
       name === 'AutomaticShotgun' ||
@@ -246,6 +236,23 @@ export const ItemIcon = styled.div`
       background-position: center center;
     `;
   }}
+
+    @media all and (min-width: 768px) {
+    height: 100%;
+    width: 100%;
+    ${({ isSelected }) =>
+      isSelected &&
+      css`
+        border: 5px solid rgba(29, 211, 72, 0.5);
+        border-radius: 20px;
+        transition: all ease 0.2s;
+      `}
+  }
+  ${({ unloaded }) =>
+    unloaded &&
+    css`
+      filter: sepia(2) brightness(1.2) contrast(0.6) opacity(0.5);
+    `}
 `;
 ItemIcon.displayName = 'ItemIcon';
 

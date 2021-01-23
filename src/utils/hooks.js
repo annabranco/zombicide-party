@@ -62,9 +62,8 @@ export const useTurnsCounter = (
 
       if (searchActions > 0) {
         changeMessage(`${character} used 1 free search.`);
-        // setSearchActions(-1);
-        // return hasUsedAllActions({ sea: searchActions - 1 });
-        return null;
+        setSearchActions(-1);
+        return hasUsedAllActions({ sea: searchActions - 1 });
       }
     }
 
@@ -76,9 +75,8 @@ export const useTurnsCounter = (
       );
       setGeneralActions(generalActions - 1);
       if (type === 'search') {
-        // setSearchActions(-1);
-        // return hasUsedAllActions({ act: generalActions - 1 });
-        return null;
+        setSearchActions(-1);
+        return hasUsedAllActions({ act: generalActions - 1 });
       }
       return hasUsedAllActions({
         act: generalActions - 1,

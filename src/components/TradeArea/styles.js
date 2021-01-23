@@ -11,6 +11,13 @@ export const ButtonsWrapper = styled.div`
   align-items: center;
   justify-content: center;
   width: 100%;
+
+  @media all and (min-width: 1200px) {
+    position: absolute;
+    bottom: 30px;
+    left: 0;
+    width: 50%;
+  }
 `;
 ButtonsWrapper.displayName = 'ButtonsWrapper';
 
@@ -34,7 +41,14 @@ export const CharacterName = styled(CharName)`
   transform: translate(-50%, 0);
 
   @media all and (min-width: 768px) {
-    top: 60px;
+    top: 75px;
+    right: unset;
+    font-size: 3rem;
+  }
+
+  @media all and (min-width: 1200px) {
+    top: 70px;
+    -webkit-text-stroke: 1px black;
   }
 `;
 CharacterName.displayName = 'CharacterName';
@@ -73,6 +87,7 @@ export const ConfirmButton = styled.button`
   font-family: 'Grandstander', cursive;
   cursor: pointer;
   font-size: 1rem;
+  outline: none;
 
   @media all and (min-width: 768px) {
     height: 25px;
@@ -106,12 +121,20 @@ CurrentCharacterTag.displayName = 'CurrentCharacterTag';
 
 export const CurrentPartnerTag = styled(CurrentCharacterTag)`
   label: CurrentPartnerTag;
-  bottom: unset;
-  top: 5px;
-  width: 100%;
+  bottom: 5px;
+  left: 50%;
+  transform: translate(-50%, 0);
+  width: 80%;
   text-align: center;
-  font-size: 1.2rem;
+  font-size: 1rem;
   color: rgba(255, 255, 255, 0.5);
+
+  @media all and (min-width: 768px) {
+    bottom: 20px;
+    font-size: 1.5rem;
+  }
+  @media all and (min-width: 1200px) {
+  }
 `;
 CurrentPartnerTag.displayName = 'CurrentPartnerTag';
 
@@ -125,16 +148,58 @@ export const Face = styled.img`
 `;
 Face.displayName = 'Face';
 
+export const NavButtonsWrapper = styled.div`
+  label: NavButtonsWrapper;
+  position: absolute;
+  bottom: -20px;
+  left: 0;
+  width: 100%;
+  padding: 20px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+
+  @media all and (min-width: 768px) {
+    bottom: 0px;
+  }
+`;
+NavButtonsWrapper.displayName = 'NavButtonsWrapper';
+
 export const PlayerName = styled.p`
   label: PlayerName;
   position: absolute;
-  left: 50px;
-  top: 170px;
-  width: 100px;
-  font-weight: 700;
+  left: 50%;
+  transform: translate(-50%, 0);
+  top: 110px;
+  width: 50px;
+  font-weight: 500;
   font-family: 'Grandstander', cursive;
   font-size: 1.3rem;
   color: ${({ color }) => color};
+
+  @media all and (min-width: 768px) {
+    top: 150px;
+    width: 60px;
+
+    font-size: 1.6rem;
+  }
+
+  @media all and (min-width: 1200px) {
+    top: 50px;
+    left: 450px;
+    font-size: 3rem;
+    opacity: 0.6;
+    transform: none;
+  }
+
+  @media all and (min-width: 1400px) {
+    top: 50px;
+    left: 600px;
+    font-size: 3rem;
+    opacity: 0.6;
+    transform: none;
+  }
 `;
 PlayerName.displayName = 'PlayerName';
 
@@ -147,8 +212,8 @@ export const TradeWrapper = styled.div`
   height: 100%;
   width: 100%;
 
-  @media all and (min-width: 768px) {
-    width: 90%;
+  @media all and (min-width: 1024px) {
+    flex-direction: row;
   }
 `;
 TradeWrapper.displayName = 'TradeWrapper';

@@ -2,6 +2,9 @@ import styled from '@emotion/styled';
 import { css } from '@emotion/core';
 import { IN_BACKPACK, WOUND } from '../../../constants';
 import { AppButton } from '../../Sections/PlayersSection/styles';
+import IconRanged from '../../../assets/images/ranged-icon.png';
+import IconMelee from '../../../assets/images/melee-icon.png';
+import IconBlood from '../../../assets/images/bloodSplash.png';
 
 export const ActionButtonIcon = styled.i`
   label: ActionButtonIcon;
@@ -93,8 +96,36 @@ export const Item = styled.div`
   }
 
   @media all and (min-width: 768px) {
-    height: 273px;
+    height: 270px;
     width: 200px;
+
+    ${({ trade }) =>
+      trade &&
+      css`
+        height: 220px;
+        width: 180px;
+      `}
+  }
+
+  @media all and (min-width: 1024px) {
+    ${({ trade }) =>
+      trade &&
+      css`
+        height: 200px;
+        width: 160px;
+      `}
+  }
+
+  @media all and (min-width: 1400px) {
+    height: 320px;
+    width: 240px;
+
+    ${({ trade }) =>
+      trade &&
+      css`
+        height: 240px;
+        width: 200px;
+      `}
   }
 `;
 Item.displayName = 'Item';
@@ -120,21 +151,6 @@ export const ItemBlank = styled.div`
   text-align: center;
   box-shadow: inset 1px 1px 15px rgba(0, 0, 0, 0.4);
 
-  @media all and (min-width: 768px) {
-    cursor: ${({ allSlotsAreEmpty, damageMode, canSearch, setupMode, trade }) =>
-      (damageMode && !allSlotsAreEmpty) || (!canSearch && !trade && !setupMode)
-        ? 'not-allowed'
-        : 'pointer'};
-  }
-
-  & > i {
-    display: none;
-  }
-
-  @media all and (min-width: 360px) {
-    height: 110px;
-  }
-
   &:hover {
     background: ${({ allSlotsAreEmpty, damageMode }) =>
       damageMode && allSlotsAreEmpty
@@ -148,6 +164,10 @@ export const ItemBlank = styled.div`
     }
   }
 
+  & > i {
+    display: none;
+  }
+
   ${({ isSelected }) =>
     isSelected &&
     css`
@@ -158,10 +178,37 @@ export const ItemBlank = styled.div`
       }
     `}
 
+  @media all and (min-width: 360px) {
+    padding-top: 30px;
+    height: 110px;
+  }
+
   @media all and (min-width: 768px) {
-    height: 273px;
+    cursor: ${({ allSlotsAreEmpty, damageMode, canSearch, setupMode, trade }) =>
+      (damageMode && !allSlotsAreEmpty) || (!canSearch && !trade && !setupMode)
+        ? 'not-allowed'
+        : 'pointer'};
+    height: 270px;
     width: 200px;
     padding-top: 50px;
+
+    ${({ trade }) =>
+      trade &&
+      css`
+        height: 220px;
+        width: 180px;
+      `}
+  }
+
+  @media all and (min-width: 1400px) {
+    height: 320px;
+    width: 240px;
+    ${({ trade }) =>
+      trade &&
+      css`
+        height: 240px;
+        width: 200px;
+      `}
   }
 `;
 ItemBlank.displayName = 'ItemBlank';
@@ -220,12 +267,17 @@ export const KillButton = styled(AppButton)`
   color: red;
   margin: 0 3px;
   border-radius: 50%;
-  height: 60px;
-  width: 60px;
-  opacity: 0.8;
+  height: 40px;
+  width: 40px;
+  opacity: 0.9;
   outline: none;
   visibility: hidden;
-
+  background: red;
+  box-shadow: 0 0 10px 3px rgba(255, 255, 255, 0.8);
+  cursor: ${({ attack }) =>
+    attack === 'ranged'
+      ? `url(${IconRanged}) 12 12, auto`
+      : `url(${IconMelee}) 12 12, auto`};
   ${({ visible }) =>
     visible &&
     css`
@@ -234,10 +286,14 @@ export const KillButton = styled(AppButton)`
 `;
 KillButton.displayName = 'KillButton';
 
-export const KillButtonIcon = styled(ActionButtonIcon)`
+// IconRanged;
+// IconMelee;
+// IconBlood;
+
+export const KillButtonIcon = styled.img`
   label: KillButtonIcon;
-  font-size: 1.8rem;
-  color: red;
+  width: 50px;
+  margin: -10px 0 0 -16px;
 `;
 KillButtonIcon.displayName = 'KillButtonIcon';
 
@@ -250,7 +306,14 @@ export const KillButtonsWrapper = styled.div`
   align-items: center;
   justify-content: center;
   padding: 50px 1px 50px;
-  height: 100%;
-  width: 100%;
+  height: auto;
+  width: auto;
+  cursor: pointer;
+
+  ${({ displaySplash }) =>
+    displaySplash &&
+    css`
+      cursor: url(${IconBlood}) 12 12, auto;
+    `}
 `;
 KillButtonsWrapper.displayName = 'KillButtonsWrapper';

@@ -38,16 +38,7 @@ export const ActionIcon = styled.i`
     text-shadow: 0 0 2px black;
   }
 
-  ${({ type }) => {
-    if (type === 'center') {
-      return css`
-        top: 90px;
-      `;
-    }
-    return null;
-  }}
-
-  ${({ actionType }) => {
+  ${({ actionType, isActive, type }) => {
     if (actionType === SEARCH_ACTION || actionType === RELOAD_ACTION) {
       return css`
         z-index: 10;
@@ -64,10 +55,11 @@ export const ActionIcon = styled.i`
         -webkit-text-stroke: 1px black;
 
         @media all and (min-width: 768px) {
-          cursor: ${({ isActive }) => (isActive ? 'not-allowed' : 'pointer')};
+          cursor: ${isActive ? 'not-allowed' : 'pointer'};
           z-index: 10;
           background: none;
           position: absolute;
+          top: ${type === 'center' ? '100px' : 'initial'};
           left: 50%;
           transform: translate(-50%, 0);
           padding: 0;
@@ -76,6 +68,15 @@ export const ActionIcon = styled.i`
           font-size: 4rem;
           color: rgba(255, 255, 255, 0.7);
           -webkit-text-stroke: 1px black;
+
+          ${'' /* ${({ type }) => {
+            if (type === 'center') {
+              return css`
+                top: 80px;
+              `;
+            }
+            return null;
+          }} */}
         }
       `;
     }
@@ -154,6 +155,15 @@ export const ActionIcon = styled.i`
       width: 40px;
       font-size: 2rem;
     `}
+
+  ${({ type }) => {
+    if (type === 'center') {
+      return css`
+        top: 30px;
+      `;
+    }
+    return null;
+  }}
 `;
 ActionIcon.displayName = 'ActionIcon';
 

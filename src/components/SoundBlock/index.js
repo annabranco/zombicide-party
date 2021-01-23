@@ -78,7 +78,7 @@ const SoundBlock = ({
       : name;
 
   const getImage = () => {
-    if ((trade || isMobile) && type !== ACTIVATIONS) {
+    if (((trade && isMobile) || isMobile) && type !== ACTIVATIONS) {
       return (
         <ItemIcon
           active={isActive}
@@ -90,6 +90,7 @@ const SoundBlock = ({
           name={name}
           slotType={slotType}
           type={type}
+          unloaded={unloaded}
         />
       );
     }
@@ -115,6 +116,7 @@ const SoundBlock = ({
     if (
       type === WEAPONS &&
       slotType === IN_HAND &&
+      canAttack &&
       !quickAttackDebounce.current
     ) {
       quickAttackDebounce.current = true;
@@ -178,6 +180,7 @@ const SoundBlock = ({
             callback={event => onClickCombine([name, slot], event)}
             combineItemSelected={combineItemSelected}
             combinePair={combinePair}
+            isMobile={isMobile}
           />
         )}
         {type === ACTIVATIONS && (

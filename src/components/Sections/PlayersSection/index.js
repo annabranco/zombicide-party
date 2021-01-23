@@ -33,7 +33,7 @@ import {
   CharacterOverlay,
   CharacterSheet,
   PromoWrapper,
-  ModalSignButton,
+  MainButton,
   NextButton,
   AbilitiesInnerSeparator,
   PlayerTag,
@@ -65,7 +65,8 @@ import {
   CharacterOverlayImage,
   AbilitiesWrapperDesktop,
   NavIconsWrapper,
-  NavIcons
+  NavIcons,
+  CharacterOverlayImageShadow
 } from './styles';
 import { CharacterType } from '../../../interfaces/types';
 import TradeArea from '../../TradeArea';
@@ -1035,6 +1036,7 @@ const PlayersSection = ({
             damageMode={damageMode}
           >
             <CharacterOverlayImage src={character.img} />
+            <CharacterOverlayImageShadow src={character.img} />
           </CharacterOverlay>
 
           {/* ----- TOP BAR ----- */}
@@ -1084,6 +1086,7 @@ const PlayersSection = ({
                         actionType={OBJECTIVE_ACTION}
                         callback={onClickObjective}
                         changeActionLabel={changeActionLabel}
+                        isMobile={device.current === MOBILE}
                         label={GET_OBJECTIVE}
                         manyButtons={character.location === CAR}
                       />
@@ -1098,6 +1101,7 @@ const PlayersSection = ({
                         callback={() => spendAction(MOVE)}
                         car={car}
                         interactWithCar={interactWithCar}
+                        isMobile={device.current === MOBILE}
                         startCar={startCar}
                         type={character.location !== CAR && !car && START}
                         changeActionLabel={changeActionLabel}
@@ -1113,6 +1117,7 @@ const PlayersSection = ({
                           actionType={CAR_MOVE_ACTION}
                           callback={() => spendAction(MOVE)}
                           changeActionLabel={changeActionLabel}
+                          isMobile={device.current === MOBILE}
                           label={MOVE_CAR}
                           manyButtons={character.location === CAR}
                         />
@@ -1120,6 +1125,7 @@ const PlayersSection = ({
                           actionType={CAR_ATTACK_ACTION}
                           callback={() => spendAction(MOVE)}
                           changeActionLabel={changeActionLabel}
+                          isMobile={device.current === MOBILE}
                           label={RUN_OVER}
                           manyButtons={character.location === CAR}
                         />
@@ -1132,6 +1138,7 @@ const PlayersSection = ({
                         callback={() => spendAction(MOVE)}
                         type={character.movement}
                         changeActionLabel={changeActionLabel}
+                        isMobile={device.current === MOBILE}
                         label={MOVE}
                         manyButtons={character.location === CAR}
                       />
@@ -1141,6 +1148,7 @@ const PlayersSection = ({
                       <ActionButton
                         actionType={OPEN_DOOR_ACTION}
                         callback={spendAction}
+                        isMobile={device.current === MOBILE}
                         noise={noise}
                         setNoise={setNoise}
                         type={canOpenDoor}
@@ -1154,6 +1162,7 @@ const PlayersSection = ({
                         actionType={END_TURN_ACTION}
                         callback={onClickEndTurn}
                         changeActionLabel={changeActionLabel}
+                        isMobile={device.current === MOBILE}
                         label={END_CHAR_TURN(character.name)}
                         manyButtons={
                           device.current === MOBILE &&
@@ -1311,14 +1320,14 @@ const PlayersSection = ({
 
           {/* ----- BOTTOM BUTTONS ----- */}
           {(setupMode || roundEnded) && !slot && !damageMode && (
-            <ModalSignButton
+            <MainButton
               noOverlay
               onClick={onClickMainButton}
               roundEnded={roundEnded}
               setupMode={setupMode}
             >
               {setupMode ? FINISH_SETUP : START_NEXT_ROUND}
-            </ModalSignButton>
+            </MainButton>
           )}
 
           {device.current === DESKTOP && !slot && characters.length > 0 && (

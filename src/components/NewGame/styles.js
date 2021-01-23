@@ -50,8 +50,7 @@ export const CharacterArea = styled.div`
           ${'' /* position: absolute; */}
           top: 200px;
           display: grid;
-          width: 90%;
-          grid-template-columns: repeat(8, 120px);
+          grid-template-columns: repeat(8, 1fr);
           grid-template-rows: repeat(auto-fill, 100px);
           & div:nth-child(n + 9) {
             ${'' /* margin-left: 30px; */}
@@ -96,18 +95,29 @@ CharImage.displayName = 'CharImage';
 export const CharName = styled.h1`
   label: CharName;
   position: absolute;
-  bottom: -40px;
-  margin: 20px auto 30px;
+  bottom: -10px;
+  left: 50%;
+  transform: translate(-50%, 0);
   width: calc(90vw / 6);
   font-size: 1.5rem;
-  color: rgba(255, 255, 255, 0.5);
+  color: rgba(255, 255, 255, 0.95);
   text-shadow: 0 0 3px black;
   text-align: center;
   text-transform: uppercase;
 
+  ${({ active }) =>
+    active &&
+    css`
+      color: rgba(255, 255, 255, 0.5);
+      bottom: -30px;
+    `}
+
   @media all and (min-width: 768px) {
     bottom: 0;
     left: -10%;
+    transform: none;
+    margin: 20px auto 30px;
+    color: rgba(255, 255, 255, 0.75);
 
     ${({ number }) =>
       number > 8 &&
@@ -115,12 +125,20 @@ export const CharName = styled.h1`
         bottom: unset;
         top: 40px;
         left: -30%;
+      `}
+
+    ${({ active }) =>
+      active &&
+      css`
+        color: white;
+        font-size: 1.5rem;
       `}
   }
 
   @media all and (min-width: 1024px) {
     bottom: 0;
     left: -15%;
+    color: rgba(255, 255, 255, 0.8);
 
     ${({ number }) =>
       number > 8 &&
@@ -129,13 +147,13 @@ export const CharName = styled.h1`
         top: 40px;
         left: -30%;
       `}
+    ${({ active }) =>
+      active &&
+      css`
+        color: white;
+        font-size: 2rem;
+      `}
   }
-
-  ${({ active }) =>
-    active &&
-    css`
-      color: white;
-    `}
 `;
 CharName.displayName = 'CharName';
 
@@ -144,7 +162,8 @@ export const PlayerTag = styled.div`
   z-index: 6;
   position: absolute;
   bottom: -10px;
-  right: -3px;
+  left: 50%;
+  transform: translate(-50%, 0);
 
   height: 20px;
   min-width: 40px;
@@ -164,6 +183,9 @@ export const PlayerTag = styled.div`
   @media all and (min-width: 768px) {
     bottom: unset;
     top: 15px;
+    left: unset;
+    right: -5px;
+    transform: none;
   }
 `;
 PlayerTag.displayName = 'PlayerTag';
