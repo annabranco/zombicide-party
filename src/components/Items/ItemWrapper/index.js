@@ -157,6 +157,7 @@ const ItemsArea = ({
   };
 
   const onClickEmptyCard = () => {
+    console.log('$$$ click');
     const slot = getSlotNumber(index);
     if (damageMode) {
       if (allSlotsAreEmpty) {
@@ -276,7 +277,7 @@ const ItemsArea = ({
               <ActionButton
                 actionType={SEARCH_ACTION}
                 callback={onClickEmptyCard}
-                isMobile={device === MOBILE}
+                // isMobile={device === MOBILE}
                 type={charVoice}
               />
             )}
@@ -306,20 +307,22 @@ const ItemsArea = ({
           type="center"
         />
       )}
-      <KillButtonsWrapper displaySplash={displaySplash}>
-        {killButtons.map(key => (
-          <KillButton
-            attack={ALL_WEAPONS[item] && ALL_WEAPONS[item].attack}
-            key={`kill-${item}-${key}`}
-            onClick={() => killOneZombie(key)}
-            type="button"
-            trade
-            visible={typeof key === 'number'}
-          >
-            <KillButtonIcon src={ZombieFace} type="kill" />
-          </KillButton>
-        ))}
-      </KillButtonsWrapper>
+      {killButtons.length > 0 && (
+        <KillButtonsWrapper displaySplash={displaySplash}>
+          {killButtons.map(key => (
+            <KillButton
+              attack={ALL_WEAPONS[item] && ALL_WEAPONS[item].attack}
+              key={`kill-${item}-${key}`}
+              onClick={() => killOneZombie(key)}
+              type="button"
+              trade
+              visible={typeof key === 'number'}
+            >
+              <KillButtonIcon src={ZombieFace} type="kill" />
+            </KillButton>
+          ))}
+        </KillButtonsWrapper>
+      )}
     </ItemWrapper>
   );
 };

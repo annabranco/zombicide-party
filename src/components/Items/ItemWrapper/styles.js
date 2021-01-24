@@ -141,9 +141,9 @@ export const ItemBlank = styled.div`
   height: 100px;
   /* width: 70px; */
   background: rgba(255, 255, 255, 0.25);
-  padding-top: 0;
+  padding-top: 20px;
   font-family: 'Grandstander', cursive;
-  font-size: 1.1rem;
+  font-size: 0.9rem;
   font-weight: 500;
   text-transform: uppercase;
   color: rgba(255, 255, 255, 0.5);
@@ -181,6 +181,7 @@ export const ItemBlank = styled.div`
   @media all and (min-width: 360px) {
     padding-top: 30px;
     height: 110px;
+    font-size: 1.1rem;
   }
 
   @media all and (min-width: 768px) {
@@ -285,10 +286,6 @@ export const KillButton = styled(AppButton)`
     `}
 `;
 KillButton.displayName = 'KillButton';
-
-// IconRanged;
-// IconMelee;
-// IconBlood;
 
 export const KillButtonIcon = styled.img`
   label: KillButtonIcon;

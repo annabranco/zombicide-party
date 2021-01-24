@@ -418,7 +418,7 @@ export const SelectorArea = styled.div`
   ${({ columns, zombies }) => {
     if (columns === 'big') {
       return css`
-        height: calc(100vh - 30px);
+        height: calc(${`${window.innerHeight}px`} - 30px);
       `;
     }
     if (columns) {
@@ -433,7 +433,15 @@ export const SelectorArea = styled.div`
   }}
 
   @media all and (min-width: 768px) {
-    height: calc(100vh - 80px);
+    height: calc(${`${window.innerHeight}px`} - 80px);
+  }
+
+  @media all and (min-width: 1200px) {
+    height: calc(${`${window.innerHeight}px`} - 120px);
+  }
+
+  @media all and (min-width: 1400px) {
+    height: calc(${`${window.innerHeight}px`} - 130px);
   }
 `;
 SelectorArea.displayName = 'SelectorArea';

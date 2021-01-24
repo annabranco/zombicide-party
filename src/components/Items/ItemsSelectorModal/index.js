@@ -43,7 +43,7 @@ const ItemsSelectorModal = ({ device, onSelect, selectSlot, slotType }) => {
         return 4;
       case DESKTOP:
       default:
-        return 6;
+        return 8;
     }
   };
 
@@ -77,7 +77,7 @@ const ItemsSelectorModal = ({ device, onSelect, selectSlot, slotType }) => {
               />
             ))}
         </SelectorArea>
-        <ButtonsWrapper>
+        <ButtonsWrapper itemSelector>
           <CancelButton type="button" onClick={() => selectSlot()}>
             CANCEL
           </CancelButton>

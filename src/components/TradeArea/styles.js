@@ -15,11 +15,49 @@ export const ButtonsWrapper = styled.div`
   @media all and (min-width: 1200px) {
     position: absolute;
     bottom: 30px;
-    left: 0;
     width: 50%;
+
+    ${({ itemSelector }) =>
+      itemSelector &&
+      css`
+        bottom: 10px;
+        width: 100%;
+      `}
   }
 `;
 ButtonsWrapper.displayName = 'ButtonsWrapper';
+
+export const ConfirmButton = styled.button`
+  label: ConfirmButton;
+  margin: 0 auto;
+  height: 35px;
+  width: 120px;
+  background: green;
+  border: 1px solid black;
+  border-radius: 10px;
+  font-weight: 700;
+  font-family: 'Grandstander', cursive;
+  cursor: pointer;
+  font-size: 1rem;
+  outline: none;
+
+  @media all and (min-width: 768px) {
+    height: 25px;
+  }
+`;
+ConfirmButton.displayName = 'ConfirmButton';
+
+export const CancelButton = styled(ConfirmButton)`
+  label: CancelButton;
+  background: lightgray;
+  margin: 10px auto;
+  border-radius: 10px;
+
+  @media all and (min-width: 768px) {
+    margin: auto;
+  }
+`;
+CancelButton.displayName = 'CancelButton';
 
 export const CharacterId = styled.div`
   label: CharacterId;
@@ -74,38 +112,6 @@ export const CharacterTrading = styled.div`
   }
 `;
 CharacterTrading.displayName = 'CharacterTrading';
-
-export const ConfirmButton = styled.button`
-  label: ConfirmButton;
-  margin: 0 auto;
-  height: 35px;
-  width: 120px;
-  background: green;
-  border: 1px solid black;
-  border-radius: 10px;
-  font-weight: 700;
-  font-family: 'Grandstander', cursive;
-  cursor: pointer;
-  font-size: 1rem;
-  outline: none;
-
-  @media all and (min-width: 768px) {
-    height: 25px;
-  }
-`;
-ConfirmButton.displayName = 'ConfirmButton';
-
-export const CancelButton = styled(ConfirmButton)`
-  label: CancelButton;
-  background: lightgray;
-  margin: 10px auto;
-  border-radius: 10px;
-
-  @media all and (min-width: 768px) {
-    margin: auto;
-  }
-`;
-CancelButton.displayName = 'CancelButton';
 
 export const CurrentCharacterTag = styled.p`
   label: CurrentCharacterTag;

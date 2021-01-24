@@ -54,15 +54,15 @@ export const AbilitiesWrapper = styled.div`
   label: AbilitiesWrapper;
   z-index: 10;
   position: absolute;
-  bottom: 36px;
+  bottom: 0;
   left: 50%;
   transform: translate(-50%, 0);
   display: grid;
-  height: 44px;
+  height: 80px;
   width: 100%;
   background: rgba(0, 0, 0, 0.7);
   /* background: ${({ color }) => color && `${rgba(color, 0.6)}`}; */
-  padding: 2px 5px;
+  padding: 2px 5px 45px 5px;
   align-items: center;
 
   grid-template-columns: ${({ number }) => {
@@ -138,39 +138,6 @@ export const ActionsLabelWrapper = styled.div`
 `;
 ActionsLabelWrapper.displayName = 'ActionsLabelWrapper';
 
-export const AppButton = styled.button`
-  label: AppButton;
-  z-index: 3;
-  top: 0;
-  border: 1px solid black;
-  border-radius: 5px;
-  padding: 2px 10px;
-  background: rgba(0, 0, 0, 0.7);
-  font-family: 'Cairo', sans-serif;
-  color: rgba(255, 255, 255, 0.7);
-  font-weight: 700;
-  font-size: 0.7rem;
-  line-height: 1.5;
-  cursor: pointer;
-
-  &:hover {
-    color: ${({ trade }) => (trade ? 'white' : 'yellow')};
-  }
-
-  ${({ trade }) =>
-    trade &&
-    css`
-      background: rgba(0, 0, 0, 0.9);
-    `}
-
-  ${({ isMobile }) =>
-    isMobile &&
-    css`
-      background: rgba(0, 0, 0, 0.9);
-    `}
-`;
-AppButton.displayName = 'AppButton';
-
 export const ActionsWrapper = styled.div`
   label: ActionsWrapper;
   z-index: 4;
@@ -211,25 +178,59 @@ export const ActionsWrapper = styled.div`
 `;
 ActionsWrapper.displayName = 'ActionsWrapper';
 
+export const AppButton = styled.button`
+  label: AppButton;
+  z-index: 3;
+  top: 0;
+  border: 1px solid black;
+  border-radius: 5px;
+  padding: 2px 10px;
+  background: rgba(0, 0, 0, 0.7);
+  font-family: 'Cairo', sans-serif;
+  color: rgba(255, 255, 255, 0.7);
+  font-weight: 700;
+  font-size: 0.7rem;
+  line-height: 1.5;
+  cursor: pointer;
+
+  &:hover {
+    color: ${({ trade }) => (trade ? 'white' : 'yellow')};
+  }
+
+  ${({ trade }) =>
+    trade &&
+    css`
+      background: rgba(0, 0, 0, 0.9);
+    `}
+
+  ${({ isMobile }) =>
+    isMobile &&
+    css`
+      background: rgba(0, 0, 0, 0.9);
+    `}
+`;
+AppButton.displayName = 'AppButton';
+
 export const AdmButton = styled(AppButton)`
   label: AdmButton;
   z-index: 11;
   position: absolute;
-  top: 70px;
-  right: -5px;
+  top: 45px;
+  left: 5px;
   height: 30px;
   width: 30px;
   font-size: 1.2rem;
   padding: 1px;
   background: none;
   border: none;
+  color: rgba(255, 255, 255, 0.4);
   /* background: ${({ damageMode }) => damageMode && 'red'};
   color: ${({ damageMode }) => damageMode && 'black'};
   box-shadow: ${({ damageMode }) => damageMode && '0 0 5px white'}; */
 
   @media all and (min-width: 768px) {
-    top: 90px;
-    right: 20px;
+    top: 60px;
+    left: 10px;
     background: none;
     border: none;
     font-size: 1.6rem;
@@ -427,6 +428,7 @@ export const CharacterOverlay = styled.div`
   `}
   } */
 `;
+CharacterOverlay.displayName = 'CharacterOverlay';
 
 export const CharacterOverlayImage = styled.img`
   label: CharacterOverlayImage;
@@ -486,29 +488,24 @@ export const CharacterSheet = styled.div`
 `;
 CharacterSheet.displayName = 'CharacterSheet';
 
-/* ${() =>
-    window.navigator.userAgent.includes('iPhone') &&
-    css`
-      margin-top: 10px;
-      height: ${`${window.innerHeight - 10}px`};
-    `} */
-
 export const CharItems = styled.div`
   label: CharItems;
+  z-index: 10;
   position: absolute;
   display: flex;
   flex-direction: row;
   align-items: center;
   justify-content: center;
   top: 35%;
-  margin-top: 65px;
+  margin-top: 90px;
   margin-left: 10px;
   width: 70%;
 
   ${({ slotType }) =>
     slotType === IN_BACKPACK &&
     css`
-      margin-top: -10px;
+      z-index: 9;
+      margin-top: -20px;
     `}
 
   ${({ trade }) =>
@@ -585,8 +582,9 @@ export const CharName = styled.h1`
   label: CharName;
   z-index: 3;
   position: absolute;
-  top: 50px;
-  right: 30px;
+  top: 30px;
+  right: 50%;
+  transform: translate(50%, 0);
   margin: 10px auto 20px;
   border-radius: 50px;
   font-size: 3rem;
@@ -595,16 +593,23 @@ export const CharName = styled.h1`
   line-height: 1.2;
   text-transform: uppercase;
 
+  @media all and (min-width: 360px) {
+    top: 30px;
+    right: 20px;
+    transform: none;
+    font-size: 4rem;
+  }
+
   @media all and (min-width: 768px) {
     top: 50px;
-    right: 80px;
-    font-size: 5rem;
+    right: 40px;
+    font-size: 7rem;
   }
 
   @media all and (min-width: 1024px) {
-    top: 50px;
+    top: 30px;
     right: 80px;
-    font-size: 5rem;
+    font-size: 8rem;
     color: rgba(255, 255, 255, 0.7);
   }
 `;
@@ -779,56 +784,6 @@ export const LevelIndicator = styled.div`
 `;
 LevelIndicator.displayName = 'LevelIndicator';
 
-export const ModalSign = styled(AttackInstructions)`
-  label: ModalSign;
-  position: absolute;
-  z-index: 2;
-  top: 0;
-  padding: 30% 0;
-  height: 100%;
-  background: ${({ noOverlay }) => (noOverlay ? 'none' : 'rgba(0, 0, 0, 0.6)')};
-  /* background: rgba(0, 0, 0, 0.6); */
-
-  ${({ noOverlay }) =>
-    noOverlay &&
-    css`
-      bottom: 0;
-      right: 50%;
-      transform: translate(-50%, 0);
-      width: auto;
-      opacity: 0.7;
-    `}
-
-  ${({ killed }) =>
-    killed &&
-    css`
-      @media all and (min-width: 768px) {
-      }
-      width: 100%;
-    `}
-`;
-ModalSign.displayName = 'ModalSign';
-
-export const ModalSignText = styled.p`
-  label: ModalSignText;
-  position: absolute;
-  top: 120px;
-  width: 100%;
-  opacity: 0.9;
-  white-space: pre;
-  font-size: 3rem;
-  font-family: Crackhouse, 'Grandstander', cursive;
-  text-align: center;
-
-  @media all and (min-width: 768px) {
-    top: 180px;
-    right: 100px;
-    font-size: 4rem;
-    text-align: right;
-  }
-`;
-ModalSignText.displayName = 'ModalSignText';
-
 export const MainButton = styled(AppButton)`
   label: MainButton;
   z-index: 15;
@@ -889,6 +844,36 @@ export const MainButton = styled(AppButton)`
 `;
 MainButton.displayName = 'MainButton';
 
+export const ModalSign = styled(AttackInstructions)`
+  label: ModalSign;
+  position: absolute;
+  z-index: 2;
+  top: 0;
+  padding: 30% 0;
+  height: 100%;
+  background: ${({ noOverlay }) => (noOverlay ? 'none' : 'rgba(0, 0, 0, 0.6)')};
+  /* background: rgba(0, 0, 0, 0.6); */
+
+  ${({ noOverlay }) =>
+    noOverlay &&
+    css`
+      bottom: 0;
+      right: 50%;
+      transform: translate(-50%, 0);
+      width: auto;
+      opacity: 0.7;
+    `}
+
+  ${({ killed }) =>
+    killed &&
+    css`
+      @media all and (min-width: 768px) {
+      }
+      width: 100%;
+    `}
+`;
+ModalSign.displayName = 'ModalSign';
+
 export const ModalSignExitButton = styled.img`
   label: ModalSignExitButton;
   z-index: 10;
@@ -903,6 +888,26 @@ export const ModalSignExitButton = styled.img`
   animation-fill-mode: forwards;
 `;
 ModalSignExitButton.displayName = 'ModalSignExitButton';
+
+export const ModalSignText = styled.p`
+  label: ModalSignText;
+  position: absolute;
+  top: 120px;
+  width: 100%;
+  opacity: 0.9;
+  white-space: pre;
+  font-size: 3rem;
+  font-family: Crackhouse, 'Grandstander', cursive;
+  text-align: center;
+
+  @media all and (min-width: 768px) {
+    top: 180px;
+    right: 100px;
+    font-size: 4rem;
+    text-align: right;
+  }
+`;
+ModalSignText.displayName = 'ModalSignText';
 
 export const MovementIcon = styled.div`
   label: MovementIcon;
@@ -1089,7 +1094,7 @@ export const PlayerTag = styled.div`
   label: PlayerTag;
   z-index: 6;
   position: absolute;
-  top: 85px;
+  top: 60px;
   right: 0;
   height: 15px;
   width: 30%;
@@ -1102,7 +1107,7 @@ export const PlayerTag = styled.div`
   font-weight: 900;
   line-height: 0.6;
   text-transform: uppercase;
-  color: black;
+  color: rgba(255, 255, 255, 0.6);
 
   @media all and (min-width: 360px) {
     top: 110px;
@@ -1110,9 +1115,10 @@ export const PlayerTag = styled.div`
   }
 
   @media all and (min-width: 768px) {
-    top: 150px;
+    top: 180px;
+    right: -30px;
     height: 20px;
-    font-size: 1.5rem;
+    font-size: 1.8rem;
   }
 
   @media all and (min-width: 1024px) {
