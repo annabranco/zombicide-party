@@ -4,17 +4,14 @@ import { SelectionButton } from '../MainMenu/styles';
 
 export const ButtonsArea = styled.div`
   label: ButtonsArea;
-  /* position: absolute;
-  bottom: 0; */
   display: flex;
   flex-direction: row;
   align-items: center;
   justify-content: center;
   height: 70px;
-  width: 100%;
+  width: 95%;
   background: rgba(0, 0, 0, 0.6);
   box-shadow: 0 0 20px black;
-  padding: 0;
   text-align: center;
 `;
 ButtonsArea.displayName = 'ButtonsArea';
@@ -211,10 +208,11 @@ export const ModalTitle = styled.h1`
   /* position: absolute;
   top: 0; */
   margin: 0 auto 50px;
-  height: 60px;
+  padding-top: 40px;
+  height: 100px;
   width: 100%;
-  background: rgba(0, 0, 0, 0.7);
-  line-height: 2.5;
+  background: rgba(0, 0, 0, 0.5);
+  /* line-height: 2.5; */
   text-align: center;
   font-size: 3rem;
   color: red;
@@ -251,7 +249,7 @@ export const ModalWindow = styled.div`
   border-radius: 15px;
   height: 100%;
   width: 100%;
-  background: rgba(0, 0, 0, 0.75);
+  background: rgba(0, 0, 0, 0.9);
   overflow: hidden;
   transform: translate(0, -50%);
 

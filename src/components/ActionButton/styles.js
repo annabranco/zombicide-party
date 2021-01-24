@@ -164,6 +164,12 @@ export const ActionIcon = styled.i`
     }
     return null;
   }}
+
+  @media (min-width: 1024px) and (min-height: 1300px) {
+    height: 60px;
+    width: 60px;
+    font-size: 3rem;
+  }
 `;
 ActionIcon.displayName = 'ActionIcon';
 
@@ -180,6 +186,10 @@ export const CarActionIcon = styled.i`
     css`
       font-size: 1.5rem;
     `}
+
+  @media (min-width: 1024px) and (min-height: 1300px) {
+    font-size: 2rem;
+  }
 `;
 CarActionIcon.displayName = 'CarActionIcon';
 
@@ -195,6 +205,10 @@ export const CarIcon = styled.i`
     css`
       font-size: 2rem;
     `}
+
+  @media (min-width: 1024px) and (min-height: 1300px) {
+    font-size: 2.7rem;
+  }
 `;
 CarIcon.displayName = 'CarIcon';
 
@@ -225,6 +239,11 @@ export const CarIconWrapper = styled.div`
       text-shadow: 0 0 2px black;
       color: yellow;
     }
+  }
+
+  @media (min-width: 1024px) and (min-height: 1300px) {
+    height: 76px;
+    width: 76px;
   }
 
   ${({ manyButtons }) =>

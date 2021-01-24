@@ -1216,7 +1216,8 @@ const PlayersSection = ({
           {/* ----- ITEMS AREA ----- */}
           {character.wounded !== KILLED && (
             <>
-              {!dropMode &&
+              {!slot &&
+                !dropMode &&
                 character.actionsLeft &&
                 checkIfHasAnyActionLeft(character.actionsLeft) && (
                   <CardsActions>
@@ -1305,7 +1306,8 @@ const PlayersSection = ({
                     />
                   ))}
               </CharItems>
-              {character.inHand &&
+              {!slot &&
+                character.inHand &&
                 character.inBackpack &&
                 (!checkIfAllSlotsAreEmpty(character.inHand) ||
                   !checkIfAllSlotsAreEmpty(character.inBackpack)) && (

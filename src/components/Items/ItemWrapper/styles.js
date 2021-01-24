@@ -59,7 +59,7 @@ export const ActionButtonsWrapper = styled.div`
     return null;
   }}
 
-  @media all and (min-width: 768px) {
+  @media all and (min-width: 701px) {
     top: 50%;
   }
 
@@ -95,7 +95,7 @@ export const Item = styled.div`
     width: 85px;
   }
 
-  @media all and (min-width: 768px) {
+  @media all and (min-width: 701px) {
     height: 270px;
     width: 200px;
 
@@ -113,6 +113,18 @@ export const Item = styled.div`
       css`
         height: 200px;
         width: 160px;
+      `}
+  }
+
+  @media (min-width: 1024px) and (min-height: 1300px) {
+    height: 370px;
+    width: 260px;
+
+    ${({ trade }) =>
+      trade &&
+      css`
+        height: 300px;
+        width: 200px;
       `}
   }
 
@@ -184,7 +196,7 @@ export const ItemBlank = styled.div`
     font-size: 1.1rem;
   }
 
-  @media all and (min-width: 768px) {
+  @media all and (min-width: 701px) {
     cursor: ${({ allSlotsAreEmpty, damageMode, canSearch, setupMode, trade }) =>
       (damageMode && !allSlotsAreEmpty) || (!canSearch && !trade && !setupMode)
         ? 'not-allowed'
@@ -198,6 +210,18 @@ export const ItemBlank = styled.div`
       css`
         height: 220px;
         width: 180px;
+      `}
+  }
+
+  @media (min-width: 1024px) and (min-height: 1300px) {
+    height: 370px;
+    width: 260px;
+
+    ${({ trade }) =>
+      trade &&
+      css`
+        height: 300px;
+        width: 200px;
       `}
   }
 
@@ -253,7 +277,7 @@ export const ItemWrapper = styled.div`
     return null;
   }}
 
-  @media all and (min-width: 768px) {
+  @media all and (min-width: 701px) {
     margin: 50px 10px 0;
   }
 

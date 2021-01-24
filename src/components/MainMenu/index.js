@@ -15,8 +15,8 @@ import {
   ThunderOverlay,
   Version,
   ZombicideLogo,
-  ZombieIntro,
-  ZombieIntroShadow
+  ZombieImage,
+  ZombieImageShadow
 } from './styles';
 import { ZOMBIES_INTRO } from '../../setup/zombies';
 import { CONTINUE, NEW_GAME, STOP_SOUND, TEST_SOUND } from '../../constants';
@@ -56,8 +56,8 @@ const MainMenu = ({ loadedGame, setInitialCharacters }) => {
         <ZombicideLogo src={Logo} />
         <MainTitle>PARTY</MainTitle>
       </LogoArea>
-      <ZombieIntro src={zombieImage.current} />
-      <ZombieIntroShadow src={zombieImage.current} />
+      <ZombieImage src={zombieImage.current} />
+      <ZombieImageShadow src={zombieImage.current} />
       <ButtonsArea delay>
         <StyledLink to="/new">
           <SelectionButton>{NEW_GAME}</SelectionButton>

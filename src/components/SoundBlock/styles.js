@@ -237,7 +237,7 @@ export const ItemIcon = styled.div`
     `;
   }}
 
-    @media all and (min-width: 768px) {
+    @media all and (min-width: 701px) {
     height: 100%;
     width: 100%;
     ${({ isSelected }) =>
@@ -262,16 +262,11 @@ export const PlayIcon = styled.img`
   max-width: 100%;
   transition: transform ease 0.5s;
 
-  @media all and (min-width: 768px) {
-    max-height: 100%;
-    max-width: 100%;
-  }
-
   ${({ type, active }) => {
     if (type === WOUND) {
       return css`
         width: 100%;
-        @media all and (min-width: 768px) {
+        @media all and (min-width: 701px) {
           &:hover {
             transform: scale(1.01);
             transition: all ease 0.4s;
@@ -283,7 +278,7 @@ export const PlayIcon = styled.img`
       return css`
         max-height: 90%;
         max-width: 90%;
-        @media all and (min-width: 768px) {
+        @media all and (min-width: 701px) {
           &:hover {
             transform: scale(1.15);
             transition: all ease 0.8s;
@@ -296,7 +291,7 @@ export const PlayIcon = styled.img`
         border: 1px solid black;
         border-radius: 8px;
 
-        @media all and (min-width: 768px) {
+        @media all and (min-width: 701px) {
           &:hover {
             transform: scale(1.01);
             transition: all ease 0.4s;
@@ -308,7 +303,7 @@ export const PlayIcon = styled.img`
       return css`
         ${activeZombie}
 
-        @media all and (min-width: 768px) {
+        @media all and (min-width: 701px) {
           transform: scale(1.05);
           transition: all ease 0.8s;
           &:hover {
@@ -323,7 +318,7 @@ export const PlayIcon = styled.img`
       height: auto;
       transition: all ease 0.8s;
 
-      @media all and (min-width: 768px) {
+      @media all and (min-width: 701px) {
         &:hover {
           transform: scale(1.05);
           transition: all ease 0.8s;
@@ -337,6 +332,24 @@ export const PlayIcon = styled.img`
     css`
       filter: sepia(2) brightness(1.2) contrast(0.6) opacity(0.5);
     `}
+
+
+  @media all and (min-width: 701px) {
+    max-height: 100%;
+    max-width: 100%;
+  }
+
+  @media (min-width: 1024px) and (min-height: 1300px) {
+    height: 370px;
+    width: 260px;
+
+    ${({ trade }) =>
+      trade &&
+      css`
+        height: 300px;
+        width: 200px;
+      `}
+  }
 `;
 PlayIcon.displayName = 'PlayIcon';
 
@@ -405,15 +418,15 @@ PlayText.displayName = 'PlayText';
 export const SelectorArea = styled.div`
   label: SelectorArea;
   position: relative;
-  height: ${`${window.innerHeight}px`};
+  height: calc(${`${window.innerHeight}px`} - 100px);
   background: #232222;
   display: flex;
   flex-direction: row;
   align-items: flex-start;
   justify-content: center;
   overflow-y: ${({ zombies }) => (zombies ? 'hidden' : 'auto')};
-  overflow-x: auto;
-  padding: 20px 10px 30px;
+  overflow-x: hidden;
+  padding: 20px 0 30px;
 
   ${({ columns, zombies }) => {
     if (columns === 'big') {
@@ -424,7 +437,7 @@ export const SelectorArea = styled.div`
     if (columns) {
       return css`
         display: grid;
-        width: ${zombies ? '100%' : '90%'};
+        width: 100%;
         grid-gap: 10px;
         grid-template-columns: repeat(${columns}, minmax(100px, 1fr));
       `;
@@ -432,16 +445,20 @@ export const SelectorArea = styled.div`
     return null;
   }}
 
-  @media all and (min-width: 768px) {
-    height: calc(${`${window.innerHeight}px`} - 80px);
+  @media (min-width: 320px) and (min-height: 640px) {
+    height: calc(${`${window.innerHeight}px`} - 100px);
+  }
+
+  @media all and (min-width: 701px) {
+    height: calc(${`${window.innerHeight}px`} - 110px);
   }
 
   @media all and (min-width: 1200px) {
-    height: calc(${`${window.innerHeight}px`} - 120px);
+    height: calc(${`${window.innerHeight}px`} - 100px);
   }
 
   @media all and (min-width: 1400px) {
-    height: calc(${`${window.innerHeight}px`} - 130px);
+    height: calc(${`${window.innerHeight}px`} - 125px);
   }
 `;
 SelectorArea.displayName = 'SelectorArea';

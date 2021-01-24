@@ -259,30 +259,35 @@ export const ZombicideLogo = styled.img`
 `;
 ZombicideLogo.displayName = 'ZombicideLogo';
 
-export const ZombieIntro = styled.img`
-  label: ZombieIntro;
+export const ZombieImage = styled.img`
+  label: ZombieImage;
   z-index: 11;
   position: absolute;
-  top: 60px;
+  top: 10%;
   width: 300px;
   animation-name: ${Appear};
   animation-duration: 4s;
   animation-iteration-count: 1;
   animation-fill-mode: forwards;
 
+  @media (min-width: 320px) and (min-height: 640px) {
+    top: 10%;
+    width: 90%;
+  }
+
   @media all and (min-width: 768px) {
     top: 150px;
     width: 576px;
   }
 
-  /* @media all and (min-height: 1000px) {
-    top: 15%;
-    width: 75%;
-  } */
-
   @media all and (min-width: 1024px) {
     top: 100px;
     width: 400px;
+  }
+
+  @media (min-width: 320px) and (min-height: 1300px) {
+    top: 5%;
+    width: 80%;
   }
 
   @media all and (min-width: 1200px) {
@@ -295,10 +300,10 @@ export const ZombieIntro = styled.img`
     width: 500px;
   }
 `;
-ZombieIntro.displayName = 'ZombieIntro';
+ZombieImage.displayName = 'ZombieImage';
 
-export const ZombieIntroShadow = styled(ZombieIntro)`
-  label: ZombieIntroShadow;
+export const ZombieImageShadow = styled(ZombieImage)`
+  label: ZombieImageShadow;
   position: absolute;
   z-index: 10;
   top: 60px;
@@ -311,23 +316,31 @@ export const ZombieIntroShadow = styled(ZombieIntro)`
   animation-fill-mode: forwards;
   ${Shadow}
 
-  @media all and (min-width: 768px) {
+  @media (min-width: 320px) and (min-height: 640px) {
+    top: 10%;
+    height: 30%;
+    width: 90%;
+    margin: 230px 0 0 -50px;
+  }
+
+  @media all and (min-width: 710px) {
     top: 460px;
     height: 480px;
     width: 576px;
     margin: 0 0 0 -75px;
   }
 
-  /* @media all and (min-height: 1000px) {
-    top: 17%;
-    width: 75%;
-    margin: 100px 0 0 -105px;
-  } */
-
   @media all and (min-width: 1024px) {
     top: 100px;
     width: 400px;
     margin: 85px 0 0 -82px;
+  }
+
+  @media (min-width: 1024px) and (min-height: 1300px) {
+    top: 5%;
+    height: 480px;
+    width: 80%;
+    margin: 595px 0 0 -82px;
   }
 
   @media all and (min-width: 1200px) {
@@ -344,4 +357,4 @@ export const ZombieIntroShadow = styled(ZombieIntro)`
     margin: 0 0 0 -60px;
   }
 `;
-ZombieIntroShadow.displayName = 'ZombieIntroShadow';
+ZombieImageShadow.displayName = 'ZombieImageShadow';

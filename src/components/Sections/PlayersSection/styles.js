@@ -17,10 +17,14 @@ export const Abilities = styled.p`
   text-align: ${({ level }) => (level % 2 ? 'right' : 'left')};
 
   @media all and (min-width: 360px) {
-    font-size: 0.9rem;
+    font-size: 0.7rem;
   }
 
-  @media all and (min-width: 768px) {
+  @media (min-width: 320px) and (min-height: 640px) {
+    font-size: 0.7rem;
+  }
+
+  @media all and (min-width: 701px) {
     font-size: 1rem;
     padding: 0 80px;
   }
@@ -89,7 +93,7 @@ export const AbilitiesWrapper = styled.div`
     padding: 10px 20px 50px 20px;
   }
 
-  @media all and (min-width: 768px) {
+  @media all and (min-width: 701px) {
     bottom: 0;
     height: 12%;
     width: 100%;
@@ -160,7 +164,7 @@ export const ActionsWrapper = styled.div`
     justify-content: flex-start;
   }
 
-  @media all and (min-width: 768px) {
+  @media all and (min-width: 701px) {
     bottom: unset;
     height: 50%;
     top: 24%;
@@ -236,7 +240,7 @@ export const AdmButton = styled(AppButton)`
   color: ${({ damageMode }) => damageMode && 'black'};
   box-shadow: ${({ damageMode }) => damageMode && '0 0 5px white'}; */
 
-  @media all and (min-width: 768px) {
+  @media all and (min-width: 701px) {
     top: 60px;
     left: 10px;
     background: none;
@@ -287,7 +291,7 @@ export const CardsActions = styled.div`
   flex-direction: row;
   align-items: center;
   justify-content: center;
-  bottom: 50px;
+  bottom: 60px;
   left: 10px;
   height: 30px;
   width: 80px;
@@ -304,8 +308,23 @@ export const CardsActions = styled.div`
   cursor: pointer;
   font-size: 1rem;
 
+  ${({ drop }) =>
+    drop &&
+    css`
+      transform: rotate(90deg);
+      transform-origin: top right;
+      left: unset;
+      right: 90px;
+    `}
+
+  ${({ dropMode }) =>
+    dropMode &&
+    css`
+      background: green;
+    `}
+
   @media all and (min-width: 360px) {
-    bottom: 80px;
+    bottom: 100px;
     left: 10px;
     font-size: 1.2rem;
     line-height: 2;
@@ -328,9 +347,9 @@ export const CardsActions = styled.div`
     bottom: 200px;
   }
 
-  @media all and (min-width: 768px) {
+  @media all and (min-width: 701px) {
     transform: none;
-    bottom: 200px;
+    bottom: 230px;
     left: 20px;
 
     ${({ drop }) =>
@@ -341,7 +360,7 @@ export const CardsActions = styled.div`
       `}
   }
 
-  @media (min-width: 1024px) and (min-height: 768px) {
+  @media (min-width: 1024px) and (min-height: 701px) {
     bottom: 180px;
     left: 22%;
 
@@ -353,8 +372,20 @@ export const CardsActions = styled.div`
       `}
   }
 
+  @media (min-width: 1024px) and (min-height: 1300px) {
+    bottom: 380px;
+    left: 5%;
+
+    ${({ drop }) =>
+      drop &&
+      css`
+        left: unset;
+        right: 15%;
+      `}
+  }
+
   @media all and (min-width: 1200px) {
-    bottom: 150px;
+    bottom: 180px;
     left: 25%;
 
     ${({ drop }) =>
@@ -366,7 +397,6 @@ export const CardsActions = styled.div`
   }
 
   @media all and (min-width: 1400px) {
-    transform: none;
     bottom: 270px;
     left: 27%;
 
@@ -377,21 +407,6 @@ export const CardsActions = styled.div`
         right: 27%;
       `}
   }
-
-  ${({ drop }) =>
-    drop &&
-    css`
-      transform: rotate(90deg);
-      transform-origin: top right;
-      left: unset;
-      right: 90px;
-    `}
-
-  ${({ dropMode }) =>
-    dropMode &&
-    css`
-      background: green;
-    `}
 `;
 CardsActions.displayName = 'CardsActions';
 
@@ -429,7 +444,7 @@ export const CharacterOverlay = styled.div`
     background-repeat: no-repeat;
   `}
 
-  @media all and (min-width: 768px) {
+  @media all and (min-width: 701px) {
     position: absolute;
     margin-top: 50px;
 
@@ -447,19 +462,33 @@ export const CharacterOverlayImage = styled.img`
   bottom: 0;
   width: 90%;
 
-  @media all and (min-width: 768px) {
+  @media (min-width: 320px) and (min-height: 640px) {
+    bottom: 10%;
+    width: 90%;
+  }
+
+  @media all and (min-width: 701px) {
     bottom: 10%;
     width: 80%;
   }
 
-  @media all and (min-width: 768px) {
+  @media all and (min-width: 701px) {
     bottom: 10%;
     width: 80%;
   }
 
-  @media (min-width: 1024px) and (min-height: 768px) {
+  @media (min-width: 1024px) and (min-height: 701px) {
     bottom: 10%;
     width: 45%;
+  }
+  @media (min-width: 1024px) and (min-height: 1300px) {
+    bottom: 10%;
+    width: 70%;
+  }
+
+  @media (min-width: 1130px) and (min-height: 701px) {
+    bottom: 10%;
+    width: 38%;
   }
 
   @media all and (min-width: 1200px) {
@@ -476,14 +505,24 @@ export const CharacterOverlayImageShadow = styled(CharacterOverlayImage)`
   height: 65%;
   margin: 0 0 -75px -75px;
 
-  @media all and (min-width: 768px) {
+  @media (min-width: 320px) and (min-height: 640px) {
+    height: 65%;
+    margin: 0 0 -22% -23%;
+  }
+
+  @media all and (min-width: 701px) {
     height: 65%;
     margin: 0 0 -115px -110px;
   }
 
-  @media (min-width: 1024px) and (min-height: 768px) {
+  @media (min-width: 1024px) and (min-height: 701px) {
     height: 50%;
     margin: 0 0 -55px -75px;
+  }
+
+  @media (min-width: 1024px) and (min-height: 1300px) {
+    height: 40%;
+    margin: 0 0 -55px -105px;
   }
 
   @media all and (min-width: 1200px) {
@@ -540,6 +579,17 @@ export const CharItems = styled.div`
       right: 10px;
     `}
 
+  @media (min-width: 320px) and (min-height: 640px) {
+    top: 45%;
+
+    ${({ trade }) =>
+      trade &&
+      css`
+        top: 18px;
+        right: 10px;
+      `}
+  }
+
   @media all and (min-width: 410px) {
     top: 50%;
 
@@ -551,9 +601,8 @@ export const CharItems = styled.div`
       `}
   }
 
-  @media all and (min-width: 768px) {
+  @media all and (min-width: 701px) {
     top: 48%;
-    /* margin: 65px 0 0 20px; */
     width: 100%;
     margin-left: -50px;
 
@@ -572,9 +621,8 @@ export const CharItems = styled.div`
       `}
   }
 
-  @media (min-width: 1024px) and (min-height: 768px) {
+  @media (min-width: 1024px) and (min-height: 701px) {
     top: 35%;
-    /* margin: 65px 0 0 20px; */
     width: 100%;
     margin-left: 30px;
 
@@ -590,6 +638,26 @@ export const CharItems = styled.div`
         top: 30px;
         right: 10px;
         width: 80%;
+      `}
+  }
+
+  @media (min-width: 1024px) and (min-height: 1300px) {
+    top: 50%;
+    width: 100%;
+    margin-left: -50px;
+
+    ${({ slotType }) =>
+      slotType === IN_BACKPACK &&
+      css`
+        margin-top: -150px;
+      `}
+
+    ${({ trade }) =>
+      trade &&
+      css`
+        top: 160px;
+        right: 140px;
+        width: 60%;
       `}
   }
 
@@ -647,7 +715,7 @@ export const CharName = styled.h1`
     font-size: 4rem;
   }
 
-  @media all and (min-width: 768px) {
+  @media all and (min-width: 701px) {
     top: 50px;
     right: 40px;
     font-size: 7rem;
@@ -686,7 +754,7 @@ export const FirstPlayerToken = styled.img`
   filter: contrast(0.8) brightness(1.5) opacity(0.1);
   transform: scaleX(-1);
 
-  @media all and (min-width: 768px) {
+  @media all and (min-width: 701px) {
     filter: contrast(1.8) brightness(1.2) opacity(0.2);
     margin-left: 0;
     margin-top: -530px;
@@ -713,7 +781,7 @@ export const FirstPlayerWrapper = styled.div`
   width: 100%;
   overflow: hidden;
 
-  @media all and (min-width: 768px) {
+  @media all and (min-width: 701px) {
     position: initial;
   }
 
@@ -738,7 +806,7 @@ export const HighestXpTag = styled.span`
   font-weight: 900;
   user-select: none;
 
-  @media all and (min-width: 768px) {
+  @media all and (min-width: 701px) {
     top: 19px;
     top: 20px;
     font-size: 0.8rem;
@@ -775,13 +843,13 @@ export const IndicatorsWrapper = styled.div`
       justify-content: space-around;
       padding: 0 10px 0 10px;
 
-      @media all and (min-width: 768px) {
+      @media all and (min-width: 701px) {
         position: absolute;
         padding: 0 50px 0 20px;
       }
     `}
 
-  @media all and (min-width: 768px) {
+  @media all and (min-width: 701px) {
     height: 20px;
     position: absolute;
     top: 26px;
@@ -865,7 +933,7 @@ export const MainButton = styled(AppButton)`
       @media all and (min-width: 320px) {
         transform: translate(-50%, -5px);
       }
-      @media all and (min-width: 768px) {
+      @media all and (min-width: 701px) {
         bottom: 10px;
       }
     `}
@@ -887,7 +955,7 @@ export const MainButton = styled(AppButton)`
     height: 40px;
   }
 
-  @media all and (min-width: 768px) {
+  @media all and (min-width: 701px) {
     bottom: 12px;
     height: 30px;
     width: 200px;
@@ -918,7 +986,7 @@ export const ModalSign = styled(AttackInstructions)`
   ${({ killed }) =>
     killed &&
     css`
-      @media all and (min-width: 768px) {
+      @media all and (min-width: 701px) {
       }
       width: 100%;
     `}
@@ -951,7 +1019,7 @@ export const ModalSignText = styled.p`
   font-family: Crackhouse, 'Grandstander', cursive;
   text-align: center;
 
-  @media all and (min-width: 768px) {
+  @media all and (min-width: 701px) {
     top: 180px;
     right: 100px;
     font-size: 4rem;
@@ -1114,7 +1182,7 @@ export const NextButton = styled(AppButton)`
       `}
   }
 
-  @media all and (min-width: 768px) {
+  @media all and (min-width: 701px) {
     bottom: 20px;
     right: 20px;
     font-size: inherit;
@@ -1150,7 +1218,7 @@ export const NoiseWrapper = styled.div`
   align-items: flex-start;
   justify-content: flex-start;
 
-  @media all and (min-width: 768px) {
+  @media all and (min-width: 701px) {
     top: 160px;
     left: 20px;
     flex-direction: column;
@@ -1159,16 +1227,6 @@ export const NoiseWrapper = styled.div`
     height: auto;
     width: auto;
   }
-
-  /* @media all and (min-width: 768px) {
-    top: calc(18% + 50px);
-    right: 30px;
-    flex-direction: row;
-    align-items: center;
-    justify-content: flex-end;
-    height: 45px;
-    width: 300px;
-  } */
 
   @media all and (min-width: 1200px) {
     flex-direction: row;
@@ -1207,7 +1265,7 @@ export const PlayerTag = styled.div`
     height: 20px;
   }
 
-  @media all and (min-width: 768px) {
+  @media all and (min-width: 701px) {
     top: 180px;
     right: -30px;
     height: 20px;
@@ -1244,7 +1302,7 @@ export const PreviousButton = styled(NextButton)`
       `}
   }
 
-  @media all and (min-width: 768px) {
+  @media all and (min-width: 701px) {
     left: 20px;
   }
 
@@ -1317,6 +1375,18 @@ export const WoundedSign = styled.img`
   width: 180%;
   filter: brightness(0.35) saturate(2.1) opacity(0.8);
   margin-top: -60px;
+
+  @media all and (min-width: 1200px) {
+    position: absolute;
+    width: 100%;
+    margin-top: -20px;
+    margin-left: -200px;
+  }
+
+  @media all and (min-width: 1400px) {
+    width: 100%;
+    margin-left: -300px;
+  }
 `;
 WoundedSign.displayName = 'WoundedSign';
 
@@ -1406,7 +1476,7 @@ export const XpIcon = styled(MovementIcon)`
       cursor: pointer;
     `}
 
-  @media all and (min-width: 768px) {
+  @media all and (min-width: 701px) {
   }
 `;
 XpIcon.displayName = 'XPIcon';

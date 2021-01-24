@@ -112,6 +112,8 @@ const SoundBlock = ({
     return <PlayText>{label || name}</PlayText>;
   };
 
+  console.log('$$$ isMobile', isMobile);
+
   const play = () => {
     if (
       type === WEAPONS &&
