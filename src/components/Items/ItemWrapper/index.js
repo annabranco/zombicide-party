@@ -157,7 +157,6 @@ const ItemsArea = ({
   };
 
   const onClickEmptyCard = () => {
-    console.log('$$$ click');
     const slot = getSlotNumber(index);
     if (damageMode) {
       if (allSlotsAreEmpty) {
@@ -223,7 +222,7 @@ const ItemsArea = ({
   useEffect(() => {
     toggleNeedReload(false);
   }, [charName, toggleNeedReload]);
-  console.log('$$$ device', device);
+
   return (
     <ItemWrapper
       id={`${item}-${index + 1}`}

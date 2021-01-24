@@ -1516,6 +1516,7 @@ const PlayersSection = ({
               details: button.description
             }))
           }}
+          isMobile={device.current === MOBILE}
           onConfirmModal={learnNewAbility}
         />
       )}

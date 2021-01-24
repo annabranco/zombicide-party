@@ -14,7 +14,7 @@ export const ButtonsWrapper = styled.div`
 
   @media all and (min-width: 1200px) {
     position: absolute;
-    bottom: 30px;
+    bottom: -50px;
     width: 50%;
 
     ${({ itemSelector }) =>
@@ -23,6 +23,9 @@ export const ButtonsWrapper = styled.div`
         bottom: 10px;
         width: 100%;
       `}
+  }
+  @media all and (min-width: 1400px) {
+    bottom: -60px;
   }
 `;
 ButtonsWrapper.displayName = 'ButtonsWrapper';
@@ -84,8 +87,16 @@ export const CharacterName = styled(CharName)`
     font-size: 3rem;
   }
 
+  @media (min-width: 1024px) and (min-height: 768px) {
+    top: 75px;
+    left: 50%;
+    transform: translate(-50%, 0);
+  }
+
   @media all and (min-width: 1200px) {
-    top: 70px;
+    top: 25px;
+    left: 115px;
+    transform: none;
     -webkit-text-stroke: 1px black;
   }
 `;
@@ -108,7 +119,8 @@ export const CharacterTrading = styled.div`
     background: rgba(0, 163, 21, 0.15);
   }
 
-  @media all and (min-width: 768px) {
+  @media all and (min-width: 1200px) {
+    margin: 0 auto;
   }
 `;
 CharacterTrading.displayName = 'CharacterTrading';
@@ -136,10 +148,18 @@ export const CurrentPartnerTag = styled(CurrentCharacterTag)`
   color: rgba(255, 255, 255, 0.5);
 
   @media all and (min-width: 768px) {
-    bottom: 20px;
+    bottom: 10px;
     font-size: 1.5rem;
   }
+  @media (min-width: 1024px) and (min-height: 768px) {
+    bottom: 20px;
+    left: 25%;
+    width: 20%;
+  }
   @media all and (min-width: 1200px) {
+    bottom: 5px;
+    left: 50%;
+    width: 80%;
   }
 `;
 CurrentPartnerTag.displayName = 'CurrentPartnerTag';
@@ -169,6 +189,10 @@ export const NavButtonsWrapper = styled.div`
   @media all and (min-width: 768px) {
     bottom: 0px;
   }
+
+  @media all and (min-width: 1200px) {
+    bottom: -18px;
+  }
 `;
 NavButtonsWrapper.displayName = 'NavButtonsWrapper';
 
@@ -192,7 +216,7 @@ export const PlayerName = styled.p`
   }
 
   @media all and (min-width: 1200px) {
-    top: 50px;
+    top: 45px;
     left: 450px;
     font-size: 3rem;
     opacity: 0.6;
@@ -218,8 +242,13 @@ export const TradeWrapper = styled.div`
   height: 100%;
   width: 100%;
 
-  @media all and (min-width: 1024px) {
+  @media all and (min-width: 1200px) {
+    position: absolute;
+    top: 0;
     flex-direction: row;
+    justify-content: center;
+    align-items: flex-start;
+    height: 93%;
   }
 `;
 TradeWrapper.displayName = 'TradeWrapper';

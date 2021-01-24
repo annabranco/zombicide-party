@@ -8,6 +8,7 @@ import NewGame from '../NewGame';
 
 import { globalStyles } from '../../styles';
 import MainScreen from '../MainScreen';
+import ControllerLayer from '../ControllerLayer';
 
 const App = () => {
   const [initialCharacters, setInitialCharacters] = useStateWithLabel(
@@ -31,6 +32,7 @@ const App = () => {
   return (
     <Router>
       <Global styles={globalStyles} />
+      <ControllerLayer />
       <Switch>
         <Route
           exact

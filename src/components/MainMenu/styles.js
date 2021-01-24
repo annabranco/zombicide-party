@@ -108,6 +108,14 @@ export const MainTitle = styled.h1`
   font-family: Crackhouse;
   text-shadow: 0 0 2px red;
 
+  ${({ blockedScreen }) =>
+    blockedScreen &&
+    css`
+      margin-top: -40px;
+      margin-right: -300px;
+      font-size: 3.5rem;
+    `}
+
   @media all and (min-width: 768px) {
     margin-top: -35px;
     font-size: 3.5rem;
@@ -237,6 +245,13 @@ export const ZombicideLogo = styled.img`
   label: ZombicideLogo;
   width: 100%;
   display: block;
+
+  ${({ blockedScreen }) =>
+    blockedScreen &&
+    css`
+      margin-top: -70px;
+      width: 60%;
+    `}
 
   @media all and (min-width: 768px) {
     width: 400px;

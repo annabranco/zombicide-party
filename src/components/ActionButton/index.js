@@ -177,7 +177,7 @@ const ActionButton = ({
         break;
     }
   }, [actionType, type, setIconType, setIconType2, setIconSize]);
-  console.log('$$$ isMobile', isMobile);
+
   return (
     <>
       {iconType2 ? (
