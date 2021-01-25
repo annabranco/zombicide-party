@@ -20,7 +20,7 @@ import {
 import {
   DROP,
   IN_HAND,
-  ITEM_IN_BACKPACK,
+  ITEM_IN_RESERVE,
   ITEM_IN_HAND,
   MELEE,
   MELEE_RANGED,
@@ -74,7 +74,6 @@ const ItemsArea = ({
   wounded
 }) => {
   const [isActive, toggleActive] = useStateWithLabel(false, 'isActive');
-  const [isSelected, select] = useStateWithLabel(false, 'isSelected');
   const [killButtons, changeKillButtons] = useStateWithLabel([], 'killButtons');
   const [needReload, toggleNeedReload] = useStateWithLabel([], 'needReload');
   const [displaySplash, toggleDisplaySplash] = useStateWithLabel(
@@ -125,7 +124,8 @@ const ItemsArea = ({
     return totalDices;
   };
 
-  const checkIfReloadIsNeeded = () => ALL_WEAPONS[item].needsReloading;
+  const checkIfReloadIsNeeded = () =>
+    ALL_WEAPONS[item] && ALL_WEAPONS[item].needsReloading;
 
   const getSlotNumber = itemIndex => {
     const adj = slotType === IN_HAND ? 1 : 3;
@@ -137,13 +137,13 @@ const ItemsArea = ({
     if (damageMode) {
       causeDamage(slot);
     } else if (trade) {
-      if (isSelected) {
-        select(false);
-        tradeItem({ item: null, slot, char: charName });
+      if (itemSelected) {
+        // select(false);
+        tradeItem({ item: null, slot, charTrading: charName });
       } else {
-        tradeItem({ item, slot, char: charName });
+        tradeItem({ item, slot, charTrading: charName });
         if (!itemSelected) {
-          select(true);
+          // select(true);
         }
       }
     } else {
@@ -163,13 +163,14 @@ const ItemsArea = ({
         causeDamage(slot);
       }
     } else if (trade) {
-      if (isSelected) {
-        select(false);
-        tradeItem({ item: null, slot, char: charName });
+      console.log('$$$ itemSelected', itemSelected);
+      if (itemSelected) {
+        // select(false);
+        tradeItem({ item: null, slot, charTrading: charName });
       } else {
-        tradeItem({ item: NONE, slot, char: charName });
+        tradeItem({ item: NONE, slot, charTrading: charName });
         if (!itemSelected) {
-          select(true);
+          // select(true);
         }
       }
     } else if (canSearch || setupMode) {
@@ -227,7 +228,6 @@ const ItemsArea = ({
     <ItemWrapper
       id={`${item}-${index + 1}`}
       isActive={isActive}
-      key={`${item}-${index + 1}`}
       onMouseOut={!device === MOBILE ? () => toggleActive(false) : null}
       onMouseOver={!device === MOBILE ? () => toggleActive(true) : null}
       slotType={slotType}
@@ -246,7 +246,7 @@ const ItemsArea = ({
             damageMode={damageMode}
             img={getItemPhoto(item)}
             isMobile={device === MOBILE}
-            isSelected={isSelected}
+            isSelected={itemSelected}
             makeNoise={makeNoise}
             name={item}
             needsToBeReloaded={checkIfReloadIsNeeded()}
@@ -266,12 +266,12 @@ const ItemsArea = ({
             allSlotsAreEmpty={allSlotsAreEmpty}
             damageMode={damageMode}
             canSearch={canSearch}
-            isSelected={isSelected}
+            isSelected={itemSelected}
             onClick={onClickEmptyCard}
             setupMode={setupMode}
             trade={trade}
           >
-            {!trade && (slotType === IN_HAND ? ITEM_IN_HAND : ITEM_IN_BACKPACK)}
+            {!trade && (slotType === IN_HAND ? ITEM_IN_HAND : ITEM_IN_RESERVE)}
             {canSearch && !damageMode && !setupMode && (
               <ActionButton
                 actionType={SEARCH_ACTION}

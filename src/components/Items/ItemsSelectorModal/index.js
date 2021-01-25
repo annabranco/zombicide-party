@@ -72,7 +72,7 @@ const ItemsSelectorModal = ({ device, onSelect, selectSlot, slotType }) => {
                 img={items[name].img}
                 key={items[name].name}
                 name={items[name].name}
-                onSelect={() => onSelect(items[name].name)}
+                onSelect={() => onSelect(items[name].name.replace(' ', ''))}
                 type={items[name].type}
               />
             ))}

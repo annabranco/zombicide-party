@@ -20,7 +20,7 @@ import {
 import { useStateWithLabel, useTurnsCounter } from '../../../utils/hooks';
 import ItemsSelectorModal from '../../Items/ItemsSelectorModal';
 import ActionButton from '../../ActionButton';
-import ItemsArea from '../../Items/ItemWrapper';
+import ItemsArea from '../../Items/ItemsArea';
 import Blood from '../../../assets/images/blood.png';
 import Exit from '../../../assets/images/exit.png';
 import Noise from '../../../assets/images/noise.png';
@@ -123,7 +123,7 @@ import {
   MOVE_ACTION,
   OPEN_DOOR_ACTION,
   START,
-  IN_BACKPACK,
+  IN_RESERVE,
   IN_HAND,
   XP,
   FIRST_PLAYER_TOKEN,
@@ -456,7 +456,7 @@ const PlayersSection = ({
     const hasFlashlight = checkIfCharacterHasFlashlight(newItems);
     const charCanCombineItems = checkIfCharCanCombineItems([
       ...newItems,
-      ...updatedCharacter.inBackpack
+      ...updatedCharacter.inReserve
     ]);
 
     setCanOpenDoor(openDoors);
@@ -467,7 +467,7 @@ const PlayersSection = ({
     if (
       dropMode &&
       checkIfAllSlotsAreEmpty(updatedCharacter.inHand) &&
-      checkIfAllSlotsAreEmpty(updatedCharacter.inBackpack)
+      checkIfAllSlotsAreEmpty(updatedCharacter.inReserve)
     ) {
       toggleDropMode(false);
     }
@@ -476,10 +476,10 @@ const PlayersSection = ({
     selectSlot();
   };
 
-  const changeInBackpack = (name, currentSlot = slot - 3) => {
+  const changeinReserve = (name, currentSlot = slot - 3) => {
     const updatedCharacter = cloneDeep(character);
     // const updatedCharacters = cloneDeep(characters);
-    const newItems = [...updatedCharacter.inBackpack];
+    const newItems = [...updatedCharacter.inReserve];
     newItems[currentSlot] = name;
     // const openDoors = checkIfCharacterCanOpenDoors(newItems);
     const hasFlashlight = checkIfCharacterHasFlashlight(newItems);
@@ -490,12 +490,12 @@ const PlayersSection = ({
     // setCanOpenDoor(openDoors);
     changeCanUseFlashlight(hasFlashlight);
     toggleCanCombine(charCanCombineItems);
-    updatedCharacter.inBackpack = newItems;
+    updatedCharacter.inReserve = newItems;
 
     if (
       dropMode &&
       checkIfAllSlotsAreEmpty(updatedCharacter.inHand) &&
-      checkIfAllSlotsAreEmpty(updatedCharacter.inBackpack)
+      checkIfAllSlotsAreEmpty(updatedCharacter.inReserve)
     ) {
       toggleDropMode(false);
     }
@@ -651,7 +651,7 @@ const PlayersSection = ({
       woundedCharacter.inHand[selectedSlot - 1] = WOUNDED;
     } else {
       woundedCharacter.wounded = true;
-      woundedCharacter.inBackpack[selectedSlot - 3] = WOUNDED;
+      woundedCharacter.inReserve[selectedSlot - 3] = WOUNDED;
     }
 
     const filename =
@@ -678,7 +678,7 @@ const PlayersSection = ({
   const confirmTrade = (updatedCharacter, updatedCharacters) => {
     const newItems = [
       ...updatedCharacter.inHand,
-      ...updatedCharacter.inBackpack
+      ...updatedCharacter.inReserve
     ];
     const openDoors = checkIfCharacterCanOpenDoors(newItems);
     const hasFlashlight = checkIfCharacterHasFlashlight(newItems);
@@ -723,12 +723,12 @@ const PlayersSection = ({
         if (firstSlot <= 2) {
           updatedCharacter.inHand[firstSlot - 1] = '';
         } else {
-          updatedCharacter.inBackpack[firstSlot - 3] = '';
+          updatedCharacter.inReserve[firstSlot - 3] = '';
         }
         if (secondSlot <= 2) {
           updatedCharacter.inHand[secondSlot - 1] = finalItem;
         } else {
-          updatedCharacter.inBackpack[secondSlot - 3] = finalItem;
+          updatedCharacter.inReserve[secondSlot - 3] = finalItem;
         }
         changeCharacter(updatedCharacter);
         if (!setupMode) {
@@ -903,21 +903,21 @@ const PlayersSection = ({
           nextChar.name !== character.name)
       ) {
         const charInHand = [nextChar.inHand[0], nextChar.inHand[1]];
-        const charInBackpack = [
-          nextChar.inBackpack[0],
-          nextChar.inBackpack[1],
-          nextChar.inBackpack[2]
+        const charinReserve = [
+          nextChar.inReserve[0],
+          nextChar.inReserve[1],
+          nextChar.inReserve[2]
         ];
         const openDoors =
           checkIfCharacterCanOpenDoors(charInHand) ||
-          checkIfCharacterCanOpenDoors(charInBackpack);
+          checkIfCharacterCanOpenDoors(charinReserve);
         const hasFlashlight = checkIfCharacterHasFlashlight([
           ...charInHand,
-          ...charInBackpack
+          ...charinReserve
         ]);
         const charCanCombineItems = checkIfCharCanCombineItems([
           ...charInHand,
-          ...charInBackpack
+          ...charinReserve
         ]);
 
         if (nextChar.abilities.length === 0) {
@@ -1236,7 +1236,7 @@ const PlayersSection = ({
                         actionsLeft={generalActions}
                         allSlotsAreEmpty={checkIfAllSlotsAreEmpty([
                           ...character.inHand,
-                          ...character.inBackpack
+                          ...character.inReserve
                         ])}
                         bonusDices={character.bonusDices}
                         callback={spendAction}
@@ -1277,16 +1277,16 @@ const PlayersSection = ({
                     );
                   })}
               </CharItems>
-              <CharItems slotType={IN_BACKPACK}>
-                {character.inBackpack &&
-                  character.inBackpack.map((item, index) => {
+              <CharItems slotType={IN_RESERVE}>
+                {character.inReserve &&
+                  character.inReserve.map((item, index) => {
                     const itemName = item && item.replace(' ', '');
                     return (
                       <ItemsArea
                         actionsLeft={generalActions}
                         allSlotsAreEmpty={checkIfAllSlotsAreEmpty([
                           ...character.inHand,
-                          ...character.inBackpack
+                          ...character.inReserve
                         ])}
                         callback={spendAction}
                         canCombine={generalActions && canCombine}
@@ -1309,10 +1309,10 @@ const PlayersSection = ({
                         makeNoise={makeNoise}
                         noAudio
                         onClickCombine={onClickCombine}
-                        onClickDrop={changeInBackpack}
+                        onClickDrop={changeinReserve}
                         selectSlot={selectSlot}
                         setupMode={setupMode}
-                        slotType={IN_BACKPACK}
+                        slotType={IN_RESERVE}
                         startTrade={startTrade}
                         wounded={character.wounded}
                       />
@@ -1321,9 +1321,9 @@ const PlayersSection = ({
               </CharItems>
               {!slot &&
                 character.inHand &&
-                character.inBackpack &&
+                character.inReserve &&
                 (!checkIfAllSlotsAreEmpty(character.inHand) ||
-                  !checkIfAllSlotsAreEmpty(character.inBackpack)) && (
+                  !checkIfAllSlotsAreEmpty(character.inReserve)) && (
                   <CardsActions drop dropMode={dropMode}>
                     <CardsActionsText onClick={() => toggleDropMode(!dropMode)}>
                       {dropMode ? OK : DROP}
@@ -1484,9 +1484,9 @@ const PlayersSection = ({
       {slot && slot >= 3 && (
         <ItemsSelectorModal
           device={device.current}
-          onSelect={changeInBackpack}
+          onSelect={changeinReserve}
           selectSlot={selectSlot}
-          slotType={IN_BACKPACK}
+          slotType={IN_RESERVE}
         />
       )}
 

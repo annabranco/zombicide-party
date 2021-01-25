@@ -9,7 +9,7 @@ import {
 } from '../Sections/PlayersSection/styles';
 import { getCharacterColor } from '../../utils/players';
 import { useStateWithLabel } from '../../utils/hooks';
-import ItemsArea from '../Items/ItemWrapper';
+import ItemsArea from '../Items/ItemsArea';
 import {
   ButtonsWrapper,
   CancelButton,
@@ -25,7 +25,7 @@ import {
   NavButtonsWrapper
 } from './styles';
 import {
-  IN_BACKPACK,
+  IN_RESERVE,
   IN_HAND,
   SELECT_TRADE_PARTNER,
   TRADING_WITH,
@@ -109,22 +109,29 @@ const TradeArea = ({
     }
   }, [partnerIndex]);
 
-  const onTrade = ({ item, slot, char }) => {
+  const onTrade = ({ item, slot, charTrading }) => {
+    console.log('$$$ item, slot, charTrading ', item, slot, charTrading);
     if (selectedItem1) {
       if (!item) {
         selectItem1();
       } else {
         const updChar = cloneDeep(updatedCharacter);
         const updPartn = cloneDeep(tradePartner);
-        const typeItem1 = selectedItem1.slot <= 2 ? IN_HAND : IN_BACKPACK;
-        const typeItem2 = slot <= 2 ? IN_HAND : IN_BACKPACK;
+        const typeItem1 = selectedItem1.slot <= 2 ? IN_HAND : IN_RESERVE;
+        const typeItem2 = slot <= 2 ? IN_HAND : IN_RESERVE;
         const index1 =
           selectedItem1.slot <= 2
             ? selectedItem1.slot - 1
             : selectedItem1.slot - 3;
         const index2 = slot <= 2 ? slot - 1 : slot - 3;
-        if (selectedItem1.char === char) {
-          if (updChar.name === char) {
+        // eslint-disable-next-line no-debugger
+        debugger;
+
+        if (selectedItem1.item === NONE && item === NONE) {
+          return null;
+        }
+        if (selectedItem1.charTrading === charTrading) {
+          if (updChar.name === charTrading) {
             updChar[typeItem1][index1] = item === NONE ? null : item;
             updChar[typeItem2][index2] =
               selectedItem1.item === NONE ? null : selectedItem1.item;
@@ -137,7 +144,7 @@ const TradeArea = ({
           }
         } else if (selectedItem1.item === WOUNDED || item === WOUNDED) {
           console.log('NOT');
-        } else if (selectedItem1.char === updChar.name) {
+        } else if (selectedItem1.charTrading === updChar.name) {
           updChar[typeItem1][index1] = item === NONE ? null : item;
           updPartn[typeItem2][index2] =
             selectedItem1.item === NONE ? null : selectedItem1.item;
@@ -154,8 +161,9 @@ const TradeArea = ({
         establishTrade(true);
       }
     } else {
-      selectItem1({ item, slot, char });
+      selectItem1({ item, slot, charTrading });
     }
+    return null;
   };
 
   const onClickDrop = (charName, type, index) => {
@@ -187,7 +195,11 @@ const TradeArea = ({
                 charName={updatedCharacter.name}
                 index={index}
                 item={item}
-                itemSelected={Boolean(selectedItem1)}
+                itemSelected={
+                  selectedItem1 &&
+                  selectedItem1.charTrading === updatedCharacter.name &&
+                  selectedItem1.slot === index + 1
+                }
                 key={`${item}-${index + 1}`}
                 onClickDrop={onClickDrop}
                 slotType={IN_HAND}
@@ -197,17 +209,21 @@ const TradeArea = ({
               />
             ))}
           </CharItems>
-          <CharItems slotType={IN_BACKPACK} trade>
-            {updatedCharacter.inBackpack.map((item, index) => (
+          <CharItems slotType={IN_RESERVE} trade>
+            {updatedCharacter.inReserve.map((item, index) => (
               <ItemsArea
                 charName={updatedCharacter.name}
                 index={index}
                 item={item}
-                itemSelected={Boolean(selectedItem1)}
+                itemSelected={
+                  selectedItem1 &&
+                  selectedItem1.charTrading === updatedCharacter.name &&
+                  selectedItem1.slot === index + 3
+                }
                 key={`${item}-${index + 3}`}
                 noAudio
                 onClickDrop={onClickDrop}
-                slotType={IN_BACKPACK}
+                slotType={IN_RESERVE}
                 trade
                 tradeItem={onTrade}
                 wounded={updatedCharacter.wounded}
@@ -232,7 +248,11 @@ const TradeArea = ({
                 device={device}
                 index={index}
                 item={item}
-                itemSelected={Boolean(selectedItem1)}
+                itemSelected={
+                  selectedItem1 &&
+                  selectedItem1.charTrading === tradePartner.name &&
+                  selectedItem1.slot === index + 1
+                }
                 key={`${item}-${index + 1}`}
                 onClickDrop={onClickDrop}
                 slotType={IN_HAND}
@@ -242,18 +262,22 @@ const TradeArea = ({
               />
             ))}
           </CharItems>
-          <CharItems slotType={IN_BACKPACK} trade>
-            {tradePartner.inBackpack.map((item, index) => (
+          <CharItems slotType={IN_RESERVE} trade>
+            {tradePartner.inReserve.map((item, index) => (
               <ItemsArea
                 charName={tradePartner.name}
                 device={device}
                 index={index}
                 item={item}
-                itemSelected={Boolean(selectedItem1)}
+                itemSelected={
+                  selectedItem1 &&
+                  selectedItem1.charTrading === tradePartner.name &&
+                  selectedItem1.slot === index + 3
+                }
                 key={`${item}-${index + 3}`}
                 noAudio
                 onClickDrop={onClickDrop}
-                slotType={IN_BACKPACK}
+                slotType={IN_RESERVE}
                 trade
                 tradeItem={onTrade}
                 wounded={tradePartner.wounded}

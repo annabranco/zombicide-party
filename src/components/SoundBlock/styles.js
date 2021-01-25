@@ -271,7 +271,7 @@ export const PlayIcon = styled.img`
         @media all and (min-width: 701px) {
           &:hover {
             transform: scale(1.01);
-            transition: all ease 0.4s;
+            transition: transform ease 0.4s;
           }
         }
       `;
@@ -283,7 +283,7 @@ export const PlayIcon = styled.img`
         @media all and (min-width: 701px) {
           &:hover {
             transform: scale(1.15);
-            transition: all ease 0.8s;
+            transition: transform ease 0.8s;
           }
         }
       `;
@@ -296,7 +296,7 @@ export const PlayIcon = styled.img`
         @media all and (min-width: 701px) {
           &:hover {
             transform: scale(1.01);
-            transition: all ease 0.4s;
+            transition: transform ease 0.4s;
           }
         }
       `;
@@ -307,10 +307,10 @@ export const PlayIcon = styled.img`
 
         @media all and (min-width: 701px) {
           transform: scale(1.05);
-          transition: all ease 0.8s;
+          transition: transform ease 0.8s;
           &:hover {
             transform: scale(1.05);
-            transition: all ease 0.8s;
+            transition: transform ease 0.8s;
           }
         }
       `;
@@ -319,12 +319,12 @@ export const PlayIcon = styled.img`
       return css`
         ${inactiveZombie}
         height: auto;
-        transition: all ease 0.8s;
+        transition: transform ease 0.8s;
 
         @media all and (min-width: 701px) {
           &:hover {
             transform: scale(1.05);
-            transition: all ease 0.8s;
+            transition: transform ease 0.8s;
           }
         }
       `;
@@ -336,6 +336,14 @@ export const PlayIcon = styled.img`
     unloaded &&
     css`
       filter: sepia(2) brightness(1.2) contrast(0.6) opacity(0.5);
+    `}
+
+
+  ${({ isSelected }) =>
+    isSelected &&
+    css`
+      filter: brightness(70%) sepia(70%) hue-rotate(62deg) saturate(400%)
+        contrast(0.9);
     `}
 
 
@@ -391,12 +399,14 @@ export const PlayImageButton = styled.button`
   }
   transition: background ease 1.5s;
 
-  ${({ canAttack, damageMode, setupMode, slotType, type }) => {
+  ${({ canAttack, damageMode, setupMode, slotType, trade, type }) => {
+    console.log(trade);
     switch (true) {
       case !!damageMode:
       case !!setupMode:
       case type === ACTIVATIONS:
       case slotType === SELECTION:
+      case trade:
         return css`
           cursor: pointer;
         `;

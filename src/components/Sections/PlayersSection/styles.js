@@ -3,7 +3,7 @@ import { css } from '@emotion/core';
 import { rgba } from 'emotion-rgba';
 import { AttackInstructions } from '../ZombiesSection/styles';
 import { Appear, Shadow } from '../../../styles';
-import { IN_BACKPACK, MOBILE } from '../../../constants';
+import { IN_RESERVE, MOBILE } from '../../../constants';
 import Background from '../../../assets/images/background/background.jpg';
 
 export const Abilities = styled.p`
@@ -569,7 +569,7 @@ export const CharItems = styled.div`
   }
 
   ${({ slotType }) =>
-    slotType === IN_BACKPACK &&
+    slotType === IN_RESERVE &&
     css`
       margin-top: -20px;
 
@@ -617,7 +617,7 @@ export const CharItems = styled.div`
     margin-left: -50px;
 
     ${({ slotType }) =>
-      slotType === IN_BACKPACK &&
+      slotType === IN_RESERVE &&
       css`
         margin-top: -50px;
       `}
@@ -637,7 +637,7 @@ export const CharItems = styled.div`
     margin-left: 30px;
 
     ${({ slotType }) =>
-      slotType === IN_BACKPACK &&
+      slotType === IN_RESERVE &&
       css`
         margin-top: -50px;
       `}
@@ -657,7 +657,7 @@ export const CharItems = styled.div`
     margin-left: -50px;
 
     ${({ slotType }) =>
-      slotType === IN_BACKPACK &&
+      slotType === IN_RESERVE &&
       css`
         margin-top: -150px;
       `}
@@ -678,7 +678,7 @@ export const CharItems = styled.div`
     margin-left: 0;
 
     ${({ slotType }) =>
-      slotType === IN_BACKPACK &&
+      slotType === IN_RESERVE &&
       css`
         margin-top: -50px;
       `}

@@ -20,7 +20,7 @@ import {
   ACTIVATIONS,
   ATTACK,
   COMBINE_ACTION,
-  IN_BACKPACK,
+  IN_RESERVE,
   IN_HAND,
   ITEMS,
   KILL,
@@ -70,7 +70,7 @@ const SoundBlock = ({
   const randomNumber = max => Math.floor(Math.random() * max + 1);
   const filename =
     !noAudio &&
-    slotType !== IN_BACKPACK &&
+    slotType !== IN_RESERVE &&
     type !== ITEMS &&
     type !== WOUND &&
     name === 'Sniper Rifle'
@@ -101,6 +101,7 @@ const SoundBlock = ({
       return (
         <PlayIcon
           active={isActive}
+          isSelected={isSelected}
           onMouseOut={() => highlight(false)}
           onMouseOver={() => highlight(true)}
           unloaded={unloaded}
@@ -173,6 +174,7 @@ const SoundBlock = ({
         onClick={damageMode || trade || setupMode ? onClickCard : play}
         setupMode={setupMode}
         slotType={slotType}
+        trade={trade}
         type={type}
       >
         {checkIfItemCanBeCombined(name) && canCombine && (

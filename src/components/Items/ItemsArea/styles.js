@@ -1,6 +1,6 @@
 import styled from '@emotion/styled';
 import { css } from '@emotion/core';
-import { IN_BACKPACK, WOUND } from '../../../constants';
+import { IN_RESERVE, WOUND } from '../../../constants';
 import { AppButton } from '../../Sections/PlayersSection/styles';
 import IconRanged from '../../../assets/images/ranged-icon.png';
 import IconMelee from '../../../assets/images/melee-icon.png';
@@ -39,7 +39,7 @@ export const ActionButtonsWrapper = styled.div`
     `}
 
   ${({ mobile, slotType }) => {
-    if (mobile && slotType === IN_BACKPACK) {
+    if (mobile && slotType === IN_RESERVE) {
       return css`
         top: -35px;
         left: 50%;
@@ -267,7 +267,7 @@ export const ItemWrapper = styled.div`
         }
       `;
     }
-    if (slotType === IN_BACKPACK) {
+    if (slotType === IN_RESERVE) {
       return css`
         z-index: 3;
         filter: contrast(0.6);
