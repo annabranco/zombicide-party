@@ -86,7 +86,7 @@ export const ITEMS_MALL = {
   }
 };
 
-export const ITEMS_TD = {
+export const ITEMS_NIGHT_SHIFT = {
   GasMask: {
     img: GasMask,
     name: 'GasMask',
@@ -124,7 +124,7 @@ export const ITEMS_TD = {
   }
 };
 
-const selectedSets = [ITEMS_S1, ITEMS_MALL, ITEMS_TD];
+const selectedSets = [ITEMS_S1, ITEMS_MALL, ITEMS_NIGHT_SHIFT];
 
 export const setupItems = sets => {
   let allItems = {};

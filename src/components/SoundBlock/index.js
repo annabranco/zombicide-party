@@ -73,9 +73,9 @@ const SoundBlock = ({
     slotType !== IN_BACKPACK &&
     type !== ITEMS &&
     type !== WOUND &&
-    name === 'SniperRifle'
+    name === 'Sniper Rifle'
       ? 'Rifle'
-      : name;
+      : name.replace(' ', '');
 
   const getImage = () => {
     if (((trade && isMobile) || isMobile) && type !== ACTIVATIONS) {
@@ -111,8 +111,6 @@ const SoundBlock = ({
     }
     return <PlayText>{label || name}</PlayText>;
   };
-
-  console.log('$$$ isMobile', isMobile);
 
   const play = () => {
     if (
@@ -170,6 +168,7 @@ const SoundBlock = ({
       <PlayImageButton
         canAttack={canAttack}
         isActive={isActive}
+        isText={!img}
         damageMode={damageMode}
         onClick={damageMode || trade || setupMode ? onClickCard : play}
         setupMode={setupMode}

@@ -19,3 +19,4 @@ export const WEAPONS = 'weapons';
 export const WOUND = 'wound';
 export const WOUNDED = 'Wounded';
 export const XP = 'XP';
+export const ZOMBIE = 'zombie';

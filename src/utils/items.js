@@ -20,14 +20,15 @@ export const checkIfCharacterCanOpenDoors = currentItems => {
 };
 
 export const getItemPhoto = item => {
-  if (Object.keys(SPECIALS_CARDS).find(name => item === name)) {
-    return SPECIALS_CARDS[item].img;
+  const photoName = item.replace(' ', '');
+  if (Object.keys(SPECIALS_CARDS).find(name => photoName === name)) {
+    return SPECIALS_CARDS[photoName].img;
   }
-  if (Object.keys(ALL_WEAPONS).find(name => item === name)) {
-    return ALL_WEAPONS[item].img;
+  if (Object.keys(ALL_WEAPONS).find(name => photoName === name)) {
+    return ALL_WEAPONS[photoName].img;
   }
-  if (Object.keys(ALL_ITEMS).find(name => item === name)) {
-    return ALL_ITEMS[item].img;
+  if (Object.keys(ALL_ITEMS).find(name => photoName === name)) {
+    return ALL_ITEMS[photoName].img;
   }
   return null;
 };

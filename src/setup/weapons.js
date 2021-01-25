@@ -8,6 +8,8 @@ import Crowbar from '../assets/images/weapons/crowbar.jpg';
 import DesertEagle from '../assets/images/weapons/desert-eagle.jpg';
 import DoubleBarrel from '../assets/images/weapons/double-barreled-shotgun.jpg';
 import EvilTwins from '../assets/images/weapons/evil-twins.jpg';
+import ExpandableBaton from '../assets/images/weapons/expandable-baton.jpg';
+import ExpandableBatonClosed from '../assets/images/weapons/expandable-baton-closed.jpg';
 import FireAxe from '../assets/images/weapons/fire-axe.jpg';
 import Flashbang from '../assets/images/weapons/flashbang.jpg';
 import Katana from '../assets/images/weapons/katana.jpg';
@@ -41,7 +43,7 @@ export const WEAPONS_S1 = {
     attack: MELEE,
     dice: 1,
     img: BaseballBat,
-    name: 'BaseballBat',
+    name: 'Baseball Bat',
     noise: false,
     type: WEAPONS
   },
@@ -67,7 +69,7 @@ export const WEAPONS_S1 = {
     attack: RANGED,
     dice: 2,
     img: EvilTwins,
-    name: 'EvilTwins',
+    name: 'Evil Twins',
     noise: true,
     type: WEAPONS
   },
@@ -76,7 +78,7 @@ export const WEAPONS_S1 = {
     attack: MELEE,
     dice: 1,
     img: FireAxe,
-    name: 'FireAxe',
+    name: 'Fire Axe',
     noise: false,
     type: WEAPONS
   },
@@ -92,7 +94,7 @@ export const WEAPONS_S1 = {
     attack: MELEE_RANGED,
     dice: 2,
     img: MasShotgun,
-    name: 'MasShotgun',
+    name: 'Mas Shotgun',
     noise: SPECIAL,
     type: WEAPONS
   },
@@ -142,7 +144,7 @@ export const WEAPONS_S1 = {
     attack: RANGED,
     dice: 2,
     img: SawedOff,
-    name: 'SawedOff',
+    name: 'Sawed Off',
     noise: true,
     type: WEAPONS
   },
@@ -158,7 +160,7 @@ export const WEAPONS_S1 = {
     attack: RANGED,
     dice: 1,
     img: SniperRifle,
-    name: 'SniperRifle',
+    name: 'Sniper Rifle',
     noise: true,
     type: WEAPONS
   },
@@ -177,7 +179,7 @@ export const WEAPONS_MALL = {
     attack: RANGED,
     dice: 3,
     img: AssaultRifle,
-    name: 'AssaultRifle',
+    name: 'Assault Rifle',
     noise: true,
     type: WEAPONS
   }
@@ -188,7 +190,7 @@ export const WEAPONS_S2 = {
     attack: RANGED,
     dice: 3,
     img: AutomaticShotgun,
-    name: 'AutomaticShotgun',
+    name: 'Automatic Shotgun',
     noise: true,
     type: WEAPONS
   },
@@ -207,7 +209,7 @@ export const WEAPONS_S3 = {
     attack: RANGED,
     dice: 2,
     img: DoubleBarrel,
-    name: 'DoubleBarrel',
+    name: 'Double Barrel',
     noise: true,
     type: WEAPONS
   },
@@ -226,18 +228,18 @@ export const WEAPONS_OTHERS = {
     attack: RANGED,
     dice: 1,
     img: DesertEagle,
-    name: 'DesertEagle',
+    name: 'Desert Eagle',
     noise: false,
     type: WEAPONS
   }
 };
 
-export const WEAPONS_TD = {
+export const WEAPONS_NIGHT_SHIFT = {
   AutomaticShotgun: {
     attack: RANGED,
     dice: 3,
     img: AutomaticShotgun,
-    name: 'AutomaticShotgun',
+    name: 'Automatic Shotgun',
     noise: true,
     type: WEAPONS
   },
@@ -246,7 +248,7 @@ export const WEAPONS_TD = {
     attack: MELEE,
     dice: 2,
     img: BatteringRam,
-    name: 'BatteringRam',
+    name: 'Battering Ram',
     noise: false,
     type: WEAPONS
   },
@@ -255,8 +257,18 @@ export const WEAPONS_TD = {
     attack: RANGED,
     dice: 1,
     img: ColtPython,
-    name: 'ColtPython',
+    name: 'Colt Python',
     noise: true,
+    type: WEAPONS
+  },
+
+  ExpandableBaton: {
+    altImage: ExpandableBatonClosed,
+    attack: MELEE,
+    dice: 1,
+    img: ExpandableBaton,
+    name: 'Expandable Baton',
+    noise: false,
     type: WEAPONS
   },
   Flashbang: {
@@ -276,19 +288,11 @@ export const WEAPONS_TD = {
     noise: true,
     type: WEAPONS
   },
-  NightStick: {
-    attack: MELEE,
-    dice: 1,
-    img: NightStick,
-    name: 'NightStick',
-    noise: false,
-    type: WEAPONS
-  },
   SamuraiEdge: {
     attack: RANGED,
     dice: 1,
     img: SamuraiEdge,
-    name: 'SamuraiEdge',
+    name: 'Samurai Edge',
     noise: true,
     type: WEAPONS
   },
@@ -296,7 +300,7 @@ export const WEAPONS_TD = {
     attack: RANGED,
     dice: 0,
     img: SmokeGrenade,
-    name: 'SmokeGrenade',
+    name: 'Smoke Grenade',
     noise: false,
     type: WEAPONS
   },
@@ -304,7 +308,7 @@ export const WEAPONS_TD = {
     attack: RANGED,
     dice: 0,
     img: TaserGun,
-    name: 'TaserGun',
+    name: 'Taser Gun',
     noise: false,
     type: WEAPONS
   }
@@ -316,7 +320,7 @@ const selectedSets = [
   WEAPONS_S2,
   WEAPONS_S3,
   WEAPONS_OTHERS,
-  WEAPONS_TD
+  WEAPONS_NIGHT_SHIFT
 ];
 
 export const setupWeapons = sets => {
