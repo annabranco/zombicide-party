@@ -133,13 +133,15 @@ const ActionButton = ({
         );
         break;
       case CAR_MOVE_ACTION:
-        setIconSize('medium');
+        setIconSize('small');
+        setIconType2('fas fa-angle-double-right');
         setIconType('fas fa-car-side');
         sound.current = new Audio(SOUNDS[`${actionType}`]);
         break;
       case CAR_ATTACK_ACTION:
         setIconSize('medium');
-        setIconType('fas fa-car-crash');
+        setIconType('fas fa-child');
+        setIconType2('fas fa-car-side');
         sound.current = new Audio(SOUNDS[`${actionType}`]);
         break;
       case SEARCH_ACTION:
@@ -188,7 +190,11 @@ const ActionButton = ({
           onMouseOut={() => changeActionLabel('')}
           onMouseOver={() => changeActionLabel(label)}
         >
-          <CarIcon className={iconType2} manyButtons={manyButtons} />
+          <CarIcon
+            actionType={actionType}
+            className={iconType2}
+            manyButtons={manyButtons}
+          />
           <CarActionIcon
             actionType={actionType}
             className={iconType}

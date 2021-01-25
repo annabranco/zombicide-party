@@ -128,16 +128,16 @@ AbilitiesWrapperDesktop.displayName = 'AbilitiesWrapperDesktop';
 
 export const ActionsLabelWrapper = styled.div`
   label: ActionsLabelWrapper;
-  z-index: 10;
+  z-index: 16;
   position: absolute;
-  top: 175px;
-  right: 0;
+  bottom: 75px;
+  right: 40px;
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: flex-end;
   justify-content: center;
   height: 20px;
-  width: 50%;
+  width: 100%;
   font-family: 'Grandstander', cursive;
   font-size: 0.9rem;
   letter-spacing: 0.2rem;
@@ -1368,12 +1368,12 @@ SelectButton.displayName = 'SelectButton';
 
 export const TopActionsLabelWrapper = styled(ActionsLabelWrapper)`
   label: TopActionsLabelWrapper;
-  top: 25px;
-  right: 0;
-  align-items: flex-end;
+  top: 70px;
+  left: 50px;
+  align-items: flex-start;
   height: 20px;
-  width: 30%;
-  font-size: 0.6rem;
+  width: 100%;
+  font-size: 0.8rem;
   letter-spacing: 0.2rem;
   text-align: right;
 `;

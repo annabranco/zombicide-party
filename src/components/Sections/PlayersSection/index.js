@@ -1172,7 +1172,7 @@ const PlayersSection = ({
                       />
                     )}
                   </ActionsWrapper>
-                  {!finishedTurn && !device.current === MOBILE && (
+                  {!finishedTurn && device.current === DESKTOP && (
                     <ActionsLabelWrapper>{actionsLabel}</ActionsLabelWrapper>
                   )}
                 </>

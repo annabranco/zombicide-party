@@ -1,11 +1,15 @@
 import styled from '@emotion/styled';
 import { css } from '@emotion/core';
 import {
+  CAR_ATTACK_ACTION,
   CAR_ENTER_ACTION,
+  CAR_EXIT_ACTION,
+  CAR_MOVE_ACTION,
   COMBINE_ACTION,
   END_TURN_ACTION,
   MOVE_ACTION,
   OBJECTIVE_ACTION,
+  OPEN_DOOR_ACTION,
   RELOAD_ACTION,
   SEARCH_ACTION
 } from '../../constants';
@@ -74,6 +78,13 @@ export const ActionIcon = styled.i`
       `;
     }
     if (actionType === MOVE_ACTION) {
+      return css`
+        font-size: 2.2rem;
+        line-height: 1.4;
+      `;
+    }
+
+    if (actionType === OPEN_DOOR_ACTION) {
       return css`
         font-size: 2.2rem;
         line-height: 1.4;
@@ -173,8 +184,34 @@ export const CarActionIcon = styled.i`
   margin-top: 5px;
   font-size: 1.8rem;
   line-height: 0.3;
-  transform: ${({ actionType }) =>
-    actionType === CAR_ENTER_ACTION && 'rotateY(180deg)'};
+
+  ${({ actionType }) => {
+    if (actionType === CAR_EXIT_ACTION) {
+      return css`
+        color: darkslateblue;
+      `;
+    }
+    if (actionType === CAR_ENTER_ACTION) {
+      return css`
+        transform: rotateY(180deg);
+        color: darkslateblue;
+      `;
+    }
+    if (actionType === CAR_ATTACK_ACTION) {
+      return css`
+        transform: rotate(10deg) rotateY(29deg) translate(-13px, -2px);
+        margin-right: -13px;
+        color: darkred;
+      `;
+    }
+    if (actionType === CAR_MOVE_ACTION) {
+      return css`
+        z-index: 7;
+        margin-left: -10px;
+      `;
+    }
+    return null;
+  }}
 
   ${({ manyButtons }) =>
     manyButtons &&
@@ -190,6 +227,7 @@ CarActionIcon.displayName = 'CarActionIcon';
 
 export const CarIcon = styled.i`
   label: CarIcon;
+  z-index: 6;
   margin-left: 2px;
   font-size: 2.5rem;
   line-height: 1;
@@ -200,6 +238,20 @@ export const CarIcon = styled.i`
     css`
       font-size: 2rem;
     `}
+
+  ${({ actionType }) => {
+    if (actionType === CAR_ATTACK_ACTION) {
+      return css`
+        transform: rotate(2deg);
+      `;
+    }
+    if (actionType === CAR_MOVE_ACTION) {
+      return css`
+        color: gray;
+      `;
+    }
+    return null;
+  }}
 
   @media (min-width: 1024px) and (min-height: 1300px) {
     font-size: 2.7rem;
