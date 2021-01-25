@@ -14,12 +14,32 @@ export const ButtonsWrapper = styled.div`
   justify-content: center;
   width: 100%;
 
+  ${({ itemSelector }) =>
+    itemSelector &&
+    css`
+      bottom: -25px;
+      width: 100%;
+    `}
   @media (min-width: 320px) and (min-height: 640px) {
     bottom: -70px;
+
+    ${({ itemSelector }) =>
+      itemSelector &&
+      css`
+        bottom: -22px;
+        width: 100%;
+      `}
   }
 
   @media all and (min-width: 701px) {
     bottom: -70px;
+
+    ${({ itemSelector }) =>
+      itemSelector &&
+      css`
+        bottom: -5px;
+        width: 100%;
+      `}
   }
 
   @media all and (min-width: 1200px) {
@@ -35,6 +55,13 @@ export const ButtonsWrapper = styled.div`
   }
   @media all and (min-width: 1400px) {
     bottom: -50px;
+
+    ${({ itemSelector }) =>
+      itemSelector &&
+      css`
+        bottom: -5px;
+        width: 100%;
+      `}
   }
 `;
 ButtonsWrapper.displayName = 'ButtonsWrapper';

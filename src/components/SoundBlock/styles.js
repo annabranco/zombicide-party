@@ -10,7 +10,8 @@ import {
   WEAPONS,
   WOUND,
   ACTIVATIONS,
-  SELECTION
+  SELECTION,
+  ZOMBIE
 } from '../../constants';
 
 export const Action = styled.p`
@@ -67,6 +68,7 @@ export const Block = styled.div`
   box-shadow: 0 0 5px 0 black;
   display: ${({ damageMode, type, wounded }) =>
     damageMode && type !== WOUND && wounded ? 'none' : 'flex'};
+  height: 100%;
 `;
 Block.displayName = 'Block';
 
@@ -299,7 +301,7 @@ export const PlayIcon = styled.img`
         }
       `;
     }
-    if (active) {
+    if (type === ZOMBIE && active) {
       return css`
         ${activeZombie}
 
@@ -313,18 +315,21 @@ export const PlayIcon = styled.img`
         }
       `;
     }
-    return css`
-      ${inactiveZombie}
-      height: auto;
-      transition: all ease 0.8s;
+    if (type === ZOMBIE && !active) {
+      return css`
+        ${inactiveZombie}
+        height: auto;
+        transition: all ease 0.8s;
 
-      @media all and (min-width: 701px) {
-        &:hover {
-          transform: scale(1.05);
-          transition: all ease 0.8s;
+        @media all and (min-width: 701px) {
+          &:hover {
+            transform: scale(1.05);
+            transition: all ease 0.8s;
+          }
         }
-      }
-    `;
+      `;
+    }
+    return null;
   }}
 
   ${({ unloaded }) =>
@@ -363,6 +368,15 @@ export const PlayImageButton = styled.button`
   line-height: 0;
   width: 100%;
   padding: 0;
+  display: flex;
+
+  ${({ isText }) =>
+    isText &&
+    css`
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    `}
 
   &:hover {
     filter: ${({ damageMode, type }) =>
@@ -405,13 +419,16 @@ PlayImageButton.displayName = 'PlayImageButton';
 
 export const PlayText = styled.p`
   label: PlayText;
-  height: 100%;
-  width: 100%;
+  width: 60%;
   font-size: 1.3rem;
   font-weight: 900;
   line-height: 1;
-  color: black;
+  color: white;
   text-shadow: 1px 1px 4px gray;
+  text-transform: uppercase;
+  font-family: 'Grandstander', cursive;
+  font-size: 2rem;
+  text-align: center;
 `;
 PlayText.displayName = 'PlayText';
 
