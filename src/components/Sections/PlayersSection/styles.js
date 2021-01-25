@@ -554,7 +554,6 @@ CharacterSheet.displayName = 'CharacterSheet';
 
 export const CharItems = styled.div`
   label: CharItems;
-  z-index: 10;
   position: absolute;
   display: flex;
   flex-direction: row;
@@ -565,11 +564,22 @@ export const CharItems = styled.div`
   margin-left: 10px;
   width: 70%;
 
+  & > div {
+    z-index: 10;
+  }
+
   ${({ slotType }) =>
     slotType === IN_BACKPACK &&
     css`
-      z-index: 9;
       margin-top: -20px;
+
+      & > div {
+        z-index: 9;
+
+        &:hover {
+          z-index: 11;
+        }
+      }
     `}
 
   ${({ trade }) =>

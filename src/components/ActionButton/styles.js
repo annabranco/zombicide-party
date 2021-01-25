@@ -50,9 +50,11 @@ export const ActionIcon = styled.i`
         padding: 0;
         line-height: 0.9;
         border: none;
-        font-size: 4rem;
+        font-size: 5rem;
         color: rgba(255, 255, 255, 0.7);
         -webkit-text-stroke: 1px black;
+        border: 0;
+        box-shadow: none;
 
         @media all and (min-width: 768px) {
           cursor: ${isActive ? 'not-allowed' : 'pointer'};
@@ -65,18 +67,9 @@ export const ActionIcon = styled.i`
           padding: 0;
           line-height: 0.9;
           border: none;
-          font-size: 4rem;
+          font-size: 5rem;
           color: rgba(255, 255, 255, 0.7);
           -webkit-text-stroke: 1px black;
-
-          ${'' /* ${({ type }) => {
-            if (type === 'center') {
-              return css`
-                top: 80px;
-              `;
-            }
-            return null;
-          }} */}
         }
       `;
     }
@@ -120,6 +113,8 @@ export const ActionIcon = styled.i`
         font-size: 7rem;
         color: rgba(255, 255, 255, 0.85);
         -webkit-text-stroke: 1px black;
+        border: 0;
+        box-shadow: none;
       `;
     }
     return null;

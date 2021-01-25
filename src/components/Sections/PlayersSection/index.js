@@ -534,7 +534,8 @@ const PlayersSection = ({
   };
 
   const spendSingleUseWeapon = (weaponSlot, weapon) => {
-    if (ALL_WEAPONS[weapon].useOnce) {
+    const weaponName = weapon.replace(' ', '');
+    if (ALL_WEAPONS[weaponName].useOnce) {
       const updatedCharacter = cloneDeep(character);
       updatedCharacter.inHand[weaponSlot] = '';
       changeCharacter(updatedCharacter);
@@ -1228,83 +1229,95 @@ const PlayersSection = ({
                 )}
               <CharItems slotType={IN_HAND}>
                 {character.inHand &&
-                  character.inHand.map((item, index) => (
-                    <ItemsArea
-                      actionsLeft={generalActions}
-                      allSlotsAreEmpty={checkIfAllSlotsAreEmpty([
-                        ...character.inHand,
-                        ...character.inBackpack
-                      ])}
-                      bonusDices={character.bonusDices}
-                      callback={spendAction}
-                      canAttack={canAttack}
-                      canCombine={generalActions && canCombine}
-                      canSearch={canSearch}
-                      causeDamage={causeDamage}
-                      combineItemSelected={
-                        combiningItem && combiningItem.item === item
-                      }
-                      combinePair={combiningItem && combiningItem.pair === item}
-                      charVoice={character.voice}
-                      damageMode={damageMode}
-                      device={device.current}
-                      dice={ALL_WEAPONS[item] && ALL_WEAPONS[item].dice}
-                      dropMode={dropMode}
-                      gainCustomXp={gainCustomXp}
-                      gainXp={gainXp}
-                      handleSearch={handleSearch}
-                      index={index}
-                      item={item}
-                      key={`${item}-${index + 1}`}
-                      makeNoise={makeNoise}
-                      onClickCombine={onClickCombine}
-                      onClickDrop={changeInHand}
-                      selectSlot={selectSlot}
-                      setupMode={setupMode}
-                      slotType={IN_HAND}
-                      spendAction={spendAction}
-                      spendSingleUseWeapon={spendSingleUseWeapon}
-                      startTrade={startTrade}
-                      wounded={character.wounded}
-                    />
-                  ))}
+                  character.inHand.map((item, index) => {
+                    const itemName = item && item.replace(' ', '');
+                    return (
+                      <ItemsArea
+                        actionsLeft={generalActions}
+                        allSlotsAreEmpty={checkIfAllSlotsAreEmpty([
+                          ...character.inHand,
+                          ...character.inBackpack
+                        ])}
+                        bonusDices={character.bonusDices}
+                        callback={spendAction}
+                        canAttack={canAttack}
+                        canCombine={generalActions && canCombine}
+                        canSearch={canSearch}
+                        causeDamage={causeDamage}
+                        combineItemSelected={
+                          combiningItem && combiningItem.item === itemName
+                        }
+                        combinePair={
+                          combiningItem && combiningItem.pair === itemName
+                        }
+                        charVoice={character.voice}
+                        damageMode={damageMode}
+                        device={device.current}
+                        dice={
+                          ALL_WEAPONS[itemName] && ALL_WEAPONS[itemName].dice
+                        }
+                        dropMode={dropMode}
+                        gainCustomXp={gainCustomXp}
+                        gainXp={gainXp}
+                        handleSearch={handleSearch}
+                        index={index}
+                        item={itemName}
+                        key={`${itemName}-${index + 1}`}
+                        makeNoise={makeNoise}
+                        onClickCombine={onClickCombine}
+                        onClickDrop={changeInHand}
+                        selectSlot={selectSlot}
+                        setupMode={setupMode}
+                        slotType={IN_HAND}
+                        spendAction={spendAction}
+                        spendSingleUseWeapon={spendSingleUseWeapon}
+                        startTrade={startTrade}
+                        wounded={character.wounded}
+                      />
+                    );
+                  })}
               </CharItems>
               <CharItems slotType={IN_BACKPACK}>
                 {character.inBackpack &&
-                  character.inBackpack.map((item, index) => (
-                    <ItemsArea
-                      actionsLeft={generalActions}
-                      allSlotsAreEmpty={checkIfAllSlotsAreEmpty([
-                        ...character.inHand,
-                        ...character.inBackpack
-                      ])}
-                      callback={spendAction}
-                      canCombine={generalActions && canCombine}
-                      canSearch={canSearch}
-                      causeDamage={causeDamage}
-                      charVoice={character.voice}
-                      combineItemSelected={
-                        combiningItem && combiningItem.item === item
-                      }
-                      combinePair={combiningItem && combiningItem.pair === item}
-                      damageMode={damageMode}
-                      device={device.current}
-                      dropMode={dropMode}
-                      handleSearch={handleSearch}
-                      index={index}
-                      item={item}
-                      key={`${item}-${index + 3}`}
-                      makeNoise={makeNoise}
-                      noAudio
-                      onClickCombine={onClickCombine}
-                      onClickDrop={changeInBackpack}
-                      selectSlot={selectSlot}
-                      setupMode={setupMode}
-                      slotType={IN_BACKPACK}
-                      startTrade={startTrade}
-                      wounded={character.wounded}
-                    />
-                  ))}
+                  character.inBackpack.map((item, index) => {
+                    const itemName = item && item.replace(' ', '');
+                    return (
+                      <ItemsArea
+                        actionsLeft={generalActions}
+                        allSlotsAreEmpty={checkIfAllSlotsAreEmpty([
+                          ...character.inHand,
+                          ...character.inBackpack
+                        ])}
+                        callback={spendAction}
+                        canCombine={generalActions && canCombine}
+                        canSearch={canSearch}
+                        causeDamage={causeDamage}
+                        charVoice={character.voice}
+                        combineItemSelected={
+                          combiningItem && combiningItem.item === itemName
+                        }
+                        combinePair={
+                          combiningItem && combiningItem.pair === itemName
+                        }
+                        damageMode={damageMode}
+                        device={device.current}
+                        dropMode={dropMode}
+                        handleSearch={handleSearch}
+                        index={index}
+                        item={itemName}
+                        key={`${itemName}-${index + 3}`}
+                        makeNoise={makeNoise}
+                        noAudio
+                        onClickCombine={onClickCombine}
+                        onClickDrop={changeInBackpack}
+                        selectSlot={selectSlot}
+                        setupMode={setupMode}
+                        slotType={IN_BACKPACK}
+                        startTrade={startTrade}
+                        wounded={character.wounded}
+                      />
+                    );
+                  })}
               </CharItems>
               {!slot &&
                 character.inHand &&
