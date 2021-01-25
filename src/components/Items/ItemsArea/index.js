@@ -163,15 +163,10 @@ const ItemsArea = ({
         causeDamage(slot);
       }
     } else if (trade) {
-      console.log('$$$ itemSelected', itemSelected);
       if (itemSelected) {
-        // select(false);
         tradeItem({ item: null, slot, charTrading: charName });
       } else {
         tradeItem({ item: NONE, slot, charTrading: charName });
-        if (!itemSelected) {
-          // select(true);
-        }
       }
     } else if (canSearch || setupMode) {
       selectSlot(slot);
@@ -234,7 +229,6 @@ const ItemsArea = ({
       type={itemsType}
     >
       <Item damageMode={damageMode} trade={trade}>
-        {/* {isActive && trade && <p>CONFIRM</p>} */}
         {item ? (
           <SoundBlock
             activateKillButtons={activateKillButtons}
@@ -276,7 +270,6 @@ const ItemsArea = ({
               <ActionButton
                 actionType={SEARCH_ACTION}
                 callback={onClickEmptyCard}
-                // isMobile={device === MOBILE}
                 type={charVoice}
               />
             )}

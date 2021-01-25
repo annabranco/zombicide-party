@@ -49,10 +49,6 @@ const ActionButton = ({
   const sound = useRef();
   const sound2 = useRef();
 
-  // const iconType = useRef();
-  // const iconType2 = useRef();
-  // const iconSize = useRef();
-
   const delay = () => {
     switch (actionType) {
       case OPEN_DOOR:

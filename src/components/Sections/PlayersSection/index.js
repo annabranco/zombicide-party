@@ -15,7 +15,8 @@ import {
   checkIfCharacterHasFlashlight,
   checkIfCharCanCombineItems,
   checkIfAllSlotsAreEmpty,
-  getCombiningReference
+  getCombiningReference,
+  checkIfCharHasNoItems
 } from '../../../utils/items';
 import { useStateWithLabel, useTurnsCounter } from '../../../utils/hooks';
 import ItemsSelectorModal from '../../Items/ItemsSelectorModal';
@@ -125,9 +126,13 @@ import {
   START,
   IN_RESERVE,
   IN_HAND,
+  SELECT,
   XP,
   FIRST_PLAYER_TOKEN,
-  DESKTOP
+  DESKTOP,
+  ZOMBIES_ROUND,
+  SELECT_DAMAGE,
+  CHANGE_CHARACTER
 } from '../../../constants';
 import {
   blueThreatThresold,
@@ -141,6 +146,12 @@ import { getMediaQuery } from '../../../utils/devices';
 import { ALL_WEAPONS } from '../../../setup/weapons';
 import ActionsModal from '../../ActionsModal';
 import { SOUNDS } from '../../../assets/sounds';
+import {
+  AttackBurronsWrapper,
+  AttackInstructions,
+  CancelAttackButton,
+  ConfirmAttackButton
+} from '../ZombiesSection/styles';
 
 const PlayersSection = ({
   damageMode,
@@ -148,9 +159,12 @@ const PlayersSection = ({
   loadGame,
   loadedGame,
   nextGameRound,
-  setZombiesTurn,
+  setZombiesRound,
   toggleDamageMode,
-  visible
+  toggleZombiesArePlaying,
+  visible,
+  zombiesRound,
+  zombiesArePlaying
 }) => {
   /* ------- COMPONENT STATES ------- */
   const [actionsCount, updateActionsCount] = useStateWithLabel(
@@ -205,6 +219,11 @@ const PlayersSection = ({
     '',
     'topActionsLabel'
   );
+  const [zombiesShouldAct, toggleZombiesShouldAct] = useStateWithLabel(
+    '',
+    'zombiesShouldAct'
+  );
+
   /* --- */
 
   /* ------- OTHER HOOKS ------- */
@@ -418,11 +437,11 @@ const PlayersSection = ({
       )
     ) {
       endRound(true);
-      setZombiesTurn(true);
+      toggleZombiesShouldAct(true);
       localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(characters));
     } else if (roundEnded) {
       endRound(false);
-      setZombiesTurn(false);
+      toggleZombiesShouldAct(false);
     }
   };
 
@@ -562,6 +581,16 @@ const PlayersSection = ({
     updateData(updatedCharacter);
   };
 
+  const getMainButtonText = () => {
+    if (setupMode) {
+      return FINISH_SETUP;
+    }
+    if (zombiesShouldAct) {
+      return ZOMBIES_ROUND;
+    }
+    return START_NEXT_ROUND;
+  };
+
   const learnNewAbility = ({ level, index }) => {
     const updatedChar = handlePromotionEffects(
       character,
@@ -624,55 +653,9 @@ const PlayersSection = ({
 
   /* ------- ACTION BUTTONS METHODS ------- */
 
-  const causeDamage = selectedSlot => {
-    const woundedCharacter = cloneDeep(character);
-    const [attacker, oneActionKill] = damageMode.split('-');
-    let remainingCharacters = characters.filter(
-      char => char.wounded !== KILLED
-    );
-
-    let damage = HIT;
-    if (woundedCharacter.wounded || oneActionKill) {
-      remainingCharacters = characters.filter(
-        char => char.name !== woundedCharacter.name
-      );
-
-      woundedCharacter.wounded = KILLED;
-      damage = KILL;
-      if (firstPlayer.includes(woundedCharacter.name)) {
-        changeFirstPlayer(`next-${characters[charIndex + 1].name}`);
-      }
-
-      if (remainingCharacters.length === 0) {
-        updateCharacters(remainingCharacters);
-      }
-    } else if (selectedSlot <= 2) {
-      woundedCharacter.wounded = true;
-      woundedCharacter.inHand[selectedSlot - 1] = WOUNDED;
-    } else {
-      woundedCharacter.wounded = true;
-      woundedCharacter.inReserve[selectedSlot - 3] = WOUNDED;
-    }
-
-    const filename =
-      SOUNDS[`${character.voice}-${damage}-${attacker.toLowerCase()}`];
-    const sound = new Audio(filename);
-    sound.currentTime = 0;
-    sound.play();
-
-    updateData(woundedCharacter);
-
-    if (device.current === MOBILE) {
-      setTimeout(() => {
-        setZombiesTurn(true);
-        toggleDamageMode(false);
-      }, 4000);
-    } else if (woundedCharacter.wounded === KILLED) {
-      toggleDamageMode(false);
-      if (remainingCharacters.length > 0) {
-        setTimeout(() => changeToAnotherPlayer(NEXT), 2000);
-      }
-    }
+  const cancelZombieAttack = () => {
+    setZombiesRound();
+    toggleDamageMode(false);
   };
 
   const confirmTrade = (updatedCharacter, updatedCharacters) => {
@@ -772,10 +755,14 @@ const PlayersSection = ({
   const onClickMainButton = () => {
     if (setupMode === INITIAL) {
       changeCharIndex(0);
+      nextGameRound();
     }
     if (setupMode) {
       toggleSetupMode(false);
-      nextGameRound();
+    } else if (zombiesShouldAct) {
+      setZombiesRound();
+      toggleZombiesArePlaying(true);
+      toggleZombiesShouldAct(false);
     } else {
       const updatedCharacters = cloneDeep(characters);
       if (roundEnded) {
@@ -834,6 +821,57 @@ const PlayersSection = ({
     addNewChar(false);
     updateCharacters(updatedCharacters);
     localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(updatedCharacters));
+  };
+
+  const takeDamage = selectedSlot => {
+    const woundedCharacter = cloneDeep(character);
+    const [attacker, oneActionKill] = damageMode.split('-');
+    let remainingCharacters = characters.filter(
+      char => char.wounded !== KILLED
+    );
+
+    let damage = HIT;
+    if (woundedCharacter.wounded || oneActionKill) {
+      remainingCharacters = characters.filter(
+        char => char.name !== woundedCharacter.name
+      );
+
+      woundedCharacter.wounded = KILLED;
+      damage = KILL;
+      if (firstPlayer.includes(woundedCharacter.name)) {
+        changeFirstPlayer(`next-${characters[charIndex + 1].name}`);
+      }
+
+      if (remainingCharacters.length === 0) {
+        updateCharacters(remainingCharacters);
+      }
+    } else if (selectedSlot <= 2) {
+      woundedCharacter.wounded = true;
+      woundedCharacter.inHand[selectedSlot - 1] = WOUNDED;
+    } else {
+      woundedCharacter.wounded = true;
+      woundedCharacter.inReserve[selectedSlot - 3] = WOUNDED;
+    }
+
+    const filename =
+      SOUNDS[`${character.voice}-${damage}-${attacker.toLowerCase()}`];
+    const sound = new Audio(filename);
+    sound.currentTime = 0;
+    sound.play();
+
+    updateData(woundedCharacter);
+
+    if (woundedCharacter.wounded === KILLED) {
+      toggleDamageMode(false);
+      if (remainingCharacters.length > 0) {
+        setTimeout(() => changeToAnotherPlayer(NEXT), 5000);
+      }
+    }
+
+    setTimeout(() => {
+      setZombiesRound();
+      toggleDamageMode(false);
+    }, 4000);
   };
   /* --- */
 
@@ -1181,7 +1219,7 @@ const PlayersSection = ({
           )}
 
           {/* ----- INDICATORS ON CHAR SHEET ----- */}
-          {character.wounded !== KILLED && !setupMode && (
+          {character.wounded !== KILLED && !setupMode && !damageMode && (
             <NoiseWrapper>
               {Array.from({ length: noise }, (_, index) => index).map(key => (
                 <NoiseIcon key={key} src={Noise} />
@@ -1193,7 +1231,7 @@ const PlayersSection = ({
               <WoundedSign src={Blood} />
             </WoundedWrapper>
           )}
-          {finishedTurn && character.wounded !== KILLED && (
+          {finishedTurn && character.wounded !== KILLED && !damageMode && (
             <FinishedTurnTag>
               {`${character.name}${TURN_FINISHED}`}
             </FinishedTurnTag>
@@ -1243,7 +1281,7 @@ const PlayersSection = ({
                         canAttack={canAttack}
                         canCombine={generalActions && canCombine}
                         canSearch={canSearch}
-                        causeDamage={causeDamage}
+                        causeDamage={takeDamage}
                         combineItemSelected={
                           combiningItem && combiningItem.item === itemName
                         }
@@ -1291,7 +1329,7 @@ const PlayersSection = ({
                         callback={spendAction}
                         canCombine={generalActions && canCombine}
                         canSearch={canSearch}
-                        causeDamage={causeDamage}
+                        causeDamage={takeDamage}
                         charVoice={character.voice}
                         combineItemSelected={
                           combiningItem && combiningItem.item === itemName
@@ -1320,10 +1358,13 @@ const PlayersSection = ({
                   })}
               </CharItems>
               {!slot &&
+                !damageMode &&
                 character.inHand &&
                 character.inReserve &&
-                (!checkIfAllSlotsAreEmpty(character.inHand) ||
-                  !checkIfAllSlotsAreEmpty(character.inReserve)) && (
+                !checkIfCharHasNoItems([
+                  ...character.inHand,
+                  ...character.inReserve
+                ]) && (
                   <CardsActions drop dropMode={dropMode}>
                     <CardsActionsText onClick={() => toggleDropMode(!dropMode)}>
                       {dropMode ? OK : DROP}
@@ -1334,22 +1375,26 @@ const PlayersSection = ({
           )}
 
           {/* ----- BOTTOM BUTTONS ----- */}
-          {(setupMode || roundEnded) && !slot && !damageMode && (
-            <MainButton
-              noOverlay
-              onClick={onClickMainButton}
-              roundEnded={roundEnded}
-              setupMode={setupMode}
-            >
-              {setupMode ? FINISH_SETUP : START_NEXT_ROUND}
-            </MainButton>
-          )}
+          {(setupMode || roundEnded) &&
+            !slot &&
+            !damageMode &&
+            !zombiesArePlaying && (
+              <MainButton
+                noOverlay
+                onClick={onClickMainButton}
+                roundEnded={roundEnded}
+                setupMode={setupMode}
+                zombiesRound={zombiesShouldAct}
+              >
+                {getMainButtonText()}
+              </MainButton>
+            )}
 
           {device.current === DESKTOP && !slot && characters.length > 0 && (
             <NavIconsWrapper>
               {calculateCharactersOrder().map(char => (
                 <NavIcons
-                  alt={`Change character to ${char.name}`}
+                  alt={`${CHANGE_CHARACTER(char.name)}`}
                   currentChar={character.name === char.name}
                   key={`charNav-${char.name}`}
                   onClick={() => changeCharIndex(char.index)}
@@ -1383,8 +1428,21 @@ const PlayersSection = ({
           )}
           {selectCharOverlay && (
             <SelectButton onClick={selectCharacter} type="button">
-              SELECT
+              {SELECT}
             </SelectButton>
+          )}
+
+          {damageMode && (
+            <AttackBurronsWrapper>
+              <CancelAttackButton onClick={cancelZombieAttack}>
+                {CANCEL}
+              </CancelAttackButton>
+              {device.current === MOBILE && (
+                <ConfirmAttackButton onClick={() => null}>
+                  {OK}
+                </ConfirmAttackButton>
+              )}
+            </AttackBurronsWrapper>
           )}
 
           {/* ----- ABILITIES DISPLAY ----- */}
@@ -1535,6 +1593,10 @@ const PlayersSection = ({
           onConfirmModal={learnNewAbility}
         />
       )}
+
+      {damageMode && zombiesArePlaying && (
+        <AttackInstructions>{SELECT_DAMAGE}</AttackInstructions>
+      )}
     </CharacterSheet>
   );
 };
@@ -1545,9 +1607,12 @@ PlayersSection.propTypes = {
   loadGame: func.isRequired,
   loadedGame: arrayOf(CharacterType),
   nextGameRound: func.isRequired,
-  setZombiesTurn: func.isRequired,
+  setZombiesRound: func.isRequired,
   toggleDamageMode: func.isRequired,
-  visible: bool.isRequired
+  toggleZombiesArePlaying: func.isRequired,
+  visible: bool.isRequired,
+  zombiesRound: bool.isRequired,
+  zombiesArePlaying: bool.isRequired
 };
 
 PlayersSection.defaultProps = {

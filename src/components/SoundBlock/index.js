@@ -25,7 +25,8 @@ import {
   ITEMS,
   KILL,
   WEAPONS,
-  WOUND
+  WOUND,
+  ATTACK_SURVIVOR
 } from '../../constants';
 import ActionButton from '../ActionButton';
 import { SOUNDS } from '../../assets/sounds';
@@ -55,14 +56,13 @@ const SoundBlock = ({
   slotType,
   special,
   spendAmmo,
-  toggleDamageMode,
+  zombieAttack,
   trade,
   type,
   unloaded,
   wounded
 }) => {
   const [isActive, activate] = useStateWithLabel(false, 'isActive');
-  const [isHighlighted, highlight] = useStateWithLabel(false, 'isHighlighted');
 
   const quickAttackDebounce = useRef();
   const sound = useRef();
@@ -82,8 +82,6 @@ const SoundBlock = ({
       return (
         <ItemIcon
           active={isActive}
-          onMouseOut={() => highlight(false)}
-          onMouseOver={() => highlight(true)}
           img={img}
           isMobile={isMobile}
           isSelected={isSelected}
@@ -102,8 +100,6 @@ const SoundBlock = ({
         <PlayIcon
           active={isActive}
           isSelected={isSelected}
-          onMouseOut={() => highlight(false)}
-          onMouseOver={() => highlight(true)}
           unloaded={unloaded}
           src={img}
           type={type}
@@ -163,9 +159,6 @@ const SoundBlock = ({
 
   return (
     <Block damageMode={damageMode} type={type} wounded={wounded}>
-      {(isActive || isHighlighted) && type === ACTIVATIONS && (
-        <ZombieLabel isActive={isActive}>{name || label}</ZombieLabel>
-      )}
       <PlayImageButton
         canAttack={canAttack}
         isActive={isActive}
@@ -188,14 +181,14 @@ const SoundBlock = ({
         )}
         {type === ACTIVATIONS && (
           <ZombieActions>
-            <Action action={ACTIVATE}>Activate</Action>
-            <Action action={ATTACK} onClick={() => toggleDamageMode(name)}>
-              Attack survivor!
+            <Action action={ACTIVATE}>{ACTIVATE}</Action>
+            <Action action={ATTACK} onClick={() => zombieAttack(name)}>
+              {ATTACK_SURVIVOR}
             </Action>
             {special && (
               <Action
                 action={KILL}
-                onClick={() => toggleDamageMode(`${name}-instant`)}
+                onClick={() => zombieAttack(`${name}-instant`)}
               >
                 {special}
               </Action>
@@ -234,7 +227,7 @@ SoundBlock.propTypes = {
   slotType: string,
   special: string,
   spendAmmo: func,
-  toggleDamageMode: func.isRequired,
+  zombieAttack: func,
   trade: bool.isRequired,
   type: string.isRequired,
   unloaded: bool,
@@ -261,7 +254,8 @@ SoundBlock.defaultProps = {
   special: null,
   spendAmmo: () => null,
   slotType: null,
-  unloaded: false
+  unloaded: false,
+  zombieAttack: () => null
 };
 
 export default SoundBlock;

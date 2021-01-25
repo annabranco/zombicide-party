@@ -4,13 +4,14 @@ import { SelectionButton } from '../../MainMenu/styles';
 
 export const AttackBurronsWrapper = styled.div`
   label: AttackBurronsWrapper;
-  z-index: 10;
+  z-index: 15;
   position: absolute;
-  /* margin-top: -200px; */
   bottom: 25px;
 
   @media all and (min-width: 768px) {
-    bottom: 200px;
+    bottom: 40px;
+    left: 50%;
+    transform: translate(-50%, 0);
   }
 `;
 AttackBurronsWrapper.displayName = 'AttackBurronsWrapper';
@@ -19,7 +20,7 @@ export const AttackInstructions = styled.p`
   label: AttackInstructions;
   z-index: 10;
   position: absolute;
-  top: 30%;
+  bottom: 95px;
   left: 0;
   height: auto;
   width: 100%;
@@ -57,9 +58,12 @@ export const ConfirmAttackButton = styled(CancelAttackButton)`
   height: 30px;
   width: 120px;
   border-radius: 5px;
-  font-size: 1.2rem;
+  font-size: 1.1rem;
   line-height: 0.5;
+  font-weight: 700;
   text-transform: uppercase;
+  font-family: 'Grandstander', cursive;
+
   &:hover {
     color: yellow;
   }
@@ -145,7 +149,7 @@ export const ZombieLabel = styled.h3`
   label: ZombieLabel;
   z-index: 5;
   position: absolute;
-  bottom: 30%;
+  bottom: 10px;
   left: 50%;
   height: 40px;
   width: 100%;
@@ -161,8 +165,14 @@ export const ZombieLabel = styled.h3`
 `;
 ZombieLabel.displayName = 'ZombieLabel';
 
-export const ZombiesTurnSign = styled(AttackInstructions)`
-  label: ZombiesTurnSign;
+export const ZombieWrapper = styled.h3`
+  label: ZombieWrapper;
+  height: 100%;
+`;
+ZombieWrapper.displayName = 'ZombieWrapper';
+
+export const ZombiesRoundSign = styled(AttackInstructions)`
+  label: ZombiesRoundSign;
   position: absolute;
   z-index: 2;
   top: unset;
@@ -178,22 +188,16 @@ export const ZombiesTurnSign = styled(AttackInstructions)`
     bottom: 50px;
   }
 `;
-ZombiesTurnSign.displayName = 'ZombiesTurnSign';
+ZombiesRoundSign.displayName = 'ZombiesRoundSign';
 
 export const ZombiesArea = styled.div`
   label: ZombiesArea;
   position: relative;
+  display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: flex-start;
   height: 100%;
   width: 100%;
-  display: none;
-
-  ${({ visible }) =>
-    visible &&
-    css`
-      display: flex;
-    `}
 `;
 ZombiesArea.displayName = 'ZombiesArea';

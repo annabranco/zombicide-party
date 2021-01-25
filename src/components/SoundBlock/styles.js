@@ -301,7 +301,7 @@ export const PlayIcon = styled.img`
         }
       `;
     }
-    if (type === ZOMBIE && active) {
+    if (type === ACTIVATIONS && active) {
       return css`
         ${activeZombie}
 
@@ -315,7 +315,7 @@ export const PlayIcon = styled.img`
         }
       `;
     }
-    if (type === ZOMBIE && !active) {
+    if (type === ACTIVATIONS && !active) {
       return css`
         ${inactiveZombie}
         height: auto;
@@ -400,7 +400,6 @@ export const PlayImageButton = styled.button`
   transition: background ease 1.5s;
 
   ${({ canAttack, damageMode, setupMode, slotType, trade, type }) => {
-    console.log(trade);
     switch (true) {
       case !!damageMode:
       case !!setupMode:
@@ -424,6 +423,12 @@ export const PlayImageButton = styled.button`
         `;
     }
   }};
+
+  ${({ type }) =>
+    type === ACTIVATIONS &&
+    css`
+      background: none;
+    `}
 `;
 PlayImageButton.displayName = 'PlayImageButton';
 
@@ -446,7 +451,7 @@ export const SelectorArea = styled.div`
   label: SelectorArea;
   position: relative;
   height: calc(${`${window.innerHeight}px`} - 100px);
-  background: #232222;
+  background: ${({ zombies }) => (zombies ? 'none' : '#232222')};
   display: flex;
   flex-direction: row;
   align-items: flex-start;

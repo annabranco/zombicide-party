@@ -8,3 +8,5 @@ export const SECTION_ZOMBIES = 'Zombies';
 
 export const NEW_GAME = 'New game';
 export const CONTINUE = 'Continue';
+
+export const ROUND = 'Round:';

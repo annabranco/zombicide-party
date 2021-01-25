@@ -746,8 +746,12 @@ CharName.displayName = 'CharName';
 
 export const FinishedTurnTag = styled(AttackInstructions)`
   label: FinishedTurnTag;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
   background: none;
-  font-size: 2rem;
+  font-size: 3rem;
   color: #cc9900;
   text-shadow: -2px -2px 2px black, -2px 0 2px black, -2px 2px 2px black,
     0 -2px 2px black, 0 0 2px black, 0 2px 2px black, 2px -2px 2px black,
@@ -931,6 +935,7 @@ export const MainButton = styled(AppButton)`
   text-transform: uppercase;
   box-shadow: 0 1px 10px 0 rgba(0, 0, 0, 0.6),
     inset 1px 1px 3px rgba(255, 255, 255, 0.5);
+  color: white;
 
   ${({ noOverlay }) =>
     noOverlay &&
@@ -948,17 +953,22 @@ export const MainButton = styled(AppButton)`
       }
     `}
 
-  ${({ setupMode }) =>
-    setupMode &&
+  ${({ roundEnded }) =>
+    roundEnded &&
     css`
       background: green;
     `}
 
-  ${({ roundEnded }) =>
-    roundEnded &&
+  ${({ zombiesRound }) =>
+    zombiesRound &&
     css`
-      color: black;
       background: red;
+    `}
+
+  ${({ setupMode }) =>
+    setupMode &&
+    css`
+      background: steelblue;
     `}
 
     @media all and (min-width: 360px) {

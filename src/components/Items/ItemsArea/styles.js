@@ -190,6 +190,22 @@ export const ItemBlank = styled.div`
       }
     `}
 
+  ${({ allSlotsAreEmpty, damageMode, canSearch, setupMode, trade }) => {
+    if (damageMode || canSearch) {
+      return css`
+        cursor: pointer;
+      `;
+    }
+    if (!canSearch && !trade && !setupMode) {
+      return css`
+        cursor: not-allowed;
+      `;
+    }
+    return css`
+      cursor: pointer;
+    `;
+  }}
+
   @media all and (min-width: 360px) {
     padding-top: 30px;
     height: 110px;
@@ -197,10 +213,6 @@ export const ItemBlank = styled.div`
   }
 
   @media all and (min-width: 701px) {
-    cursor: ${({ allSlotsAreEmpty, damageMode, canSearch, setupMode, trade }) =>
-      (damageMode && !allSlotsAreEmpty) || (!canSearch && !trade && !setupMode)
-        ? 'not-allowed'
-        : 'pointer'};
     height: 270px;
     width: 200px;
     padding-top: 50px;

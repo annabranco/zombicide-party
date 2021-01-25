@@ -1,4 +1,4 @@
-import { NOISY } from '../constants';
+import { NOISY, WOUNDED } from '../constants';
 import { ALL_ITEMS } from '../setup/items';
 import { SPECIALS_CARDS } from '../setup/specials';
 import { ALL_WEAPONS } from '../setup/weapons';
@@ -105,6 +105,9 @@ export const checkIfCharCanCombineItems = items => {
 };
 
 export const checkIfAllSlotsAreEmpty = items => items.every(item => !item);
+
+export const checkIfCharHasNoItems = items =>
+  items.every(item => !item || item === WOUNDED);
 
 export const getCombiningReference = ([item, firstSlot]) => {
   if (item) {
