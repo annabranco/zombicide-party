@@ -12,11 +12,14 @@ const ALL_CARDS = {
 export const checkIfCharacterCanOpenDoors = currentItems => {
   let openDoor;
   currentItems.forEach(item => {
-    if (ALL_WEAPONS[item] && ALL_WEAPONS[item].canOpenDoor) {
-      openDoor = ALL_WEAPONS[item].name;
+    if (item) {
+      const itemName = item.replace(' ', '');
+      if (ALL_WEAPONS[itemName] && ALL_WEAPONS[itemName].canOpenDoor) {
+        openDoor = ALL_WEAPONS[itemName].name;
+      }
     }
   });
-  return openDoor;
+  return openDoor || false;
 };
 
 export const getItemPhoto = item => {
@@ -34,22 +37,31 @@ export const getItemPhoto = item => {
 };
 
 export const getItemType = item => {
-  if (Object.keys(ALL_CARDS).find(name => item === name)) {
-    return ALL_CARDS[item].type;
+  if (item) {
+    const itemName = item.replace(' ', '');
+    if (Object.keys(ALL_CARDS).find(name => itemName === name)) {
+      return ALL_CARDS[itemName].type;
+    }
   }
   return null;
 };
 
 export const checkForNoise = item => {
-  if (Object.keys(ALL_CARDS).find(name => item === name)) {
-    return ALL_CARDS[item].noise;
+  if (item) {
+    const itemName = item.replace(' ', '');
+    if (Object.keys(ALL_CARDS).find(name => itemName === name)) {
+      return ALL_CARDS[itemName].noise;
+    }
   }
   return null;
 };
 
 export const checkForNoiseOpeningDoor = item => {
-  if (Object.keys(ALL_CARDS).find(name => item === name)) {
-    return ALL_CARDS[item].canOpenDoor === NOISY;
+  if (item) {
+    const itemName = item.replace(' ', '');
+    if (Object.keys(ALL_CARDS).find(name => itemName === name)) {
+      return ALL_CARDS[itemName].canOpenDoor === NOISY;
+    }
   }
   return null;
 };
@@ -62,8 +74,11 @@ export const checkIfCharacterHasFlashlight = items => {
 };
 
 export const checkIfItemCanBeCombined = item => {
-  if (Object.keys(ALL_CARDS).find(name => item === name)) {
-    return !!ALL_CARDS[item].combine;
+  if (item) {
+    const itemName = item.replace(' ', '');
+    if (Object.keys(ALL_CARDS).find(name => itemName === name)) {
+      return !!ALL_CARDS[itemName].combine;
+    }
   }
   return null;
 };
@@ -71,11 +86,14 @@ export const checkIfItemCanBeCombined = item => {
 export const checkIfCharCanCombineItems = items => {
   const itemsThatCanBeCombined = [];
   items.forEach(item => {
-    if (checkIfItemCanBeCombined(item)) {
-      const pairItem = ALL_CARDS[item].combine[0];
-      if (items.includes(pairItem)) {
-        itemsThatCanBeCombined.push(item);
-        return true;
+    if (item) {
+      const itemName = item.replace(' ', '');
+      if (checkIfItemCanBeCombined(itemName)) {
+        const pairItem = ALL_CARDS[itemName].combine[0];
+        if (items.includes(pairItem)) {
+          itemsThatCanBeCombined.push(itemName);
+          return true;
+        }
       }
     }
     return false;
@@ -88,9 +106,15 @@ export const checkIfCharCanCombineItems = items => {
 
 export const checkIfAllSlotsAreEmpty = items => items.every(item => !item);
 
-export const getCombiningReference = ([item, firstSlot]) => ({
-  item,
-  firstSlot,
-  pair: ALL_CARDS[item].combine[0],
-  finalItem: ALL_CARDS[item].combine[1]
-});
+export const getCombiningReference = ([item, firstSlot]) => {
+  if (item) {
+    const itemName = item.replace(' ', '');
+    return {
+      item: itemName,
+      firstSlot,
+      pair: ALL_CARDS[itemName].combine[0],
+      finalItem: ALL_CARDS[itemName].combine[1]
+    };
+  }
+  return null;
+};

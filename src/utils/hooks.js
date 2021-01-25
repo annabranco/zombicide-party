@@ -101,12 +101,14 @@ export const useTurnsCounter = (
   }, [attacks, character, movements, numOfActions, searches]);
 
   useEffect(() => {
-    console.log('$$$ HOOK', character, {
-      gen: `${numOfActions} => ${generalActions}`,
-      mov: `${movements} => ${extraMovementActions}`,
-      att: `${attacks} => ${extraAttackActions}`,
-      sea: `${searches} => ${searchActions}`
-    });
+    if (character) {
+      console.log('$$$ HOOK', character, {
+        gen: `${numOfActions} => ${generalActions}`,
+        mov: `${movements} => ${extraMovementActions}`,
+        att: `${attacks} => ${extraAttackActions}`,
+        sea: `${searches} => ${searchActions}`
+      });
+    }
   }, [generalActions, extraMovementActions, extraAttackActions, searchActions]);
 
   return {

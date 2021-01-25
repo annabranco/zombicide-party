@@ -481,13 +481,13 @@ const PlayersSection = ({
     // const updatedCharacters = cloneDeep(characters);
     const newItems = [...updatedCharacter.inBackpack];
     newItems[currentSlot] = name;
-    const openDoors = checkIfCharacterCanOpenDoors(newItems);
+    // const openDoors = checkIfCharacterCanOpenDoors(newItems);
     const hasFlashlight = checkIfCharacterHasFlashlight(newItems);
     const charCanCombineItems = checkIfCharCanCombineItems([
       ...newItems,
       ...updatedCharacter.inHand
     ]);
-    setCanOpenDoor(openDoors);
+    // setCanOpenDoor(openDoors);
     changeCanUseFlashlight(hasFlashlight);
     toggleCanCombine(charCanCombineItems);
     updatedCharacter.inBackpack = newItems;
