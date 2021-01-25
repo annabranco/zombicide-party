@@ -145,6 +145,7 @@ export const WEAPONS_S1 = {
     dice: 2,
     img: SawedOff,
     name: 'Sawed Off',
+    needsReloading: true,
     noise: true,
     type: WEAPONS
   },

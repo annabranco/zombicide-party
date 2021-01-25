@@ -125,7 +125,7 @@ const ItemsArea = ({
     return totalDices;
   };
 
-  const checkIfReloadIsNeeded = () => item === ALL_WEAPONS.SawedOff.name;
+  const checkIfReloadIsNeeded = () => ALL_WEAPONS[item].needsReloading;
 
   const getSlotNumber = itemIndex => {
     const adj = slotType === IN_HAND ? 1 : 3;

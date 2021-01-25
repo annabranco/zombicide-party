@@ -320,6 +320,7 @@ KillButtonIcon.displayName = 'KillButtonIcon';
 
 export const KillButtonsWrapper = styled.div`
   label: KillButtonsWrapper;
+  z-index: 10;
   position: absolute;
   display: flex;
   flex-direction: row;
