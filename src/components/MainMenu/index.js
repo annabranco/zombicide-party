@@ -18,16 +18,20 @@ import {
   ZombieImage,
   ZombieImageShadow
 } from './styles';
+import NightShiftIntro from './NighShift';
 import { ZOMBIES_INTRO } from '../../setup/zombies';
 import { CONTINUE, NEW_GAME, STOP_SOUND, TEST_SOUND } from '../../constants';
 import { SOUNDS } from '../../assets/sounds';
 
 const MainMenu = ({ loadedGame, setInitialCharacters }) => {
   const [testSound, toggleTestSound] = useStateWithLabel(false, 'testSound');
+  const [nightShift, toggleNightShift] = useStateWithLabel(false, 'testSound');
+
   const APP_VERSION = appInfo.version;
-  const zombieImage = useRef(
-    ZOMBIES_INTRO[Math.floor(Math.random() * ZOMBIES_INTRO.length)]
-  );
+  // const zombieImage = useRef(
+  //   ZOMBIES_INTRO[Math.floor(Math.random() * ZOMBIES_INTRO.length)]
+  // );
+  const zombieImage = useRef(ZOMBIES_INTRO[5]);
 
   useEffect(() => {
     const storm = new Audio(SOUNDS.intro);
@@ -49,15 +53,22 @@ const MainMenu = ({ loadedGame, setInitialCharacters }) => {
     };
   }, [testSound]);
 
+  useEffect(() => {
+    if (zombieImage.current.includes('ZombieCop')) {
+      toggleNightShift(true);
+    }
+  }, [zombieImage, toggleNightShift]);
+
   return (
     <MenuScreen img={BG} type="main">
       <ThunderOverlay testSound={testSound} />
-      <LogoArea>
+      {nightShift && <NightShiftIntro />}
+      <LogoArea nightShift={nightShift}>
         <ZombicideLogo src={Logo} />
         <MainTitle>PARTY</MainTitle>
       </LogoArea>
-      <ZombieImage src={zombieImage.current} />
-      <ZombieImageShadow src={zombieImage.current} />
+      <ZombieImage src={zombieImage.current} nightShift={nightShift} />
+      <ZombieImageShadow src={zombieImage.current} nightShift={nightShift} />
       <ButtonsArea delay>
         <StyledLink to="/new">
           <SelectionButton>{NEW_GAME}</SelectionButton>

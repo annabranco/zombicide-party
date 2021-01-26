@@ -90,10 +90,43 @@ export const LogoArea = styled.div`
   justify-content: center;
   width: 80%;
 
-  @media all and (min-width: 768px) {
+  ${({ nightShift }) =>
+    nightShift &&
+    css`
+      top: -10px;
+      animation-name: ${Appear};
+      animation-delay: 4s;
+      animation-duration: 3s;
+      animation-iteration-count: 1;
+      animation-fill-mode: both;
+    `}
+
+  @media all and (min-width: 701px) {
     align-items: flex-end;
     justify-content: center;
     width: auto;
+
+    ${({ nightShift }) =>
+      nightShift &&
+      css`
+        top: 10px;
+      `}
+  }
+
+  @media all and (min-width: 1200px) {
+    ${({ nightShift }) =>
+      nightShift &&
+      css`
+        top: 0;
+      `}
+  }
+
+  @media all and (min-width: 1400px) {
+    ${({ nightShift }) =>
+      nightShift &&
+      css`
+        top: 20px;
+      `}
   }
 `;
 LogoArea.displayName = 'LogoArea';
@@ -265,24 +298,30 @@ export const ZombieImage = styled.img`
   position: absolute;
   top: 10%;
   width: 300px;
-  animation-name: ${Appear};
   animation-duration: 4s;
   animation-iteration-count: 1;
   animation-fill-mode: forwards;
 
+  ${({ nightShift }) =>
+    !nightShift &&
+    css`
+      animation-name: ${Appear};
+    `}
+
   @media (min-width: 320px) and (min-height: 640px) {
-    top: 10%;
+    top: 20%;
     width: 90%;
   }
 
-  @media all and (min-width: 768px) {
+  @media all and (min-width: 701px) {
     top: 150px;
     width: 576px;
   }
 
   @media all and (min-width: 1024px) {
-    top: 100px;
-    width: 400px;
+    top: unset;
+    bottom: 5%;
+    width: 450px;
   }
 
   @media (min-width: 320px) and (min-height: 1300px) {
@@ -293,6 +332,11 @@ export const ZombieImage = styled.img`
   @media all and (min-width: 1200px) {
     top: 40px;
     width: 400px;
+  }
+
+  @media (min-width: 1300px) and (min-height: 1024px) {
+    top: 160px;
+    width: 600px;
   }
 
   @media all and (min-width: 1500px) {
@@ -309,33 +353,70 @@ export const ZombieImageShadow = styled(ZombieImage)`
   top: 60px;
   width: 300px;
   margin: 60px 0 0 -60px;
-
   animation-name: ${Appear};
   animation-duration: 4s;
   animation-iteration-count: 1;
   animation-fill-mode: forwards;
   ${Shadow}
 
+  ${({ nightShift }) =>
+    nightShift &&
+    css`
+      top: unset;
+      bottom: -270px;
+      width: 320px;
+      transform: skew(10deg, -7deg) rotate(7deg) scaleY(0.4) scaleX(0.85)
+        rotateX(180deg);
+    `}
+
   @media (min-width: 320px) and (min-height: 640px) {
     top: 10%;
     height: 30%;
     width: 90%;
     margin: 230px 0 0 -50px;
+
+    ${({ nightShift }) =>
+      nightShift &&
+      css`
+        top: unset;
+        bottom: 11%;
+        width: 400px;
+        margin: 0 0 0 8px;
+      `}
   }
 
-  @media all and (min-width: 710px) {
+  @media all and (min-width: 701px) {
     top: 460px;
     height: 480px;
     width: 576px;
     margin: 0 0 0 -75px;
+
+    ${({ nightShift }) =>
+      nightShift &&
+      css`
+        top: unset;
+        bottom: -160px;
+        width: 540px;
+        margin: 0 0 0 14px;
+      `}
   }
 
   @media all and (min-width: 1024px) {
     top: 100px;
     width: 400px;
     margin: 85px 0 0 -82px;
+
+    ${({ nightShift }) =>
+      nightShift &&
+      css`
+        top: unset;
+        bottom: -25%;
+        width: 540px;
+        margin: 0 0 0 14px;
+      `}
   }
 
+  /* ipad pro */
   @media (min-width: 1024px) and (min-height: 1300px) {
     top: 5%;
     height: 480px;
@@ -348,13 +429,46 @@ export const ZombieImageShadow = styled(ZombieImage)`
     height: 340px;
     width: 400px;
     margin: 0 0 0 -50px;
+
+    ${({ nightShift }) =>
+      nightShift &&
+      css`
+        top: unset;
+        bottom: -130px;
+        width: 540px;
+        margin: 0 0 0 14px;
+      `}
   }
 
-  @media all and (min-width: 1500px) {
+  @media (min-width: 1300px) and (min-height: 1024px) {
+    top: unset;
+    bottom: 60px;
+    width: 500px;
+    margin: 0 0 0 -60px;
+
+    ${({ nightShift }) =>
+      nightShift &&
+      css`
+        top: unset;
+        bottom: -60px;
+        width: 640px;
+        margin: 0 0 0 14px;
+      `}
+  }
+
+  @media all and (min-width: 1400px) {
     top: 360px;
     height: 390px;
     width: 500px;
     margin: 0 0 0 -60px;
+    ${({ nightShift }) =>
+      nightShift &&
+      css`
+        top: unset;
+        bottom: -100px;
+        width: 540px;
+        margin: 0 0 0 14px;
+      `}
   }
 `;
 ZombieImageShadow.displayName = 'ZombieImageShadow';
