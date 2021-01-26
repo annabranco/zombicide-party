@@ -63,6 +63,10 @@ const SoundBlock = ({
   wounded
 }) => {
   const [isActive, activate] = useStateWithLabel(false, 'isActive');
+  const [
+    displayZombieAttackButtonsForMobile,
+    toggleZombieAttackButtons
+  ] = useStateWithLabel(false, 'isActive');
 
   const quickAttackDebounce = useRef();
   const sound = useRef();
@@ -123,6 +127,7 @@ const SoundBlock = ({
       activateKillButtons();
       callback(ATTACK);
     }
+
     if (filename && ((type === WEAPONS && canAttack) || type !== WEAPONS)) {
       if (type === ACTIVATIONS) {
         sound.current = new Audio(
@@ -130,7 +135,11 @@ const SoundBlock = ({
             `${filename}${differentSounds ? randomNumber(differentSounds) : ''}`
           ]
         );
+        if (isMobile) {
+          toggleZombieAttackButtons(true);
+        }
       }
+
       activate(true);
       sound.current.currentTime = 0;
       sound.current.play();
@@ -145,6 +154,7 @@ const SoundBlock = ({
 
       setTimeout(() => {
         activate(false);
+        toggleZombieAttackButtons(false);
       }, 4000);
     }
   };
@@ -179,22 +189,23 @@ const SoundBlock = ({
             isMobile={isMobile}
           />
         )}
-        {type === ACTIVATIONS && (
-          <ZombieActions>
-            <Action action={ACTIVATE}>{ACTIVATE}</Action>
-            <Action action={ATTACK} onClick={() => zombieAttack(name)}>
-              {ATTACK_SURVIVOR}
-            </Action>
-            {special && (
-              <Action
-                action={KILL}
-                onClick={() => zombieAttack(`${name}-instant`)}
-              >
-                {special}
+        {type === ACTIVATIONS &&
+          ((isMobile && displayZombieAttackButtonsForMobile) || !isMobile) && (
+            <ZombieActions>
+              {!isMobile && <Action action={ACTIVATE}>{ACTIVATE}</Action>}
+              <Action action={ATTACK} onClick={() => zombieAttack(name)}>
+                {ATTACK_SURVIVOR}
               </Action>
-            )}
-          </ZombieActions>
-        )}
+              {special && (
+                <Action
+                  action={KILL}
+                  onClick={() => zombieAttack(`${name}-instant`)}
+                >
+                  {special}
+                </Action>
+              )}
+            </ZombieActions>
+          )}
 
         {getImage()}
       </PlayImageButton>

@@ -80,7 +80,7 @@ const MainScreen = ({
           zombiesRound={activeSide === ZOMBIES}
         />
       )}
-      {!displayRounds && <RoundTag>{`${ROUND} ${rounds.length}`}</RoundTag>}
+      {displayRounds && <RoundTag>{`${ROUND} ${rounds.length}`}</RoundTag>}
     </MainArea>
   );
 };

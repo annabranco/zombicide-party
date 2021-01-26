@@ -17,7 +17,6 @@ import {
 export const Action = styled.p`
   label: Action;
   z-index: 6;
-  display: none;
   margin: 10px auto;
   width: 95%;
   border: 2px solid black;
@@ -377,6 +376,11 @@ export const PlayImageButton = styled.button`
   width: 100%;
   padding: 0;
   display: flex;
+  transition: background ease 1.5s;
+
+  &: hover > div {
+    display: flex;
+  }
 
   ${({ isText }) =>
     isText &&
@@ -389,15 +393,15 @@ export const PlayImageButton = styled.button`
   &:hover {
     filter: ${({ damageMode, type }) =>
       damageMode && type !== WOUND && 'sepia(0.8) brightness(0.6)'};
-    & > div > p {
-      display: block;
-    }
+    /*
+    & > div {
+      display: flex;
+    } */
 
     & > i {
       display: block;
     }
   }
-  transition: background ease 1.5s;
 
   ${({ canAttack, damageMode, setupMode, slotType, trade, type }) => {
     switch (true) {
@@ -450,7 +454,7 @@ PlayText.displayName = 'PlayText';
 export const SelectorArea = styled.div`
   label: SelectorArea;
   position: relative;
-  height: calc(${`${window.innerHeight}px`} - 100px);
+  height: calc(${`${window.innerHeight}px`} - 50px);
   background: ${({ zombies }) => (zombies ? 'none' : '#232222')};
   display: flex;
   flex-direction: row;
@@ -458,7 +462,7 @@ export const SelectorArea = styled.div`
   justify-content: center;
   overflow-y: ${({ zombies }) => (zombies ? 'hidden' : 'auto')};
   overflow-x: hidden;
-  padding: 20px 0 30px;
+  padding: 0;
 
   ${({ columns, zombies }) => {
     if (columns === 'big') {
@@ -479,6 +483,7 @@ export const SelectorArea = styled.div`
 
   @media (min-width: 320px) and (min-height: 640px) {
     height: calc(${`${window.innerHeight}px`} - 100px);
+    padding: 20px 0 30px;
   }
 
   @media all and (min-width: 701px) {
@@ -499,13 +504,17 @@ export const ZombieActions = styled.div`
   label: ZombieActions;
   z-index: 6;
   position: absolute;
+  display: flex;
   bottom: 5px;
   left: 0;
-  display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   height: auto;
   width: 100%;
+
+  @media all and (min-width: 701px) {
+    display: none;
+  }
 `;
 ZombieActions.displayName = 'ZombieActions';

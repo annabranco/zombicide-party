@@ -91,9 +91,13 @@ export const SubSectionWrapper = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: flex-start;
-  height: ${`${window.innerHeight - 30}px`};
+  height: ${`${window.innerHeight - 10}px`};
   width: 100%;
   overflow: hidden;
+
+  @media all and (min-width: 360px) {
+    height: ${`${window.innerHeight - 30}px`};
+  }
 
   @media all and (min-width: 768px) {
     width: 90%;
@@ -104,6 +108,7 @@ SubSectionWrapper.displayName = 'SubSectionWrapper';
 export const ZombieImageForMobile = styled.div`
   label: ZombieImageForMobile;
   height: ${({ rows }) => `${window.innerHeight / rows - 30}px`};
+  width: 100%;
   background-image: ${({ img }) => img && `url(${img})`};
   background-repeat: no-repeat;
   cursor: pointer;
@@ -149,7 +154,7 @@ export const ZombieLabel = styled.h3`
   label: ZombieLabel;
   z-index: 5;
   position: absolute;
-  bottom: 10px;
+  top: 50%;
   left: 50%;
   height: 40px;
   width: 100%;
@@ -157,17 +162,38 @@ export const ZombieLabel = styled.h3`
   font-size: 4rem;
   color: ${({ isActive }) => (isActive ? 'yellow' : 'white')};
   text-shadow: 0 0 3px black;
-  transform: translate(-50%, 0);
+  transform: translate(-50%, -50%);
   text-align: center;
   line-height: 0.7;
   text-transform: uppercase;
   transition: all ease 1s;
+
+  ${({ inner }) =>
+    inner &&
+    css`
+      top: unset;
+      bottom: 10px;
+      font-size: 1.3rem;
+      line-height: 1.8;
+      transform: translate(-50%, 0);
+    `}
+
+  @media all and (min-width: 701px) {
+    top: unset;
+    bottom: 10px;
+    transform: translate(-50%, 0);
+  }
 `;
 ZombieLabel.displayName = 'ZombieLabel';
 
 export const ZombieWrapper = styled.h3`
   label: ZombieWrapper;
+  position: relative;
   height: 100%;
+
+  @media all and (min-width: 701px) {
+    position: initial;
+  }
 `;
 ZombieWrapper.displayName = 'ZombieWrapper';
 

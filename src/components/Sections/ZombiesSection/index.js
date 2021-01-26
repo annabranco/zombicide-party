@@ -17,7 +17,13 @@ import {
   ZombieLabel
 } from './styles';
 import { getMediaQuery } from '../../../utils/devices';
-import { ACTIVATIONS, MOBILE, ZOMBIES_ROUND, END } from '../../../constants';
+import {
+  ACTIVATIONS,
+  MOBILE,
+  ZOMBIES_ROUND,
+  END,
+  DESKTOP
+} from '../../../constants';
 
 const ZombiesSection = ({
   damageMode,
@@ -75,13 +81,16 @@ const ZombiesSection = ({
                 type={ACTIVATIONS}
                 zombieAttack={zombieAttack}
               />
+              {device.current !== DESKTOP && (
+                <ZombieLabel inner>{zombie}</ZombieLabel>
+              )}
             </ZombieWrapper>
           ))}
         </SelectorArea>
         {zombiesRound && turnLabel && (
           <ZombiesRoundSign>{ZOMBIES_ROUND}</ZombiesRoundSign>
         )}
-        {highlight && <ZombieLabel>{isHighlighted}</ZombieLabel>}
+        {isHighlighted && <ZombieLabel>{isHighlighted}</ZombieLabel>}
       </SubSectionWrapper>
       <ConfirmAttackButton type="button" onClick={endzombiesRound}>
         {END}
