@@ -497,16 +497,13 @@ const PlayersSection = ({
 
   const changeinReserve = (name, currentSlot = slot - 3) => {
     const updatedCharacter = cloneDeep(character);
-    // const updatedCharacters = cloneDeep(characters);
     const newItems = [...updatedCharacter.inReserve];
     newItems[currentSlot] = name;
-    // const openDoors = checkIfCharacterCanOpenDoors(newItems);
     const hasFlashlight = checkIfCharacterHasFlashlight(newItems);
     const charCanCombineItems = checkIfCharCanCombineItems([
       ...newItems,
       ...updatedCharacter.inHand
     ]);
-    // setCanOpenDoor(openDoors);
     changeCanUseFlashlight(hasFlashlight);
     toggleCanCombine(charCanCombineItems);
     updatedCharacter.inReserve = newItems;
@@ -663,7 +660,7 @@ const PlayersSection = ({
       ...updatedCharacter.inHand,
       ...updatedCharacter.inReserve
     ];
-    const openDoors = checkIfCharacterCanOpenDoors(newItems);
+    const openDoors = checkIfCharacterCanOpenDoors(updatedCharacter.inHand);
     const hasFlashlight = checkIfCharacterHasFlashlight(newItems);
     const charCanCombineItems = checkIfCharCanCombineItems(newItems);
 
@@ -946,9 +943,7 @@ const PlayersSection = ({
           nextChar.inReserve[1],
           nextChar.inReserve[2]
         ];
-        const openDoors =
-          checkIfCharacterCanOpenDoors(charInHand) ||
-          checkIfCharacterCanOpenDoors(charinReserve);
+        const openDoors = checkIfCharacterCanOpenDoors(charInHand);
         const hasFlashlight = checkIfCharacterHasFlashlight([
           ...charInHand,
           ...charinReserve
