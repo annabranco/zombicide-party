@@ -10,6 +10,10 @@ import { globalStyles } from '../../styles';
 import MainScreen from '../MainScreen';
 import ControllerLayer from '../ControllerLayer';
 
+window.addEventListener('orientationchange', () => {
+  window.location.reload();
+});
+
 const App = () => {
   const [initialCharacters, setInitialCharacters] = useStateWithLabel(
     null,
