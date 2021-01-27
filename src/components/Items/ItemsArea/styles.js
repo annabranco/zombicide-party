@@ -297,6 +297,10 @@ ItemWrapper.displayName = 'ItemWrapper';
 
 export const KillButton = styled(AppButton)`
   label: KillButton;
+  position: absolute;
+  top: 25%;
+  left: 50%;
+  transform: translate(-50%, 0);
   color: red;
   margin: 0 3px;
   border-radius: 50%;
@@ -316,6 +320,10 @@ export const KillButton = styled(AppButton)`
     css`
       visibility: visible;
     `}
+
+  @media all and (min-width: 701px) {
+    position: initial;
+  }
 `;
 KillButton.displayName = 'KillButton';
 
@@ -330,14 +338,16 @@ export const KillButtonsWrapper = styled.div`
   label: KillButtonsWrapper;
   z-index: 10;
   position: absolute;
+  top: 0;
+  left: 0;
   display: flex;
   flex-direction: row;
   flex-flow: wrap;
   align-items: center;
   justify-content: center;
   padding: 50px 1px 50px;
-  height: auto;
-  width: auto;
+  height: 100%;
+  width: 100%;
   cursor: pointer;
 
   ${({ displaySplash }) =>
@@ -345,5 +355,12 @@ export const KillButtonsWrapper = styled.div`
     css`
       cursor: url(${IconBlood}) 12 12, auto;
     `}
+
+  @media all and (min-width: 701px) {
+    top: unset;
+    left: unset;
+    height: auto;
+    width: auto;
+  }
 `;
 KillButtonsWrapper.displayName = 'KillButtonsWrapper';
