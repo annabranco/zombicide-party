@@ -213,7 +213,7 @@ export const PlayIcon = styled.img`
   label: PlayIcon;
   max-height: 100%;
   max-width: 100%;
-  transition: transform ease 0.5s;
+  transition: transform ease 0.5s, filter 2s ease-out;
 
   ${({ type, active }) => {
     if (type === WOUND) {
@@ -297,6 +297,13 @@ export const PlayIcon = styled.img`
         contrast(0.9);
     `}
 
+
+  ${({ active }) =>
+    active &&
+    css`
+      filter: brightness(80%) sepia(70%) hue-rotate(13deg) saturate(400%)
+        contrast(1.1);
+    `}
 
   @media all and (min-width: 701px) {
     max-height: 100%;

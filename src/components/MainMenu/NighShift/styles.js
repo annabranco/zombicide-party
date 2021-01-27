@@ -51,7 +51,7 @@ const Strobe = (border, bg, shadow) => keyframes`
   }
 `;
 
-const StrobeBulb = (border, bg, shadow) => keyframes`
+const StrobeBulb = () => keyframes`
   0%, 25%    {
     background: ${bulbGradient};  box-shadow: ${bulbDimShadow}
   }

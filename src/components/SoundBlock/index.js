@@ -61,7 +61,7 @@ const SoundBlock = ({
   const [
     displayZombieAttackButtonsForMobile,
     toggleZombieAttackButtons
-  ] = useStateWithLabel(false, 'isActive');
+  ] = useStateWithLabel(false, 'displayZombieAttackButtonsForMobile');
 
   const quickAttackDebounce = useRef();
   const sound = useRef();
