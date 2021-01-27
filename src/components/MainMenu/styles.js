@@ -1,7 +1,7 @@
 import styled from '@emotion/styled';
 import { css, keyframes } from '@emotion/core';
 import { Link } from 'react-router-dom';
-import { Appear } from '../../styles';
+import { Appear, Shadow } from '../../styles';
 
 const ThunderFlash = keyframes`
   3% {
@@ -59,7 +59,7 @@ const ThunderFlash = keyframes`
 
 export const ButtonsArea = styled.div`
   label: ButtonsArea;
-  z-index: 5;
+  z-index: 12;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -69,11 +69,14 @@ export const ButtonsArea = styled.div`
     delay &&
     css`
       animation-name: ${Appear};
-      animation-delay: 3s;
+      animation-delay: 2s;
       animation-duration: 3s;
       animation-iteration-count: 1;
       animation-fill-mode: both;
     `}
+  @media all and (min-width: 768px) {
+    flex-direction: row;
+  }
 `;
 ButtonsArea.displayName = 'ButtonsArea';
 
@@ -85,8 +88,73 @@ export const LogoArea = styled.div`
   flex-direction: column;
   align-items: flex-end;
   justify-content: center;
+  width: 80%;
+
+  ${({ nightShift }) =>
+    nightShift &&
+    css`
+      top: -10px;
+      animation-name: ${Appear};
+      animation-delay: 4s;
+      animation-duration: 3s;
+      animation-iteration-count: 1;
+      animation-fill-mode: both;
+    `}
+
+  @media all and (min-width: 701px) {
+    align-items: flex-end;
+    justify-content: center;
+    width: auto;
+
+    ${({ nightShift }) =>
+      nightShift &&
+      css`
+        top: 10px;
+      `}
+  }
+
+  @media all and (min-width: 1200px) {
+    ${({ nightShift }) =>
+      nightShift &&
+      css`
+        top: 0;
+      `}
+  }
+
+  @media all and (min-width: 1400px) {
+    ${({ nightShift }) =>
+      nightShift &&
+      css`
+        top: 20px;
+      `}
+  }
 `;
 LogoArea.displayName = 'LogoArea';
+
+export const MainTitle = styled.h1`
+  label: MainTitle;
+  margin-top: -25px;
+  margin-right: 10px;
+  font-size: 2rem;
+  color: white;
+  text-shadow: 0 0 2px black;
+  font-family: Crackhouse;
+  text-shadow: 0 0 2px red;
+
+  ${({ blockedScreen }) =>
+    blockedScreen &&
+    css`
+      margin-top: -40px;
+      margin-right: -300px;
+      font-size: 3.5rem;
+    `}
+
+  @media all and (min-width: 768px) {
+    margin-top: -35px;
+    font-size: 3.5rem;
+  }
+`;
+MainTitle.displayName = 'MenuScreen';
 
 export const MenuScreen = styled.div`
   label: MenuScreen;
@@ -95,7 +163,7 @@ export const MenuScreen = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: flex-end;
-  height: 100vh;
+  height: ${`${window.innerHeight}px`};
   width: 100%;
   background: #232222;
   filter: ${({ type }) => type === 'main' && 'brightness(0.7) contrast(2)'};
@@ -103,35 +171,48 @@ export const MenuScreen = styled.div`
   ${({ img, position = 'center top' }) => css`
     background-image: ${`url(${img})`};
     background-position: ${position};
-    background-size: 100%;
+    background-size: auto 100%;
     background-repeat: no-repeat;
-  `}
-`;
-MenuScreen.displayName = 'MenuScreen';
 
-export const MainTitle = styled.h1`
-  label: MainTitle;
-  z-index: 10;
-  margin-top: -35px;
-  margin-right: 10px;
-  font-size: 3.5rem;
-  color: white;
-  text-shadow: 0 0 2px black;
-  font-family: Crackhouse;
-  text-shadow: 0 0 2px red;
+    @media all and (min-width: 768px) {
+      background-size: 100% 100%;
+    }
+  `}
 `;
 MenuScreen.displayName = 'MenuScreen';
 
 export const SelectionButton = styled.button`
   label: SelectionButton;
-  margin: 20px auto;
-  width: 300px;
-  padding: 10px 25px;
-  font-family: 'Grandstander', cursive;
-  font-size: 2.5rem;
+  margin: 10px auto;
+  width: 250px;
+  padding: 2px 25px;
+  font-family: Crackhouse, 'Grandstander', cursive;
+  font-size: 2rem;
   border-radius: 20px;
-  background: red;
+  background: linear-gradient(red, tomato, maroon);
   cursor: pointer;
+  text-transform: uppercase;
+  outline: none;
+  box-shadow: 0 2px 10px 0 rgba(0, 0, 0, 0.6),
+    inset 1px 1px 3px rgba(255, 0, 0, 0.5);
+  border: 1px solid black;
+
+  @media all and (min-width: 768px) {
+    width: 200px;
+    background-size: 100% 100%;
+    margin: 20px 40px;
+    padding: 10px 25px;
+  }
+
+  @media all and (min-width: 1200px) {
+    width: 180px;
+    font-size: 1.6rem;
+  }
+
+  &: hover {
+    color: yellow;
+    folter: brightness(1.8);
+  }
 `;
 SelectionButton.displayName = 'SelectionButton';
 
@@ -144,13 +225,22 @@ StyledLink.displayName = 'Link';
 export const TestButton = styled(SelectionButton)`
   label: TestButton;
   z-index: 5;
-  font-size: 1rem;
+  font-size: 0.8rem;
   padding: 5px;
   background: white;
   height: 20px;
   width: 120px;
   border-radius: 10px;
   line-height: 0.5;
+  font-family: 'Grandstander', cursive;
+  box-shadow: 0 1px 10px 0 rgba(0, 0, 0, 0.6),
+    inset 1px 1px 3px rgba(255, 0, 0, 0.5);
+
+  @media all and (min-width: 768px) {
+    width: 180px;
+    font-size: 1rem;
+    line-height: 0.2;
+  }
 `;
 TestButton.displayName = 'TestButton';
 
@@ -172,28 +262,213 @@ ThunderOverlay.displayName = 'ThunderOverlay';
 export const Version = styled.p`
   label: Version;
   position: absolute;
-  bottom: 50px;
-  right: 100px;
-  font-size: 0.8rem;
+  bottom: 10px;
+  right: 10px;
+  font-size: 0.9rem;
   color: white;
+
+  @media all and (min-width: 768px) {
+    bottom: 20px;
+    right: 40px;
+  }
 `;
 Version.displayName = 'Version';
 
 export const ZombicideLogo = styled.img`
   label: ZombicideLogo;
-  width: 500px;
+  width: 100%;
   display: block;
+
+  ${({ blockedScreen }) =>
+    blockedScreen &&
+    css`
+      margin-top: -70px;
+      width: 60%;
+    `}
+
+  @media all and (min-width: 768px) {
+    width: 400px;
+  }
 `;
 ZombicideLogo.displayName = 'ZombicideLogo';
 
-export const ZombieIntro = styled.img`
-  label: ZombieIntro;
+export const ZombieImage = styled.img`
+  label: ZombieImage;
+  z-index: 11;
   position: absolute;
+  top: 10%;
+  width: 300px;
+  animation-duration: 4s;
+  animation-iteration-count: 1;
+  animation-fill-mode: forwards;
+
+  ${({ nightShift }) =>
+    !nightShift &&
+    css`
+      animation-name: ${Appear};
+    `}
+
+  @media (min-width: 320px) and (min-height: 640px) {
+    top: 20%;
+    width: 90%;
+  }
+
+  @media all and (min-width: 701px) {
+    top: 150px;
+    width: 576px;
+  }
+
+  @media all and (min-width: 1024px) {
+    top: unset;
+    bottom: 5%;
+    width: 450px;
+  }
+
+  @media (min-width: 320px) and (min-height: 1300px) {
+    top: 5%;
+    width: 80%;
+  }
+
+  @media all and (min-width: 1200px) {
+    top: 40px;
+    width: 400px;
+  }
+
+  @media (min-width: 1300px) and (min-height: 1024px) {
+    top: 160px;
+    width: 600px;
+  }
+
+  @media all and (min-width: 1500px) {
+    top: 60px;
+    width: 500px;
+  }
+`;
+ZombieImage.displayName = 'ZombieImage';
+
+export const ZombieImageShadow = styled(ZombieImage)`
+  label: ZombieImageShadow;
+  position: absolute;
+  z-index: 10;
   top: 60px;
-  width: 500px;
+  width: 300px;
+  margin: 60px 0 0 -60px;
   animation-name: ${Appear};
   animation-duration: 4s;
   animation-iteration-count: 1;
   animation-fill-mode: forwards;
+  ${Shadow}
+
+  ${({ nightShift }) =>
+    nightShift &&
+    css`
+      top: unset;
+      bottom: -270px;
+      width: 320px;
+      transform: skew(10deg, -7deg) rotate(7deg) scaleY(0.4) scaleX(0.85)
+        rotateX(180deg);
+    `}
+
+  @media (min-width: 320px) and (min-height: 640px) {
+    top: 10%;
+    height: 30%;
+    width: 90%;
+    margin: 230px 0 0 -50px;
+
+    ${({ nightShift }) =>
+      nightShift &&
+      css`
+        top: unset;
+        bottom: 11%;
+        width: 400px;
+        margin: 0 0 0 8px;
+      `}
+  }
+
+  @media all and (min-width: 701px) {
+    top: 460px;
+    height: 480px;
+    width: 576px;
+    margin: 0 0 0 -75px;
+
+    ${({ nightShift }) =>
+      nightShift &&
+      css`
+        top: unset;
+        bottom: -160px;
+        width: 540px;
+        margin: 0 0 0 14px;
+      `}
+  }
+
+  @media all and (min-width: 1024px) {
+    top: 100px;
+    width: 400px;
+    margin: 85px 0 0 -82px;
+
+    ${({ nightShift }) =>
+      nightShift &&
+      css`
+        top: unset;
+        bottom: -25%;
+        width: 540px;
+        margin: 0 0 0 14px;
+      `}
+  }
+
+  /* ipad pro */
+  @media (min-width: 1024px) and (min-height: 1300px) {
+    top: 5%;
+    height: 480px;
+    width: 80%;
+    margin: 595px 0 0 -82px;
+  }
+
+  @media all and (min-width: 1200px) {
+    top: 260px;
+    height: 340px;
+    width: 400px;
+    margin: 0 0 0 -50px;
+
+    ${({ nightShift }) =>
+      nightShift &&
+      css`
+        top: unset;
+        bottom: -130px;
+        width: 540px;
+        margin: 0 0 0 14px;
+      `}
+  }
+
+  @media (min-width: 1300px) and (min-height: 1024px) {
+    top: unset;
+    bottom: 60px;
+    width: 500px;
+    margin: 0 0 0 -60px;
+
+    ${({ nightShift }) =>
+      nightShift &&
+      css`
+        top: unset;
+        bottom: -60px;
+        width: 640px;
+        margin: 0 0 0 14px;
+      `}
+  }
+
+  @media all and (min-width: 1400px) {
+    top: 360px;
+    height: 390px;
+    width: 500px;
+    margin: 0 0 0 -60px;
+    ${({ nightShift }) =>
+      nightShift &&
+      css`
+        top: unset;
+        bottom: -100px;
+        width: 540px;
+        margin: 0 0 0 14px;
+      `}
+  }
 `;
-ZombieIntro.displayName = 'ZombieIntro';
+ZombieImageShadow.displayName = 'ZombieImageShadow';

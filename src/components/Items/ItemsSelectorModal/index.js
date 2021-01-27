@@ -12,9 +12,16 @@ import {
   SubSectionTitle
 } from './styles';
 import { ButtonsWrapper, CancelButton } from '../../TradeArea/styles';
-import { IN_HAND, ITEMS, WEAPONS } from '../../../constants';
+import {
+  DESKTOP,
+  IN_HAND,
+  ITEMS,
+  MOBILE,
+  TABLET,
+  WEAPONS
+} from '../../../constants';
 
-const ItemsSelectorModal = ({ onSelect, selectSlot, slotType }) => {
+const ItemsSelectorModal = ({ device, onSelect, selectSlot, slotType }) => {
   const [items, changeItems] = useStateWithLabel(ALL_ITEMS, ITEMS);
   const [itemsType, changeItemsType] = useStateWithLabel(ITEMS, 'itemsType');
 
@@ -25,6 +32,18 @@ const ItemsSelectorModal = ({ onSelect, selectSlot, slotType }) => {
     } else {
       changeItems(ALL_ITEMS);
       changeItemsType(ITEMS);
+    }
+  };
+
+  const calculateColumns = () => {
+    switch (device) {
+      case MOBILE:
+        return 3;
+      case TABLET:
+        return 4;
+      case DESKTOP:
+      default:
+        return 8;
     }
   };
 
@@ -45,7 +64,7 @@ const ItemsSelectorModal = ({ onSelect, selectSlot, slotType }) => {
         <SubSectionTitle opened={itemsType === ITEMS}>Items</SubSectionTitle>
       </SelectorWrapper>
       <SelectorModal>
-        <SelectorArea columns={4}>
+        <SelectorArea columns={calculateColumns()}>
           {Object.keys(items)
             .sort()
             .map(name => (
@@ -53,12 +72,12 @@ const ItemsSelectorModal = ({ onSelect, selectSlot, slotType }) => {
                 img={items[name].img}
                 key={items[name].name}
                 name={items[name].name}
-                onSelect={() => onSelect(items[name].name)}
+                onSelect={() => onSelect(items[name].name.replace(' ', ''))}
                 type={items[name].type}
               />
             ))}
         </SelectorArea>
-        <ButtonsWrapper>
+        <ButtonsWrapper itemSelector>
           <CancelButton type="button" onClick={() => selectSlot()}>
             CANCEL
           </CancelButton>
@@ -69,6 +88,7 @@ const ItemsSelectorModal = ({ onSelect, selectSlot, slotType }) => {
 };
 
 ItemsSelectorModal.propTypes = {
+  device: string.isRequired,
   onSelect: func.isRequired,
   selectSlot: func.isRequired,
   slotType: string.isRequired

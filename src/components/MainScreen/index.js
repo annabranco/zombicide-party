@@ -5,27 +5,28 @@ import ZombiesSection from '../Sections/ZombiesSection';
 import { MainArea, RoundTag } from './styles';
 import { CharacterType } from '../../interfaces/types';
 import { useStateWithLabel } from '../../utils/hooks';
-import { LESS_THAN_1_MIN } from '../../constants';
+import { LESS_THAN_1_MIN, PLAYERS, ROUND, ZOMBIES } from '../../constants';
 
 const MainScreen = ({
   damageMode,
   initialCharacters,
   loadGame,
   loadedGame,
-  toggleDamageMode,
-  setZombiesTurn,
-  zombiesTurn
+  toggleDamageMode
 }) => {
-  const [activeSection, changeActiveSection] = useStateWithLabel(
-    'PlayersSection',
-    'activeSection'
-  );
   const [rounds, updateRounds] = useStateWithLabel([], 'round');
   const [displayRounds, toggleDisplayRounds] = useStateWithLabel(
     false,
     'displayRounds'
   );
-
+  const [activeSide, changeActiveSide] = useStateWithLabel(
+    PLAYERS,
+    'activeSide'
+  );
+  const [zombiesArePlaying, toggleZombiesArePlaying] = useStateWithLabel(
+    false,
+    'zombiesArePlaying'
+  );
   const gameTime = useRef();
 
   const nextGameRound = () => {
@@ -63,17 +64,23 @@ const MainScreen = ({
         loadGame={loadGame}
         loadedGame={loadedGame}
         toggleDamageMode={toggleDamageMode}
-        setZombiesTurn={setZombiesTurn}
+        setZombiesRound={() => changeActiveSide(ZOMBIES)}
         nextGameRound={nextGameRound}
-        visible={activeSection === 'PlayersSection'}
+        toggleZombiesArePlaying={toggleZombiesArePlaying}
+        visible={activeSide === PLAYERS}
+        zombiesArePlaying={zombiesArePlaying}
+        zombiesRound={activeSide === ZOMBIES}
       />
-      <ZombiesSection
-        damageMode={damageMode}
-        toggleDamageMode={toggleDamageMode}
-        visible={activeSection === 'ZombiesSection'}
-        zombiesTurn={zombiesTurn}
-      />
-      {displayRounds && <RoundTag>Round: {rounds.length}</RoundTag>}
+      {activeSide === ZOMBIES && (
+        <ZombiesSection
+          damageMode={damageMode}
+          setPlayersRound={() => changeActiveSide(PLAYERS)}
+          toggleDamageMode={toggleDamageMode}
+          toggleZombiesArePlaying={toggleZombiesArePlaying}
+          zombiesRound={activeSide === ZOMBIES}
+        />
+      )}
+      {displayRounds && <RoundTag>{`${ROUND} ${rounds.length}`}</RoundTag>}
     </MainArea>
   );
 };
@@ -83,9 +90,7 @@ MainScreen.propTypes = {
   initialCharacters: arrayOf(CharacterType).isRequired,
   loadGame: func.isRequired,
   loadedGame: arrayOf(CharacterType).isRequired,
-  setZombiesTurn: func.isRequired,
-  toggleDamageMode: func.isRequired,
-  zombiesTurn: bool.isRequired
+  toggleDamageMode: func.isRequired
 };
 
 export default MainScreen;

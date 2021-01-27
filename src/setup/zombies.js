@@ -16,52 +16,58 @@ import WalkerIntro from '../assets/images/zombies/Walker.png';
 import RunnerIntro from '../assets/images/zombies/Runner.png';
 import FattyIntro from '../assets/images/zombies/Fatty.png';
 import AbominationIntro from '../assets/images/zombies/Abomination.png';
+import NightShiftIntro from '../assets/images/zombies/ZombieCop.png';
+import { ZOMBIE } from '../constants';
 
-const WALKER = {
-  img: Walker,
-  imgSmall: WalkerSmall,
-  name: 'Walker',
-  sounds: 9
+export const ZOMBIES_S1 = {
+  Walker: {
+    img: Walker,
+    imgSmall: WalkerSmall,
+    name: 'Walker',
+    sounds: 9,
+    type: ZOMBIE
+  },
+  Runner: {
+    img: Runner,
+    imgSmall: RunnerSmall,
+    name: 'Runner',
+    sounds: 5,
+    special: 'Instant kill',
+    type: ZOMBIE
+  },
+  Fatty: {
+    img: Fatty,
+    imgSmall: FattySmall,
+    name: 'Fatty',
+    sounds: 5,
+    type: ZOMBIE
+  },
+  Abomination: {
+    img: Abomination,
+    imgSmall: AbominationSmall,
+    name: 'Abomination',
+    sounds: 4,
+    type: ZOMBIE
+  },
+  Horde: {
+    img: Horde,
+    imgSmall: HordeSmall,
+    name: 'Horde',
+    sounds: 2,
+    type: ZOMBIE,
+    special: 'Feast on survivor'
+  }
 };
-
-const RUNNER = {
-  img: Runner,
-  imgSmall: RunnerSmall,
-  name: 'Runner',
-  sounds: 5,
-  special: 'Instant kill'
-};
-
-const FATTY = {
-  img: Fatty,
-  imgSmall: FattySmall,
-  name: 'Fatty',
-  sounds: 5
-};
-
-const ABOMINATION = {
-  img: Abomination,
-  imgSmall: AbominationSmall,
-  name: 'Abomination',
-  sounds: 4
-};
-
-const HORDE = {
-  img: Horde,
-  imgSmall: HordeSmall,
-  name: 'Horde',
-  sounds: 2,
-  special: 'Feast on survivor'
-};
-
-export const ZOMBIES_S1 = [WALKER, RUNNER, FATTY, ABOMINATION, HORDE];
 
 export const DOGZ = {
-  img: Dogz,
-  imgSmall: DogzSmall,
-  name: 'Dogz',
-  sounds: 5,
-  special: 'Instant kill'
+  Dogz: {
+    img: Dogz,
+    imgSmall: DogzSmall,
+    name: 'Dogz',
+    sounds: 5,
+    special: 'Instant kill',
+    type: ZOMBIE
+  }
 };
 
 export const ZOMBIES_INTRO = [
@@ -69,5 +75,18 @@ export const ZOMBIES_INTRO = [
   RunnerIntro,
   FattyIntro,
   AbominationIntro,
-  DogzIntro
+  DogzIntro,
+  NightShiftIntro
 ];
+
+const selectedSets = [ZOMBIES_S1, DOGZ];
+
+export const setupZombies = sets => {
+  let allZombies = {};
+  sets.forEach(set => {
+    allZombies = { ...allZombies, ...set };
+  });
+  return allZombies;
+};
+
+export const ALL_ZOMBIES = setupZombies(selectedSets);

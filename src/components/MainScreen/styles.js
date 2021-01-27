@@ -15,12 +15,12 @@ export const RoundTag = styled.p`
   label: RoundTag;
   z-index: 14;
   position: fixed;
-  bottom: 10px;
+  bottom: 30px;
   left: 50%;
   transform: translate(-50%, 0);
   color: white;
   text-transform: uppercase;
   font-family: 'Grandstander', cursive;
-  font-size: 1.6rem;
+  font-size: 2rem;
 `;
 RoundTag.displayName = 'RoundTag';

@@ -160,7 +160,7 @@ const SetupModal = ({
 
   return (
     <ModalWindow visible={visible} type={type}>
-      <ModalTitle>{message.title}</ModalTitle>
+      <ModalTitle type={message.title}>{message.title}</ModalTitle>
       <ModalMessage>{message.text}</ModalMessage>
       {(message.title === MANAGE_PLAYERS || !message.title) && (
         <>

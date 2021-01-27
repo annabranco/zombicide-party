@@ -19,6 +19,7 @@ const ActionsModal = ({
   content,
   toggleVisibility,
   visible,
+  isMobile,
   onConfirmModal
 }) => {
   const [modalMessage, changeModalMessage] = useStateWithLabel(
@@ -135,12 +136,12 @@ const ActionsModal = ({
                   onClick={onClickButton()}
                   type={button.type}
                   onMouseOver={
-                    modalMessage.type === 'option'
+                    modalMessage.type === 'option' && !isMobile
                       ? () => changeModalState(button.details)
                       : () => null
                   }
                   onMouseOut={
-                    modalMessage.type === 'option'
+                    modalMessage.type === 'option' && !isMobile
                       ? () => changeModalState('')
                       : () => null
                   }
@@ -160,12 +161,14 @@ ActionsModal.propTypes = {
   content: ModalContentType,
   visible: bool.isRequired,
   toggleVisibility: func.isRequired,
-  onConfirmModal: func
+  onConfirmModal: func,
+  isMobile: bool
 };
 
 ActionsModal.defaultProps = {
   content: null,
-  onConfirmModal: () => null
+  onConfirmModal: () => null,
+  isMobile: false
 };
 
 export default ActionsModal;

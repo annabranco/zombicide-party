@@ -4728,6 +4728,11 @@ emojis-list@^3.0.0:
   resolved "https://registry.yarnpkg.com/emojis-list/-/emojis-list-3.0.0.tgz#5570662046ad29e2e916e71aae260abdff4f6a78"
   integrity sha512-/kyM18EfinwXZbno9FyUGeFh87KC8HRQBQGildHZbEuRyWFOmv1U10o9BBp8XVZDVNNuQKyIGIu5ZYAAXJ0V2Q==
 
+emotion-rgba@^0.0.8:
+  version "0.0.8"
+  resolved "https://registry.yarnpkg.com/emotion-rgba/-/emotion-rgba-0.0.8.tgz#3d99230a74562e0a586f7479d52643fa77f36695"
+  integrity sha512-87O+XBMjV4HfRqbKH/WyIQx3d5hNs8JAgV2OfMvArqoUgu9zunyadrQ6+Y4z3yR7p+1uvSSeFAjRoYE9TjVeFw==
+
 encodeurl@~1.0.2:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/encodeurl/-/encodeurl-1.0.2.tgz#ad3ff4c86ec2d029322f5a02c3a9a606c95b3f59"

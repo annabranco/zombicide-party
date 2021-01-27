@@ -6,11 +6,12 @@ import {
   PlayImageButton,
   PlayText
 } from '../../SoundBlock/styles';
+import { SELECTION } from '../../../constants';
 
 const SelectionItem = ({ type, onSelect, onHover, name, label, img }) => {
   return (
     <Block>
-      <PlayImageButton onClick={() => onSelect(name)} slotType="selection">
+      <PlayImageButton onClick={() => onSelect(name)} slotType={SELECTION}>
         {img ? (
           <PlayIcon
             src={img}

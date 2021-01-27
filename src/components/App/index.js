@@ -8,15 +8,15 @@ import NewGame from '../NewGame';
 
 import { globalStyles } from '../../styles';
 import MainScreen from '../MainScreen';
+import ControllerLayer from '../ControllerLayer';
 
 const App = () => {
   const [initialCharacters, setInitialCharacters] = useStateWithLabel(
-    [],
+    null,
     'initialCharacters'
   );
   const [damageMode, toggleDamageMode] = useStateWithLabel(false, 'damageMode');
   const [loadedGame, loadGame] = useStateWithLabel(null, 'damageMode');
-  const [zombiesTurn, setZombiesTurn] = useStateWithLabel(null, 'damageMode');
 
   useEffect(() => {
     const game = JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY));
@@ -26,16 +26,22 @@ const App = () => {
     } else {
       localStorage.removeItem(LOCAL_STORAGE_KEY);
     }
-  }, []);
+  }, [loadGame]);
 
   return (
     <Router>
       <Global styles={globalStyles} />
+      <ControllerLayer />
       <Switch>
         <Route
           exact
           path="/"
-          render={() => <MainMenu loadedGame={Boolean(loadedGame)} />}
+          render={() => (
+            <MainMenu
+              loadedGame={loadedGame}
+              setInitialCharacters={setInitialCharacters}
+            />
+          )}
         />
         <Route
           path="/new"
@@ -55,8 +61,6 @@ const App = () => {
               loadGame={loadGame}
               loadedGame={loadedGame}
               toggleDamageMode={toggleDamageMode}
-              setZombiesTurn={setZombiesTurn}
-              zombiesTurn={zombiesTurn}
             />
           )}
         />

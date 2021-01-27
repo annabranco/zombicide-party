@@ -1,11 +1,20 @@
 export const CANCEL = 'Cancel';
-export const NO_WAY = 'Ops.. no way';
+export const CONFIRM = 'confirm';
+export const DESKTOP = 'desktop';
+export const END = 'End';
 export const GO_ON = 'Go on';
-export const OK = 'OK';
-export const YEAH = 'YEAH!';
-
+export const INITIAL = 'initial';
 export const LOCAL_STORAGE_KEY = 'ZombicideParty';
 export const LOCAL_STORAGE_PLAYERS_KEY = 'ZombicideParty Players';
+export const MOBILE = 'mobile';
 export const NEXT = 'next';
+export const NONE = 'none';
+export const NO_WAY = 'Ops.. no way';
+export const OK = 'OK';
+export const PLAYERS = 'PLAYERS';
 export const PREVIOUS = 'previous';
+export const START = 'start';
+export const TABLET = 'tablet';
 export const WARNING = 'Warning';
+export const YEAH = 'YEAH!';
+export const ZOMBIES = 'ZOMBIES';

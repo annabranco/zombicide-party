@@ -1,8 +1,8 @@
 import React, { useEffect, useRef } from 'react';
-import { bool } from 'prop-types';
+import { bool, func } from 'prop-types';
 import appInfo from '../../../package.json';
 import { useStateWithLabel } from '../../utils/hooks';
-import BG from '../../assets/images/background/background.jpg';
+import BG from '../../assets/images/background/background2.jpg';
 import Logo from '../../assets/images/logo.png';
 import {
   SelectionButton,
@@ -15,18 +15,23 @@ import {
   ThunderOverlay,
   Version,
   ZombicideLogo,
-  ZombieIntro
+  ZombieImage,
+  ZombieImageShadow
 } from './styles';
+import NightShiftIntro from './NighShift';
 import { ZOMBIES_INTRO } from '../../setup/zombies';
-import { STOP_SOUND, TEST_SOUND } from '../../constants';
+import { CONTINUE, NEW_GAME, STOP_SOUND, TEST_SOUND } from '../../constants';
 import { SOUNDS } from '../../assets/sounds';
 
-const MainMenu = ({ loadedGame }) => {
+const MainMenu = ({ loadedGame, setInitialCharacters }) => {
   const [testSound, toggleTestSound] = useStateWithLabel(false, 'testSound');
+  const [nightShift, toggleNightShift] = useStateWithLabel(false, 'testSound');
+
   const APP_VERSION = appInfo.version;
-  const zombieImage = useRef(
-    ZOMBIES_INTRO[Math.ceil(Math.random() * ZOMBIES_INTRO.length)]
-  );
+  // const zombieImage = useRef(
+  //   ZOMBIES_INTRO[Math.floor(Math.random() * ZOMBIES_INTRO.length)]
+  // );
+  const zombieImage = useRef(ZOMBIES_INTRO[5]);
 
   useEffect(() => {
     const storm = new Audio(SOUNDS.intro);
@@ -48,35 +53,47 @@ const MainMenu = ({ loadedGame }) => {
     };
   }, [testSound]);
 
+  useEffect(() => {
+    if (zombieImage.current.includes('ZombieCop')) {
+      toggleNightShift(true);
+    }
+  }, [zombieImage, toggleNightShift]);
+
   return (
     <MenuScreen img={BG} type="main">
       <ThunderOverlay testSound={testSound} />
-      <LogoArea>
+      {nightShift && <NightShiftIntro />}
+      <LogoArea nightShift={nightShift}>
         <ZombicideLogo src={Logo} />
         <MainTitle>PARTY</MainTitle>
       </LogoArea>
-      <ZombieIntro src={zombieImage.current} />
+      <ZombieImage src={zombieImage.current} nightShift={nightShift} />
+      <ZombieImageShadow src={zombieImage.current} nightShift={nightShift} />
       <ButtonsArea delay>
         <StyledLink to="/new">
-          <SelectionButton>New Game</SelectionButton>
+          <SelectionButton>{NEW_GAME}</SelectionButton>
         </StyledLink>
         {loadedGame && (
-          <StyledLink to="/play">
-            <SelectionButton>Continue</SelectionButton>
+          <StyledLink
+            to="/play"
+            onClick={() => setInitialCharacters(loadedGame)}
+          >
+            <SelectionButton>{CONTINUE}</SelectionButton>
           </StyledLink>
         )}
-        <TestButton onClick={() => toggleTestSound(!testSound)}>
-          {testSound ? STOP_SOUND : TEST_SOUND}
-        </TestButton>
       </ButtonsArea>
 
+      <TestButton onClick={() => toggleTestSound(!testSound)}>
+        {testSound ? STOP_SOUND : TEST_SOUND}
+      </TestButton>
       <Version>{APP_VERSION}</Version>
     </MenuScreen>
   );
 };
 
 MainMenu.propTypes = {
-  loadedGame: bool.isRequired
+  loadedGame: bool.isRequired,
+  setInitialCharacters: func.isRequired
 };
 
 export default MainMenu;

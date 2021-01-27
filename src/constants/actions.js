@@ -1,30 +1,44 @@
+export const ACTIVATE = 'activate';
+export const ADD_CHARACTER = 'Add new character';
+export const ATTACK = 'attack';
+export const ATTACK_SURVIVOR = 'attack survivor!';
+export const BREAK_DOOR = 'break door down';
+export const BURNEM_ALL = "BURN'EM ALL";
+export const CAR_ATTACK_ACTION = 'car-attack';
+export const CAR_ENTER_ACTION = 'car-enter';
+export const CAR_EXIT_ACTION = 'car-exit';
+export const CAR_MOVE_ACTION = 'car-move';
+export const CHANGE_CHARACTER = char => `Change character to ${char}`;
+export const COMBINE_ACTION = 'combine';
+export const CONFIRMATION_NEEDED = 'Do you really wanna do it?';
+export const DROP = 'drop';
+export const EDIT_CHARACTERS = 'Edit characters';
+export const END_CHAR_TURN = char => `End ${char}'s turn`;
+export const END_TURN_ACTION = 'endTurn';
+export const ENTER_CAR = 'enter car';
+export const EXIT_CAR = 'exit car';
+export const GET_OBJECTIVE = 'get objective';
+export const GIVE_ORDERS_ACTION = 'give-orders';
+export const HEAL_ACTION = 'heal';
+export const HIT = 'hit';
+export const KILL = 'kill';
+export const LOCK_ACTION = 'lock';
+export const MAKE_NOISE_ACTION = 'make-noise';
+export const MOVE = 'move';
+export const MOVE_ACTION = 'move';
+export const MOVE_CAR = 'move car';
+export const OBJECTIVE_ACTION = 'objective';
+export const OPEN_DOOR = 'open door';
+export const OPEN_DOOR_ACTION = 'open-door';
+export const RELOAD = 'reload';
+export const RELOAD_ACTION = 'reload';
+export const RUN_OVER = 'run over';
+export const SEARCH = 'search';
+export const SEARCH_ACTION = 'search';
+export const SELECT = 'select';
 export const STOP_SOUND = 'Stop Sound';
 export const TEST_SOUND = 'Test Sound';
-
-export const GET_OBJECTIVE = 'Get objective';
-
-export const ENTER_CAR = 'Enter car';
-export const EXIT_CAR = 'Exit car';
-
-export const MOVE_CAR = 'Move car';
-
-export const RUN_OVER = 'Run over';
-
-export const MOVE = 'Move';
-
-export const OPEN_DOOR = 'Open door';
-
-export const BREAK_DOOR = 'Break door down';
-
-export const END_CHAR_TURN = char => `End ${char}'s turn`;
-
-export const EDIT_CHARACTERS = 'Edit characters';
-export const ADD_CHARACTER = 'Add new character';
-
+export const TRADE = 'trade';
+export const UPGRADE_WEAPON = 'upgrade weapon';
 export const XP_GAIN = 'XP Gain';
-
 export const XP_GAIN_SELECT = 'Select the ammount of XP gained';
-
-export const CONFIRMATION_NEEDED = 'Do you really wanna do it?';
-
-export const BURNEM_ALL = "BURN'EM ALL";

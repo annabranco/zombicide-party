@@ -5,20 +5,68 @@ import { activeImage, inactiveImage } from '../../styles';
 
 export const CharacterArea = styled.div`
   label: CharacterArea;
+  /* display: flex; */
   display: flex;
   flex-direction: row;
   align-items: center;
   justify-content: center;
+  flex-wrap: wrap;
   height: 100%;
   width: 100%;
 
-  ${({ dynamic }) =>
-    dynamic &&
-    css`
-      z-index: 15;
-      position: absolute;
-      background: rgba(0, 0, 0, 0.8);
-    `}
+  @media all and (min-width: 768px) {
+    margin: 0 25px;
+    ${({ number }) => {
+      if (number >= 8) {
+        return css`
+          ${'' /* position: absolute; */}
+          margin-top: 20px;
+          display: grid;
+          width: 90%;
+          grid-template-columns: repeat(4, 150px);
+          grid-template-rows: repeat(auto-fill, 1fr);
+          ${'' /* & div:nth-child(n + 5) {
+            margin-left: 5px;
+          } */}
+          justify-items: center;
+          align-items: start;
+        `;
+      }
+      if (number) {
+        return css`
+          display: grid;
+          width: 90%;
+          grid-template-columns: repeat(${number}, 1fr);
+        `;
+      }
+      return null;
+    }}
+  }
+
+  @media all and (min-width: 1200px) {
+    ${({ number }) => {
+      if (number >= 8) {
+        return css`
+          ${'' /* position: absolute; */}
+          top: 200px;
+          display: grid;
+          grid-template-columns: repeat(8, 1fr);
+          grid-template-rows: repeat(auto-fill, 100px);
+          & div:nth-child(n + 9) {
+            ${'' /* margin-left: 30px; */}
+          }
+        `;
+      }
+      if (number) {
+        return css`
+          display: grid;
+          width: 90%;
+          grid-template-columns: repeat(${number}, 1fr);
+        `;
+      }
+      return null;
+    }}
+  }
 `;
 CharacterArea.displayName = 'CharacterArea';
 
@@ -32,8 +80,7 @@ export const CharImage = styled.img`
     css`
       filter: sepia(1) opacity(0.7);
       &:hover {
-        filter: sepia(0.3) brightness(1.4) opacity(0.7) contrast(1.1)
-          saturate(2);
+        filter: sepia(0.3) brightness(1.4) opacity(1) contrast(1.1) saturate(2);
       }
     `}
 
@@ -48,12 +95,12 @@ CharImage.displayName = 'CharImage';
 export const CharName = styled.h1`
   label: CharName;
   position: absolute;
-  bottom: 0;
-  left: -25px;
-  margin: 20px auto 30px;
+  bottom: -10px;
+  left: 50%;
+  transform: translate(-50%, 0);
   width: calc(90vw / 6);
   font-size: 1.5rem;
-  color: rgba(255, 255, 255, 0.5);
+  color: rgba(255, 255, 255, 0.95);
   text-shadow: 0 0 3px black;
   text-align: center;
   text-transform: uppercase;
@@ -61,8 +108,52 @@ export const CharName = styled.h1`
   ${({ active }) =>
     active &&
     css`
-      color: white;
+      color: rgba(255, 255, 255, 0.5);
+      bottom: -30px;
     `}
+
+  @media all and (min-width: 768px) {
+    bottom: 0;
+    left: -10%;
+    transform: none;
+    margin: 20px auto 30px;
+    color: rgba(255, 255, 255, 0.75);
+
+    ${({ number }) =>
+      number > 8 &&
+      css`
+        bottom: unset;
+        top: 40px;
+        left: -30%;
+      `}
+
+    ${({ active }) =>
+      active &&
+      css`
+        color: white;
+        font-size: 1.5rem;
+      `}
+  }
+
+  @media all and (min-width: 1024px) {
+    bottom: 0;
+    left: -15%;
+    color: rgba(255, 255, 255, 0.8);
+
+    ${({ number }) =>
+      number > 8 &&
+      css`
+        bottom: unset;
+        top: 40px;
+        left: -30%;
+      `}
+    ${({ active }) =>
+      active &&
+      css`
+        color: white;
+        font-size: 2rem;
+      `}
+  }
 `;
 CharName.displayName = 'CharName';
 
@@ -70,8 +161,9 @@ export const PlayerTag = styled.div`
   label: PlayerTag;
   z-index: 6;
   position: absolute;
-  top: 15px;
-  right: -3px;
+  bottom: -10px;
+  left: 50%;
+  transform: translate(-50%, 0);
 
   height: 20px;
   min-width: 40px;
@@ -87,15 +179,27 @@ export const PlayerTag = styled.div`
   line-height: 1.1;
   text-transform: uppercase;
   color: white;
+
+  @media all and (min-width: 768px) {
+    bottom: unset;
+    top: 15px;
+    left: unset;
+    right: -5px;
+    transform: none;
+  }
 `;
 PlayerTag.displayName = 'PlayerTag';
 
 export const Selector = styled.div`
   label: Selector;
   position: relative;
-  width: calc(90vw / 6);
-  margin: 0 -25px;
+  width: ${({ number }) => number && `calc(100vw / ${number} + 30px)`};
+  margin: 0 20px;
   cursor: pointer;
+
+  @media all and (min-width: 768px) {
+    margin: 0 -25px;
+  }
 `;
 Selector.displayName = 'Selector';
 
