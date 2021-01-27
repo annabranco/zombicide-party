@@ -159,6 +159,8 @@ MainTitle.displayName = 'MenuScreen';
 export const MenuScreen = styled.div`
   label: MenuScreen;
   position: relative;
+  z-index: 66;
+  top: 0;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -174,10 +176,16 @@ export const MenuScreen = styled.div`
     background-size: auto 100%;
     background-repeat: no-repeat;
 
-    @media all and (min-width: 768px) {
+    @media all and (min-width: 701px) {
       background-size: 100% 100%;
     }
   `}
+
+  ${({ dynamic }) =>
+    dynamic &&
+    css`
+      position: fixed;
+    `}
 `;
 MenuScreen.displayName = 'MenuScreen';
 

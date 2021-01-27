@@ -132,7 +132,7 @@ const NewGame = ({
   }, [currentChars, characters, setCharacters]);
 
   return (
-    <MenuScreen img={BG} type="newChar">
+    <MenuScreen dynamic={dynamic} img={BG} type="newChar">
       <SetupModal
         addPlayer={addPlayer}
         dynamic={dynamic}

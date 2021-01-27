@@ -197,7 +197,7 @@ export const Selector = styled.div`
   margin: 0 20px;
   cursor: pointer;
 
-  @media all and (min-width: 768px) {
+  @media all and (min-width: 701px) {
     margin: 0 -25px;
   }
 `;
@@ -231,10 +231,16 @@ export const SelectorTitle = styled.h1`
   ${({ dynamic }) =>
     dynamic &&
     css`
-      z-index: 16;
+      z-index: 14;
       position: absolute;
-      top: 50px;
-      font-size: 3rem;
+      top: 2px;
+      font-size: 1.8rem;
+      transform: translate(0, -50%);
+
+      @media all and (min-width: 1200px) {
+        top: 20px;
+        font-size: 3rem;
+      }
     `}
 `;
 SelectorTitle.displayName = 'SelectorTitle';
