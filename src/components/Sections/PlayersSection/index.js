@@ -1031,7 +1031,9 @@ const PlayersSection = ({
                 {level}
                 {highestXp.xp === level &&
                   highestXp.name !== character.name && (
-                    <HighestXpTag>{highestXp.name}</HighestXpTag>
+                    <HighestXpTag xp={highestXp.xp}>
+                      {highestXp.name}
+                    </HighestXpTag>
                   )}
               </XpIcon>
             ))}

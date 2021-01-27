@@ -875,10 +875,16 @@ export const HighestXpTag = styled.span`
   user-select: none;
 
   @media all and (min-width: 701px) {
-    top: 19px;
     top: 20px;
-    font-size: 0.8rem;
+    font-size: 0.7rem;
     color: white;
+
+    ${({ xp }) =>
+      xp <= 4 &&
+      css`
+        font-size: 0.5rem;
+        top: -8px;
+      `}
   }
 `;
 HighestXpTag.displayName = 'HighestXpTag';
@@ -927,7 +933,7 @@ export const IndicatorsWrapper = styled.div`
       header &&
       css`
         z-index: 11;
-        top: 0;
+        top: 3px;
         left: 0;
         height: 26px;
         width: 100%;
