@@ -2,16 +2,10 @@ import React, { useEffect, useRef } from 'react';
 import { bool, func, number, string } from 'prop-types';
 import { useStateWithLabel } from '../../utils/hooks';
 import { checkIfItemCanBeCombined } from '../../utils/items';
+import { Block, PlayImageButton, PlayIcon, PlayText, ItemIcon } from './styles';
 import {
   Action,
-  Block,
-  PlayImageButton,
-  PlayIcon,
-  PlayText,
   ZombieActions,
-  ItemIcon
-} from './styles';
-import {
   ZombieLabel,
   ZombieImageForMobile
 } from '../Sections/ZombiesSection/styles';
@@ -42,6 +36,7 @@ const SoundBlock = ({
   differentSounds,
   img,
   isMobile,
+  isTablet,
   isSelected,
   label,
   makeNoise,
@@ -192,7 +187,9 @@ const SoundBlock = ({
         {type === ACTIVATIONS &&
           ((isMobile && displayZombieAttackButtonsForMobile) || !isMobile) && (
             <ZombieActions>
-              {!isMobile && <Action action={ACTIVATE}>{ACTIVATE}</Action>}
+              {!isMobile && !isTablet && (
+                <Action action={ACTIVATE}>{ACTIVATE}</Action>
+              )}
               <Action action={ATTACK} onClick={() => zombieAttack(name)}>
                 {ATTACK_SURVIVOR}
               </Action>
@@ -225,6 +222,7 @@ SoundBlock.propTypes = {
   img: string,
   isMobile: bool.isRequired,
   isSelected: bool,
+  isTablet: bool,
   label: string,
   makeNoise: func.isRequired,
   name: string.isRequired,
@@ -256,6 +254,7 @@ SoundBlock.defaultProps = {
   differentSounds: null,
   img: null,
   isSelected: false,
+  isTablet: false,
   label: null,
   needsToBeReloaded: false,
   noAudio: false,

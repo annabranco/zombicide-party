@@ -22,7 +22,8 @@ import {
   MOBILE,
   ZOMBIES_ROUND,
   END,
-  DESKTOP
+  DESKTOP,
+  TABLET
 } from '../../../constants';
 
 const ZombiesSection = ({
@@ -73,6 +74,7 @@ const ZombiesSection = ({
                 differentSounds={ALL_ZOMBIES[zombie].sounds}
                 img={ALL_ZOMBIES[zombie].img}
                 isMobile={device.current === MOBILE}
+                isTablet={device.current === TABLET}
                 name={ALL_ZOMBIES[zombie].name}
                 rows={
                   device.current === MOBILE && Object.keys(zombies).length / 3
@@ -81,7 +83,7 @@ const ZombiesSection = ({
                 type={ACTIVATIONS}
                 zombieAttack={zombieAttack}
               />
-              {device.current !== DESKTOP && (
+              {device.current === MOBILE && (
                 <ZombieLabel inner>{zombie}</ZombieLabel>
               )}
             </ZombieWrapper>

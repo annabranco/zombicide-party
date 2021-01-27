@@ -2,61 +2,13 @@ import styled from '@emotion/styled';
 import { css } from '@emotion/core';
 import { inactiveZombie, activeZombie } from '../../styles';
 import {
-  ATTACK,
-  ACTIVATE,
   IN_HAND,
   ITEMS,
-  KILL,
   WEAPONS,
   WOUND,
   ACTIVATIONS,
-  SELECTION,
-  ZOMBIE
+  SELECTION
 } from '../../constants';
-
-export const Action = styled.p`
-  label: Action;
-  z-index: 6;
-  margin: 10px auto;
-  width: 95%;
-  border: 2px solid black;
-  border-radius: 5px;
-  padding: 5px 0;
-  font-size: 1.3rem;
-  font-weight: 900;
-  line-height: 1.2;
-  color: black;
-  text-shadow: 1px 1px 4px gray;
-  text-align: center;
-  opacity: 1;
-  text-transform: uppercase;
-  font-family: 'Grandstander', cursive;
-
-  ${({ action }) => {
-    if (action === ACTIVATE) {
-      return css`
-        background: rgba(11, 196, 33, 0.8);
-      `;
-    }
-    if (action === ATTACK) {
-      return css`
-        background: rgba(209, 90, 0, 0.8);
-      `;
-    }
-    if (action === KILL) {
-      return css`
-        background: rgba(214, 6, 6, 0.8);
-      `;
-    }
-    return null;
-  }}
-
-  &:hover {
-    color: yellow;
-    -webkit-text-stroke: 1px black;
-  }
-`;
-Action.displayName = 'Action';
 
 export const Block = styled.div`
   label: Block;
@@ -351,6 +303,7 @@ export const PlayIcon = styled.img`
     max-width: 100%;
   }
 
+  /* ipad pro */
   @media (min-width: 1024px) and (min-height: 1300px) {
     height: 370px;
     width: 260px;
@@ -360,6 +313,13 @@ export const PlayIcon = styled.img`
       css`
         height: 300px;
         width: 200px;
+      `}
+
+    ${({ type }) =>
+      type === ACTIVATIONS &&
+      css`
+        height: 600px;
+        width: 260px;
       `}
   }
 `;
@@ -454,7 +414,7 @@ PlayText.displayName = 'PlayText';
 export const SelectorArea = styled.div`
   label: SelectorArea;
   position: relative;
-  height: calc(${`${window.innerHeight}px`} - 50px);
+  height: calc(${`${window.innerHeight}px`} - 100px);
   background: ${({ zombies }) => (zombies ? 'none' : '#232222')};
   display: flex;
   flex-direction: row;
@@ -481,9 +441,21 @@ export const SelectorArea = styled.div`
     return null;
   }}
 
+  ${({ zombies }) =>
+    zombies &&
+    css`
+      height: calc(${`${window.innerHeight}px`} - 40px);
+    `};
+
   @media (min-width: 320px) and (min-height: 640px) {
-    height: calc(${`${window.innerHeight}px`} - 100px);
+    height: calc(${`${window.innerHeight}px`} - 105px);
     padding: 20px 0 30px;
+
+    ${({ zombies }) =>
+      zombies &&
+      css`
+        height: calc(${`${window.innerHeight}px`} - 40px);
+      `};
   }
 
   @media all and (min-width: 701px) {
@@ -499,22 +471,3 @@ export const SelectorArea = styled.div`
   }
 `;
 SelectorArea.displayName = 'SelectorArea';
-
-export const ZombieActions = styled.div`
-  label: ZombieActions;
-  z-index: 6;
-  position: absolute;
-  display: flex;
-  bottom: 5px;
-  left: 0;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  height: auto;
-  width: 100%;
-
-  @media all and (min-width: 701px) {
-    display: none;
-  }
-`;
-ZombieActions.displayName = 'ZombieActions';

@@ -1,6 +1,53 @@
 import { css } from '@emotion/core';
 import styled from '@emotion/styled';
+import { ACTIVATE, ATTACK, KILL } from '../../../constants';
 import { SelectionButton } from '../../MainMenu/styles';
+
+export const Action = styled.p`
+  label: Action;
+  z-index: 6;
+  margin: 10px auto;
+  width: 95%;
+  border: 2px solid black;
+  border-radius: 5px;
+  padding: 5px 0;
+  font-size: 1.3rem;
+  font-weight: 900;
+  line-height: 1.2;
+  color: black;
+  text-shadow: 1px 1px 4px gray;
+  text-align: center;
+  opacity: 1;
+  text-transform: uppercase;
+  font-family: 'Grandstander', cursive;
+  box-shadow: 0 1px 10px 0 rgba(0, 0, 0, 0.6),
+    inset 1px 1px 3px rgba(255, 255, 255, 0.5);
+
+  ${({ action }) => {
+    if (action === ACTIVATE) {
+      return css`
+        background: rgba(11, 196, 33, 0.9);
+      `;
+    }
+    if (action === ATTACK) {
+      return css`
+        background: rgba(209, 90, 0, 0.9);
+      `;
+    }
+    if (action === KILL) {
+      return css`
+        background: rgba(214, 6, 6, 0.9);
+      `;
+    }
+    return null;
+  }}
+
+  &:hover {
+    color: yellow;
+    -webkit-text-stroke: 1px black;
+  }
+`;
+Action.displayName = 'Action';
 
 export const AttackBurronsWrapper = styled.div`
   label: AttackBurronsWrapper;
@@ -38,7 +85,7 @@ AttackInstructions.displayName = 'AttackInstructions';
 
 export const CancelAttackButton = styled(SelectionButton)`
   label: CancelAttackButton;
-  margin: 0 20px;
+  margin: 0 20px 5px;
   height: 30px;
   width: 120px;
   border-radius: 5px;
@@ -90,7 +137,7 @@ export const SubSectionWrapper = styled.div`
   flex-wrap: wrap;
   flex-direction: column;
   align-items: center;
-  justify-content: flex-start;
+  justify-content: space-between;
   height: ${`${window.innerHeight - 10}px`};
   width: 100%;
   overflow: hidden;
@@ -104,6 +151,31 @@ export const SubSectionWrapper = styled.div`
   }
 `;
 SubSectionWrapper.displayName = 'SubSectionWrapper';
+
+export const ZombieActions = styled.div`
+  label: ZombieActions;
+  z-index: 6;
+  position: absolute;
+  display: flex;
+  bottom: 35px;
+  left: 0;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: auto;
+  width: 100%;
+
+  @media all and (min-width: 701px) {
+    display: none;
+    bottom: 25%;
+  }
+
+  @media all and (min-width: 1200px) {
+    display: none;
+    bottom: 15px;
+  }
+`;
+ZombieActions.displayName = 'ZombieActions';
 
 export const ZombieImageForMobile = styled.div`
   label: ZombieImageForMobile;
@@ -167,6 +239,7 @@ export const ZombieLabel = styled.h3`
   line-height: 0.7;
   text-transform: uppercase;
   transition: all ease 1s;
+  color: crimson;
 
   ${({ inner }) =>
     inner &&
@@ -176,12 +249,17 @@ export const ZombieLabel = styled.h3`
       font-size: 1.3rem;
       line-height: 1.8;
       transform: translate(-50%, 0);
+      color: white;
     `}
 
   @media all and (min-width: 701px) {
     top: unset;
-    bottom: 10px;
+    bottom: 20%;
     transform: translate(-50%, 0);
+  }
+
+  @media all and (min-width: 1200px) {
+    bottom: 10px;
   }
 `;
 ZombieLabel.displayName = 'ZombieLabel';
@@ -211,7 +289,13 @@ export const ZombiesRoundSign = styled(AttackInstructions)`
   opacity: 0.7;
 
   @media all and (min-width: 768px) {
-    bottom: 50px;
+    bottom: 50%;
+    font-size: 7rem;
+    -webkit-text-stroke: 1px rgba(0, 0, 0, 0.5);
+  }
+
+  @media all and (min-width: 1200px) {
+    font-size: 7.5rem;
   }
 `;
 ZombiesRoundSign.displayName = 'ZombiesRoundSign';

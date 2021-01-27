@@ -68,7 +68,7 @@ ButtonsWrapper.displayName = 'ButtonsWrapper';
 
 export const ConfirmButton = styled.button`
   label: ConfirmButton;
-  margin: 0 auto;
+  margin: 0 auto 5px;
   height: 35px;
   width: 120px;
   background: green;
@@ -89,7 +89,7 @@ ConfirmButton.displayName = 'ConfirmButton';
 export const CancelButton = styled(ConfirmButton)`
   label: CancelButton;
   background: lightgray;
-  margin: 10px auto;
+  margin: 10px auto 13px;
   border-radius: 10px;
 
   @media all and (min-width: 701px) {

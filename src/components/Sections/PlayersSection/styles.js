@@ -98,6 +98,14 @@ export const AbilitiesWrapper = styled.div`
     height: 12%;
     width: 100%;
   }
+
+  @media all and (min-width: 1200px) {
+    height: 9.5%;
+  }
+
+  @media (min-width: 1300px) and (min-height: 1024px) {
+    height: 50px;
+  }
 `;
 AbilitiesWrapper.displayName = 'AbilitiesWrapper';
 
@@ -407,6 +415,19 @@ export const CardsActions = styled.div`
         right: 27%;
       `}
   }
+
+    @media (min-width: 1300px) and (min-height: 1024px) {
+    bottom: 250px;
+    left: 25%;
+
+    ${({ drop }) =>
+      drop &&
+      css`
+        left: unset;
+        right: 25%;
+      `}
+  }
+    }
 `;
 CardsActions.displayName = 'CardsActions';
 
@@ -495,6 +516,11 @@ export const CharacterOverlayImage = styled.img`
     width: 28%;
     margin-left: 2%;
   }
+
+  @media (min-width: 1300px) and (min-height: 1024px) {
+    bottom: 10%;
+    width: 40%;
+  }
 `;
 CharacterOverlayImage.displayName = 'CharacterOverlayImage';
 
@@ -528,6 +554,11 @@ export const CharacterOverlayImageShadow = styled(CharacterOverlayImage)`
   @media all and (min-width: 1200px) {
     height: 70%;
     margin: 0 0 -100px -60px;
+  }
+
+  @media (min-width: 1300px) and (min-height: 1024px) {
+    height: 60%;
+    margin: 0 0 -110px -90px;
   }
 `;
 CharacterOverlayImageShadow.displayName = 'CharacterOverlayImageShadow';
@@ -699,6 +730,29 @@ export const CharItems = styled.div`
         top: 250px;
         right: 10px;
       `}
+  }
+
+    @media (min-width: 1300px) and (min-height: 1024px) {
+    top: unset;
+    bottom: 120px;
+    /* margin: 65px 0 0 20px; */
+    width: 100%;
+    margin-left: 0;
+
+    ${({ slotType }) =>
+      slotType === IN_RESERVE &&
+      css`
+        margin-top: 0;
+        margin-bottom: 170px;
+      `}
+
+    ${({ trade }) =>
+      trade &&
+      css`
+        top: 180px;
+        right: 10px;
+      `}
+  }
   }
 `;
 CharItems.displayName = 'CharItems';
