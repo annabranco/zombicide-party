@@ -48,11 +48,13 @@ export const ActionIcon = styled.i`
         z-index: 10;
         background: none;
         position: absolute;
+        height: 100%;
+        width: 100%;
         top: -70px;
-        left: 42%;
+        left: 52%;
         transform: translate(-50%, 0);
         padding: 0;
-        line-height: 0.9;
+        line-height: 3.1;
         border: none;
         font-size: 5rem;
         color: rgba(255, 255, 255, 0.7);
@@ -60,7 +62,7 @@ export const ActionIcon = styled.i`
         border: 0;
         box-shadow: none;
 
-        @media all and (min-width: 768px) {
+        @media all and (min-width: 701px) {
           cursor: ${isActive ? 'not-allowed' : 'pointer'};
           z-index: 10;
           background: none;
@@ -69,7 +71,7 @@ export const ActionIcon = styled.i`
           left: 50%;
           transform: translate(-50%, 0);
           padding: 0;
-          line-height: 0.9;
+          line-height: 3.4;
           border: none;
           font-size: 5rem;
           color: rgba(255, 255, 255, 0.7);
@@ -170,6 +172,16 @@ export const ActionIcon = styled.i`
     }
     return null;
   }}
+
+  ${({ actionType }) =>
+    actionType === RELOAD_ACTION &&
+    css`
+      top: -70px;
+
+      @media all and (min-width: 701px) {
+        top: -20px;
+      }
+    `}
 
   @media (min-width: 1024px) and (min-height: 1300px) {
     height: 60px;

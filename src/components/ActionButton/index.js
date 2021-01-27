@@ -81,15 +81,6 @@ const ActionButton = ({
       }
     }
 
-    if (actionType === SEARCH_ACTION) {
-      sound.current = new Audio(
-        SOUNDS[type && `${actionType}${Math.floor(Math.random() * 10)}`]
-      );
-      sound2.current = new Audio(
-        SOUNDS[`found-${type}${Math.ceil(Math.random() * 6)}`]
-      );
-    }
-
     if (actionType === OPEN_DOOR_ACTION && checkForNoiseOpeningDoor(type)) {
       setNoise(noise + 1);
     }

@@ -265,7 +265,12 @@ const ItemsArea = ({
             setupMode={setupMode}
             trade={trade}
           >
-            {!trade && (slotType === IN_HAND ? ITEM_IN_HAND : ITEM_IN_RESERVE)}
+            {!trade &&
+              (slotType === IN_HAND ? (
+                <p>{ITEM_IN_HAND}</p>
+              ) : (
+                <p>{ITEM_IN_RESERVE}</p>
+              ))}
             {canSearch && !damageMode && !setupMode && (
               <ActionButton
                 actionType={SEARCH_ACTION}

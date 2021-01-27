@@ -110,7 +110,6 @@ const TradeArea = ({
   }, [partnerIndex]);
 
   const onTrade = ({ item, slot, charTrading }) => {
-    console.log('$$$ item, slot, charTrading ', item, slot, charTrading);
     if (selectedItem1) {
       if (!item) {
         selectItem1();

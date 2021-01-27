@@ -149,11 +149,10 @@ export const ItemBlank = styled.div`
     damageMode && !allSlotsAreEmpty ? 'none' : 'flex'};
   flex-direction: column;
   align-items: center;
-  justify-content: flex-start;
+  justify-content: center;
   height: 100px;
   /* width: 70px; */
   background: rgba(255, 255, 255, 0.25);
-  padding-top: 20px;
   font-family: 'Grandstander', cursive;
   font-size: 0.9rem;
   font-weight: 500;
@@ -171,7 +170,6 @@ export const ItemBlank = styled.div`
     & > i {
       display: block;
       position: absolute;
-      top: 40%;
       opacity: 0.8;
     }
   }
@@ -207,7 +205,6 @@ export const ItemBlank = styled.div`
   }}
 
   @media all and (min-width: 360px) {
-    padding-top: 30px;
     height: 110px;
     font-size: 1.1rem;
   }
@@ -215,7 +212,6 @@ export const ItemBlank = styled.div`
   @media all and (min-width: 701px) {
     height: 270px;
     width: 200px;
-    padding-top: 50px;
 
     ${({ trade }) =>
       trade &&
