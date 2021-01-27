@@ -1,52 +1,14 @@
 import styled from '@emotion/styled';
 import { css } from '@emotion/core';
 import { inactiveZombie, activeZombie } from '../../styles';
-import { IN_HAND, ITEMS, WEAPONS } from '../../constants';
-
-export const Action = styled.p`
-  label: Action;
-  z-index: 6;
-  display: none;
-  margin: 10px auto;
-  width: 95%;
-  border: 2px solid black;
-  border-radius: 5px;
-  padding: 5px 0;
-  font-size: 1.3rem;
-  font-weight: 900;
-  line-height: 1.2;
-  color: black;
-  text-shadow: 1px 1px 4px gray;
-  text-align: center;
-  opacity: 1;
-  text-transform: uppercase;
-  font-family: 'Grandstander', cursive;
-
-  ${({ action }) => {
-    if (action === 'activate') {
-      return css`
-        background: rgba(11, 196, 33, 0.8);
-      `;
-    }
-    if (action === 'attack') {
-      return css`
-        background: rgba(209, 90, 0, 0.8);
-      `;
-    }
-    if (action === 'kill') {
-      return css`
-        background: rgba(214, 6, 6, 0.8);
-      `;
-    }
-    return null;
-  }}
-
-  &:hover {
-    color: yellow;
-    -webkit-text-stroke: 1px black;
-  }
-`;
-Action.displayName = 'Action';
+import {
+  IN_HAND,
+  ITEMS,
+  WEAPONS,
+  WOUND,
+  ACTIVATIONS,
+  SELECTION
+} from '../../constants';
 
 export const Block = styled.div`
   label: Block;
@@ -56,7 +18,8 @@ export const Block = styled.div`
   border-radius: 5px;
   box-shadow: 0 0 5px 0 black;
   display: ${({ damageMode, type, wounded }) =>
-    damageMode && type !== 'wound' && wounded ? 'none' : 'flex'};
+    damageMode && type !== WOUND && wounded ? 'none' : 'flex'};
+  height: 100%;
 `;
 Block.displayName = 'Block';
 
@@ -68,57 +31,181 @@ export const ItemIcon = styled.div`
   max-width: 100%;
   transition: transform ease 0.5s, border ease 0.2s;
   background-image: ${({ img }) => img && `url(${img})`};
-  background-position: center center;
-  background-size: 150%;
+  /* background-position: center center;
+  background-size: 150%; */
   background-repeat: no-repeat;
   cursor: pointer;
+  transition: all ease 0.2s;
 
   ${({ isSelected }) =>
     isSelected &&
     css`
-      border: 5px solid rgba(29, 211, 72, 0.5);
-      border-radius: 20px;
+      filter: contrast(80%) brightness(150%);
+      background-size: 180%;
       transition: all ease 0.2s;
     `}
 
-  ${({ active, name }) => {
+  ${({ isMobile }) =>
+    isMobile &&
+    css`
+      background-position: center -10px;
+      border: 0;
+    `}
+
+  ${({ active, name, isMobile }) => {
+    if (
+      name === 'AutomaticShotgun' ||
+      name === 'AssaultRifle' ||
+      name === 'NightStick'
+    ) {
+      if (isMobile) {
+        return css`
+          background-size: 140%;
+          background-position: center 28%;
+        `;
+      }
+    }
+    if (name === 'DoubleBarrel') {
+      if (isMobile) {
+        return css`
+          background-size: 140%;
+          background-position: center 10%;
+        `;
+      }
+    }
+    if (
+      name === 'DesertEagle' ||
+      name === 'TaserGun' ||
+      name === 'SmokeGrenade'
+    ) {
+      if (isMobile) {
+        return css`
+          background-size: 160%;
+          background-position: center 4%;
+        `;
+      }
+    }
+    if (name === 'ColtPython' || name === 'SamuraiEdge') {
+      if (isMobile) {
+        return css`
+          background-size: 150%;
+          background-position: center 10%;
+        `;
+      }
+    }
+    if (name === 'BatteringRam' || name === 'Flashbang') {
+      if (isMobile) {
+        return css`
+          background-size: 140%;
+          background-position: center 2%;
+        `;
+      }
+    }
     if (name === 'Rifle') {
+      if (isMobile) {
+        return css`
+          background-size: 140%;
+          background-position: center 35%;
+        `;
+      }
+      return css`
+        background-size: 130%;
+        background-position: center 42%;
+      `;
+    }
+    if (name === 'SniperRifle') {
+      if (isMobile) {
+        return css`
+          background-size: 125%;
+          background-position: center top;
+        `;
+      }
       return css`
         background-size: 130%;
         background-position: center 42%;
       `;
     }
     if (name === 'Flashlight') {
+      if (isMobile) {
+        return css`
+          background-size: 145%;
+          background-position: center 25%;
+        `;
+      }
       return css`
         background-size: 165%;
       `;
     }
     if (name === 'EvilTwins' || name === 'MasShotgun' || name === 'SawedOff') {
+      if (isMobile) {
+        return css`
+          background-size: 150%;
+          background-position: center 35%;
+        `;
+      }
       return css`
-        background-position: center 51%;
         background-size: 165%;
+        background-position: center 51%;
       `;
     }
-    if (name === 'PlentyOfAmmo') {
+    if (name === 'PlentyOfAmmo' || name === 'Mp5') {
+      if (isMobile) {
+        return css`
+          background-size: 155%;
+          background-position: center 15%;
+        `;
+      }
       return css`
-        background-position: center 45%;
         background-size: 165%;
+        background-position: center 45%;
       `;
     }
     if (name === 'Scope') {
+      if (isMobile) {
+        return css`
+          background-size: 155%;
+          background-position: center 25%;
+        `;
+      }
       return css`
-        background-position: center 35%;
         background-size: 140%;
+        background-position: center 35%;
       `;
     }
     if (name === 'PlentyOfAmmoShotgun') {
+      if (isMobile) {
+        return css`
+          background-size: 160%;
+          background-position: center 15%;
+        `;
+      }
       return css`
-        background-position: center 45%;
         background-size: 190%;
+        background-position: center 45%;
       `;
     }
-    return null;
+    return css`
+      background-size: 150%;
+      background-position: center center;
+    `;
   }}
+
+    @media all and (min-width: 701px) {
+    height: 100%;
+    width: 100%;
+    ${({ isSelected }) =>
+      isSelected &&
+      css`
+        border: 5px solid rgba(29, 211, 72, 0.5);
+        border-radius: 20px;
+        transition: all ease 0.2s;
+      `}
+  }
+  ${({ unloaded }) =>
+    unloaded &&
+    css`
+      filter: sepia(2) brightness(1.2) contrast(0.6) opacity(0.5);
+    `}
 `;
 ItemIcon.displayName = 'ItemIcon';
 
@@ -129,12 +216,14 @@ export const PlayIcon = styled.img`
   transition: transform ease 0.5s;
 
   ${({ type, active }) => {
-    if (type === 'wound') {
+    if (type === WOUND) {
       return css`
         width: 100%;
-        &:hover {
-          transform: scale(1.01);
-          transition: all ease 0.4s;
+        @media all and (min-width: 701px) {
+          &:hover {
+            transform: scale(1.01);
+            transition: transform ease 0.4s;
+          }
         }
       `;
     }
@@ -142,9 +231,11 @@ export const PlayIcon = styled.img`
       return css`
         max-height: 90%;
         max-width: 90%;
-        &:hover {
-          transform: scale(1.15);
-          transition: all ease 0.8s;
+        @media all and (min-width: 701px) {
+          &:hover {
+            transform: scale(1.15);
+            transition: transform ease 0.8s;
+          }
         }
       `;
     }
@@ -153,33 +244,84 @@ export const PlayIcon = styled.img`
         border: 1px solid black;
         border-radius: 8px;
 
-        &:hover {
-          transform: scale(1.01);
-          transition: all ease 0.4s;
+        @media all and (min-width: 701px) {
+          &:hover {
+            transform: scale(1.01);
+            transition: transform ease 0.4s;
+          }
         }
       `;
     }
-    if (active) {
+    if (type === ACTIVATIONS && active) {
       return css`
         ${activeZombie}
-        transform: scale(1.05);
-        transition: all ease 0.8s;
-        &:hover {
+
+        @media all and (min-width: 701px) {
           transform: scale(1.05);
-          transition: all ease 0.8s;
+          transition: transform ease 0.8s;
+          &:hover {
+            transform: scale(1.05);
+            transition: transform ease 0.8s;
+          }
         }
       `;
     }
-    return css`
-      ${inactiveZombie}
-      height: auto;
-      transition: all ease 0.8s;
-      &:hover {
-        transform: scale(1.05);
-        transition: all ease 0.8s;
-      }
-    `;
+    if (type === ACTIVATIONS && !active) {
+      return css`
+        ${inactiveZombie}
+        height: auto;
+        transition: transform ease 0.8s;
+
+        @media all and (min-width: 701px) {
+          &:hover {
+            transform: scale(1.05);
+            transition: transform ease 0.8s;
+          }
+        }
+      `;
+    }
+    return null;
   }}
+
+  ${({ unloaded }) =>
+    unloaded &&
+    css`
+      filter: sepia(2) brightness(1.2) contrast(0.6) opacity(0.5);
+    `}
+
+
+  ${({ isSelected }) =>
+    isSelected &&
+    css`
+      filter: brightness(70%) sepia(70%) hue-rotate(62deg) saturate(400%)
+        contrast(0.9);
+    `}
+
+
+  @media all and (min-width: 701px) {
+    max-height: 100%;
+    max-width: 100%;
+  }
+
+  /* ipad pro */
+  @media (min-width: 1024px) and (min-height: 1300px) {
+    height: 370px;
+    width: 260px;
+
+    ${({ trade }) =>
+      trade &&
+      css`
+        height: 300px;
+        width: 200px;
+      `}
+
+    ${({ type }) =>
+      type === ACTIVATIONS &&
+      css`
+        height: 600px;
+        width: 260px;
+      `}
+  }
 `;
 PlayIcon.displayName = 'PlayIcon';
 
@@ -193,26 +335,41 @@ export const PlayImageButton = styled.button`
   line-height: 0;
   width: 100%;
   padding: 0;
+  display: flex;
+  transition: background ease 1.5s;
+
+  &: hover > div {
+    display: flex;
+  }
+
+  ${({ isText }) =>
+    isText &&
+    css`
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    `}
 
   &:hover {
     filter: ${({ damageMode, type }) =>
-      damageMode && type !== 'wound' && 'sepia(0.8) brightness(0.6)'};
-    & > div > p {
-      display: block;
-    }
+      damageMode && type !== WOUND && 'sepia(0.8) brightness(0.6)'};
+    /*
+    & > div {
+      display: flex;
+    } */
 
     & > i {
       display: block;
     }
   }
-  transition: background ease 1.5s;
 
-  ${({ canAttack, damageMode, setupMode, slotType, type }) => {
+  ${({ canAttack, damageMode, setupMode, slotType, trade, type }) => {
     switch (true) {
       case !!damageMode:
       case !!setupMode:
-      case type === 'activations':
-      case slotType === 'selection':
+      case type === ACTIVATIONS:
+      case slotType === SELECTION:
+      case trade:
         return css`
           cursor: pointer;
         `;
@@ -230,74 +387,87 @@ export const PlayImageButton = styled.button`
         `;
     }
   }};
+
+  ${({ type }) =>
+    type === ACTIVATIONS &&
+    css`
+      background: none;
+    `}
 `;
 PlayImageButton.displayName = 'PlayImageButton';
 
 export const PlayText = styled.p`
   label: PlayText;
-  height: 100%;
-  width: 100%;
+  width: 60%;
   font-size: 1.3rem;
   font-weight: 900;
   line-height: 1;
-  color: black;
+  color: white;
   text-shadow: 1px 1px 4px gray;
+  text-transform: uppercase;
+  font-family: 'Grandstander', cursive;
+  font-size: 2rem;
+  text-align: center;
 `;
 PlayText.displayName = 'PlayText';
 
 export const SelectorArea = styled.div`
   label: SelectorArea;
   position: relative;
-  height: calc(100vh - 80px);
-  background: #232222;
+  height: calc(${`${window.innerHeight}px`} - 100px);
+  background: ${({ zombies }) => (zombies ? 'none' : '#232222')};
   display: flex;
   flex-direction: row;
   align-items: flex-start;
   justify-content: center;
-  overflow: hidden;
-  padding-top: 20px;
+  overflow-y: ${({ zombies }) => (zombies ? 'hidden' : 'auto')};
+  overflow-x: hidden;
+  padding: 0;
 
-  ${({ columns }) => {
+  ${({ columns, zombies }) => {
     if (columns === 'big') {
       return css`
-        height: calc(100vh - 30px);
+        height: calc(${`${window.innerHeight}px`} - 30px);
       `;
     }
     if (columns) {
       return css`
         display: grid;
-        width: 90%;
-        grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+        width: 100%;
+        grid-gap: 10px;
+        grid-template-columns: repeat(${columns}, minmax(100px, 1fr));
       `;
     }
     return null;
   }}
+
+  ${({ zombies }) =>
+    zombies &&
+    css`
+      height: calc(${`${window.innerHeight}px`} - 40px);
+    `};
+
+  @media (min-width: 320px) and (min-height: 640px) {
+    height: calc(${`${window.innerHeight}px`} - 105px);
+    padding: 20px 0 30px;
+
+    ${({ zombies }) =>
+      zombies &&
+      css`
+        height: calc(${`${window.innerHeight}px`} - 40px);
+      `};
+  }
+
+  @media all and (min-width: 701px) {
+    height: calc(${`${window.innerHeight}px`} - 110px);
+  }
+
+  @media all and (min-width: 1200px) {
+    height: calc(${`${window.innerHeight}px`} - 100px);
+  }
+
+  @media all and (min-width: 1400px) {
+    height: calc(${`${window.innerHeight}px`} - 125px);
+  }
 `;
 SelectorArea.displayName = 'SelectorArea';
-
-export const ZombiesArea = styled.div`
-  label: ZombiesArea;
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: flex-start;
-  height: 100%;
-  width: 100%;
-`;
-ZombiesArea.displayName = 'ZombiesArea';
-
-export const ZombieActions = styled.div`
-  label: ZombieActions;
-  z-index: 6;
-  position: absolute;
-  bottom: 5px;
-  left: 0;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  height: auto;
-  width: 100%;
-`;
-ZombieActions.displayName = 'ZombieActions';

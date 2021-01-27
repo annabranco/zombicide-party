@@ -4,9 +4,8 @@ import { isEqual } from 'lodash';
 import { useStateWithLabel } from '../../../utils/hooks';
 import { getItemPhoto, getItemType } from '../../../utils/items';
 import SoundBlock from '../../SoundBlock';
-import ActionButton from '../../Sections/PlayersSection/actions';
-import { WEAPONS_S1 } from '../../../setup/weapons';
-
+import ActionButton from '../../ActionButton';
+import { ALL_WEAPONS } from '../../../setup/weapons';
 import { AppButton } from '../../Sections/PlayersSection/styles';
 import {
   ActionButtonIcon,
@@ -19,16 +18,24 @@ import {
   KillButtonIcon
 } from './styles';
 import {
+  DROP,
   IN_HAND,
-  ITEM_IN_BACKPACK,
+  ITEM_IN_RESERVE,
   ITEM_IN_HAND,
   MELEE,
   MELEE_RANGED,
+  MOBILE,
+  NONE,
   RANGED,
+  RELOAD,
+  RELOAD_ACTION,
+  SEARCH_ACTION,
   SPECIAL,
+  TRADE,
   WEAPONS
 } from '../../../constants';
 import { BonusDicesType } from '../../../interfaces/types';
+import ZombieFace from '../../../assets/images/zombieFace.png';
 
 const ItemsArea = ({
   actionsLeft,
@@ -44,7 +51,9 @@ const ItemsArea = ({
   combineItemSelected,
   combinePair,
   damageMode,
+  device,
   dice,
+  dropMode,
   gainCustomXp,
   gainXp,
   handleSearch,
@@ -57,86 +66,43 @@ const ItemsArea = ({
   selectSlot,
   setupMode,
   slotType,
+  spendAction,
+  spendSingleUseWeapon,
   startTrade,
   trade,
   tradeItem,
   wounded
 }) => {
   const [isActive, toggleActive] = useStateWithLabel(false, 'isActive');
-  const [isSelected, select] = useStateWithLabel(false, 'isSelected');
   const [killButtons, changeKillButtons] = useStateWithLabel([], 'killButtons');
-  const [displayKillButtons, toggleDisplayKillButtons] = useStateWithLabel(
+  const [needReload, toggleNeedReload] = useStateWithLabel([], 'needReload');
+  const [displaySplash, toggleDisplaySplash] = useStateWithLabel(
     false,
-    'displayKillButtons'
+    'displaySplash'
   );
-  const killButtonsTimer = useRef();
+
   const bonusDiceRef = useRef();
   const dicesRef = useRef();
+  const killButtonsTimer = useRef();
 
   const itemsType = getItemType(item);
 
-  const onClickChange = () => {
-    toggleActive(false);
-    selectSlot(index + (itemsType === WEAPONS ? 1 : 3));
-  };
-
-  const onClickCard = () => {
-    const slot = getSlotNumber(index);
-    if (damageMode) {
-      causeDamage(slot);
-    } else if (trade) {
-      if (isSelected) {
-        select(false);
-        tradeItem({ item: null, slot, char: charName });
-      } else {
-        tradeItem({ item, slot, char: charName });
-        if (!itemSelected) {
-          select(true);
-        }
-      }
-    } else {
-      onClickChange();
-    }
-  };
-
-  const getSlotNumber = itemIndex => {
-    const adj = slotType === IN_HAND ? 1 : 3;
-    return itemIndex + adj;
-  };
-
-  const onClickEmptyCard = () => {
-    const slot = getSlotNumber(index);
-    if (damageMode) {
-      if (allSlotsAreEmpty) {
-        causeDamage(slot);
-      }
-    } else if (trade) {
-      if (isSelected) {
-        select(false);
-        tradeItem({ item: null, slot, char: charName });
-      } else {
-        tradeItem({ item: 'none', slot, char: charName });
-        if (!itemSelected) {
-          select(true);
-        }
-      }
-    } else if (canSearch || setupMode) {
-      selectSlot(slot);
-      if (!setupMode) {
-        handleSearch();
-      }
-    }
-  };
-
   const activateKillButtons = () => {
-    if (WEAPONS_S1[item].dice === SPECIAL) {
+    spendSingleUseWeapon(index, item);
+    if (ALL_WEAPONS[item].dice === SPECIAL) {
       gainCustomXp(index);
     } else {
-      toggleDisplayKillButtons(true);
+      const totalDices = calculateTotalDices();
+      const currentPool = killButtons.length;
+      const newArray = [...Array(totalDices).keys()].map(
+        value => value + currentPool
+      );
+
+      clearTimeout(killButtonsTimer.current);
+      changeKillButtons([...killButtons, ...newArray]);
       killButtonsTimer.current = setTimeout(() => {
-        toggleDisplayKillButtons(false);
-        changeKillButtons(calculateTotalDices());
-      }, 3000);
+        changeKillButtons([]);
+      }, 10000);
     }
   };
 
@@ -148,46 +114,117 @@ const ItemsArea = ({
 
     totalDices = dice + combat;
 
-    if (WEAPONS_S1[item].attack === MELEE) {
+    if (ALL_WEAPONS[item].attack === MELEE) {
       totalDices += melee;
-    } else if (WEAPONS_S1[item].attack === RANGED) {
+    } else if (ALL_WEAPONS[item].attack === RANGED) {
       totalDices += ranged;
-    } else if (WEAPONS_S1[item].attack === MELEE_RANGED) {
+    } else if (ALL_WEAPONS[item].attack === MELEE_RANGED) {
       totalDices = totalDices + ranged + melee;
     }
-    return [...Array(totalDices).keys()];
+    return totalDices;
+  };
+
+  const checkIfReloadIsNeeded = () =>
+    ALL_WEAPONS[item] && ALL_WEAPONS[item].needsReloading;
+
+  const getSlotNumber = itemIndex => {
+    const adj = slotType === IN_HAND ? 1 : 3;
+    return itemIndex + adj;
+  };
+
+  const onClickCard = () => {
+    const slot = getSlotNumber(index);
+    if (damageMode) {
+      causeDamage(slot);
+    } else if (trade) {
+      if (itemSelected) {
+        // select(false);
+        tradeItem({ item: null, slot, charTrading: charName });
+      } else {
+        tradeItem({ item, slot, charTrading: charName });
+        if (!itemSelected) {
+          // select(true);
+        }
+      }
+    } else {
+      onClickChange();
+    }
+  };
+
+  const onClickChange = () => {
+    toggleActive(false);
+    selectSlot(index + (itemsType === WEAPONS ? 1 : 3));
+  };
+
+  const onClickEmptyCard = () => {
+    const slot = getSlotNumber(index);
+    if (damageMode) {
+      if (allSlotsAreEmpty) {
+        causeDamage(slot);
+      }
+    } else if (trade) {
+      if (itemSelected) {
+        tradeItem({ item: null, slot, charTrading: charName });
+      } else {
+        tradeItem({ item: NONE, slot, charTrading: charName });
+      }
+    } else if (canSearch || setupMode) {
+      selectSlot(slot);
+      if (!setupMode) {
+        handleSearch();
+      }
+    }
   };
 
   const killOneZombie = pressedButton => {
     const updatedKillButtons = [...killButtons];
+
+    toggleDisplaySplash(true);
+    setTimeout(() => {
+      toggleDisplaySplash(false);
+    }, 350);
+
     clearTimeout(killButtonsTimer.current);
     killButtonsTimer.current = setTimeout(() => {
-      toggleDisplayKillButtons(false);
-      changeKillButtons(calculateTotalDices());
+      changeKillButtons([]);
     }, 3000);
     updatedKillButtons[pressedButton] = `${pressedButton}`;
     changeKillButtons(updatedKillButtons);
     gainXp(1);
   };
 
+  const reload = weapon => {
+    if (needReload) {
+      spendAction(RELOAD);
+      toggleNeedReload(false);
+    }
+  };
+
+  const spendAmmo = () => {
+    toggleNeedReload(true);
+  };
+
   useEffect(() => {
     if (dice && bonusDices) {
-      if (
-        !isEqual(bonusDiceRef.current, bonusDices) ||
-        dicesRef.current !== dice
-      ) {
-        changeKillButtons(calculateTotalDices());
-      }
+      // if (
+      //   !isEqual(bonusDiceRef.current, bonusDices) ||
+      //   dicesRef.current !== dice
+      // ) {
+      //   changeKillButtons(calculateTotalDices());
+      // }
     }
   }, [dice, bonusDices, item, changeKillButtons]);
+
+  useEffect(() => {
+    toggleNeedReload(false);
+  }, [charName, toggleNeedReload]);
 
   return (
     <ItemWrapper
       id={`${item}-${index + 1}`}
       isActive={isActive}
-      key={`${item}-${index + 1}`}
-      onMouseOut={() => toggleActive(false)}
-      onMouseOver={() => toggleActive(true)}
+      onMouseOut={!device === MOBILE ? () => toggleActive(false) : null}
+      onMouseOver={!device === MOBILE ? () => toggleActive(true) : null}
       slotType={slotType}
       type={itemsType}
     >
@@ -202,40 +239,36 @@ const ItemsArea = ({
             combinePair={combinePair}
             damageMode={damageMode}
             img={getItemPhoto(item)}
-            isSelected={isSelected}
+            isMobile={device === MOBILE}
+            isSelected={itemSelected}
             makeNoise={makeNoise}
             name={item}
+            needsToBeReloaded={checkIfReloadIsNeeded()}
             onClickCard={setupMode ? onClickEmptyCard : onClickCard}
             onClickCombine={onClickCombine}
             setupMode={setupMode}
             slot={getSlotNumber(index)}
             slotType={slotType}
+            spendAmmo={spendAmmo}
             trade={trade}
             type={itemsType}
+            unloaded={needReload}
             wounded={wounded}
-          >
-            {canSearch && !damageMode && !setupMode && (
-              <ActionButton
-                actionType="search"
-                callback={onClickEmptyCard}
-                type={charVoice}
-              />
-            )}
-          </SoundBlock>
+          />
         ) : (
           <ItemBlank
             allSlotsAreEmpty={allSlotsAreEmpty}
             damageMode={damageMode}
             canSearch={canSearch}
-            isSelected={isSelected}
+            isSelected={itemSelected}
             onClick={onClickEmptyCard}
             setupMode={setupMode}
             trade={trade}
           >
-            {!trade && (slotType === IN_HAND ? ITEM_IN_HAND : ITEM_IN_BACKPACK)}
+            {!trade && (slotType === IN_HAND ? ITEM_IN_HAND : ITEM_IN_RESERVE)}
             {canSearch && !damageMode && !setupMode && (
               <ActionButton
-                actionType="search"
+                actionType={SEARCH_ACTION}
                 callback={onClickEmptyCard}
                 type={charVoice}
               />
@@ -243,12 +276,7 @@ const ItemsArea = ({
           </ItemBlank>
         )}
       </Item>
-      <ActionButtonsWrapper trade={trade}>
-        {!trade && !damageMode && actionsLeft > 0 && (
-          <AppButton onClick={() => startTrade(true)} type="button" trade>
-            <ActionButtonIcon className="fas fa-exchange-alt" type="trade" />
-          </AppButton>
-        )}
+      <ActionButtonsWrapper trade={trade} visible={dropMode}>
         {item && !damageMode && (
           <AppButton
             onClick={() =>
@@ -259,21 +287,30 @@ const ItemsArea = ({
             type="button"
             trade
           >
-            <ActionButtonIcon className="far fa-trash-alt" type="drop" />
+            <ActionButtonIcon className="far fa-trash-alt" type={DROP} />
           </AppButton>
         )}
       </ActionButtonsWrapper>
-      {displayKillButtons && (
-        <KillButtonsWrapper>
+      {needReload && (
+        <ActionButton
+          actionType={RELOAD_ACTION}
+          callback={reload}
+          isMobile={device === MOBILE}
+          type="center"
+        />
+      )}
+      {killButtons.length > 0 && (
+        <KillButtonsWrapper displaySplash={displaySplash}>
           {killButtons.map(key => (
             <KillButton
+              attack={ALL_WEAPONS[item] && ALL_WEAPONS[item].attack}
               key={`kill-${item}-${key}`}
               onClick={() => killOneZombie(key)}
               type="button"
               trade
               visible={typeof key === 'number'}
             >
-              <KillButtonIcon className="fas fa-skull" type="kill" />
+              <KillButtonIcon src={ZombieFace} type="kill" />
             </KillButton>
           ))}
         </KillButtonsWrapper>
@@ -296,7 +333,9 @@ ItemsArea.propTypes = {
   combineItemSelected: bool,
   combinePair: bool,
   damageMode: bool.isRequired,
+  device: string.isRequired,
   dice: number,
+  dropMode: bool.isRequired,
   gainCustomXp: func,
   gainXp: func,
   handleSearch: func.isRequired,
@@ -309,6 +348,8 @@ ItemsArea.propTypes = {
   selectSlot: func.isRequired,
   setupMode: bool,
   slotType: string.isRequired,
+  spendAction: func,
+  spendSingleUseWeapon: func,
   startTrade: func.isRequired,
   trade: bool.isRequired,
   tradeItem: func,
@@ -327,7 +368,9 @@ ItemsArea.defaultProps = {
   gainCustomXp: () => null,
   gainXp: () => null,
   item: null,
+  spendAction: () => null,
   setupMode: false,
+  spendSingleUseWeapon: () => null,
   tradeItem: () => null
 };
 

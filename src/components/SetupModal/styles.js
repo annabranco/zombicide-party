@@ -4,32 +4,31 @@ import { SelectionButton } from '../MainMenu/styles';
 
 export const ButtonsArea = styled.div`
   label: ButtonsArea;
-  position: absolute;
-  bottom: 0;
   display: flex;
   flex-direction: row;
   align-items: center;
   justify-content: center;
   height: 70px;
-  width: 100%;
+  width: 95%;
   background: rgba(0, 0, 0, 0.6);
   box-shadow: 0 0 20px black;
-  padding: 0;
   text-align: center;
 `;
 ButtonsArea.displayName = 'ButtonsArea';
 
 export const ModalButton = styled(SelectionButton)`
   label: ModalButton;
-  margin: 10px 40px;
+  margin: 10px 10px;
   min-height: 40px;
-  width: 190px;
+  width: 150px;
   background: gray;
   padding: 5px 15px;
   font-size: 1.1rem;
   font-weight: 700;
   color: black;
   font-family: 'Grandstander', cursive;
+  box-shadow: 0 1px 10px 0 rgba(0, 0, 0, 0.6),
+    inset 1px 1px 3px rgba(255, 0, 0, 0.5);
 
   &: hover {
     color: yellow;
@@ -49,7 +48,7 @@ export const ModalButton = styled(SelectionButton)`
     }
     if (type === 'option') {
       return css`
-        min-height: 80px;
+        min-height: 50px;
         background: lightgray;
         font-size: 1.15rem;
         font-family: 'Grandstander', cursive;
@@ -57,7 +56,6 @@ export const ModalButton = styled(SelectionButton)`
         &: hover {
           color: purple;
           filter: brightness(1.2);
-          font-size: 1.2rem;
         }
       `;
     }
@@ -69,13 +67,87 @@ export const ModalButton = styled(SelectionButton)`
       color: #707070;
       cursor: not-allowed;
     `}
+
+@media all and (min-width: 360px) {
+    ${({ type }) => {
+      if (type === 'option') {
+        return css`
+          min-height: 50px;
+          font-size: 1.15rem;
+        `;
+      }
+      return null;
+    }}
+  }
+
+  @media all and (min-width: 768px) {
+    width: 200px;
+    background-size: 100% 100%;
+    margin: 20px 40px 100px;
+    padding: 10px 25px;
+    font-size: 1.5rem;
+
+    ${({ type }) => {
+      if (type === 'option') {
+        return css`
+          min-height: 70px;
+          font-size: 1.4rem;
+        `;
+      }
+      return null;
+    }}
+  }
+
+  @media all and (min-width: 1200px) {
+    width: 200px;
+    background-size: 100% 100%;
+    margin: 20px 40px 100px;
+    padding: 10px 25px;
+    font-size: 1.3rem;
+
+    ${({ type }) => {
+      if (type === 'option') {
+        return css`
+          min-height: 60px;
+          font-size: 1.3rem;
+        `;
+      }
+      return null;
+    }}
+  }
+
+  @media all and (min-width: 1400px) {
+    ${({ type }) => {
+      if (type === 'option') {
+        return css`
+          margin-bottom: 130px;
+        `;
+      }
+      return null;
+    }}
+  }
 `;
 ModalButton.displayName = 'ModalButton';
 
 export const ModalCharFace = styled.img`
   label: ModalCharFace;
-  margin: -50px auto;
+  margin: -50px auto 0;
   width: 160px;
+
+  @media all and (min-width: 768px) {
+    margin: -300px auto 0;
+    width: 200px;
+  }
+
+  @media all and (min-width: 1200px) {
+    margin: -100px auto 0;
+    width: 140px;
+  }
+
+  @media all and (min-width: 1400px) {
+    margin: -120px auto 0;
+    width: 180px;
+  }
 `;
 ModalCharFace.displayName = 'ModalCharFace';
 
@@ -86,8 +158,10 @@ export const ModalMessage = styled.p`
   text-shadow: 0 0 2px white;
   text-align: center;
   line-height: 2;
-  white-space: pre;
   font-family: 'Cairo', sans-serif;
+  white-space: auto;
+  width: 100%;
+
   ${({ type }) =>
     type === 'option' &&
     css`
@@ -96,6 +170,15 @@ export const ModalMessage = styled.p`
       font-size: 1.3rem;
       color: yellow;
     `}
+
+  @media all and (min-width: 768px) {
+    width: 60%;
+  }
+
+  @media all and (min-width: 1400px) {
+    margin-top: -50px;
+    width: 40%;
+  }
 `;
 ModalMessage.displayName = 'ModalMessage';
 
@@ -104,6 +187,10 @@ export const ModalMessageWrapper = styled.div`
   margin: -50px auto;
   height: 160px;
   width: 80%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 `;
 ModalMessageWrapper.displayName = 'ModalMessageWrapper';
 
@@ -118,22 +205,34 @@ ModalMessageSecondary.displayName = 'ModalMessageSecondary';
 
 export const ModalTitle = styled.h1`
   label: ModalTitle;
-  position: absolute;
-  top: 0;
+  /* position: absolute;
+  top: 0; */
   margin: 0 auto 50px;
-  height: 60px;
+  padding-top: 40px;
+  height: 100px;
   width: 100%;
-  background: rgba(0, 0, 0, 0.7);
-  line-height: 2.5;
+  background: rgba(0, 0, 0, 0.5);
+  /* line-height: 2.5; */
   text-align: center;
-  font-size: 2rem;
+  font-size: 3rem;
   color: red;
-  text-shadow: 0 0 2px white;
+  font-family: Crackhouse, 'Grandstander', cursive;
+  text-transform: uppercase;
+
+  @media all and (min-width: 768px) {
+    font-size: 5rem;
+  }
 
   ${({ uppercase }) =>
     uppercase &&
     css`
       text-transform: uppercase;
+    `}
+
+  ${({ type }) =>
+    type === 'Warning' &&
+    css`
+      font-size: 5rem;
     `}
 `;
 ModalTitle.displayName = 'ModalTitle';
@@ -146,11 +245,11 @@ export const ModalWindow = styled.div`
   top: 50%;
   flex-direction: column;
   align-items: center;
-  justify-content: space-around;
+  justify-content: space-between;
   border-radius: 15px;
-  height: 120%;
-  width: 120%;
-  background: rgba(0, 0, 0, 0.75);
+  height: 100%;
+  width: 100%;
+  background: rgba(0, 0, 0, 0.9);
   overflow: hidden;
   transform: translate(0, -50%);
 

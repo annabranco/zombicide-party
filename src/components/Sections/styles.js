@@ -24,9 +24,13 @@ export const SectionWrapper = styled.section`
   flex-direction: column;
   align-items: center;
   justify-content: flex-start;
-  height: 100vh;
-  width: 90%;
+  height: ${`${window.innerHeight}px`};
+  width: 100vw;
   overflow: hidden;
+
+  @media all and (min-width: 768px) {
+    width: 90%;
+  }
 `;
 
 export const TitleBar = styled.div`

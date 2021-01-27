@@ -14,7 +14,7 @@ export const CharacterType = shape({
   color: string,
   experience: number,
   img: string,
-  inBackpack: arrayOf(string),
+  inReserve: arrayOf(string),
   inHand: arrayOf(string),
   name: string,
   player: string,

@@ -1,54 +1,67 @@
-import { NOISY } from '../constants';
-import { ITEMS_S1 } from '../setup/items';
+import { NOISY, WOUNDED } from '../constants';
+import { ALL_ITEMS } from '../setup/items';
 import { SPECIALS_CARDS } from '../setup/specials';
-import { WEAPONS_S1 } from '../setup/weapons';
+import { ALL_WEAPONS } from '../setup/weapons';
 
-const ALL_ITEMS = {
-  ...ITEMS_S1,
+const ALL_CARDS = {
+  ...ALL_ITEMS,
   ...SPECIALS_CARDS,
-  ...WEAPONS_S1
+  ...ALL_WEAPONS
 };
 
 export const checkIfCharacterCanOpenDoors = currentItems => {
   let openDoor;
   currentItems.forEach(item => {
-    if (WEAPONS_S1[item] && WEAPONS_S1[item].canOpenDoor) {
-      openDoor = WEAPONS_S1[item].name;
+    if (item) {
+      const itemName = item.replace(' ', '');
+      if (ALL_WEAPONS[itemName] && ALL_WEAPONS[itemName].canOpenDoor) {
+        openDoor = ALL_WEAPONS[itemName].name;
+      }
     }
   });
-  return openDoor;
+  return openDoor || false;
 };
 
 export const getItemPhoto = item => {
-  if (Object.keys(SPECIALS_CARDS).find(name => item === name)) {
-    return SPECIALS_CARDS[item].img;
+  const photoName = item.replace(' ', '');
+  if (Object.keys(SPECIALS_CARDS).find(name => photoName === name)) {
+    return SPECIALS_CARDS[photoName].img;
   }
-  if (Object.keys(WEAPONS_S1).find(name => item === name)) {
-    return WEAPONS_S1[item].img;
+  if (Object.keys(ALL_WEAPONS).find(name => photoName === name)) {
+    return ALL_WEAPONS[photoName].img;
   }
-  if (Object.keys(ITEMS_S1).find(name => item === name)) {
-    return ITEMS_S1[item].img;
+  if (Object.keys(ALL_ITEMS).find(name => photoName === name)) {
+    return ALL_ITEMS[photoName].img;
   }
   return null;
 };
 
 export const getItemType = item => {
-  if (Object.keys(ALL_ITEMS).find(name => item === name)) {
-    return ALL_ITEMS[item].type;
+  if (item) {
+    const itemName = item.replace(' ', '');
+    if (Object.keys(ALL_CARDS).find(name => itemName === name)) {
+      return ALL_CARDS[itemName].type;
+    }
   }
   return null;
 };
 
 export const checkForNoise = item => {
-  if (Object.keys(ALL_ITEMS).find(name => item === name)) {
-    return ALL_ITEMS[item].noise;
+  if (item) {
+    const itemName = item.replace(' ', '');
+    if (Object.keys(ALL_CARDS).find(name => itemName === name)) {
+      return ALL_CARDS[itemName].noise;
+    }
   }
   return null;
 };
 
 export const checkForNoiseOpeningDoor = item => {
-  if (Object.keys(ALL_ITEMS).find(name => item === name)) {
-    return ALL_ITEMS[item].canOpenDoor === NOISY;
+  if (item) {
+    const itemName = item.replace(' ', '');
+    if (Object.keys(ALL_CARDS).find(name => itemName === name)) {
+      return ALL_CARDS[itemName].canOpenDoor === NOISY;
+    }
   }
   return null;
 };
@@ -61,8 +74,11 @@ export const checkIfCharacterHasFlashlight = items => {
 };
 
 export const checkIfItemCanBeCombined = item => {
-  if (Object.keys(ALL_ITEMS).find(name => item === name)) {
-    return !!ALL_ITEMS[item].combine;
+  if (item) {
+    const itemName = item.replace(' ', '');
+    if (Object.keys(ALL_CARDS).find(name => itemName === name)) {
+      return !!ALL_CARDS[itemName].combine;
+    }
   }
   return null;
 };
@@ -70,11 +86,14 @@ export const checkIfItemCanBeCombined = item => {
 export const checkIfCharCanCombineItems = items => {
   const itemsThatCanBeCombined = [];
   items.forEach(item => {
-    if (checkIfItemCanBeCombined(item)) {
-      const pairItem = ALL_ITEMS[item].combine[0];
-      if (items.includes(pairItem)) {
-        itemsThatCanBeCombined.push(item);
-        return true;
+    if (item) {
+      const itemName = item.replace(' ', '');
+      if (checkIfItemCanBeCombined(itemName)) {
+        const pairItem = ALL_CARDS[itemName].combine[0];
+        if (items.includes(pairItem)) {
+          itemsThatCanBeCombined.push(itemName);
+          return true;
+        }
       }
     }
     return false;
@@ -87,9 +106,18 @@ export const checkIfCharCanCombineItems = items => {
 
 export const checkIfAllSlotsAreEmpty = items => items.every(item => !item);
 
-export const getCombiningReference = ([item, firstSlot]) => ({
-  item,
-  firstSlot,
-  pair: ALL_ITEMS[item].combine[0],
-  finalItem: ALL_ITEMS[item].combine[1]
-});
+export const checkIfCharHasNoItems = items =>
+  items.every(item => !item || item === WOUNDED);
+
+export const getCombiningReference = ([item, firstSlot]) => {
+  if (item) {
+    const itemName = item.replace(' ', '');
+    return {
+      item: itemName,
+      firstSlot,
+      pair: ALL_CARDS[itemName].combine[0],
+      finalItem: ALL_CARDS[itemName].combine[1]
+    };
+  }
+  return null;
+};

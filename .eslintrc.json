@@ -42,7 +42,7 @@
 		"no-debugger": "error",
 		"no-console": ["warn", {"allow": ["warn", "error"]}],
 		"linebreak-style": "off",
-		"lines-around-comment": ["error", {"beforeBlockComment": true}],
+		"lines-around-comment": "off",
 		"multiline-comment-style": "off",
 		"no-plusplus": [
 			"error",

@@ -18,7 +18,8 @@ import {
 } from './styles';
 import { MenuScreen } from '../MainMenu/styles';
 import { CharacterType } from '../../interfaces/types';
-import { LOCAL_STORAGE_KEY } from '../../constants';
+import { LOCAL_STORAGE_KEY, MOBILE } from '../../constants';
+import { getMediaQuery } from '../../utils/devices';
 
 const NewGame = ({
   currentChars,
@@ -144,15 +145,23 @@ const NewGame = ({
         CHOOSE {dynamic ? 'CHARACTER' : 'CHARACTERS'}
       </SelectorTitle>
       {((dynamic && playerWasSelected) || !dynamic) && (
-        <CharacterArea dynamic={dynamic}>
+        <CharacterArea dynamic={dynamic} number={characters.length}>
           {characters.map(char => (
-            <Selector key={char.name} name={char.name} onClick={onSelect}>
+            <Selector
+              key={char.name}
+              name={char.name}
+              number={characters.length}
+              onClick={onSelect}
+            >
               <CharImage
                 active={charactersSelected.has(char.name)}
                 dynamic={dynamic}
-                src={char.selector}
+                src={getMediaQuery() === MOBILE ? char.face : char.selector}
               />
-              <CharName active={charactersSelected.has(char.name)}>
+              <CharName
+                active={charactersSelected.has(char.name)}
+                number={characters.length}
+              >
                 {char.name}
               </CharName>
               {charactersSelected.get(char.name) && (

@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { func, string } from 'prop-types';
-import { WEAPONS_S1 } from '../../../setup/weapons';
-import { ITEMS_S1 } from '../../../setup/items';
+import { ALL_WEAPONS } from '../../../setup/weapons';
+import { ALL_ITEMS } from '../../../setup/items';
 import { useStateWithLabel } from '../../../utils/hooks';
 import SelectionItem from '../ItemSelector';
 import { SelectorArea } from '../../SoundBlock/styles';
@@ -12,25 +12,44 @@ import {
   SubSectionTitle
 } from './styles';
 import { ButtonsWrapper, CancelButton } from '../../TradeArea/styles';
-import { IN_HAND, ITEMS, WEAPONS } from '../../../constants';
+import {
+  DESKTOP,
+  IN_HAND,
+  ITEMS,
+  MOBILE,
+  TABLET,
+  WEAPONS
+} from '../../../constants';
 
-const ItemsSelectorModal = ({ onSelect, selectSlot, slotType }) => {
-  const [items, changeItems] = useStateWithLabel(ITEMS_S1, ITEMS);
+const ItemsSelectorModal = ({ device, onSelect, selectSlot, slotType }) => {
+  const [items, changeItems] = useStateWithLabel(ALL_ITEMS, ITEMS);
   const [itemsType, changeItemsType] = useStateWithLabel(ITEMS, 'itemsType');
 
   const changeType = () => {
     if (itemsType === ITEMS) {
-      changeItems(WEAPONS_S1);
+      changeItems(ALL_WEAPONS);
       changeItemsType(WEAPONS);
     } else {
-      changeItems(ITEMS_S1);
+      changeItems(ALL_ITEMS);
       changeItemsType(ITEMS);
+    }
+  };
+
+  const calculateColumns = () => {
+    switch (device) {
+      case MOBILE:
+        return 3;
+      case TABLET:
+        return 4;
+      case DESKTOP:
+      default:
+        return 8;
     }
   };
 
   useEffect(() => {
     if (slotType === IN_HAND) {
-      changeItems(WEAPONS_S1);
+      changeItems(ALL_WEAPONS);
       changeItemsType(WEAPONS);
     }
   }, [changeItems, slotType, changeItemsType]);
@@ -45,18 +64,20 @@ const ItemsSelectorModal = ({ onSelect, selectSlot, slotType }) => {
         <SubSectionTitle opened={itemsType === ITEMS}>Items</SubSectionTitle>
       </SelectorWrapper>
       <SelectorModal>
-        <SelectorArea columns={6}>
-          {Object.keys(items).map(name => (
-            <SelectionItem
-              img={items[name].img}
-              key={items[name].name}
-              name={items[name].name}
-              onSelect={() => onSelect(items[name].name)}
-              type={items[name].type}
-            />
-          ))}
+        <SelectorArea columns={calculateColumns()}>
+          {Object.keys(items)
+            .sort()
+            .map(name => (
+              <SelectionItem
+                img={items[name].img}
+                key={items[name].name}
+                name={items[name].name}
+                onSelect={() => onSelect(items[name].name.replace(' ', ''))}
+                type={items[name].type}
+              />
+            ))}
         </SelectorArea>
-        <ButtonsWrapper>
+        <ButtonsWrapper itemSelector>
           <CancelButton type="button" onClick={() => selectSlot()}>
             CANCEL
           </CancelButton>
@@ -67,6 +88,7 @@ const ItemsSelectorModal = ({ onSelect, selectSlot, slotType }) => {
 };
 
 ItemsSelectorModal.propTypes = {
+  device: string.isRequired,
   onSelect: func.isRequired,
   selectSlot: func.isRequired,
   slotType: string.isRequired

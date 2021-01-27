@@ -5,10 +5,10 @@ export const getCharacterColor = name => {
   return character && character.color;
 };
 
-export const updatePlayerObject = (player, inHand, inBackpack) => {
+export const updatePlayerObject = (player, inHand, inReserve) => {
   return {
     ...player,
     inHand,
-    inBackpack
+    inReserve
   };
 };
