@@ -79,8 +79,7 @@ export const useTurnsCounter = (
         return hasUsedAllActions({ act: generalActions - 1 });
       }
       return hasUsedAllActions({
-        act: generalActions - 1,
-        sea: searchActions - 1
+        act: generalActions - 1
       });
     }
     changeMessage(`${character} has no ${type} actions left.`);
