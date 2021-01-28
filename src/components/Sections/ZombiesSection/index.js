@@ -41,7 +41,7 @@ const ZombiesSection = ({
 
   const device = useRef(getMediaQuery());
 
-  const endzombiesRound = () => {
+  const endZombiesRound = () => {
     setPlayersRound();
     toggleZombiesArePlaying(false);
   };
@@ -94,7 +94,7 @@ const ZombiesSection = ({
         )}
         {isHighlighted && <ZombieLabel>{isHighlighted}</ZombieLabel>}
       </SubSectionWrapper>
-      <ConfirmAttackButton type="button" onClick={endzombiesRound}>
+      <ConfirmAttackButton type="button" onClick={endZombiesRound}>
         {END}
       </ConfirmAttackButton>
     </ZombiesArea>

@@ -23,6 +23,7 @@ import ItemsSelectorModal from '../../Items/ItemsSelectorModal';
 import ActionButton from '../../ActionButton';
 import ItemsArea from '../../Items/ItemsArea';
 import Blood from '../../../assets/images/blood.png';
+import ZombieFace from '../../../assets/images/zombieFace.png';
 import Exit from '../../../assets/images/exit.png';
 import Noise from '../../../assets/images/noise.png';
 import FirstPlayer from '../../../assets/images/firstPlayer.jpg';
@@ -67,7 +68,9 @@ import {
   AbilitiesWrapperDesktop,
   NavIconsWrapper,
   NavIcons,
-  CharacterOverlayImageShadow
+  CharacterOverlayImageShadow,
+  ExtraActivationButton,
+  ExtraActivationImage
 } from './styles';
 import { CharacterType } from '../../../interfaces/types';
 import TradeArea from '../../TradeArea';
@@ -191,6 +194,10 @@ const PlayersSection = ({
   );
   const [dataLoaded, setDataLoaded] = useStateWithLabel(false, 'dataLoaded');
   const [dropMode, toggleDropMode] = useStateWithLabel(false, 'dropMode');
+  const [extraActivation, toggleExtraActivation] = useStateWithLabel(
+    false,
+    'extraActivation'
+  );
 
   const [firstPlayer, changeFirstPlayer] = useStateWithLabel(
     null,
@@ -463,6 +470,8 @@ const PlayersSection = ({
       nextPlayerIndex =
         charIndex - 1 < 0 ? remainingCharacters.length - 1 : charIndex - 1;
     }
+
+    toggleExtraActivation(false);
     setNoise(0);
     changeCharIndex(nextPlayerIndex);
   };
@@ -744,6 +753,11 @@ const PlayersSection = ({
     }
   };
 
+  const onClickExtraActivation = () => {
+    setZombiesRound();
+    toggleZombiesArePlaying(true);
+  };
+
   const onClickGainBonusXp = bonusXp => {
     gainXp(Number(bonusXp));
     toggleActionsModal(false);
@@ -987,6 +1001,12 @@ const PlayersSection = ({
     }
   }, [character.experience, updateXpCounter]);
 
+  useEffect(() => {
+    if (zombiesArePlaying && extraActivation) {
+      toggleExtraActivation(false);
+    }
+  }, [extraActivation, toggleExtraActivation, zombiesArePlaying]);
+
   // useEffect(() => {
   //   console.log('$$$ change char', character);
   // }, [character]);
@@ -1191,6 +1211,7 @@ const PlayersSection = ({
                         changeActionLabel={changeActionLabel}
                         label={noise ? BREAK_DOOR : OPEN_DOOR}
                         manyButtons={character.location === CAR}
+                        toggleExtraActivation={toggleExtraActivation}
                       />
                     )}
                     {!finishedTurn && (
@@ -1232,6 +1253,15 @@ const PlayersSection = ({
             <FinishedTurnTag>
               {`${character.name}${TURN_FINISHED}`}
             </FinishedTurnTag>
+          )}
+
+          {extraActivation && (
+            <ExtraActivationButton>
+              <ExtraActivationImage
+                onClick={onClickExtraActivation}
+                src={ZombieFace}
+              />
+            </ExtraActivationButton>
           )}
 
           {character.wounded === KILLED && (

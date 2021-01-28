@@ -39,7 +39,8 @@ const ActionButton = ({
   type,
   changeActionLabel,
   label,
-  manyButtons
+  manyButtons,
+  toggleExtraActivation
 }) => {
   const [isActive, activate] = useStateWithLabel(false, 'isActive');
   const [iconType, setIconType] = useStateWithLabel(false, 'iconType');
@@ -81,8 +82,11 @@ const ActionButton = ({
       }
     }
 
-    if (actionType === OPEN_DOOR_ACTION && checkForNoiseOpeningDoor(type)) {
-      setNoise(noise + 1);
+    if (actionType === OPEN_DOOR_ACTION) {
+      toggleExtraActivation(true);
+      if (checkForNoiseOpeningDoor(type)) {
+        setNoise(noise + 1);
+      }
     }
 
     setTimeout(() => {
@@ -222,7 +226,8 @@ ActionButton.propTypes = {
   type: string,
   changeActionLabel: func,
   label: string,
-  manyButtons: bool
+  manyButtons: bool,
+  toggleExtraActivation: func
 };
 
 ActionButton.defaultProps = {
@@ -237,7 +242,8 @@ ActionButton.defaultProps = {
   type: null,
   changeActionLabel: () => null,
   label: null,
-  manyButtons: false
+  manyButtons: false,
+  toggleExtraActivation: () => null
 };
 
 export default ActionButton;

@@ -552,13 +552,18 @@ export const CharacterOverlayImageShadow = styled(CharacterOverlayImage)`
   }
 
   @media all and (min-width: 1200px) {
-    height: 70%;
-    margin: 0 0 -100px -60px;
+    height: 60%;
+    margin: 0 0 -60px -35px;
   }
 
   @media (min-width: 1300px) and (min-height: 1024px) {
     height: 60%;
     margin: 0 0 -110px -90px;
+  }
+
+  @media all and (min-width: 1400px) {
+    height: 70%;
+    margin: 0 0 -100px -60px;
   }
 `;
 CharacterOverlayImageShadow.displayName = 'CharacterOverlayImageShadow';
@@ -798,6 +803,53 @@ export const CharName = styled.h1`
 `;
 CharName.displayName = 'CharName';
 
+export const ExtraActivationButton = styled.div`
+  label: ExtraActivationButton;
+  z-index: 15;
+  position: absolute;
+  bottom: 5px;
+  right: 50%;
+  transform: translate(50%, 0);
+  height: 60px;
+  width: 60px;
+  background: linear-gradient(rgba(255, 255, 255, 0.3), rgba(0, 0, 0, 0.7));
+  border-radius: 50px;
+  border: 3px solid crimson;
+  box-shadow: 0px 0px 10px 4px #fff;
+  cursor: pointer;
+
+  @media all and (min-width: 360px) {
+  }
+
+  @media all and (min-width: 701px) {
+  }
+
+  @media all and (min-width: 1200px) {
+  }
+
+  @media all and (min-width: 1400px) {
+  }
+`;
+ExtraActivationButton.displayName = 'ExtraActivationButton';
+
+export const ExtraActivationImage = styled.img`
+  label: ExtraActivationImage;
+  width: 100%;
+
+  @media all and (min-width: 360px) {
+  }
+
+  @media all and (min-width: 701px) {
+  }
+
+  @media all and (min-width: 1200px) {
+  }
+
+  @media all and (min-width: 1400px) {
+  }
+`;
+ExtraActivationImage.displayName = 'ExtraActivationImage';
+
 export const FinishedTurnTag = styled(AttackInstructions)`
   label: FinishedTurnTag;
   position: absolute;
@@ -941,6 +993,10 @@ export const IndicatorsWrapper = styled.div`
         justify-content: space-around;
         padding: 0 10px 0 10px;
       `}
+  }
+
+  @media all and (min-width: 1200px) {
+    background: #5f5c5c;
   }
 `;
 IndicatorsWrapper.displayName = 'IndicatorsWrapper';
@@ -1323,7 +1379,7 @@ NoiseWrapper.displayName = 'NoiseWrapper';
 
 export const PlayerTag = styled.div`
   label: PlayerTag;
-  z-index: 6;
+  z-index: 10;
   position: absolute;
   top: 60px;
   right: 0;
@@ -1364,6 +1420,13 @@ export const PlayerTag = styled.div`
     border: none;
     border-radius: 10px 0 0 10px;
     -webkit-text-stroke: 1px black;
+  }
+
+  @media all and (min-width: 1200px) {
+    top: 28px;
+    height: 15px;
+    line-height: 0.5;
+    background: rgba(0, 0, 0, 0.1);
   }
   filter: brightness(0.8);
 `;

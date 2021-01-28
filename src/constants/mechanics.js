@@ -15,4 +15,4 @@ export const SELECT_TRADE_PARTNER = 'Select character to trade with';
 export const START_NEXT_ROUND = 'Start next round';
 export const TRADING_WITH = tradePartner => `Trading with ${tradePartner}`;
 export const TURN_FINISHED = "'s turn has finished";
-export const ZOMBIES_ROUND = 'Zombies round';
+export const ZOMBIES_ROUND = 'Zombies activation';
