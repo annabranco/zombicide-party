@@ -172,7 +172,7 @@ export const CHARACTERS_S1 = {
     face: PhilFace,
     img: Phil,
     inReserve: [null, null, null],
-    inHand: [null, 'Pistol'],
+    inHand: [null, null],
     movement: 'tactical',
     name: 'Phil',
     player: null,

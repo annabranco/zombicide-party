@@ -13,6 +13,7 @@ export const NO_WAY = 'Ops.. no way';
 export const OK = 'OK';
 export const PLAYERS = 'PLAYERS';
 export const PREVIOUS = 'previous';
+export const SKILL_STARTS_WITH = 'Starts with ';
 export const START = 'start';
 export const TABLET = 'tablet';
 export const WARNING = 'Warning';

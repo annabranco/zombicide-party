@@ -8,15 +8,21 @@ const {
   COMBAT_ACTION,
   DIE_COMBAT,
   DIE_MELEE,
-  DIE_RANGED
+  DIE_RANGED,
+  STARTS_WITH
 } = ABILITIES_S1;
 
 export const handlePromotionEffects = (char, level, actionsLeft, index) => {
   const updatedChar = cloneDeep(char);
-
+  console.log('$$$ STARTING PROMO', char.name);
   updatedChar.actionsLeft = [...actionsLeft];
 
   if (level === 'blue') {
+    console.log('$$$ blue promo', char, level, index);
+    console.log(
+      '$$$ updatedChar.promotions.blue.name',
+      updatedChar.promotions.blue.name
+    );
     if (
       (updatedChar.promotions.blue.name === ACTION.name ||
         updatedChar.promotions.blue.name === MOVE_ACTION.name ||
@@ -39,7 +45,14 @@ export const handlePromotionEffects = (char, level, actionsLeft, index) => {
       updatedChar.bonusDices = updatedChar.promotions.red[index].effect(
         updatedChar.bonusDices
       );
+    } else if (
+      updatedChar.promotions.blue.name.includes(
+        STARTS_WITH().name.substring(0, 12)
+      )
+    ) {
+      updatedChar.inHand[1] = updatedChar.promotions.blue.effect();
     }
+
     updatedChar.abilities.push(updatedChar.promotions.blue.name);
   } else if (level === 'yellow') {
     if (

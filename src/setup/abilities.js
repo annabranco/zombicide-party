@@ -168,7 +168,8 @@ const SNIPER = {
 const STARTS_WITH = equipment => ({
   name: `Starts with ${equipment}`,
   description:
-    ' The Survivor begins the game with the indicated Equipment; its card is automatically assigned to him before the beginning of the game.'
+    ' The Survivor begins the game with the indicated Equipment; its card is automatically assigned to him before the beginning of the game.',
+  effect: () => equipment
 });
 
 const SWORDMASTER = {

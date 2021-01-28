@@ -292,6 +292,9 @@ const PlayersSection = ({
   /* ------- MECHANICS METHODS ------- */
   const advancingLevel = (xp, char) => {
     let updatedChar = cloneDeep(char);
+
+    console.log('$$$ advancing level', xp, char);
+
     switch (true) {
       case xp > orangeThreatThresold:
         if (char.abilities.length === 3) {
@@ -347,6 +350,7 @@ const PlayersSection = ({
             searchActions
           ]);
         } else if (updatedChar.abilities.length !== 2) {
+          console.log('$$$ Yellow skills different than 2', char.name);
           updatedChar.abilities = [];
           updatedChar.actions = [3, 0, 0, 0];
           updatedChar.bonusDices = { combat: 0, melee: 0, ranged: 0 };
@@ -367,6 +371,7 @@ const PlayersSection = ({
 
       default:
         if (updatedChar.abilities.length === 0) {
+          console.log('$$$ No skills yet', char.name);
           updatedChar = handlePromotionEffects(
             char,
             'blue',
@@ -905,17 +910,14 @@ const PlayersSection = ({
   useEffect(() => {
     if (character.name) {
       const updatedCharacter = cloneDeep(character);
-
       updatedCharacter.actionsLeft = [
         generalActions,
         extraMovementActions,
         extraAttackActions,
         searchActions
       ];
-
       changeCharacter(updatedCharacter);
       const actionsArray = generateActionsCountArray();
-
       if (!isEqual(actionsArray, actionsCount)) {
         updateActionsCount(actionsArray);
         updateData(updatedCharacter);
