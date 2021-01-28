@@ -99,16 +99,17 @@ export const useTurnsCounter = (
     }
   }, [attacks, character, movements, numOfActions, searches]);
 
-  useEffect(() => {
-    if (character) {
-      console.log('$$$ HOOK', character, {
-        gen: `${numOfActions} => ${generalActions}`,
-        mov: `${movements} => ${extraMovementActions}`,
-        att: `${attacks} => ${extraAttackActions}`,
-        sea: `${searches} => ${searchActions}`
-      });
-    }
-  }, [generalActions, extraMovementActions, extraAttackActions, searchActions]);
+  // TOFIX THIS
+  // useEffect(() => {
+  //   if (character) {
+  //     console.log('$$$ HOOK', character, {
+  //       gen: `${numOfActions} => ${generalActions}`,
+  //       mov: `${movements} => ${extraMovementActions}`,
+  //       att: `${attacks} => ${extraAttackActions}`,
+  //       sea: `${searches} => ${searchActions}`
+  //     });
+  //   }
+  // }, [generalActions, extraMovementActions, extraAttackActions, searchActions]);
 
   return {
     generalActions,

@@ -142,7 +142,8 @@ const LUCKY = {
 const MATCHING_SET = {
   name: 'Matching Set',
   description:
-    'When a Survivor performs a Search Action and draws a weapon card with the Dual symbol, he can immediately take a second card of the same type from the Equipment deck. Shuffle the deck afterward.'
+    'When a Survivor performs a Search Action and draws a weapon card with the Dual symbol, he can immediately take a second card of the same type from the Equipment deck. Shuffle the deck afterward.',
+  effect: () => 'matchingSet'
 };
 const MEDIC = {
   name: 'Medic',

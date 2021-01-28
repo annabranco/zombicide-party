@@ -101,6 +101,7 @@ export const WEAPONS_S1 = {
   Machete: {
     attack: MELEE,
     dice: 1,
+    dual: true,
     img: Machete,
     name: 'Machete',
     noise: false,
@@ -126,6 +127,7 @@ export const WEAPONS_S1 = {
   Pistol: {
     attack: RANGED,
     dice: 1,
+    dual: true,
     img: Pistol,
     name: 'Pistol',
     noise: true,
@@ -143,6 +145,7 @@ export const WEAPONS_S1 = {
   SawedOff: {
     attack: RANGED,
     dice: 2,
+    dual: true,
     img: SawedOff,
     name: 'Sawed Off',
     needsReloading: true,
@@ -168,6 +171,7 @@ export const WEAPONS_S1 = {
   SubMG: {
     attack: RANGED,
     dice: 3,
+    dual: true,
     img: SubMG,
     name: 'SubMG',
     noise: true,
@@ -257,6 +261,7 @@ export const WEAPONS_NIGHT_SHIFT = {
     canOpenDoor: NOISY,
     attack: RANGED,
     dice: 1,
+    dual: true,
     img: ColtPython,
     name: 'Colt Python',
     noise: true,

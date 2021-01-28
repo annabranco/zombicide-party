@@ -9,7 +9,9 @@ const {
   DIE_COMBAT,
   DIE_MELEE,
   DIE_RANGED,
-  STARTS_WITH
+  STARTS_WITH,
+  MATCHING_SET,
+  MEDIC
 } = ABILITIES_S1;
 
 export const handlePromotionEffects = (char, level, actionsLeft, index) => {
@@ -51,8 +53,14 @@ export const handlePromotionEffects = (char, level, actionsLeft, index) => {
       )
     ) {
       updatedChar.inHand[1] = updatedChar.promotions.blue.effect();
+    } else if (
+      updatedChar.promotions.blue.name === MATCHING_SET.name ||
+      updatedChar.promotions.blue.name === MEDIC.name
+    ) {
+      const newSkill = updatedChar.promotions.blue.effect();
+      console.log('$$$ newSkill', newSkill);
+      updatedChar[newSkill] = true;
     }
-
     updatedChar.abilities.push(updatedChar.promotions.blue.name);
   } else if (level === 'yellow') {
     if (
@@ -130,6 +138,6 @@ export const handlePromotionEffects = (char, level, actionsLeft, index) => {
     }
     updatedChar.abilities.push(char.promotions.red[index].name);
   }
-
+  console.log('$$$ updatedChar', char.name, updatedChar);
   return updatedChar;
 };

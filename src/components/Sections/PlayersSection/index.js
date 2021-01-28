@@ -135,7 +135,8 @@ import {
   DESKTOP,
   ZOMBIES_ROUND,
   SELECT_DAMAGE,
-  CHANGE_CHARACTER
+  CHANGE_CHARACTER,
+  NONE
 } from '../../../constants';
 import {
   blueThreatThresold,
@@ -293,7 +294,7 @@ const PlayersSection = ({
   const advancingLevel = (xp, char) => {
     let updatedChar = cloneDeep(char);
 
-    console.log('$$$ advancing level', xp, char);
+    console.log('$$$ advancing level', xp, char.name);
 
     switch (true) {
       case xp > orangeThreatThresold:
@@ -370,7 +371,7 @@ const PlayersSection = ({
         break;
 
       default:
-        if (updatedChar.abilities.length === 0) {
+        if (updatedChar.abilities.length === 0 || true) {
           console.log('$$$ No skills yet', char.name);
           updatedChar = handlePromotionEffects(
             char,
@@ -481,8 +482,8 @@ const PlayersSection = ({
     changeCharIndex(nextPlayerIndex);
   };
 
-  const changeInHand = (name, currentSlot = slot - 1) => {
-    const updatedCharacter = cloneDeep(character);
+  const changeInHand = (name, currentSlot = slot - 1, preUpdChar) => {
+    const updatedCharacter = preUpdChar || cloneDeep(character);
     const newItems = [...updatedCharacter.inHand];
     newItems[currentSlot] = name;
     const openDoors = checkIfCharacterCanOpenDoors(newItems);
@@ -509,8 +510,8 @@ const PlayersSection = ({
     selectSlot();
   };
 
-  const changeinReserve = (name, currentSlot = slot - 3) => {
-    const updatedCharacter = cloneDeep(character);
+  const changeInReserve = (name, currentSlot = slot - 3, preUpdChar) => {
+    const updatedCharacter = preUpdChar || cloneDeep(character);
     const newItems = [...updatedCharacter.inReserve];
     newItems[currentSlot] = name;
     const hasFlashlight = checkIfCharacterHasFlashlight(newItems);
@@ -833,6 +834,36 @@ const PlayersSection = ({
     gainXp(5);
   };
 
+  const onFindingItem = change => (item, currentSlot = slot - 1) => {
+    const findingSlot = change.name === 'changeInHand' ? slot - 1 : slot - 3;
+    if (character.matchingSet && ALL_WEAPONS[item].dual) {
+      const updChar = cloneDeep(character);
+
+      if (currentSlot <= 2) {
+        changeInHand(item, currentSlot);
+        updChar.inHand[findingSlot] = item;
+      } else {
+        changeInReserve(item, currentSlot);
+        updChar.inReserve[findingSlot] = item;
+      }
+
+      setTimeout(() => {
+        const pairIndex = [...updChar.inHand, ...updChar.inReserve].findIndex(
+          itemInSlot => !itemInSlot || itemInSlot === NONE
+        );
+
+        if (pairIndex <= 1) {
+          changeInHand(item, pairIndex, updChar);
+          // updChar.inHand[pairIndex] = item;
+        } else if (pairIndex > 1) {
+          changeInReserve(item, pairIndex - 2, updChar);
+        }
+        return null;
+      }, 1000);
+    }
+    return change(item, findingSlot);
+  };
+
   const setNewChar = updatedCharacters => {
     addNewChar(false);
     updateCharacters(updatedCharacters);
@@ -908,21 +939,22 @@ const PlayersSection = ({
   }, [charIndex, dataLoaded, initialCharacters, loadedGame]);
 
   useEffect(() => {
-    if (character.name) {
-      const updatedCharacter = cloneDeep(character);
-      updatedCharacter.actionsLeft = [
-        generalActions,
-        extraMovementActions,
-        extraAttackActions,
-        searchActions
-      ];
-      changeCharacter(updatedCharacter);
-      const actionsArray = generateActionsCountArray();
-      if (!isEqual(actionsArray, actionsCount)) {
-        updateActionsCount(actionsArray);
-        updateData(updatedCharacter);
-      }
-    }
+    // TOFIX THIS
+    // if (character.name) {
+    //   const updatedCharacter = cloneDeep(character);
+    //   updatedCharacter.actionsLeft = [
+    //     generalActions,
+    //     extraMovementActions,
+    //     extraAttackActions,
+    //     searchActions
+    //   ];
+    //   changeCharacter(updatedCharacter);
+    //   const actionsArray = generateActionsCountArray();
+    //   if (!isEqual(actionsArray, actionsCount)) {
+    //     updateActionsCount(actionsArray);
+    //     updateData(updatedCharacter);
+    //   }
+    // }
   }, [
     // character.name,
     generalActions,
@@ -1376,7 +1408,7 @@ const PlayersSection = ({
                         makeNoise={makeNoise}
                         noAudio
                         onClickCombine={onClickCombine}
-                        onClickDrop={changeinReserve}
+                        onClickDrop={changeInReserve}
                         selectSlot={selectSlot}
                         setupMode={setupMode}
                         slotType={IN_RESERVE}
@@ -1563,7 +1595,7 @@ const PlayersSection = ({
       {slot && slot <= 2 && (
         <ItemsSelectorModal
           device={device.current}
-          onSelect={changeInHand}
+          onSelect={onFindingItem(changeInHand)}
           selectSlot={selectSlot}
           slotType={IN_HAND}
         />
@@ -1571,7 +1603,7 @@ const PlayersSection = ({
       {slot && slot >= 3 && (
         <ItemsSelectorModal
           device={device.current}
-          onSelect={changeinReserve}
+          onSelect={onFindingItem(changeInReserve)}
           selectSlot={selectSlot}
           slotType={IN_RESERVE}
         />
