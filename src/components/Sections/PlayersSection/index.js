@@ -730,10 +730,23 @@ const PlayersSection = ({
         const secondSlot = itemSlot;
 
         if (firstSlot <= 2) {
-          updatedCharacter.inHand[firstSlot - 1] = '';
+          if (
+            finalItem === ALL_WEAPONS.Molotov.name &&
+            character.abilities.includes(ABILITIES_S1.TWO_COCKTAILS.name)
+          ) {
+            updatedCharacter.inHand[firstSlot - 1] = finalItem;
+          } else {
+            updatedCharacter.inHand[firstSlot - 1] = '';
+          }
+        } else if (
+          finalItem === ALL_WEAPONS.Molotov.name &&
+          character.abilities.includes(ABILITIES_S1.TWO_COCKTAILS.name)
+        ) {
+          updatedCharacter.inReserve[firstSlot - 3] = finalItem;
         } else {
           updatedCharacter.inReserve[firstSlot - 3] = '';
         }
+
         if (secondSlot <= 2) {
           updatedCharacter.inHand[secondSlot - 1] = finalItem;
         } else {
@@ -874,7 +887,6 @@ const PlayersSection = ({
 
         if (pairIndex <= 1) {
           changeInHand(item, pairIndex, updChar);
-          // updChar.inHand[pairIndex] = item;
         } else if (pairIndex > 1) {
           changeInReserve(item, pairIndex - 2, updChar);
         }
