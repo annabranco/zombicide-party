@@ -9,6 +9,7 @@ import NewGame from '../NewGame';
 import { globalStyles } from '../../styles';
 import MainScreen from '../MainScreen';
 import ControllerLayer from '../ControllerLayer';
+import { loadSavedGame } from '../../utils/characters';
 
 window.addEventListener('orientationchange', () => {
   window.location.reload();
@@ -20,10 +21,10 @@ const App = () => {
     'initialCharacters'
   );
   const [damageMode, toggleDamageMode] = useStateWithLabel(false, 'damageMode');
-  const [loadedGame, loadGame] = useStateWithLabel(null, 'damageMode');
+  const [loadedGame, loadGame] = useStateWithLabel(null, 'loadedGame');
 
   useEffect(() => {
-    const game = JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY));
+    const game = loadSavedGame();
 
     if (game && game.length !== 0) {
       loadGame(game);

@@ -156,6 +156,7 @@ import {
   CancelAttackButton,
   ConfirmAttackButton
 } from '../ZombiesSection/styles';
+import { loadSavedGame } from '../../../utils/characters';
 
 const PlayersSection = ({
   damageMode,
@@ -282,6 +283,8 @@ const PlayersSection = ({
       );
       updatedCharacters[changedCharIndex] = charWithChangedData;
       updateCharacters(updatedCharacters);
+
+      console.log('$$$ LS upd data', updatedCharacters);
       localStorage.setItem(
         LOCAL_STORAGE_KEY,
         JSON.stringify(updatedCharacters)
@@ -371,7 +374,7 @@ const PlayersSection = ({
         break;
 
       default:
-        if (updatedChar.abilities.length === 0 || true) {
+        if (updatedChar.abilities.length === 0) {
           console.log('$$$ No skills yet', char.name);
           updatedChar = handlePromotionEffects(
             char,
@@ -451,6 +454,8 @@ const PlayersSection = ({
     ) {
       endRound(true);
       toggleZombiesShouldAct(true);
+
+      console.log('$$$ LS has finished', characters);
       localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(characters));
     } else if (roundEnded) {
       endRound(false);
@@ -684,6 +689,8 @@ const PlayersSection = ({
     updateCharacters(updatedCharacters);
     setCanOpenDoor(openDoors);
     changeCanUseFlashlight(hasFlashlight);
+
+    console.log('$$$ LS trade confirm', updatedCharacters);
     localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(updatedCharacters));
   };
 
@@ -776,6 +783,9 @@ const PlayersSection = ({
     }
     if (setupMode) {
       toggleSetupMode(false);
+
+      console.log('$$$ LS main button', characters);
+      localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(characters));
     } else if (zombiesShouldAct) {
       setZombiesRound();
       toggleZombiesArePlaying(true);
@@ -867,6 +877,8 @@ const PlayersSection = ({
   const setNewChar = updatedCharacters => {
     addNewChar(false);
     updateCharacters(updatedCharacters);
+
+    console.log('$$$ LS new char', updatedCharacters);
     localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(updatedCharacters));
   };
 
@@ -925,7 +937,8 @@ const PlayersSection = ({
   /* ------- EFFECTS HOOKS ------- */
   useEffect(() => {
     if (!dataLoaded) {
-      const game = JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY));
+      const game = loadSavedGame();
+
       const updatedCharacters =
         (initialCharacters && [...initialCharacters]) ||
         (loadedGame && cloneDeep(loadedGame)) ||
@@ -934,6 +947,13 @@ const PlayersSection = ({
       updateCharacters(updatedCharacters);
       prevCharIndex.current = charIndex;
       changeFirstPlayer(updatedCharacters[0].name);
+
+      console.log('$$$ LS Hook dataLoaded', updatedCharacters);
+      localStorage.setItem(
+        LOCAL_STORAGE_KEY,
+        JSON.stringify(updatedCharacters)
+      );
+
       setDataLoaded(true);
     }
   }, [charIndex, dataLoaded, initialCharacters, loadedGame]);
@@ -1015,7 +1035,6 @@ const PlayersSection = ({
         toggleCanCombine(charCanCombineItems);
         changeActionLabel('');
         prevCharIndex.current = charIndex;
-        localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(characters));
       }
     }
   }, [charIndex, characters]);

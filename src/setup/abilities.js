@@ -253,3 +253,8 @@ export const ABILITIES_S2 = {
   REAPER_RANGED,
   BLITZ
 };
+
+export const ALL_ABILITIES = {
+  ...ABILITIES_S1,
+  ...ABILITIES_S2
+};
