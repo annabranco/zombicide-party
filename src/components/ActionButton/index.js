@@ -31,6 +31,7 @@ const ActionButton = ({
   carStarted,
   combineItemSelected,
   combinePair,
+  disabled,
   isMobile,
   interactWithCar,
   noise,
@@ -199,6 +200,7 @@ const ActionButton = ({
           className={iconType}
           combineItemSelected={combineItemSelected}
           combinePair={combinePair}
+          disabled={disabled}
           isActive={isActive}
           onClick={isActive ? () => null : event => onClickIcon(event)}
           iconSize={iconSize}
@@ -218,6 +220,7 @@ ActionButton.propTypes = {
   carStarted: bool,
   combineItemSelected: bool,
   combinePair: bool,
+  disabled: bool,
   isMobile: bool,
   interactWithCar: func,
   noise: number,
@@ -234,6 +237,7 @@ ActionButton.defaultProps = {
   carStarted: false,
   combineItemSelected: false,
   combinePair: false,
+  disabled: false,
   isMobile: null,
   interactWithCar: false,
   noise: 0,

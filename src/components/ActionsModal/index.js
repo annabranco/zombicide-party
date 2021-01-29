@@ -8,12 +8,14 @@ import {
   ModalTitle,
   ModalWindow,
   ModalCharFace,
-  ModalMessageWrapper
+  ModalMessageWrapper,
+  FacesWrapper
 } from '../SetupModal/styles';
 import { ButtonsArea } from '../MainMenu/styles';
 import { ModalContentType } from '../../interfaces/types';
 import { useStateWithLabel } from '../../utils/hooks';
 import { ModalSelect, XpSlider } from './styles';
+import CharacterFace from '../CharacterFace';
 
 const ActionsModal = ({
   content,
@@ -116,6 +118,21 @@ const ActionsModal = ({
                 />
               )}
             </>
+          )}
+          {modalMessage.type === 'faces' && (
+            <FacesWrapper>
+              {content.data
+                .filter(char => char.wounded)
+                .map(char => (
+                  <CharacterFace
+                    big
+                    key={`${char.name}-healSelector`}
+                    onClick={() => onConfirmModal(char.name)}
+                    src={char.face}
+                    wounded={char.wounded}
+                  />
+                ))}
+            </FacesWrapper>
           )}
           <ButtonsArea>
             {modalMessage.buttons.map((button, index) => {

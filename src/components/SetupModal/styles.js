@@ -16,6 +16,16 @@ export const ButtonsArea = styled.div`
 `;
 ButtonsArea.displayName = 'ButtonsArea';
 
+export const FacesWrapper = styled.div`
+  label: FacesWrapper;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  width: 80%;
+`;
+FacesWrapper.displayName = 'FacesWrapper';
+
 export const ModalButton = styled(SelectionButton)`
   label: ModalButton;
   margin: 10px 10px;

@@ -201,7 +201,7 @@ export const CHARACTERS_S1 = {
     name: 'Wanda',
     player: null,
     promotions: {
-      blue: TWO_ZONES_MOVE,
+      blue: MEDIC,
       yellow: ACTION,
       orange: [DICE_ROLL_MEELEE, SLIPPERY],
       red: [DIE_COMBAT, MOVE_ACTION, ZONE_PER_MOVE]

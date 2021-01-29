@@ -87,8 +87,12 @@ import {
   FINISH_SETUP,
   START_NEXT_ROUND,
   HAS_BEEN_KILLED,
+  HEAL_ACTION,
+  HEAL,
   WEAPONS,
   GET_OBJECTIVE,
+  HEAL_WOUND,
+  HEAL_CHOOSE,
   ENTER_CAR,
   EXIT_CAR,
   MOVE_CAR,
@@ -158,6 +162,7 @@ import {
 } from '../ZombiesSection/styles';
 import { loadSavedGame } from '../../../utils/characters';
 import { ABILITIES_S1 } from '../../../setup/abilities';
+import CharacterFace from '../../CharacterFace';
 
 const PlayersSection = ({
   damageMode,
@@ -196,16 +201,20 @@ const PlayersSection = ({
     'combiningItem'
   );
   const [dataLoaded, setDataLoaded] = useStateWithLabel(false, 'dataLoaded');
+  const [displayActionsModal, toggleActionsModal] = useStateWithLabel(
+    false,
+    'displayActionsModal'
+  );
   const [dropMode, toggleDropMode] = useStateWithLabel(false, 'dropMode');
   const [extraActivation, toggleExtraActivation] = useStateWithLabel(
     false,
     'extraActivation'
   );
-
   const [firstPlayer, changeFirstPlayer] = useStateWithLabel(
     null,
     'firstPlayer'
   );
+
   const [highestXp, updateHighestXp] = useStateWithLabel(
     { name: '', xp: 0 },
     'highestXp'
@@ -218,13 +227,13 @@ const PlayersSection = ({
     'selectCharOverlay'
   );
   const [setupMode, toggleSetupMode] = useStateWithLabel(INITIAL, 'setupMode');
+  const [someoneIsWounded, toggleSomeoneIsWounded] = useStateWithLabel(
+    false,
+    'someoneIsWounded'
+  );
   const [slot, selectSlot] = useStateWithLabel(null, 'slot');
   const [trade, startTrade] = useStateWithLabel(false, 'trade');
   const [xpCounter, updateXpCounter] = useStateWithLabel([], 'xpCounter');
-  const [displayActionsModal, toggleActionsModal] = useStateWithLabel(
-    false,
-    'displayActionsModal'
-  );
   const [topActionsLabel, changeTopActionLabel] = useStateWithLabel(
     '',
     'topActionsLabel'
@@ -627,10 +636,6 @@ const PlayersSection = ({
   };
 
   const makeNoise = item => {
-    console.log(
-      '$$$ character.abilities.includes(ABILITIES_S1.NINJA.name)',
-      character.abilities.includes(ABILITIES_S1.NINJA.name)
-    );
     if (!character.abilities.includes(ABILITIES_S1.NINJA.name)) {
       if (checkForNoise(item) && !noiseDebounce.current) {
         noiseDebounce.current = true;
@@ -896,6 +901,22 @@ const PlayersSection = ({
     return change(item, findingSlot);
   };
 
+  const onHeal = healedCharacter => {
+    const updChar = characters.filter(char => char.name === healedCharacter)[0];
+    updChar.wounded = false;
+
+    const woundIndex = [...updChar.inHand, ...updChar.inReserve].findIndex(
+      itemInSlot => itemInSlot === WOUNDED
+    );
+
+    toggleActionsModal();
+    if (woundIndex <= 1) {
+      changeInHand('', woundIndex, updChar);
+    } else if (woundIndex > 1) {
+      changeInReserve('', woundIndex - 2, updChar);
+    }
+  };
+
   const setNewChar = updatedCharacters => {
     addNewChar(false);
     updateCharacters(updatedCharacters);
@@ -941,7 +962,7 @@ const PlayersSection = ({
     sound.play();
 
     updateData(woundedCharacter);
-
+    toggleSomeoneIsWounded(true);
     if (woundedCharacter.wounded === KILLED) {
       toggleDamageMode(false);
       if (remainingCharacters.length > 0) {
@@ -981,22 +1002,21 @@ const PlayersSection = ({
   }, [charIndex, dataLoaded, initialCharacters, loadedGame]);
 
   useEffect(() => {
-    // TOFIX THIS
-    // if (character.name) {
-    //   const updatedCharacter = cloneDeep(character);
-    //   updatedCharacter.actionsLeft = [
-    //     generalActions,
-    //     extraMovementActions,
-    //     extraAttackActions,
-    //     searchActions
-    //   ];
-    //   changeCharacter(updatedCharacter);
-    //   const actionsArray = generateActionsCountArray();
-    //   if (!isEqual(actionsArray, actionsCount)) {
-    //     updateActionsCount(actionsArray);
-    //     updateData(updatedCharacter);
-    //   }
-    // }
+    if (character.name) {
+      const updatedCharacter = cloneDeep(character);
+      updatedCharacter.actionsLeft = [
+        generalActions,
+        extraMovementActions,
+        extraAttackActions,
+        searchActions
+      ];
+      changeCharacter(updatedCharacter);
+      const actionsArray = generateActionsCountArray();
+      if (!isEqual(actionsArray, actionsCount)) {
+        updateActionsCount(actionsArray);
+        updateData(updatedCharacter);
+      }
+    }
   }, [
     // character.name,
     generalActions,
@@ -1051,6 +1071,7 @@ const PlayersSection = ({
           updateHighestXp({ name: nextChar.name, xp: nextChar.experience });
         }
 
+        toggleSomeoneIsWounded(characters.some(char => char.wounded));
         changeCharacter(nextChar);
         setCanOpenDoor(openDoors);
         changeCanUseFlashlight(hasFlashlight);
@@ -1091,10 +1112,6 @@ const PlayersSection = ({
     console.log('$$$ message', message);
   }
 
-  console.log(
-    '$$$  character.abilities.includes(ABILITIES_S1.NINJA.name)',
-    character.abilities && character.abilities.includes(ABILITIES_S1.NINJA.name)
-  );
   return (
     <CharacterSheet visible={visible}>
       {/* ----- XP BAR ----- */}
@@ -1216,6 +1233,26 @@ const PlayersSection = ({
               {!damageMode && !setupMode && !slot && (
                 <>
                   <ActionsWrapper>
+                    {generalActions &&
+                      character.abilities.includes(ABILITIES_S1.MEDIC.name) && (
+                        <ActionButton
+                          actionType={HEAL_ACTION}
+                          callback={
+                            someoneIsWounded
+                              ? () => {
+                                  spendAction(HEAL_ACTION);
+                                  toggleActionsModal(HEAL_ACTION);
+                                }
+                              : () => null
+                          }
+                          changeActionLabel={changeActionLabel}
+                          disabled={!someoneIsWounded}
+                          isMobile={device.current === MOBILE}
+                          label={HEAL}
+                          manyButtons={character.location === CAR}
+                        />
+                      )}
+
                     {!finishedTurn && generalActions && (
                       <ActionButton
                         actionType={OBJECTIVE_ACTION}
@@ -1503,13 +1540,16 @@ const PlayersSection = ({
           {device.current === DESKTOP && !slot && characters.length > 0 && (
             <NavIconsWrapper>
               {calculateCharactersOrder().map(char => (
-                <NavIcons
+                <CharacterFace
                   alt={`${CHANGE_CHARACTER(char.name)}`}
                   currentChar={character.name === char.name}
                   key={`charNav-${char.name}`}
                   onClick={() => changeCharIndex(char.index)}
                   src={char.face}
                   played={charIfCharHasPlayed(char.name)}
+                  wounded={characters.some(
+                    charac => charac.name === char.name && charac.wounded
+                  )}
                 />
               ))}
             </NavIconsWrapper>
@@ -1681,6 +1721,22 @@ const PlayersSection = ({
             ]
           }}
           onConfirmModal={onClickGainBonusXp}
+        />
+      )}
+
+      {/* --- Heal Modal --- */}
+      {displayActionsModal === 'heal' && (
+        <ActionsModal
+          toggleVisibility={toggleActionsModal}
+          visible={displayActionsModal}
+          content={{
+            data: characters,
+            title: HEAL_WOUND,
+            text: HEAL_CHOOSE,
+            type: 'faces',
+            buttons: []
+          }}
+          onConfirmModal={onHeal}
         />
       )}
 

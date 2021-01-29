@@ -183,6 +183,20 @@ export const ActionIcon = styled.i`
       }
     `}
 
+  ${({ disabled }) =>
+    disabled &&
+    css`
+      color: gray;
+      cursor: not-allowed;
+      &:hover {
+        color: gray;
+        font-size: 2.5rem;
+        line-height: 1.3;
+        text-shadow: none;
+      }
+    `}
+
+
   @media (min-width: 1024px) and (min-height: 1300px) {
     height: 60px;
     width: 60px;
