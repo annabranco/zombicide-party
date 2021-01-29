@@ -53,13 +53,6 @@ export const handlePromotionEffects = (char, level, actionsLeft, index) => {
       )
     ) {
       updatedChar.inHand[1] = updatedChar.promotions.blue.effect();
-    } else if (
-      updatedChar.promotions.blue.name === MATCHING_SET.name ||
-      updatedChar.promotions.blue.name === MEDIC.name
-    ) {
-      const newSkill = updatedChar.promotions.blue.effect();
-      console.log('$$$ newSkill', newSkill);
-      updatedChar[newSkill] = true;
     }
     updatedChar.abilities.push(updatedChar.promotions.blue.name);
   } else if (level === 'yellow') {

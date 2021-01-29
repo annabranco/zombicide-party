@@ -237,7 +237,7 @@ ActionButton.defaultProps = {
   isMobile: null,
   interactWithCar: false,
   noise: 0,
-  setNoise: null,
+  setNoise: () => null,
   startCar: null,
   type: null,
   changeActionLabel: () => null,

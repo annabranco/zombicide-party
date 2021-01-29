@@ -157,6 +157,7 @@ import {
   ConfirmAttackButton
 } from '../ZombiesSection/styles';
 import { loadSavedGame } from '../../../utils/characters';
+import { ABILITIES_S1 } from '../../../setup/abilities';
 
 const PlayersSection = ({
   damageMode,
@@ -626,12 +627,18 @@ const PlayersSection = ({
   };
 
   const makeNoise = item => {
-    if (checkForNoise(item) && !noiseDebounce.current) {
-      noiseDebounce.current = true;
-      setTimeout(() => {
-        noiseDebounce.current = false;
-      }, 1000);
-      setNoise(noise + 1);
+    console.log(
+      '$$$ character.abilities.includes(ABILITIES_S1.NINJA.name)',
+      character.abilities.includes(ABILITIES_S1.NINJA.name)
+    );
+    if (!character.abilities.includes(ABILITIES_S1.NINJA.name)) {
+      if (checkForNoise(item) && !noiseDebounce.current) {
+        noiseDebounce.current = true;
+        setTimeout(() => {
+          noiseDebounce.current = false;
+        }, 1000);
+        setNoise(noise + 1);
+      }
     }
   };
 
@@ -846,7 +853,10 @@ const PlayersSection = ({
 
   const onFindingItem = change => (item, currentSlot = slot - 1) => {
     const findingSlot = change.name === 'changeInHand' ? slot - 1 : slot - 3;
-    if (character.matchingSet && ALL_WEAPONS[item].dual) {
+    if (
+      character.abilities.includes(ABILITIES_S1.MATCHING_SET.name) &&
+      ALL_WEAPONS[item].dual
+    ) {
       const updChar = cloneDeep(character);
 
       if (currentSlot <= 2) {
@@ -1069,6 +1079,10 @@ const PlayersSection = ({
     console.log('$$$ message', message);
   }
 
+  console.log(
+    '$$$  character.abilities.includes(ABILITIES_S1.NINJA.name)',
+    character.abilities && character.abilities.includes(ABILITIES_S1.NINJA.name)
+  );
   return (
     <CharacterSheet visible={visible}>
       {/* ----- XP BAR ----- */}
@@ -1259,7 +1273,11 @@ const PlayersSection = ({
                         callback={spendAction}
                         isMobile={device.current === MOBILE}
                         noise={noise}
-                        setNoise={setNoise}
+                        setNoise={
+                          character.abilities.includes(ABILITIES_S1.NINJA.name)
+                            ? () => null
+                            : setNoise
+                        }
                         type={canOpenDoor}
                         changeActionLabel={changeActionLabel}
                         label={noise ? BREAK_DOOR : OPEN_DOOR}
