@@ -90,6 +90,8 @@ import {
   HEAL_ACTION,
   HEAL,
   WEAPONS,
+  LOCK_ACTION,
+  LOCK_DOOR,
   GET_OBJECTIVE,
   HEAL_WOUND,
   HEAL_CHOOSE,
@@ -1246,6 +1248,20 @@ const PlayersSection = ({
               {!damageMode && !setupMode && !slot && (
                 <>
                   <ActionsWrapper>
+                    {generalActions &&
+                      character.abilities.includes(
+                        ABILITIES_S1.LOCK_IT_DOWN.name
+                      ) && (
+                        <ActionButton
+                          actionType={LOCK_ACTION}
+                          callback={() => spendAction(LOCK_ACTION)}
+                          changeActionLabel={changeActionLabel}
+                          isMobile={device.current === MOBILE}
+                          label={LOCK_DOOR}
+                          manyButtons={character.location === CAR}
+                        />
+                      )}
+
                     {generalActions &&
                       character.abilities.includes(ABILITIES_S1.MEDIC.name) && (
                         <ActionButton

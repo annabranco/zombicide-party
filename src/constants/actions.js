@@ -26,6 +26,7 @@ export const HEAL_WOUND = 'Heal a wound';
 export const HIT = 'hit';
 export const KILL = 'kill';
 export const LOCK_ACTION = 'lock';
+export const LOCK_DOOR = 'lock a door';
 export const MAKE_NOISE_ACTION = 'make-noise';
 export const MOVE = 'move';
 export const MOVE_ACTION = 'move';
