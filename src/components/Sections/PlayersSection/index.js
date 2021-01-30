@@ -142,7 +142,9 @@ import {
   ZOMBIES_ROUND,
   SELECT_DAMAGE,
   CHANGE_CHARACTER,
-  NONE
+  NONE,
+  MAKE_NOISE_ACTION,
+  MAKE_LOUD_NOISE
 } from '../../../constants';
 import {
   blueThreatThresold,
@@ -919,8 +921,7 @@ const PlayersSection = ({
     } else if (woundIndex > 1) {
       updChar.inReserve[woundIndex - 2] = '';
     }
-    // eslint-disable-next-line no-debugger
-    debugger;
+
     if (healedCharacter === character.name) {
       updChar.abilitiesUsed.push(HEAL_ACTION);
       updateData(updChar);
@@ -930,6 +931,11 @@ const PlayersSection = ({
       updateData(updChar, true);
       updateData(updHealer);
     }
+  };
+
+  const onMakeLoudNoise = () => {
+    setNoise(10);
+    spendAction(MAKE_LOUD_NOISE);
   };
 
   const setNewChar = updatedCharacters => {
@@ -1248,6 +1254,18 @@ const PlayersSection = ({
               {!damageMode && !setupMode && !slot && (
                 <>
                   <ActionsWrapper>
+                    {generalActions &&
+                      character.abilities.includes(ABILITIES_S1.LOUD.name) && (
+                        <ActionButton
+                          actionType={MAKE_NOISE_ACTION}
+                          callback={onMakeLoudNoise}
+                          changeActionLabel={changeActionLabel}
+                          isMobile={device.current === MOBILE}
+                          label={MAKE_LOUD_NOISE}
+                          manyButtons={character.location === CAR}
+                        />
+                      )}
+
                     {generalActions &&
                       character.abilities.includes(
                         ABILITIES_S1.LOCK_IT_DOWN.name

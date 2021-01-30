@@ -28,6 +28,7 @@ export const KILL = 'kill';
 export const LOCK_ACTION = 'lock';
 export const LOCK_DOOR = 'lock a door';
 export const MAKE_NOISE_ACTION = 'make-noise';
+export const MAKE_LOUD_NOISE = 'make a loud noise';
 export const MOVE = 'move';
 export const MOVE_ACTION = 'move';
 export const MOVE_CAR = 'move car';
