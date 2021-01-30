@@ -71,7 +71,8 @@ export const WEAPONS_S1 = {
     img: EvilTwins,
     name: 'Evil Twins',
     noise: true,
-    type: WEAPONS
+    type: WEAPONS,
+    unique: true
   },
   FireAxe: {
     canOpenDoor: NOISY,
@@ -96,7 +97,8 @@ export const WEAPONS_S1 = {
     img: MasShotgun,
     name: 'Mas Shotgun',
     noise: SPECIAL,
-    type: WEAPONS
+    type: WEAPONS,
+    unique: true
   },
   Machete: {
     attack: MELEE,
@@ -109,6 +111,7 @@ export const WEAPONS_S1 = {
   },
   Molotov: {
     attack: SPECIAL,
+    cannotBeFound: true,
     dice: SPECIAL,
     img: Molotov,
     name: 'Molotov',

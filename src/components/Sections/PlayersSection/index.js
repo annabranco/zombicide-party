@@ -144,7 +144,9 @@ import {
   CHANGE_CHARACTER,
   NONE,
   MAKE_NOISE_ACTION,
-  MAKE_LOUD_NOISE
+  MAKE_LOUD_NOISE,
+  RANGED,
+  MELEE
 } from '../../../constants';
 import {
   blueThreatThresold,
@@ -876,9 +878,22 @@ const PlayersSection = ({
 
   const onFindingItem = change => (item, currentSlot = slot - 1) => {
     const findingSlot = change.name === 'changeInHand' ? slot - 1 : slot - 3;
+
     if (
       character.abilities.includes(ABILITIES_S1.MATCHING_SET.name) &&
-      ALL_WEAPONS[item].dual
+      ALL_WEAPONS[item] &&
+      (ALL_WEAPONS[item].dual ||
+        (character.abilities.includes(ABILITIES_S1.GUNSLINGER.name) &&
+          ALL_WEAPONS[item].attack === RANGED &&
+          !ALL_WEAPONS[item].unique &&
+          !ALL_WEAPONS[item].cannotBeFound) ||
+        (character.abilities.includes(ABILITIES_S1.SWORDMASTER.name) &&
+          ALL_WEAPONS[item].attack === MELEE &&
+          !ALL_WEAPONS[item].unique &&
+          !ALL_WEAPONS[item].cannotBeFound) ||
+        (character.abilities.includes(ABILITIES_S1.AMBIDEXTROUS.name) &&
+          !ALL_WEAPONS[item].unique &&
+          !ALL_WEAPONS[item].cannotBeFound))
     ) {
       const updChar = cloneDeep(character);
 
