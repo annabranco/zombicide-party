@@ -84,6 +84,7 @@ import {
   NEXT,
   PREVIOUS,
   TURN_FINISHED,
+  RESISTED,
   FINISH_SETUP,
   START_NEXT_ROUND,
   HAS_BEEN_KILLED,
@@ -119,6 +120,7 @@ import {
   FREE_MOVE,
   FREE_SEARCH,
   INITIAL,
+  RESISTED_ONE,
   CAR,
   OBJECTIVE,
   SEARCH_ACTION,
@@ -227,6 +229,10 @@ const PlayersSection = ({
   );
   const [newChar, addNewChar] = useStateWithLabel(false, 'newChar');
   const [noise, setNoise] = useStateWithLabel(0, 'noise');
+  const [resistedAttack, toggleResistedAttack] = useStateWithLabel(
+    false,
+    'resistedAttack'
+  );
   const [roundEnded, endRound] = useStateWithLabel(null, 'roundEnded');
   const [selectCharOverlay, toggleSelectCharOverlay] = useStateWithLabel(
     false,
@@ -829,6 +835,7 @@ const PlayersSection = ({
         updatedCharacters.forEach((char, index) => {
           char.actionsLeft = char.actions; // eslint-disable-line no-param-reassign
           char.hasUsedFlashlight = false; // eslint-disable-line no-param-reassign
+          char.resistedDamage = false; // eslint-disable-line no-param-reassign
           char.abilitiesUsed = []; // eslint-disable-line no-param-reassign
 
           if (char.name === firstPlayer) {
@@ -964,12 +971,53 @@ const PlayersSection = ({
   const takeDamage = selectedSlot => {
     const woundedCharacter = cloneDeep(character);
     const [attacker, oneActionKill] = damageMode.split('-');
+    const characterCanResist =
+      character.abilities.includes(ABILITIES_S1.TOUGH.name) &&
+      !woundedCharacter.resistedDamage;
     let remainingCharacters = characters.filter(
       char => char.wounded !== KILLED
     );
-
     let damage = HIT;
-    if (woundedCharacter.wounded || oneActionKill) {
+
+    if (oneActionKill) {
+      if (characterCanResist && !woundedCharacter.wounded) {
+        woundedCharacter.resistedDamage = true;
+        toggleResistedAttack(RESISTED_ONE);
+
+        if (selectedSlot <= 2) {
+          woundedCharacter.wounded = true;
+          woundedCharacter.inHand[selectedSlot - 1] = WOUNDED;
+          toggleSomeoneIsWounded(true);
+        } else {
+          woundedCharacter.wounded = true;
+          woundedCharacter.inReserve[selectedSlot - 3] = WOUNDED;
+          toggleSomeoneIsWounded(true);
+        }
+        setTimeout(() => {
+          toggleResistedAttack(false);
+        }, 2000);
+      } else {
+        remainingCharacters = characters.filter(
+          char => char.name !== woundedCharacter.name
+        );
+
+        woundedCharacter.wounded = KILLED;
+        damage = KILL;
+        if (firstPlayer.includes(woundedCharacter.name)) {
+          changeFirstPlayer(`next-${characters[charIndex + 1].name}`);
+        }
+
+        if (remainingCharacters.length === 0) {
+          updateCharacters(remainingCharacters);
+        }
+      }
+    } else if (characterCanResist) {
+      toggleResistedAttack(RESISTED);
+      woundedCharacter.resistedDamage = true;
+      setTimeout(() => {
+        toggleResistedAttack(false);
+      }, 2000);
+    } else if (woundedCharacter.wounded) {
       remainingCharacters = characters.filter(
         char => char.name !== woundedCharacter.name
       );
@@ -986,9 +1034,11 @@ const PlayersSection = ({
     } else if (selectedSlot <= 2) {
       woundedCharacter.wounded = true;
       woundedCharacter.inHand[selectedSlot - 1] = WOUNDED;
+      toggleSomeoneIsWounded(true);
     } else {
       woundedCharacter.wounded = true;
       woundedCharacter.inReserve[selectedSlot - 3] = WOUNDED;
+      toggleSomeoneIsWounded(true);
     }
 
     const filename =
@@ -998,7 +1048,6 @@ const PlayersSection = ({
     sound.play();
 
     updateData(woundedCharacter);
-    toggleSomeoneIsWounded(true);
     if (woundedCharacter.wounded === KILLED) {
       toggleDamageMode(false);
       if (remainingCharacters.length > 0) {
@@ -1009,7 +1058,7 @@ const PlayersSection = ({
     setTimeout(() => {
       setZombiesRound();
       toggleDamageMode(false);
-    }, 4000);
+    }, 2000);
   };
   /* --- */
 
@@ -1437,6 +1486,10 @@ const PlayersSection = ({
             <FinishedTurnTag>
               {`${character.name}${TURN_FINISHED}`}
             </FinishedTurnTag>
+          )}
+
+          {resistedAttack && (
+            <FinishedTurnTag>{resistedAttack}</FinishedTurnTag>
           )}
 
           {extraActivation && (

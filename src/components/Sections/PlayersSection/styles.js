@@ -852,6 +852,7 @@ ExtraActivationImage.displayName = 'ExtraActivationImage';
 
 export const FinishedTurnTag = styled(AttackInstructions)`
   label: FinishedTurnTag;
+  z-index: 15;
   position: absolute;
   top: 50%;
   left: 50%;
