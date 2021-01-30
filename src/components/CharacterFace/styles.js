@@ -3,12 +3,28 @@ import { css } from '@emotion/core';
 import { NavIcons } from '../Sections/PlayersSection/styles';
 
 export const CharFace = styled(NavIcons)`
+  label: CharFace;
   ${({ big }) =>
     big &&
     css`
-      width: 130px;
+      width: 50px;
     `}
-  label: CharFace;
+
+  @media all and (min-width: 360px) {
+    ${({ big }) =>
+      big &&
+      css`
+        width: 80px;
+      `}
+  }
+
+  @media all and (min-width: 701px) {
+    ${({ big }) =>
+      big &&
+      css`
+        width: 130px;
+      `}
+  }
 `;
 CharFace.displayName = 'CharFace';
 
@@ -34,8 +50,16 @@ export const CharacterFaceWrapper = styled.div`
   ${({ big }) =>
     big &&
     css`
-      margin: 0 30px;
+      margin: 0 5px;
     `}
+
+  @media all and (min-width: 701px) {
+    ${({ big }) =>
+      big &&
+      css`
+        margin: 0 30px;
+      `}
+  }
 `;
 CharacterFaceWrapper.displayName = 'CharacterFaceWrapper';
 

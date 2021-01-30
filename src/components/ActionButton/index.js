@@ -65,35 +65,37 @@ const ActionButton = ({
   };
 
   const onClickIcon = event => {
-    activate(true);
+    if (!disabled) {
+      activate(true);
 
-    if (actionType === CAR_ENTER_ACTION && !carStarted) {
-      startCar(true);
-      interactWithCar(true);
-    } else if (actionType === CAR_EXIT_ACTION) {
-      interactWithCar(false);
-    }
-
-    if (sound.current) {
-      sound.current.currentTime = 0;
-      sound.current.play();
-      if (sound2.current) {
-        sound2.current.currentTime = 0;
-        setTimeout(() => sound2.current.play(), 3100);
+      if (actionType === CAR_ENTER_ACTION && !carStarted) {
+        startCar(true);
+        interactWithCar(true);
+      } else if (actionType === CAR_EXIT_ACTION) {
+        interactWithCar(false);
       }
-    }
 
-    if (actionType === OPEN_DOOR_ACTION) {
-      toggleExtraActivation(true);
-      if (checkForNoiseOpeningDoor(type)) {
-        setNoise(noise + 1);
+      if (sound.current) {
+        sound.current.currentTime = 0;
+        sound.current.play();
+        if (sound2.current) {
+          sound2.current.currentTime = 0;
+          setTimeout(() => sound2.current.play(), 3100);
+        }
       }
-    }
 
-    setTimeout(() => {
-      activate(false);
-    }, delay());
-    callback(event);
+      if (actionType === OPEN_DOOR_ACTION) {
+        toggleExtraActivation(true);
+        if (checkForNoiseOpeningDoor(type)) {
+          setNoise(noise + 1);
+        }
+      }
+
+      setTimeout(() => {
+        activate(false);
+      }, delay());
+      callback(event);
+    }
   };
 
   useEffect(() => {
@@ -206,7 +208,11 @@ const ActionButton = ({
           iconSize={iconSize}
           manyButtons={isMobile && manyButtons}
           onMouseOut={() => changeActionLabel('')}
-          onMouseOver={() => changeActionLabel(label)}
+          onMouseOver={() =>
+            changeActionLabel(
+              `${disabled ? 'Cannot be used at this time' : label}`
+            )
+          }
           type={type}
         />
       )}

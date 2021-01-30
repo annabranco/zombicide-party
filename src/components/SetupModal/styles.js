@@ -20,6 +20,7 @@ export const FacesWrapper = styled.div`
   label: FacesWrapper;
   display: flex;
   flex-direction: row;
+  flex-wrap: wrap;
   align-items: center;
   justify-content: center;
   width: 80%;
@@ -217,7 +218,7 @@ export const ModalTitle = styled.h1`
   label: ModalTitle;
   /* position: absolute;
   top: 0; */
-  margin: 0 auto 50px;
+  margin: 0 auto;
   padding-top: 40px;
   height: 100px;
   width: 100%;
@@ -244,6 +245,10 @@ export const ModalTitle = styled.h1`
     css`
       font-size: 5rem;
     `}
+
+        @media all and (min-width: 701px) {
+    margin: 0 auto 50px;
+  }
 `;
 ModalTitle.displayName = 'ModalTitle';
 

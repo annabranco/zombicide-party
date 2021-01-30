@@ -278,12 +278,12 @@ const PlayersSection = ({
   /* --- */
 
   /* ------- CORE METHODS ------- */
-  const updateData = (charWithChangedData = character) => {
+  const updateData = (charWithChangedData = character, background = false) => {
     const charOnGlobalList = characters.find(
       char => char.name === charWithChangedData.name
     );
 
-    if (!isEqual(charWithChangedData, character)) {
+    if (!isEqual(charWithChangedData, character) && !background) {
       changeCharacter(charWithChangedData);
     }
     if (!isEqual(charWithChangedData, charOnGlobalList)) {
@@ -823,6 +823,7 @@ const PlayersSection = ({
         updatedCharacters.forEach((char, index) => {
           char.actionsLeft = char.actions; // eslint-disable-line no-param-reassign
           char.hasUsedFlashlight = false; // eslint-disable-line no-param-reassign
+          char.abilitiesUsed = []; // eslint-disable-line no-param-reassign
 
           if (char.name === firstPlayer) {
             if (index + 1 === characters.length) {
@@ -903,17 +904,29 @@ const PlayersSection = ({
 
   const onHeal = healedCharacter => {
     const updChar = characters.filter(char => char.name === healedCharacter)[0];
-    updChar.wounded = false;
-
     const woundIndex = [...updChar.inHand, ...updChar.inReserve].findIndex(
       itemInSlot => itemInSlot === WOUNDED
     );
 
+    updChar.wounded = false;
+    spendAction(HEAL_ACTION);
+
     toggleActionsModal();
-    if (woundIndex <= 1) {
-      changeInHand('', woundIndex, updChar);
+    if (woundIndex <= 1 && woundIndex !== -1) {
+      updChar.inHand[woundIndex] = '';
     } else if (woundIndex > 1) {
-      changeInReserve('', woundIndex - 2, updChar);
+      updChar.inReserve[woundIndex - 2] = '';
+    }
+    // eslint-disable-next-line no-debugger
+    debugger;
+    if (healedCharacter === character.name) {
+      updChar.abilitiesUsed.push(HEAL_ACTION);
+      updateData(updChar);
+    } else {
+      const updHealer = cloneDeep(character);
+      updHealer.abilitiesUsed.push(HEAL_ACTION);
+      updateData(updChar, true);
+      updateData(updHealer);
     }
   };
 
@@ -1240,13 +1253,15 @@ const PlayersSection = ({
                           callback={
                             someoneIsWounded
                               ? () => {
-                                  spendAction(HEAL_ACTION);
                                   toggleActionsModal(HEAL_ACTION);
                                 }
                               : () => null
                           }
                           changeActionLabel={changeActionLabel}
-                          disabled={!someoneIsWounded}
+                          disabled={
+                            !someoneIsWounded ||
+                            character.abilitiesUsed.includes(HEAL_ACTION)
+                          }
                           isMobile={device.current === MOBILE}
                           label={HEAL}
                           manyButtons={character.location === CAR}
@@ -1734,7 +1749,12 @@ const PlayersSection = ({
             title: HEAL_WOUND,
             text: HEAL_CHOOSE,
             type: 'faces',
-            buttons: []
+            buttons: [
+              {
+                text: CANCEL,
+                type: 'cancel'
+              }
+            ]
           }}
           onConfirmModal={onHeal}
         />
