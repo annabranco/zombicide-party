@@ -80,7 +80,9 @@ import {
   KILLED_EM_ALL,
   KILL,
   HIT,
+  ABSORBED,
   LOCAL_STORAGE_KEY,
+  ABSORBED_ONE,
   NEXT,
   PREVIOUS,
   TURN_FINISHED,
@@ -972,8 +974,14 @@ const PlayersSection = ({
     const woundedCharacter = cloneDeep(character);
     const [attacker, oneActionKill] = damageMode.split('-');
     const characterCanResist =
-      character.abilities.includes(ABILITIES_S1.TOUGH.name) &&
+      woundedCharacter.abilities.includes(ABILITIES_S1.TOUGH.name) &&
       !woundedCharacter.resistedDamage;
+    const characterCanAbsorb =
+      woundedCharacter.abilities.includes(ABILITIES_S1.ALL_YOUVE_GOT.name) &&
+      !checkIfCharHasNoItems([
+        ...woundedCharacter.inHand,
+        ...woundedCharacter.inReserve
+      ]);
     let remainingCharacters = characters.filter(
       char => char.wounded !== KILLED
     );
@@ -996,6 +1004,19 @@ const PlayersSection = ({
         setTimeout(() => {
           toggleResistedAttack(false);
         }, 2000);
+      } else if (characterCanAbsorb) {
+        if (selectedSlot <= 2) {
+          woundedCharacter.inHand[selectedSlot - 1] = '';
+        } else {
+          woundedCharacter.inReserve[selectedSlot - 3] = '';
+        }
+        toggleResistedAttack(ABSORBED_ONE);
+        setTimeout(() => {
+          toggleResistedAttack(false);
+        }, 2000);
+        changeCharacter(woundedCharacter);
+        toggleDamageMode(attacker);
+        return null;
       } else {
         remainingCharacters = characters.filter(
           char => char.name !== woundedCharacter.name
@@ -1017,6 +1038,16 @@ const PlayersSection = ({
       setTimeout(() => {
         toggleResistedAttack(false);
       }, 2000);
+    } else if (characterCanAbsorb) {
+      toggleResistedAttack(ABSORBED);
+      setTimeout(() => {
+        toggleResistedAttack(false);
+      }, 2000);
+      if (selectedSlot <= 2) {
+        woundedCharacter.inHand[selectedSlot - 1] = '';
+      } else {
+        woundedCharacter.inReserve[selectedSlot - 3] = '';
+      }
     } else if (woundedCharacter.wounded) {
       remainingCharacters = characters.filter(
         char => char.name !== woundedCharacter.name
@@ -1059,6 +1090,7 @@ const PlayersSection = ({
       setZombiesRound();
       toggleDamageMode(false);
     }, 2000);
+    return null;
   };
   /* --- */
 
@@ -1287,16 +1319,19 @@ const PlayersSection = ({
               <i className="fas fa-user-plus" />
             </AdmButton>
           )}
-          {!damageMode && !setupMode && character.wounded !== KILLED && (
-            <AdmButton
-              type="button"
-              onClick={onClickEdit}
-              onMouseOver={() => changeTopActionLabel(EDIT_CHARACTERS)}
-              onMouseOut={() => changeTopActionLabel('')}
-            >
-              <i className="far fa-edit" />
-            </AdmButton>
-          )}
+          {!damageMode &&
+            !setupMode &&
+            !roundEnded &&
+            character.wounded !== KILLED && (
+              <AdmButton
+                type="button"
+                onClick={onClickEdit}
+                onMouseOver={() => changeTopActionLabel(EDIT_CHARACTERS)}
+                onMouseOut={() => changeTopActionLabel('')}
+              >
+                <i className="far fa-edit" />
+              </AdmButton>
+            )}
           <TopActionsLabelWrapper>{topActionsLabel}</TopActionsLabelWrapper>
 
           {/* ----- CHAR IDENTIFICATION ----- */}
@@ -1543,6 +1578,14 @@ const PlayersSection = ({
                         bonusDices={character.bonusDices}
                         callback={spendAction}
                         canAttack={canAttack}
+                        canBeAbsorbed={
+                          character.abilities.includes(
+                            ABILITIES_S1.ALL_YOUVE_GOT.name
+                          ) &&
+                          item !== '' &&
+                          item !== NONE &&
+                          item !== WOUNDED
+                        }
                         canCombine={generalActions && canCombine}
                         canSearch={canSearch}
                         causeDamage={takeDamage}
@@ -1551,6 +1594,15 @@ const PlayersSection = ({
                         }
                         combinePair={
                           combiningItem && combiningItem.pair === itemName
+                        }
+                        charCanAbsorb={
+                          character.abilities.includes(
+                            ABILITIES_S1.ALL_YOUVE_GOT.name
+                          ) &&
+                          !checkIfCharHasNoItems([
+                            ...character.inHand,
+                            ...character.inReserve
+                          ])
                         }
                         charVoice={character.voice}
                         damageMode={damageMode}
@@ -1591,9 +1643,26 @@ const PlayersSection = ({
                           ...character.inReserve
                         ])}
                         callback={spendAction}
+                        canBeAbsorbed={
+                          character.abilities.includes(
+                            ABILITIES_S1.ALL_YOUVE_GOT.name
+                          ) &&
+                          item !== '' &&
+                          item !== NONE &&
+                          item !== WOUNDED
+                        }
                         canCombine={generalActions && canCombine}
                         canSearch={canSearch}
                         causeDamage={takeDamage}
+                        charCanAbsorb={
+                          character.abilities.includes(
+                            ABILITIES_S1.ALL_YOUVE_GOT.name
+                          ) &&
+                          checkIfCharHasNoItems([
+                            ...character.inHand,
+                            ...character.inReserve
+                          ])
+                        }
                         charVoice={character.voice}
                         combineItemSelected={
                           combiningItem && combiningItem.item === itemName

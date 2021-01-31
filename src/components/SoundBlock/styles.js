@@ -17,9 +17,19 @@ export const Block = styled.div`
   justify-content: center;
   border-radius: 5px;
   box-shadow: 0 0 5px 0 black;
-  display: ${({ damageMode, type, wounded }) =>
-    damageMode && type !== WOUND && wounded ? 'none' : 'flex'};
   height: 100%;
+  display: ${({ canBeAbsorbed, charCanAbsorb, damageMode, type, wounded }) => {
+    if (damageMode && charCanAbsorb && !canBeAbsorbed) {
+      return 'none';
+    }
+    if (damageMode && canBeAbsorbed) {
+      return 'flex';
+    }
+    if (damageMode && type !== WOUND) {
+      return 'none';
+    }
+    return 'flex';
+  }};
 `;
 Block.displayName = 'Block';
 

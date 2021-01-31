@@ -29,7 +29,9 @@ const SoundBlock = ({
   activateKillButtons,
   callback,
   canAttack,
+  canBeAbsorbed,
   canCombine,
+  charCanAbsorb,
   combineItemSelected,
   combinePair,
   damageMode,
@@ -163,7 +165,13 @@ const SoundBlock = ({
   }, [filename, differentSounds]);
 
   return (
-    <Block damageMode={damageMode} type={type} wounded={wounded}>
+    <Block
+      canBeAbsorbed={canBeAbsorbed}
+      charCanAbsorb={charCanAbsorb}
+      damageMode={damageMode}
+      type={type}
+      wounded={wounded}
+    >
       <PlayImageButton
         canAttack={canAttack}
         isActive={isActive}
@@ -214,7 +222,9 @@ SoundBlock.propTypes = {
   activateKillButtons: func,
   callback: func,
   canAttack: bool,
+  canBeAbsorbed: bool.isRequired,
   canCombine: bool,
+  charCanAbsorb: bool,
   combineItemSelected: bool,
   combinePair: bool,
   damageMode: bool,
@@ -245,6 +255,7 @@ SoundBlock.propTypes = {
 
 SoundBlock.defaultProps = {
   activateKillButtons: null,
+  charCanAbsorb: false,
   callback: null,
   canAttack: false,
   canCombine: false,

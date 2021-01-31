@@ -1,3 +1,5 @@
+export const ABSORBED = 'Absorbed attack';
+export const ABSORBED_ONE = 'Absorbed the first attack';
 export const CHOOSE_PLAYER = 'Who is gonna play?';
 export const CHOOSE_PLAYER_DYNAMIC = 'Who is gonna play the new character?';
 export const FINISH_SETUP = 'Finish setup';

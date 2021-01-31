@@ -43,8 +43,10 @@ const ItemsArea = ({
   bonusDices,
   callback,
   canAttack,
+  canBeAbsorbed,
   canCombine,
   canSearch,
+  charCanAbsorb,
   charName,
   charVoice,
   causeDamage,
@@ -234,7 +236,9 @@ const ItemsArea = ({
             activateKillButtons={activateKillButtons}
             callback={callback}
             canAttack={canAttack}
+            canBeAbsorbed={canBeAbsorbed}
             canCombine={canCombine && canCombine.includes(item)}
+            charCanAbsorb={charCanAbsorb}
             combineItemSelected={combineItemSelected}
             combinePair={combinePair}
             damageMode={damageMode}
@@ -330,8 +334,10 @@ ItemsArea.propTypes = {
   bonusDices: BonusDicesType,
   callback: func.isRequired,
   canAttack: bool,
+  canBeAbsorbed: bool.isRequired,
   canCombine: bool.isRequired,
   canSearch: bool.isRequired,
+  charCanAbsorb: bool.isRequired,
   charName: string,
   charVoice: string,
   causeDamage: func.isRequired,
