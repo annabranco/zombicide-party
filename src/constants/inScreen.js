@@ -1,3 +1,4 @@
+export const BONUS_ACTION = 'bonus action';
 export const FREE_ATTACK = 'free attack';
 export const FREE_MOVE = 'free move';
 export const FREE_SEARCH = 'free search';

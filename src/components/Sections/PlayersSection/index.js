@@ -89,10 +89,12 @@ import {
   RESISTED,
   FINISH_SETUP,
   START_NEXT_ROUND,
+  GIVE_ORDERS_CHOOSE,
   HAS_BEEN_KILLED,
   HEAL_ACTION,
   HEAL,
   WEAPONS,
+  BONUS_ACTION,
   LOCK_ACTION,
   LOCK_DOOR,
   GET_OBJECTIVE,
@@ -150,7 +152,9 @@ import {
   MAKE_NOISE_ACTION,
   MAKE_LOUD_NOISE,
   RANGED,
-  MELEE
+  MELEE,
+  GIVE_ORDERS_ACTION,
+  GIVE_ORDERS
 } from '../../../constants';
 import {
   blueThreatThresold,
@@ -224,7 +228,6 @@ const PlayersSection = ({
     null,
     'firstPlayer'
   );
-
   const [highestXp, updateHighestXp] = useStateWithLabel(
     { name: '', xp: 0 },
     'highestXp'
@@ -272,7 +275,7 @@ const PlayersSection = ({
     extraAttackActions,
     searchActions,
     spendAction,
-    // updateActions,
+    bonusActions,
     finishedTurn,
     canMove,
     canAttack,
@@ -287,7 +290,8 @@ const PlayersSection = ({
     generalActions,
     extraMovementActions,
     extraAttackActions,
-    searchActions
+    searchActions,
+    bonusActions
   ];
   /* --- */
 
@@ -329,9 +333,10 @@ const PlayersSection = ({
           toggleActionsModal('red');
         } else if (char.abilities.length !== 4) {
           updatedChar.abilities = [];
-          updatedChar.actions = [3, 0, 0, 0];
+          updatedChar.actions = [3, 0, 0, 0, 0];
           updatedChar = handlePromotionEffects(updatedChar, 'blue', [
             3,
+            0,
             0,
             0,
             0
@@ -351,10 +356,11 @@ const PlayersSection = ({
           toggleActionsModal('orange');
         } else if (char.abilities.length !== 3) {
           updatedChar.abilities = [];
-          updatedChar.actions = [3, 0, 0, 0];
+          updatedChar.actions = [3, 0, 0, 0, 0];
           updatedChar.bonusDices = { combat: 0, melee: 0, ranged: 0 };
           updatedChar = handlePromotionEffects(updatedChar, 'blue', [
             3,
+            0,
             0,
             0,
             0
@@ -380,10 +386,11 @@ const PlayersSection = ({
         } else if (updatedChar.abilities.length !== 2) {
           console.log('$$$ Yellow skills different than 2', char.name);
           updatedChar.abilities = [];
-          updatedChar.actions = [3, 0, 0, 0];
+          updatedChar.actions = [3, 0, 0, 0, 0];
           updatedChar.bonusDices = { combat: 0, melee: 0, ranged: 0 };
           updatedChar = handlePromotionEffects(updatedChar, 'blue', [
             3,
+            0,
             0,
             0,
             0
@@ -407,10 +414,11 @@ const PlayersSection = ({
           );
         } else if (updatedChar.abilities.length !== 1) {
           updatedChar.abilities = [];
-          updatedChar.actions = [3, 0, 0, 0];
+          updatedChar.actions = [3, 0, 0, 0, 0];
           updatedChar.bonusDices = { combat: 0, melee: 0, ranged: 0 };
           updatedChar = handlePromotionEffects(updatedChar, 'blue', [
             3,
+            0,
             0,
             0,
             0
@@ -464,7 +472,9 @@ const PlayersSection = ({
     let hasPlayed;
     characters.forEach(char => {
       if (char.name === name) {
-        hasPlayed = !checkIfHasAnyActionLeft(char.actionsLeft || [3, 0, 0, 0]);
+        hasPlayed = !checkIfHasAnyActionLeft(
+          char.actionsLeft || [3, 0, 0, 0, 0]
+        );
       }
     });
     return hasPlayed;
@@ -575,7 +585,8 @@ const PlayersSection = ({
       gen: (actionsLeft && actionsLeft[0]) || generalActions,
       mov: (actionsLeft && actionsLeft[1]) || extraMovementActions,
       att: (actionsLeft && actionsLeft[2]) || extraAttackActions,
-      sea: (actionsLeft && actionsLeft[3]) || searchActions
+      sea: (actionsLeft && actionsLeft[3]) || searchActions,
+      bon: (actionsLeft && actionsLeft[4]) || bonusActions
     };
     const count = [];
     for (let i = 1; i <= actions.gen; i++) {
@@ -589,6 +600,9 @@ const PlayersSection = ({
     }
     for (let i = 1; i <= actions.sea; i++) {
       count.push(FREE_SEARCH);
+    }
+    for (let i = 1; i <= actions.bon; i++) {
+      count.push(BONUS_ACTION);
     }
     return count;
   };
@@ -798,7 +812,7 @@ const PlayersSection = ({
         checkIfHasAnyActionLeft(char.actionsLeft || [3])
     );
 
-    updatedCharacter.actionsLeft = [0, 0, 0, 0];
+    updatedCharacter.actionsLeft = [0, 0, 0, 0, 0];
     updateData(updatedCharacter);
     if (charsStillToAct.length > 0) {
       setTimeout(() => changeToAnotherPlayer(NEXT), 800);
@@ -835,10 +849,20 @@ const PlayersSection = ({
         let nextFirstPlayer;
 
         updatedCharacters.forEach((char, index) => {
-          char.actionsLeft = char.actions; // eslint-disable-line no-param-reassign
+          const restingBonusActions = char.actionsLeft[4];
+
           char.hasUsedFlashlight = false; // eslint-disable-line no-param-reassign
           char.resistedDamage = false; // eslint-disable-line no-param-reassign
           char.abilitiesUsed = []; // eslint-disable-line no-param-reassign
+          if (
+            restingBonusActions &&
+            !checkIfHasAnyActionLeft(char.actionsLeft)
+          ) {
+            char.actionsLeft = [...char.actions]; // eslint-disable-line no-param-reassign
+            char.actionsLeft.splice(4, 1, restingBonusActions); // eslint-disable-line no-param-reassign
+          } else {
+            char.actionsLeft = [...char.actions]; // eslint-disable-line no-param-reassign
+          }
 
           if (char.name === firstPlayer) {
             if (index + 1 === characters.length) {
@@ -928,6 +952,27 @@ const PlayersSection = ({
       }, 1000);
     }
     return change(item, findingSlot);
+  };
+
+  const onGiveOrders = () => {
+    toggleActionsModal(GIVE_ORDERS_ACTION);
+  };
+
+  const onReceiveOrders = characterOrdered => {
+    toggleActionsModal();
+    const orderedChar = characters.filter(
+      char => char.name === characterOrdered
+    )[0];
+    console.log('$$$ orderedChar', orderedChar);
+
+    if (orderedChar.actionsLeft && orderedChar.actionsLeft.length > 0) {
+      orderedChar.actionsLeft[4] += 1;
+    } else {
+      const newActionsLeft = [...orderedChar.actions];
+      newActionsLeft[4] += 1;
+      orderedChar.actionsLeft = newActionsLeft;
+    }
+    updateData(orderedChar, true);
   };
 
   const onHeal = healedCharacter => {
@@ -1125,7 +1170,8 @@ const PlayersSection = ({
         generalActions,
         extraMovementActions,
         extraAttackActions,
-        searchActions
+        searchActions,
+        bonusActions
       ];
       changeCharacter(updatedCharacter);
       const actionsArray = generateActionsCountArray();
@@ -1139,7 +1185,8 @@ const PlayersSection = ({
     generalActions,
     extraMovementActions,
     extraAttackActions,
-    searchActions
+    searchActions,
+    bonusActions
   ]);
 
   useEffect(() => {
@@ -1164,12 +1211,8 @@ const PlayersSection = ({
           !dataLoaded ||
           nextChar.name !== character.name)
       ) {
-        const charInHand = [nextChar.inHand[0], nextChar.inHand[1]];
-        const charinReserve = [
-          nextChar.inReserve[0],
-          nextChar.inReserve[1],
-          nextChar.inReserve[2]
-        ];
+        const charInHand = [...nextChar.inHand];
+        const charinReserve = [...nextChar.inReserve];
         const openDoors = checkIfCharacterCanOpenDoors(charInHand);
         const hasFlashlight = checkIfCharacterHasFlashlight([
           ...charInHand,
@@ -1353,6 +1396,20 @@ const PlayersSection = ({
               {!damageMode && !setupMode && !slot && (
                 <>
                   <ActionsWrapper>
+                    {generalActions &&
+                      character.abilities.includes(
+                        ABILITIES_S1.BORN_LEADER.name
+                      ) && (
+                        <ActionButton
+                          actionType={GIVE_ORDERS_ACTION}
+                          callback={onGiveOrders}
+                          changeActionLabel={changeActionLabel}
+                          isMobile={device.current === MOBILE}
+                          label={GIVE_ORDERS}
+                          manyButtons={character.location === CAR}
+                        />
+                      )}
+
                     {generalActions &&
                       character.abilities.includes(ABILITIES_S1.LOUD.name) && (
                         <ActionButton
@@ -1917,12 +1974,12 @@ const PlayersSection = ({
       )}
 
       {/* --- Heal Modal --- */}
-      {displayActionsModal === 'heal' && (
+      {displayActionsModal === HEAL_ACTION && (
         <ActionsModal
           toggleVisibility={toggleActionsModal}
           visible={displayActionsModal}
           content={{
-            data: characters,
+            data: characters.filter(char => char.wounded),
             title: HEAL_WOUND,
             text: HEAL_CHOOSE,
             type: 'faces',
@@ -1934,6 +1991,26 @@ const PlayersSection = ({
             ]
           }}
           onConfirmModal={onHeal}
+        />
+      )}
+
+      {displayActionsModal === GIVE_ORDERS_ACTION && (
+        <ActionsModal
+          toggleVisibility={toggleActionsModal}
+          visible={displayActionsModal}
+          content={{
+            data: characters.filter(char => char.name !== character.name),
+            title: GIVE_ORDERS,
+            text: GIVE_ORDERS_CHOOSE,
+            type: 'faces',
+            buttons: [
+              {
+                text: CANCEL,
+                type: 'cancel'
+              }
+            ]
+          }}
+          onConfirmModal={onReceiveOrders}
         />
       )}
 

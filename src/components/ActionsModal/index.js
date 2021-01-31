@@ -121,17 +121,15 @@ const ActionsModal = ({
           )}
           {modalMessage.type === 'faces' && (
             <FacesWrapper>
-              {content.data
-                .filter(char => char.wounded)
-                .map(char => (
-                  <CharacterFace
-                    big
-                    key={`${char.name}-healSelector`}
-                    onClick={() => onConfirmModal(char.name)}
-                    src={char.face}
-                    wounded={char.wounded}
-                  />
-                ))}
+              {content.data.map(char => (
+                <CharacterFace
+                  big
+                  key={`${char.name}-charSelector`}
+                  onClick={() => onConfirmModal(char.name)}
+                  src={char.face}
+                  wounded={char.wounded}
+                />
+              ))}
             </FacesWrapper>
           )}
           <ButtonsArea>

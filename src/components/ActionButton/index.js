@@ -2,7 +2,12 @@ import React, { useEffect, useRef } from 'react';
 import { bool, func, number, string } from 'prop-types';
 import { useStateWithLabel } from '../../utils/hooks';
 import { checkForNoiseOpeningDoor } from '../../utils/items';
-import { ActionIcon, CarActionIcon, CarIcon, CarIconWrapper } from './styles';
+import {
+  ActionIcon,
+  SecondaryIcon,
+  PrimaryIcon,
+  DoubleIconWrapper
+} from './styles';
 import { SOUNDS } from '../../assets/sounds';
 import {
   CAR_ATTACK_ACTION,
@@ -149,8 +154,8 @@ const ActionButton = ({
         );
         break;
       case GIVE_ORDERS_ACTION:
-        setIconType('far fa-comment'); // fa)s
-        setIconType2('fas fa-running');
+        setIconType2('far fa-comment'); // fa)s
+        setIconType('fas fa-running');
         // sound go go go
         break;
       case LOCK_ACTION:
@@ -177,24 +182,24 @@ const ActionButton = ({
   return (
     <>
       {iconType2 ? (
-        <CarIconWrapper
+        <DoubleIconWrapper
           isActive={isActive}
           onClick={isActive ? () => null : onClickIcon}
           manyButtons={isMobile && manyButtons}
           onMouseOut={() => changeActionLabel('')}
           onMouseOver={() => changeActionLabel(label)}
         >
-          <CarIcon
+          <PrimaryIcon
             actionType={actionType}
             className={iconType2}
             manyButtons={manyButtons}
           />
-          <CarActionIcon
+          <SecondaryIcon
             actionType={actionType}
             className={iconType}
             manyButtons={isMobile && manyButtons}
           />
-        </CarIconWrapper>
+        </DoubleIconWrapper>
       ) : (
         <ActionIcon
           actionType={actionType}

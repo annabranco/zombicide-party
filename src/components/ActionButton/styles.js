@@ -7,6 +7,7 @@ import {
   CAR_MOVE_ACTION,
   COMBINE_ACTION,
   END_TURN_ACTION,
+  GIVE_ORDERS_ACTION,
   MOVE_ACTION,
   OBJECTIVE_ACTION,
   OPEN_DOOR_ACTION,
@@ -205,88 +206,8 @@ export const ActionIcon = styled.i`
 `;
 ActionIcon.displayName = 'ActionIcon';
 
-export const CarActionIcon = styled.i`
-  label: CarActionIcon;
-  margin-top: 5px;
-  font-size: 1.8rem;
-  line-height: 0.3;
-
-  ${({ actionType }) => {
-    if (actionType === CAR_EXIT_ACTION) {
-      return css`
-        color: darkslateblue;
-      `;
-    }
-    if (actionType === CAR_ENTER_ACTION) {
-      return css`
-        transform: rotateY(180deg);
-        color: darkslateblue;
-      `;
-    }
-    if (actionType === CAR_ATTACK_ACTION) {
-      return css`
-        transform: rotate(10deg) rotateY(29deg) translate(-13px, -2px);
-        margin-right: -13px;
-        color: darkred;
-      `;
-    }
-    if (actionType === CAR_MOVE_ACTION) {
-      return css`
-        z-index: 7;
-        margin-left: -10px;
-      `;
-    }
-    return null;
-  }}
-
-  ${({ manyButtons }) =>
-    manyButtons &&
-    css`
-      font-size: 1.5rem;
-    `}
-
-  @media (min-width: 1024px) and (min-height: 1300px) {
-    font-size: 2rem;
-  }
-`;
-CarActionIcon.displayName = 'CarActionIcon';
-
-export const CarIcon = styled.i`
-  label: CarIcon;
-  z-index: 6;
-  margin-left: 2px;
-  font-size: 2.5rem;
-  line-height: 1;
-  text-align: center;
-
-  ${({ manyButtons }) =>
-    manyButtons &&
-    css`
-      font-size: 2rem;
-    `}
-
-  ${({ actionType }) => {
-    if (actionType === CAR_ATTACK_ACTION) {
-      return css`
-        transform: rotate(2deg);
-      `;
-    }
-    if (actionType === CAR_MOVE_ACTION) {
-      return css`
-        color: gray;
-      `;
-    }
-    return null;
-  }}
-
-  @media (min-width: 1024px) and (min-height: 1300px) {
-    font-size: 2.7rem;
-  }
-`;
-CarIcon.displayName = 'CarIcon';
-
-export const CarIconWrapper = styled.div`
-  label: CarIconWrapper;
+export const DoubleIconWrapper = styled.div`
+  label: DoubleIconWrapper;
   height: 66px;
   width: 66px;
   background: ${({ isActive }) =>
@@ -327,4 +248,98 @@ export const CarIconWrapper = styled.div`
       font-size: 2rem;
     `}
 `;
-CarIconWrapper.displayName = 'CarIconWrapper';
+DoubleIconWrapper.displayName = 'DoubleIconWrapper';
+
+export const PrimaryIcon = styled.i`
+  label: PrimaryIcon;
+  z-index: 6;
+  margin-left: 2px;
+  font-size: 2.5rem;
+  line-height: 1;
+  text-align: center;
+
+  ${({ manyButtons }) =>
+    manyButtons &&
+    css`
+      font-size: 2rem;
+    `}
+
+  ${({ actionType }) => {
+    if (actionType === CAR_ATTACK_ACTION) {
+      return css`
+        transform: rotate(2deg);
+      `;
+    }
+    if (actionType === CAR_MOVE_ACTION) {
+      return css`
+        color: gray;
+      `;
+    }
+    if (actionType === GIVE_ORDERS_ACTION) {
+      return css`
+        font-size: 3rem;
+        margin-left: -10px;
+      `;
+    }
+    return null;
+  }}
+
+  @media (min-width: 1024px) and (min-height: 1300px) {
+    font-size: 2.7rem;
+  }
+`;
+PrimaryIcon.displayName = 'PrimaryIcon';
+
+export const SecondaryIcon = styled.i`
+  label: SecondaryIcon;
+  margin-top: 5px;
+  font-size: 1.8rem;
+  line-height: 0.3;
+
+  ${({ actionType }) => {
+    if (actionType === CAR_EXIT_ACTION) {
+      return css`
+        color: darkslateblue;
+      `;
+    }
+    if (actionType === CAR_ENTER_ACTION) {
+      return css`
+        transform: rotateY(180deg);
+        color: darkslateblue;
+      `;
+    }
+    if (actionType === CAR_ATTACK_ACTION) {
+      return css`
+        transform: rotate(10deg) rotateY(29deg) translate(-13px, -2px);
+        margin-right: -13px;
+        color: darkred;
+      `;
+    }
+    if (actionType === CAR_MOVE_ACTION) {
+      return css`
+        z-index: 7;
+        margin-left: -10px;
+      `;
+    }
+    if (actionType === GIVE_ORDERS_ACTION) {
+      return css`
+        z-index: 7;
+        margin-top: -2px;
+        margin-left: -35px;
+        font-size: 1.6rem;
+      `;
+    }
+    return null;
+  }}
+
+  ${({ manyButtons }) =>
+    manyButtons &&
+    css`
+      font-size: 1.5rem;
+    `}
+
+  @media (min-width: 1024px) and (min-height: 1300px) {
+    font-size: 2rem;
+  }
+`;
+SecondaryIcon.displayName = 'SecondaryIcon';
