@@ -416,7 +416,7 @@ export const CardsActions = styled.div`
       `}
   }
 
-    @media (min-width: 1300px) and (min-height: 1024px) {
+  @media (min-width: 1300px) and (min-height: 1024px) {
     bottom: 250px;
     left: 25%;
 
@@ -427,7 +427,6 @@ export const CardsActions = styled.div`
         right: 25%;
       `}
   }
-    }
 `;
 CardsActions.displayName = 'CardsActions';
 
@@ -685,25 +684,12 @@ export const CharItems = styled.div`
         right: 10px;
         width: 80%;
       `}
-  }
 
-  @media (min-width: 1024px) and (min-height: 1300px) {
-    top: 50%;
-    width: 100%;
-    margin-left: -50px;
-
-    ${({ slotType }) =>
-      slotType === IN_RESERVE &&
+    ${({ numItems }) =>
+      numItems > 3 &&
       css`
-        margin-top: -150px;
-      `}
-
-    ${({ trade }) =>
-      trade &&
-      css`
-        top: 160px;
-        right: 140px;
-        width: 60%;
+        justify-content: flex-end;
+        margin-left: -15%;
       `}
   }
 
@@ -725,6 +711,40 @@ export const CharItems = styled.div`
         top: 180px;
         right: 10px;
       `}
+
+    ${({ numItems }) =>
+      numItems > 3 &&
+      css`
+        justify-content: flex-end;
+        margin-left: -21%;
+      `}
+  }
+
+  @media (min-width: 1024px) and (min-height: 1300px) {
+    top: 50%;
+    width: 100%;
+    margin-left: -50px;
+
+    ${({ slotType }) =>
+      slotType === IN_RESERVE &&
+      css`
+        margin-top: -150px;
+      `}
+
+    ${({ trade }) =>
+      trade &&
+      css`
+        top: 160px;
+        right: 140px;
+        width: 60%;
+      `}
+
+    ${({ numItems }) =>
+      numItems > 3 &&
+      css`
+        justify-content: center;
+        margin-left: -5%;
+      `}
   }
 
   @media all and (min-width: 1400px) {
@@ -735,9 +755,16 @@ export const CharItems = styled.div`
         top: 250px;
         right: 10px;
       `}
+
+    ${({ numItems }) =>
+      numItems > 3 &&
+      css`
+        justify-content: flex-end;
+        margin-right: 50px;
+      `}
   }
 
-    @media (min-width: 1300px) and (min-height: 1024px) {
+  @media (min-width: 1300px) and (min-height: 1024px) {
     top: unset;
     bottom: 120px;
     /* margin: 65px 0 0 20px; */
@@ -757,7 +784,13 @@ export const CharItems = styled.div`
         top: 180px;
         right: 10px;
       `}
-  }
+
+    ${({ numItems }) =>
+      numItems > 3 &&
+      css`
+        justify-content: flex-end;
+        margin-left: -22%;
+      `}
   }
 `;
 CharItems.displayName = 'CharItems';

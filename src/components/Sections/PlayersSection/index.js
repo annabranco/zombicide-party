@@ -1631,7 +1631,10 @@ const PlayersSection = ({
                     );
                   })}
               </CharItems>
-              <CharItems slotType={IN_RESERVE}>
+              <CharItems
+                numItems={character.inReserve && character.inReserve.length}
+                slotType={IN_RESERVE}
+              >
                 {character.inReserve &&
                   character.inReserve.map((item, index) => {
                     const itemName = item && item.replace(' ', '');
@@ -1679,6 +1682,9 @@ const PlayersSection = ({
                         key={`${itemName}-${index + 3}`}
                         makeNoise={makeNoise}
                         noAudio
+                        numItems={
+                          character.inReserve && character.inReserve.length
+                        }
                         onClickCombine={onClickCombine}
                         onClickDrop={changeInReserve}
                         selectSlot={selectSlot}

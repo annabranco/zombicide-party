@@ -110,9 +110,10 @@ const GUNSLINGER = {
   description:
     ' The Survivor treats all Ranged weapons as if they had the Dual symbol'
 };
-const HEARD = {
+const HOARD = {
   name: 'Hoard',
-  description: ' The Survivor can carry one extra Equipment card in reserve'
+  description: ' The Survivor can carry one extra Equipment card in reserve',
+  effect: itemsInReserve => [...itemsInReserve, null]
 };
 const HOLD_YOUR_NOSE = {
   name: 'Hold your nose',
@@ -211,7 +212,7 @@ export const ABILITIES_S1 = {
   BORN_LEADER,
   DESTINY,
   GUNSLINGER,
-  HEARD,
+  HOARD,
   HOLD_YOUR_NOSE,
   ALL_YOUVE_GOT,
   LOCK_IT_DOWN,

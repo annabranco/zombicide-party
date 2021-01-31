@@ -61,6 +61,7 @@ const ItemsArea = ({
   handleSearch,
   index,
   item,
+  numItems,
   itemSelected,
   makeNoise,
   onClickCombine,
@@ -225,6 +226,7 @@ const ItemsArea = ({
     <ItemWrapper
       id={`${item}-${index + 1}`}
       isActive={isActive}
+      numItems={numItems}
       onMouseOut={!device === MOBILE ? () => toggleActive(false) : null}
       onMouseOver={!device === MOBILE ? () => toggleActive(true) : null}
       slotType={slotType}
@@ -354,6 +356,7 @@ ItemsArea.propTypes = {
   item: string,
   itemSelected: bool.isRequired,
   makeNoise: func.isRequired,
+  numItems: number,
   onClickCombine: func.isRequired,
   onClickDrop: func.isRequired,
   selectSlot: func.isRequired,
@@ -379,6 +382,7 @@ ItemsArea.defaultProps = {
   gainCustomXp: () => null,
   gainXp: () => null,
   item: null,
+  numItems: null,
   spendAction: () => null,
   setupMode: false,
   spendSingleUseWeapon: () => null,

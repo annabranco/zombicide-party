@@ -11,7 +11,8 @@ const {
   DIE_RANGED,
   STARTS_WITH,
   MATCHING_SET,
-  MEDIC
+  MEDIC,
+  HOARD
 } = ABILITIES_S1;
 
 export const handlePromotionEffects = (char, level, actionsLeft, index) => {
@@ -53,6 +54,15 @@ export const handlePromotionEffects = (char, level, actionsLeft, index) => {
       )
     ) {
       updatedChar.inHand[1] = updatedChar.promotions.blue.effect();
+    } else if (updatedChar.promotions.blue.name.includes(HOARD.name)) {
+      console.log('$$$ updatedChar.inReserve ', updatedChar.inReserve);
+      updatedChar.inReserve = updatedChar.promotions.blue.effect(
+        updatedChar.inReserve
+      );
+      console.log(
+        '$$$ updatedChar.promotions.blue.effect(',
+        updatedChar.inReserve
+      );
     }
     updatedChar.abilities.push(updatedChar.promotions.blue.name);
   } else if (level === 'yellow') {

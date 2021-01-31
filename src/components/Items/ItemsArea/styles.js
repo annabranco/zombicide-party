@@ -204,6 +204,7 @@ export const ItemBlank = styled.div`
     `;
   }}
 
+
   @media all and (min-width: 360px) {
     height: 110px;
     font-size: 1.1rem;
@@ -285,12 +286,45 @@ export const ItemWrapper = styled.div`
     return null;
   }}
 
+  ${({ numItems }) =>
+    numItems > 3 &&
+    css`
+      margin: 50px -5px 0;
+    `}
+
+@media all and (min-width: 360px) {
+    ${({ numItems }) =>
+      numItems > 3 &&
+      css`
+        margin: 50px -10px 0;
+      `}
+  }
+
   @media all and (min-width: 701px) {
     margin: 50px 10px 0;
+    ${({ numItems }) =>
+      numItems > 3 &&
+      css`
+        margin: 50px -30px 0;
+      `}
   }
 
   @media all and (min-width: 1024px) {
     margin: 50px 20px 0;
+
+    ${({ numItems }) =>
+      numItems > 3 &&
+      css`
+        margin: 50px 0 0;
+      `}
+  }
+
+  @media (min-width: 1024px) and (min-height: 1300px) {
+    ${({ numItems }) =>
+      numItems > 3 &&
+      css`
+        margin: 50px -30px 0;
+      `}
   }
 `;
 ItemWrapper.displayName = 'ItemWrapper';
