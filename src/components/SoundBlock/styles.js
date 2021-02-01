@@ -25,7 +25,7 @@ export const Block = styled.div`
     if (damageMode && canBeAbsorbed) {
       return 'flex';
     }
-    if (damageMode && type !== WOUND) {
+    if (damageMode && wounded && type !== WOUND) {
       return 'none';
     }
     return 'flex';
@@ -41,8 +41,7 @@ export const ItemIcon = styled.div`
   max-width: 100%;
   transition: transform ease 0.5s, border ease 0.2s;
   background-image: ${({ img }) => img && `url(${img})`};
-  /* background-position: center center;
-  background-size: 150%; */
+
   background-repeat: no-repeat;
   cursor: pointer;
   transition: all ease 0.2s;

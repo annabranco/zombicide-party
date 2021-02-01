@@ -154,7 +154,10 @@ import {
   RANGED,
   MELEE,
   GIVE_ORDERS_ACTION,
-  GIVE_ORDERS
+  GIVE_ORDERS,
+  SEARCH_ZOMBIE,
+  SEARCH_ZOMBIE_ACTION,
+  NOISY
 } from '../../../constants';
 import {
   blueThreatThresold,
@@ -232,8 +235,11 @@ const PlayersSection = ({
     { name: '', xp: 0 },
     'highestXp'
   );
+  const [hasKilledZombie, toggleHasKilledZombie] = useStateWithLabel(
+    false,
+    'hasKilledZombie'
+  );
   const [newChar, addNewChar] = useStateWithLabel(false, 'newChar');
-  const [noise, setNoise] = useStateWithLabel(0, 'noise');
   const [resistedAttack, toggleResistedAttack] = useStateWithLabel(
     false,
     'resistedAttack'
@@ -517,7 +523,6 @@ const PlayersSection = ({
     }
 
     toggleExtraActivation(false);
-    setNoise(0);
     changeCharIndex(nextPlayerIndex);
   };
 
@@ -632,6 +637,7 @@ const PlayersSection = ({
       updateHighestXp({ name: character.name, xp: newXp });
     }
 
+    toggleHasKilledZombie(true);
     updatedCharacter.experience = newXp;
     updateData(updatedCharacter);
   };
@@ -670,7 +676,7 @@ const PlayersSection = ({
         setTimeout(() => {
           noiseDebounce.current = false;
         }, 1000);
-        setNoise(noise + 1);
+        setNoise(1);
       }
     }
   };
@@ -704,8 +710,16 @@ const PlayersSection = ({
       updateHighestXp({ name: character.name, xp: updatedXp });
     }
 
+    toggleHasKilledZombie(true);
     updateData(updatedCharacter);
   };
+
+  const setNoise = (noise = 1) => {
+    const updatedCharacter = cloneDeep(character);
+    updatedCharacter.noise += noise;
+    updateData(updatedCharacter);
+  };
+
   /* --- */
 
   /* ------- ACTION BUTTONS METHODS ------- */
@@ -852,8 +866,9 @@ const PlayersSection = ({
           const restingBonusActions = char.actionsLeft[4];
 
           char.hasUsedFlashlight = false; // eslint-disable-line no-param-reassign
-          char.resistedDamage = false; // eslint-disable-line no-param-reassign
           char.abilitiesUsed = []; // eslint-disable-line no-param-reassign
+          char.noise = 0; // eslint-disable-line no-param-reassign
+
           if (
             restingBonusActions &&
             !checkIfHasAnyActionLeft(char.actionsLeft)
@@ -879,7 +894,6 @@ const PlayersSection = ({
           );
         }
 
-        setNoise(0);
         changeFirstPlayer(updatedCharacters[nextFirstPlayer].name);
         updateCharacters(updatedCharacters);
         nextGameRound();
@@ -958,23 +972,6 @@ const PlayersSection = ({
     toggleActionsModal(GIVE_ORDERS_ACTION);
   };
 
-  const onReceiveOrders = characterOrdered => {
-    toggleActionsModal();
-    const orderedChar = characters.filter(
-      char => char.name === characterOrdered
-    )[0];
-    console.log('$$$ orderedChar', orderedChar);
-
-    if (orderedChar.actionsLeft && orderedChar.actionsLeft.length > 0) {
-      orderedChar.actionsLeft[4] += 1;
-    } else {
-      const newActionsLeft = [...orderedChar.actions];
-      newActionsLeft[4] += 1;
-      orderedChar.actionsLeft = newActionsLeft;
-    }
-    updateData(orderedChar, true);
-  };
-
   const onHeal = healedCharacter => {
     const updChar = characters.filter(char => char.name === healedCharacter)[0];
     const woundIndex = [...updChar.inHand, ...updChar.inReserve].findIndex(
@@ -1003,8 +1000,47 @@ const PlayersSection = ({
   };
 
   const onMakeLoudNoise = () => {
-    setNoise(10);
+    const updChar = cloneDeep(character);
+
+    updChar.noise += 10;
+    updChar.abilitiesUsed.push(MAKE_NOISE_ACTION);
     spendAction(MAKE_LOUD_NOISE);
+    updateData(updChar);
+  };
+
+  const onReceiveOrders = characterOrdered => {
+    const updChar = cloneDeep(character);
+
+    const orderedChar = characters.filter(
+      char => char.name === characterOrdered
+    )[0];
+
+    toggleActionsModal();
+    if (orderedChar.actionsLeft && orderedChar.actionsLeft.length > 0) {
+      orderedChar.actionsLeft[4] += 1;
+    } else {
+      const newActionsLeft = [...orderedChar.actions];
+      newActionsLeft[4] += 1;
+      orderedChar.actionsLeft = newActionsLeft;
+    }
+    updateData(orderedChar, true);
+
+    updChar.abilitiesUsed.push(GIVE_ORDERS_ACTION);
+    updateData(updChar);
+  };
+
+  const onSearchZombie = () => {
+    const updChar = cloneDeep(character);
+    const newActionsLeft = [...updChar.actionsLeft];
+    const emptySlot =
+      [...updChar.inHand, ...updChar.inReserve].findIndex(
+        itemInSlot => !itemInSlot || itemInSlot === NONE
+      ) + 1;
+
+    newActionsLeft[3] = -1;
+    updChar.actionsLeft = newActionsLeft;
+    updateData(updChar);
+    selectSlot(emptySlot);
   };
 
   const setNewChar = updatedCharacters => {
@@ -1020,7 +1056,7 @@ const PlayersSection = ({
     const [attacker, oneActionKill] = damageMode.split('-');
     const characterCanResist =
       woundedCharacter.abilities.includes(ABILITIES_S1.TOUGH.name) &&
-      !woundedCharacter.resistedDamage;
+      !woundedCharacter.abilitiesUsed.includes(RESISTED);
     const characterCanAbsorb =
       woundedCharacter.abilities.includes(ABILITIES_S1.ALL_YOUVE_GOT.name) &&
       !checkIfCharHasNoItems([
@@ -1034,7 +1070,7 @@ const PlayersSection = ({
 
     if (oneActionKill) {
       if (characterCanResist && !woundedCharacter.wounded) {
-        woundedCharacter.resistedDamage = true;
+        woundedCharacter.abilitiesUsed.push(RESISTED);
         toggleResistedAttack(RESISTED_ONE);
 
         if (selectedSlot <= 2) {
@@ -1079,7 +1115,7 @@ const PlayersSection = ({
       }
     } else if (characterCanResist) {
       toggleResistedAttack(RESISTED);
-      woundedCharacter.resistedDamage = true;
+      woundedCharacter.abilitiesUsed.push(RESISTED);
       setTimeout(() => {
         toggleResistedAttack(false);
       }, 2000);
@@ -1398,12 +1434,31 @@ const PlayersSection = ({
                   <ActionsWrapper>
                     {generalActions &&
                       character.abilities.includes(
+                        ABILITIES_S1.HOLD_YOUR_NOSE.name
+                      ) &&
+                      hasKilledZombie && (
+                        <ActionButton
+                          actionType={SEARCH_ZOMBIE_ACTION}
+                          callback={onSearchZombie}
+                          changeActionLabel={changeActionLabel}
+                          disabled={!canSearch}
+                          isMobile={device.current === MOBILE}
+                          label={SEARCH_ZOMBIE}
+                          manyButtons={character.location === CAR}
+                        />
+                      )}
+
+                    {generalActions &&
+                      character.abilities.includes(
                         ABILITIES_S1.BORN_LEADER.name
                       ) && (
                         <ActionButton
                           actionType={GIVE_ORDERS_ACTION}
                           callback={onGiveOrders}
                           changeActionLabel={changeActionLabel}
+                          disabled={character.abilitiesUsed.includes(
+                            GIVE_ORDERS_ACTION
+                          )}
                           isMobile={device.current === MOBILE}
                           label={GIVE_ORDERS}
                           manyButtons={character.location === CAR}
@@ -1416,6 +1471,9 @@ const PlayersSection = ({
                           actionType={MAKE_NOISE_ACTION}
                           callback={onMakeLoudNoise}
                           changeActionLabel={changeActionLabel}
+                          disabled={character.abilitiesUsed.includes(
+                            MAKE_NOISE_ACTION
+                          )}
                           isMobile={device.current === MOBILE}
                           label={MAKE_LOUD_NOISE}
                           manyButtons={character.location === CAR}
@@ -1526,7 +1584,6 @@ const PlayersSection = ({
                         actionType={OPEN_DOOR_ACTION}
                         callback={spendAction}
                         isMobile={device.current === MOBILE}
-                        noise={noise}
                         setNoise={
                           character.abilities.includes(ABILITIES_S1.NINJA.name)
                             ? () => null
@@ -1534,7 +1591,12 @@ const PlayersSection = ({
                         }
                         type={canOpenDoor}
                         changeActionLabel={changeActionLabel}
-                        label={noise ? BREAK_DOOR : OPEN_DOOR}
+                        label={
+                          ALL_WEAPONS[canOpenDoor] &&
+                          ALL_WEAPONS[canOpenDoor].canOpenDoor === NOISY
+                            ? BREAK_DOOR
+                            : OPEN_DOOR
+                        }
                         manyButtons={character.location === CAR}
                         toggleExtraActivation={toggleExtraActivation}
                       />
@@ -1564,9 +1626,11 @@ const PlayersSection = ({
           {/* ----- INDICATORS ON CHAR SHEET ----- */}
           {character.wounded !== KILLED && !setupMode && !damageMode && (
             <NoiseWrapper>
-              {Array.from({ length: noise }, (_, index) => index).map(key => (
-                <NoiseIcon key={key} src={Noise} />
-              ))}
+              {Array.from({ length: character.noise }, (_, index) => index).map(
+                key => (
+                  <NoiseIcon key={key} src={Noise} />
+                )
+              )}
             </NoiseWrapper>
           )}
           {character.wounded && (

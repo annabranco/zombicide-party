@@ -12,7 +12,8 @@ import {
   OBJECTIVE_ACTION,
   OPEN_DOOR_ACTION,
   RELOAD_ACTION,
-  SEARCH_ACTION
+  SEARCH_ACTION,
+  SEARCH_ZOMBIE_ACTION
 } from '../../constants';
 
 export const ActionIcon = styled.i`
@@ -91,6 +92,13 @@ export const ActionIcon = styled.i`
       return css`
         font-size: 2.2rem;
         line-height: 1.4;
+      `;
+    }
+
+    if (actionType === SEARCH_ZOMBIE_ACTION) {
+      return css`
+        font-size: 2.6rem;
+        line-height: 1.3;
       `;
     }
 
@@ -223,10 +231,6 @@ export const DoubleIconWrapper = styled.div`
   justify-content: center;
   text-align: center;
 
-  @media all and (min-width: 768px) {
-    cursor: ${({ isActive }) => (isActive ? 'not-allowed' : 'pointer')};
-  }
-
   &:hover {
     & > i {
       color: ${({ isActive }) => (isActive ? 'red' : 'yellow')};
@@ -235,10 +239,18 @@ export const DoubleIconWrapper = styled.div`
     }
   }
 
-  @media (min-width: 1024px) and (min-height: 1300px) {
-    height: 76px;
-    width: 76px;
-  }
+  ${({ disabled }) =>
+    disabled &&
+    css`
+      color: gray;
+      cursor: not-allowed;
+      &:hover {
+        & > i {
+          color: gray;
+          text-shadow: none;
+        }
+      }
+    `}
 
   ${({ manyButtons }) =>
     manyButtons &&
@@ -247,6 +259,27 @@ export const DoubleIconWrapper = styled.div`
       width: 55px;
       font-size: 2rem;
     `}
+
+  @media all and (min-width: 768px) {
+    cursor: ${({ isActive }) => (isActive ? 'not-allowed' : 'pointer')};
+    ${({ disabled }) =>
+      disabled &&
+      css`
+        color: gray;
+        cursor: not-allowed;
+        &:hover {
+          & > i {
+            color: gray;
+            text-shadow: none;
+          }
+        }
+      `}
+  }
+
+  @media (min-width: 1024px) and (min-height: 1300px) {
+    height: 76px;
+    width: 76px;
+  }
 `;
 DoubleIconWrapper.displayName = 'DoubleIconWrapper';
 

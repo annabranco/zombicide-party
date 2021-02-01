@@ -129,7 +129,6 @@ export const useTurnsCounter = (
     numOfBonusActions
   ]);
 
-  // TOFIX THIS
   useEffect(() => {
     if (character) {
       console.log('$$$ HOOK', character, {

@@ -237,7 +237,7 @@ export const WEAPONS_OTHERS = {
     dice: 1,
     img: DesertEagle,
     name: 'Desert Eagle',
-    noise: false,
+    noise: true,
     type: WEAPONS
   }
 };
@@ -261,7 +261,6 @@ export const WEAPONS_NIGHT_SHIFT = {
     type: WEAPONS
   },
   ColtPython: {
-    canOpenDoor: NOISY,
     attack: RANGED,
     dice: 1,
     dual: true,

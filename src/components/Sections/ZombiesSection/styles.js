@@ -87,15 +87,21 @@ export const CancelAttackButton = styled(SelectionButton)`
   label: CancelAttackButton;
   margin: 0 20px 5px;
   height: 30px;
-  width: 120px;
+  width: 90px;
   border-radius: 5px;
   font-size: 1.2rem;
   line-height: 0.5;
   text-transform: uppercase;
+  padding: 0;
 
   background: lightgray;
   &:hover {
     color: yellow;
+  }
+
+  @media all and (min-width: 701px) {
+    width: 90px;
+    padding: 0;
   }
 `;
 CancelAttackButton.displayName = 'CancelAttackButton';

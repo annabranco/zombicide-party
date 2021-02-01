@@ -10,22 +10,14 @@ const {
   DIE_MELEE,
   DIE_RANGED,
   STARTS_WITH,
-  MATCHING_SET,
-  MEDIC,
   HOARD
 } = ABILITIES_S1;
 
 export const handlePromotionEffects = (char, level, actionsLeft, index) => {
   const updatedChar = cloneDeep(char);
-  console.log('$$$ STARTING PROMO', char.name);
   updatedChar.actionsLeft = [...actionsLeft];
 
   if (level === 'blue') {
-    console.log('$$$ blue promo', char, level, index);
-    console.log(
-      '$$$ updatedChar.promotions.blue.name',
-      updatedChar.promotions.blue.name
-    );
     if (
       (updatedChar.promotions.blue.name === ACTION.name ||
         updatedChar.promotions.blue.name === MOVE_ACTION.name ||
@@ -55,12 +47,7 @@ export const handlePromotionEffects = (char, level, actionsLeft, index) => {
     ) {
       updatedChar.inHand[1] = updatedChar.promotions.blue.effect();
     } else if (updatedChar.promotions.blue.name.includes(HOARD.name)) {
-      console.log('$$$ updatedChar.inReserve ', updatedChar.inReserve);
       updatedChar.inReserve = updatedChar.promotions.blue.effect(
-        updatedChar.inReserve
-      );
-      console.log(
-        '$$$ updatedChar.promotions.blue.effect(',
         updatedChar.inReserve
       );
     }
@@ -85,8 +72,12 @@ export const handlePromotionEffects = (char, level, actionsLeft, index) => {
         updatedChar.promotions.yellow.name === DIE_RANGED.name) &&
       updatedChar.promotions.yellow.effect
     ) {
-      updatedChar.bonusDices = updatedChar.promotions.red[index].effect(
+      updatedChar.bonusDices = updatedChar.promotions.yellow.effect(
         updatedChar.bonusDices
+      );
+    } else if (updatedChar.promotions.blue.name.includes(HOARD.name)) {
+      updatedChar.inReserve = updatedChar.promotions.yellow.effect(
+        updatedChar.inReserve
       );
     }
     updatedChar.abilities.push(char.promotions.yellow.name);
@@ -113,6 +104,10 @@ export const handlePromotionEffects = (char, level, actionsLeft, index) => {
       updatedChar.bonusDices = updatedChar.promotions.orange[index].effect(
         updatedChar.bonusDices
       );
+    } else if (updatedChar.promotions.blue.name.includes(HOARD.name)) {
+      updatedChar.inReserve = updatedChar.promotions.orange[index].effect(
+        updatedChar.inReserve
+      );
     }
     updatedChar.abilities.push(char.promotions.orange[index].name);
   } else {
@@ -137,6 +132,10 @@ export const handlePromotionEffects = (char, level, actionsLeft, index) => {
     ) {
       updatedChar.bonusDices = updatedChar.promotions.red[index].effect(
         updatedChar.bonusDices
+      );
+    } else if (updatedChar.promotions.blue.name.includes(HOARD.name)) {
+      updatedChar.inReserve = updatedChar.promotions.red[index].effect(
+        updatedChar.inReserve
       );
     }
     updatedChar.abilities.push(char.promotions.red[index].name);

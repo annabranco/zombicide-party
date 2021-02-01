@@ -27,7 +27,8 @@ import {
   OPEN_DOOR,
   OPEN_DOOR_ACTION,
   RELOAD_ACTION,
-  SEARCH_ACTION
+  SEARCH_ACTION,
+  SEARCH_ZOMBIE_ACTION
 } from '../../constants';
 
 const ActionButton = ({
@@ -39,7 +40,6 @@ const ActionButton = ({
   disabled,
   isMobile,
   interactWithCar,
-  noise,
   setNoise,
   startCar,
   type,
@@ -92,7 +92,7 @@ const ActionButton = ({
       if (actionType === OPEN_DOOR_ACTION) {
         toggleExtraActivation(true);
         if (checkForNoiseOpeningDoor(type)) {
-          setNoise(noise + 1);
+          setNoise(1);
         }
       }
 
@@ -153,6 +153,16 @@ const ActionButton = ({
           SOUNDS[`found-${type}${Math.ceil(Math.random() * 6)}`]
         );
         break;
+      case SEARCH_ZOMBIE_ACTION:
+        setIconSize('medium');
+        setIconType('fas fa-search');
+        sound.current = new Audio(
+          SOUNDS[type && `${actionType}${Math.floor(Math.random() * 10)}`]
+        );
+        sound2.current = new Audio(
+          SOUNDS[`found-${type}${Math.ceil(Math.random() * 6)}`]
+        );
+        break;
       case GIVE_ORDERS_ACTION:
         setIconType2('far fa-comment'); // fa)s
         setIconType('fas fa-running');
@@ -184,19 +194,26 @@ const ActionButton = ({
       {iconType2 ? (
         <DoubleIconWrapper
           isActive={isActive}
+          disabled={disabled}
           onClick={isActive ? () => null : onClickIcon}
           manyButtons={isMobile && manyButtons}
           onMouseOut={() => changeActionLabel('')}
-          onMouseOver={() => changeActionLabel(label)}
+          onMouseOver={() =>
+            changeActionLabel(
+              `${disabled ? 'Cannot be used at this time' : label}`
+            )
+          }
         >
           <PrimaryIcon
             actionType={actionType}
             className={iconType2}
+            disabled={disabled}
             manyButtons={manyButtons}
           />
           <SecondaryIcon
             actionType={actionType}
             className={iconType}
+            disabled={disabled}
             manyButtons={isMobile && manyButtons}
           />
         </DoubleIconWrapper>
@@ -234,7 +251,6 @@ ActionButton.propTypes = {
   disabled: bool,
   isMobile: bool,
   interactWithCar: func,
-  noise: number,
   setNoise: func,
   startCar: func,
   type: string,
@@ -251,7 +267,6 @@ ActionButton.defaultProps = {
   disabled: false,
   isMobile: null,
   interactWithCar: false,
-  noise: 0,
   setNoise: () => null,
   startCar: null,
   type: null,
