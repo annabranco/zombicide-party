@@ -437,40 +437,49 @@ const PlayersSection = ({
   };
 
   const calculateCharactersOrder = () => {
-    const charsByName = {};
-    const firstPlayerIndex = characters.findIndex(
-      char => char.name === firstPlayer
-    );
-    const charNames = characters
-      .reduce((result, char, index) => {
-        if (result.name) {
-          charsByName[result.name] = result.face;
-          charsByName[char.name] = char.face;
-          return `${result.name}-${char.name}`;
-        }
-        charsByName[char.name] = char.face;
-        return `${result}-${char.name}`;
-      })
-      .split('-');
-
-    const updatedCharNames = [...charNames];
-    const charsBeforeCurrent = updatedCharNames.splice(0, firstPlayerIndex);
-
-    const currentChar = updatedCharNames.shift();
-    const orderedNames = [
-      currentChar,
-      ...updatedCharNames,
-      ...charsBeforeCurrent
-    ];
     const orderedChars = [];
 
-    orderedNames.forEach(name => {
+    if (characters.length <= 1) {
       orderedChars.push({
-        name,
-        face: charsByName[name],
-        index: charNames.indexOf(name)
+        name: characters[0].name,
+        face: characters[0].face,
+        index: 0
       });
-    });
+    } else {
+      const charsByName = {};
+      const firstPlayerIndex = characters.findIndex(
+        char => char.name === firstPlayer
+      );
+      const charNames = characters
+        .reduce((result, char, index) => {
+          if (result.name) {
+            charsByName[result.name] = result.face;
+            charsByName[char.name] = char.face;
+            return `${result.name}-${char.name}`;
+          }
+          charsByName[char.name] = char.face;
+          return `${result}-${char.name}`;
+        })
+        .split('-');
+
+      const updatedCharNames = [...charNames];
+      const charsBeforeCurrent = updatedCharNames.splice(0, firstPlayerIndex);
+
+      const currentChar = updatedCharNames.shift();
+      const orderedNames = [
+        currentChar,
+        ...updatedCharNames,
+        ...charsBeforeCurrent
+      ];
+
+      orderedNames.forEach(name => {
+        orderedChars.push({
+          name,
+          face: charsByName[name],
+          index: charNames.indexOf(name)
+        });
+      });
+    }
     return orderedChars;
   };
 
