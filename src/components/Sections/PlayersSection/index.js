@@ -48,7 +48,7 @@ import {
   NoiseIcon,
   IndicatorsWrapper,
   MovementIcon,
-  FinishedTurnTag,
+  MidScreenTag,
   FirstPlayerToken,
   WoundedWrapper,
   FirstPlayerWrapper,
@@ -1648,14 +1648,10 @@ const PlayersSection = ({
             </WoundedWrapper>
           )}
           {finishedTurn && character.wounded !== KILLED && !damageMode && (
-            <FinishedTurnTag>
-              {`${character.name}${TURN_FINISHED}`}
-            </FinishedTurnTag>
+            <MidScreenTag>{`${character.name}${TURN_FINISHED}`}</MidScreenTag>
           )}
 
-          {resistedAttack && (
-            <FinishedTurnTag>{resistedAttack}</FinishedTurnTag>
-          )}
+          {resistedAttack && <MidScreenTag>{resistedAttack}</MidScreenTag>}
 
           {extraActivation && (
             <ExtraActivationButton>
@@ -1784,7 +1780,7 @@ const PlayersSection = ({
                           item !== NONE &&
                           item !== WOUNDED
                         }
-                        canCombine={generalActions && canCombine}
+                        canCombine={!!generalActions && canCombine}
                         canSearch={canSearch}
                         causeDamage={takeDamage}
                         charCanAbsorb={

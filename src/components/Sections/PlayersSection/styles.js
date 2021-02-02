@@ -904,8 +904,8 @@ export const ExtraActivationImage = styled.img`
 `;
 ExtraActivationImage.displayName = 'ExtraActivationImage';
 
-export const FinishedTurnTag = styled(AttackInstructions)`
-  label: FinishedTurnTag;
+export const MidScreenTag = styled(AttackInstructions)`
+  label: MidScreenTag;
   z-index: 15;
   position: absolute;
   top: 50%;
@@ -918,7 +918,7 @@ export const FinishedTurnTag = styled(AttackInstructions)`
     0 -2px 2px black, 0 0 2px black, 0 2px 2px black, 2px -2px 2px black,
     2px 0 2px black, 2px 2px 2px black;
 `;
-FinishedTurnTag.displayName = 'FinishedTurnTag';
+MidScreenTag.displayName = 'MidScreenTag';
 
 export const FirstPlayerToken = styled.img`
   label: FirstPlayerToken;
