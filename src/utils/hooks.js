@@ -1,4 +1,5 @@
 import { useState, useDebugValue, useEffect } from 'react';
+import { GENERAL } from '../constants';
 import { checkIfHasAnyActionLeft } from './actions';
 
 export const useStateWithLabel = (initialValue, displayName) => {
@@ -45,7 +46,7 @@ export const useTurnsCounter = (
     return false;
   };
 
-  const spendAction = (type = 'general') => {
+  const spendAction = (type = GENERAL) => {
     if (bonusActions) {
       changeMessage(`${character} used 1 bonus action to ${type}.`);
       setBonusActions(bonusActions - 1);

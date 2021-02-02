@@ -21,12 +21,16 @@ const CharacterFace = ({ big, currentChar, onClick, played, src, wounded }) => {
 };
 
 CharacterFace.propTypes = {
-  big: bool.isRequired,
-  currentChar: string.isRequired,
+  big: bool,
+  currentChar: bool.isRequired,
   onClick: func.isRequired,
   played: bool.isRequired,
   src: string.isRequired,
   wounded: bool.isRequired
+};
+
+CharacterFace.defaultProps = {
+  big: false
 };
 
 export default CharacterFace;

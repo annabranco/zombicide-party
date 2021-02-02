@@ -75,6 +75,13 @@ const StrobeBulb = () => keyframes`
   }
 `;
 
+export const BottomLight = styled.div`
+  label: BottomLight;
+  position: absolute;
+  top: 235px;
+`;
+BottomLight.displayName = 'BottomLight';
+
 export const Bulb = styled.span`
   label: Bulb;
   display: inline-block;
@@ -218,13 +225,6 @@ export const InnerLight = styled.div`
   }
 `;
 InnerLight.displayName = 'InnerLight';
-
-export const BottomLight = styled.div`
-  label: BottomLight;
-  position: absolute;
-  top: 235px;
-`;
-BottomLight.displayName = 'BottomLight';
 
 export const LightBar = styled.div`
   label: LightBar;

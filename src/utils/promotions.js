@@ -140,6 +140,5 @@ export const handlePromotionEffects = (char, level, actionsLeft, index) => {
     }
     updatedChar.abilities.push(char.promotions.red[index].name);
   }
-  console.log('$$$ updatedChar', char.name, updatedChar);
   return updatedChar;
 };

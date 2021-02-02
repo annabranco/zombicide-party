@@ -1,22 +1,10 @@
 import React, { useEffect, useRef } from 'react';
-import { bool, func, number, string } from 'prop-types';
-import { isEqual } from 'lodash';
+import { bool, func, number, string, oneOfType } from 'prop-types';
 import { useStateWithLabel } from '../../../utils/hooks';
 import { getItemPhoto, getItemType } from '../../../utils/items';
 import SoundBlock from '../../SoundBlock';
 import ActionButton from '../../ActionButton';
 import { ALL_WEAPONS } from '../../../setup/weapons';
-import { AppButton } from '../../Sections/PlayersSection/styles';
-import {
-  ActionButtonIcon,
-  ItemWrapper,
-  ItemBlank,
-  Item,
-  ActionButtonsWrapper,
-  KillButtonsWrapper,
-  KillButton,
-  KillButtonIcon
-} from './styles';
 import {
   DROP,
   IN_HAND,
@@ -31,11 +19,21 @@ import {
   RELOAD_ACTION,
   SEARCH_ACTION,
   SPECIAL,
-  TRADE,
   WEAPONS
 } from '../../../constants';
-import { BonusDicesType } from '../../../interfaces/types';
 import ZombieFace from '../../../assets/images/zombieFace.png';
+import { BonusDicesType } from '../../../interfaces/types';
+import { AppButton } from '../../Sections/PlayersSection/styles';
+import {
+  ActionButtonIcon,
+  ActionButtonsWrapper,
+  Item,
+  ItemBlank,
+  ItemWrapper,
+  KillButton,
+  KillButtonIcon,
+  KillButtonsWrapper
+} from './styles';
 
 const ItemsArea = ({
   actionsLeft,
@@ -46,10 +44,10 @@ const ItemsArea = ({
   canBeAbsorbed,
   canCombine,
   canSearch,
+  causeDamage,
   charCanAbsorb,
   charName,
   charVoice,
-  causeDamage,
   combineItemSelected,
   combinePair,
   damageMode,
@@ -61,9 +59,9 @@ const ItemsArea = ({
   handleSearch,
   index,
   item,
-  numItems,
   itemSelected,
   makeNoise,
+  numItems,
   onClickCombine,
   onClickDrop,
   selectSlot,
@@ -76,13 +74,13 @@ const ItemsArea = ({
   tradeItem,
   wounded
 }) => {
-  const [isActive, toggleActive] = useStateWithLabel(false, 'isActive');
-  const [killButtons, changeKillButtons] = useStateWithLabel([], 'killButtons');
-  const [needReload, toggleNeedReload] = useStateWithLabel([], 'needReload');
   const [displaySplash, toggleDisplaySplash] = useStateWithLabel(
     false,
     'displaySplash'
   );
+  const [isActive, toggleActive] = useStateWithLabel(false, 'isActive');
+  const [killButtons, changeKillButtons] = useStateWithLabel([], 'killButtons');
+  const [needReload, toggleNeedReload] = useStateWithLabel(false, 'needReload');
 
   const bonusDiceRef = useRef();
   const dicesRef = useRef();
@@ -141,13 +139,9 @@ const ItemsArea = ({
       causeDamage(slot);
     } else if (trade) {
       if (itemSelected) {
-        // select(false);
         tradeItem({ item: null, slot, charTrading: charName });
       } else {
         tradeItem({ item, slot, charTrading: charName });
-        if (!itemSelected) {
-          // select(true);
-        }
       }
     } else {
       onClickChange();
@@ -208,20 +202,9 @@ const ItemsArea = ({
   };
 
   useEffect(() => {
-    if (dice && bonusDices) {
-      // if (
-      //   !isEqual(bonusDiceRef.current, bonusDices) ||
-      //   dicesRef.current !== dice
-      // ) {
-      //   changeKillButtons(calculateTotalDices());
-      // }
-    }
-  }, [dice, bonusDices, item, changeKillButtons]);
-
-  useEffect(() => {
     toggleNeedReload(false);
   }, [charName, toggleNeedReload]);
-  console.log('$$$ device', device);
+
   return (
     <ItemWrapper
       id={`${item}-${index + 1}`}
@@ -264,8 +247,8 @@ const ItemsArea = ({
         ) : (
           <ItemBlank
             allSlotsAreEmpty={allSlotsAreEmpty}
-            damageMode={damageMode}
             canSearch={canSearch}
+            damageMode={damageMode}
             isSelected={itemSelected}
             onClick={onClickEmptyCard}
             setupMode={setupMode}
@@ -331,61 +314,77 @@ const ItemsArea = ({
 };
 
 ItemsArea.propTypes = {
-  actionsLeft: number.isRequired,
+  actionsLeft: number,
   allSlotsAreEmpty: bool,
   bonusDices: BonusDicesType,
-  callback: func.isRequired,
+  callback: func,
   canAttack: bool,
-  canBeAbsorbed: bool.isRequired,
-  canCombine: bool.isRequired,
-  canSearch: bool.isRequired,
-  charCanAbsorb: bool.isRequired,
+  canBeAbsorbed: bool,
+  canCombine: bool,
+  canSearch: bool,
+  causeDamage: func,
+  charCanAbsorb: bool,
   charName: string,
   charVoice: string,
-  causeDamage: func.isRequired,
   combineItemSelected: bool,
   combinePair: bool,
-  damageMode: bool.isRequired,
+  damageMode: bool,
   device: string.isRequired,
   dice: number,
-  dropMode: bool.isRequired,
+  dropMode: bool,
   gainCustomXp: func,
   gainXp: func,
-  handleSearch: func.isRequired,
+  handleSearch: func,
   index: number.isRequired,
   item: string,
-  itemSelected: bool.isRequired,
-  makeNoise: func.isRequired,
+  itemSelected: bool,
+  makeNoise: func,
   numItems: number,
-  onClickCombine: func.isRequired,
+  onClickCombine: func,
   onClickDrop: func.isRequired,
-  selectSlot: func.isRequired,
-  setupMode: bool,
+  selectSlot: func,
+  setupMode: oneOfType([string, bool]),
   slotType: string.isRequired,
   spendAction: func,
   spendSingleUseWeapon: func,
-  startTrade: func.isRequired,
-  trade: bool.isRequired,
+  startTrade: func,
+  trade: bool,
   tradeItem: func,
   wounded: bool.isRequired
 };
 
 ItemsArea.defaultProps = {
+  actionsLeft: null,
   allSlotsAreEmpty: false,
   bonusDices: null,
+  callback: () => null,
   canAttack: false,
+  canBeAbsorbed: false,
+  canCombine: false,
+  canSearch: false,
+  causeDamage: null,
+  charCanAbsorb: false,
   charName: null,
   charVoice: null,
   combineItemSelected: false,
   combinePair: false,
+  damageMode: false,
   dice: null,
+  dropMode: false,
+  itemSelected: false,
   gainCustomXp: () => null,
   gainXp: () => null,
+  handleSearch: () => null,
   item: null,
+  makeNoise: () => null,
   numItems: null,
+  onClickCombine: () => null,
+  selectSlot: () => null,
+  setupMode: null,
   spendAction: () => null,
-  setupMode: false,
   spendSingleUseWeapon: () => null,
+  startTrade: () => null,
+  trade: false,
   tradeItem: () => null
 };
 

@@ -1,7 +1,10 @@
 import React, { useEffect } from 'react';
-import { bool, func, node } from 'prop-types';
-
+import { bool, func, string } from 'prop-types';
+import { useStateWithLabel } from '../../utils/hooks';
 import { NO_WAY, CONFIRMATION_NEEDED, YEAH } from '../../constants';
+import CharacterFace from '../CharacterFace';
+import { ModalContentType } from '../../interfaces/types';
+import { ModalSelect, XpSlider } from './styles';
 import {
   ModalButton,
   ModalMessage,
@@ -12,17 +15,13 @@ import {
   FacesWrapper
 } from '../SetupModal/styles';
 import { ButtonsArea } from '../MainMenu/styles';
-import { ModalContentType } from '../../interfaces/types';
-import { useStateWithLabel } from '../../utils/hooks';
-import { ModalSelect, XpSlider } from './styles';
-import CharacterFace from '../CharacterFace';
 
 const ActionsModal = ({
   content,
-  toggleVisibility,
-  visible,
   isMobile,
-  onConfirmModal
+  onConfirmModal,
+  toggleVisibility,
+  visible
 }) => {
   const [modalMessage, changeModalMessage] = useStateWithLabel(
     content,
@@ -174,16 +173,16 @@ const ActionsModal = ({
 
 ActionsModal.propTypes = {
   content: ModalContentType,
-  visible: bool.isRequired,
-  toggleVisibility: func.isRequired,
+  isMobile: bool,
   onConfirmModal: func,
-  isMobile: bool
+  toggleVisibility: func.isRequired,
+  visible: string.isRequired
 };
 
 ActionsModal.defaultProps = {
   content: null,
-  onConfirmModal: () => null,
-  isMobile: false
+  isMobile: false,
+  onConfirmModal: () => null
 };
 
 export default ActionsModal;

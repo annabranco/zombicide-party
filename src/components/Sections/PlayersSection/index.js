@@ -1,164 +1,28 @@
 import React, { useEffect, useRef } from 'react';
+import { useHistory } from 'react-router-dom';
 import { cloneDeep, isEqual } from 'lodash';
 import { arrayOf, bool, func } from 'prop-types';
-import { useHistory } from 'react-router-dom';
+import { useStateWithLabel, useTurnsCounter } from '../../../utils/hooks';
+import { ABILITIES_S1 } from '../../../setup/abilities';
 import { CHARACTERS } from '../../../setup/characters';
-import { getCharacterColor } from '../../../utils/players';
-import { handlePromotionEffects } from '../../../utils/promotions';
+import { ALL_WEAPONS } from '../../../setup/weapons';
 import {
   checkIfHasAnyActionLeft,
   getActionColor
 } from '../../../utils/actions';
+import { loadSavedGame } from '../../../utils/characters';
+import { getMediaQuery } from '../../../utils/devices';
 import {
-  checkIfCharacterCanOpenDoors,
   checkForNoise,
-  checkIfCharacterHasFlashlight,
-  checkIfCharCanCombineItems,
   checkIfAllSlotsAreEmpty,
-  getCombiningReference,
-  checkIfCharHasNoItems
+  checkIfCharCanCombineItems,
+  checkIfCharHasNoItems,
+  checkIfCharacterCanOpenDoors,
+  checkIfCharacterHasFlashlight,
+  getCombiningReference
 } from '../../../utils/items';
-import { useStateWithLabel, useTurnsCounter } from '../../../utils/hooks';
-import ItemsSelectorModal from '../../Items/ItemsSelectorModal';
-import ActionButton from '../../ActionButton';
-import ItemsArea from '../../Items/ItemsArea';
-import Blood from '../../../assets/images/blood.png';
-import ZombieFace from '../../../assets/images/zombieFace.png';
-import Exit from '../../../assets/images/exit.png';
-import Noise from '../../../assets/images/noise.png';
-import FirstPlayer from '../../../assets/images/firstPlayer.jpg';
-
-import {
-  ActionsWrapper,
-  CharItems,
-  CharName,
-  CharacterOverlay,
-  CharacterSheet,
-  PromoWrapper,
-  MainButton,
-  NextButton,
-  AbilitiesInnerSeparator,
-  PlayerTag,
-  PreviousButton,
-  SelectButton,
-  WoundedSign,
-  ModalSign,
-  AdmButton,
-  NoiseWrapper,
-  NoiseIcon,
-  IndicatorsWrapper,
-  MovementIcon,
-  MidScreenTag,
-  FirstPlayerToken,
-  WoundedWrapper,
-  FirstPlayerWrapper,
-  ModalSignExitButton,
-  ModalSignText,
-  XpIcon,
-  HighestXpTag,
-  AbilitiesWrapper,
-  Abilities,
-  ActionsLabelWrapper,
-  TopActionsLabelWrapper,
-  ArrowSign,
-  LevelIndicator,
-  CardsActions,
-  CardsActionsText,
-  CharacterOverlayImage,
-  AbilitiesWrapperDesktop,
-  NavIconsWrapper,
-  NavIcons,
-  CharacterOverlayImageShadow,
-  ExtraActivationButton,
-  ExtraActivationImage
-} from './styles';
-import { CharacterType } from '../../../interfaces/types';
-import TradeArea from '../../TradeArea';
-import NewGame from '../../NewGame';
-import {
-  KILLED,
-  KILLED_EM_ALL,
-  KILL,
-  HIT,
-  ABSORBED,
-  LOCAL_STORAGE_KEY,
-  ABSORBED_ONE,
-  NEXT,
-  PREVIOUS,
-  TURN_FINISHED,
-  RESISTED,
-  FINISH_SETUP,
-  START_NEXT_ROUND,
-  GIVE_ORDERS_CHOOSE,
-  HAS_BEEN_KILLED,
-  HEAL_ACTION,
-  HEAL,
-  WEAPONS,
-  BONUS_ACTION,
-  LOCK_ACTION,
-  LOCK_DOOR,
-  GET_OBJECTIVE,
-  HEAL_WOUND,
-  HEAL_CHOOSE,
-  ENTER_CAR,
-  EXIT_CAR,
-  MOVE_CAR,
-  RUN_OVER,
-  MOVE,
-  OPEN_DOOR,
-  BREAK_DOOR,
-  END_CHAR_TURN,
-  ADD_CHARACTER,
-  EDIT_CHARACTERS,
-  CANCEL,
-  OK,
-  XP_GAIN,
-  XP_GAIN_SELECT,
-  LEARNED_NEW_ABILITY,
-  BURNEM_ALL,
-  MOBILE,
-  TRADE,
-  DROP,
-  WOUNDED,
-  FREE_ATTACK,
-  FREE_MOVE,
-  FREE_SEARCH,
-  INITIAL,
-  RESISTED_ONE,
-  CAR,
-  OBJECTIVE,
-  SEARCH_ACTION,
-  END_TURN_ACTION,
-  CAR_ENTER_ACTION,
-  CAR_EXIT_ACTION,
-  CAR_MOVE_ACTION,
-  CAR_ATTACK_ACTION,
-  SEARCH,
-  UPGRADE_WEAPON,
-  OBJECTIVE_ACTION,
-  MOVE_ACTION,
-  OPEN_DOOR_ACTION,
-  START,
-  IN_RESERVE,
-  IN_HAND,
-  SELECT,
-  XP,
-  FIRST_PLAYER_TOKEN,
-  DESKTOP,
-  ZOMBIES_ROUND,
-  SELECT_DAMAGE,
-  CHANGE_CHARACTER,
-  NONE,
-  MAKE_NOISE_ACTION,
-  MAKE_LOUD_NOISE,
-  RANGED,
-  MELEE,
-  GIVE_ORDERS_ACTION,
-  GIVE_ORDERS,
-  SEARCH_ZOMBIE,
-  SEARCH_ZOMBIE_ACTION,
-  NOISY
-} from '../../../constants';
+import { getCharacterColor } from '../../../utils/players';
+import { handlePromotionEffects } from '../../../utils/promotions';
 import {
   blueThreatThresold,
   calculateXpBar,
@@ -166,20 +30,153 @@ import {
   orangeThreatThresold,
   yellowThreatThresold
 } from '../../../utils/xp';
-import { getMediaQuery } from '../../../utils/devices';
-
-import { ALL_WEAPONS } from '../../../setup/weapons';
 import ActionsModal from '../../ActionsModal';
 import { SOUNDS } from '../../../assets/sounds';
+import ItemsSelectorModal from '../../Items/ItemsSelectorModal';
+import ItemsArea from '../../Items/ItemsArea';
+import ActionButton from '../../ActionButton';
+import TradeArea from '../../TradeArea';
+import NewGame from '../../NewGame';
+
+import CharacterFace from '../../CharacterFace';
+import {
+  ABSORBED,
+  ABSORBED_ONE,
+  ADD_CHARACTER,
+  BONUS_ACTION,
+  BREAK_DOOR,
+  BURNEM_ALL,
+  CANCEL,
+  CAR,
+  CAR_ATTACK_ACTION,
+  CAR_ENTER_ACTION,
+  CAR_EXIT_ACTION,
+  CAR_MOVE_ACTION,
+  CHANGE_CHARACTER,
+  DESKTOP,
+  DROP,
+  EDIT_CHARACTERS,
+  END_CHAR_TURN,
+  END_TURN_ACTION,
+  ENTER_CAR,
+  EXIT_CAR,
+  FINISH_SETUP,
+  FIRST_PLAYER_TOKEN,
+  FREE_ATTACK,
+  FREE_MOVE,
+  FREE_SEARCH,
+  GENERAL,
+  GET_OBJECTIVE,
+  GIVE_ORDERS,
+  GIVE_ORDERS_ACTION,
+  GIVE_ORDERS_CHOOSE,
+  HAS_BEEN_KILLED,
+  HEAL,
+  HEAL_ACTION,
+  HEAL_CHOOSE,
+  HEAL_WOUND,
+  HIT,
+  INITIAL,
+  IN_HAND,
+  IN_RESERVE,
+  KILL,
+  KILLED,
+  KILLED_EM_ALL,
+  LEARNED_NEW_ABILITY,
+  LOCAL_STORAGE_KEY,
+  LOCK_ACTION,
+  LOCK_DOOR,
+  MAKE_LOUD_NOISE,
+  MAKE_NOISE_ACTION,
+  MELEE,
+  MOBILE,
+  MOVE,
+  MOVE_ACTION,
+  MOVE_CAR,
+  NEXT,
+  NOISY,
+  NONE,
+  OBJECTIVE_ACTION,
+  OK,
+  OPEN_DOOR,
+  OPEN_DOOR_ACTION,
+  PREVIOUS,
+  RANGED,
+  RESISTED,
+  RESISTED_ONE,
+  RUN_OVER,
+  SEARCH,
+  SEARCH_ZOMBIE,
+  SEARCH_ZOMBIE_ACTION,
+  SELECT,
+  SELECT_DAMAGE,
+  START,
+  START_NEXT_ROUND,
+  TRADE,
+  TURN_FINISHED,
+  UPGRADE_WEAPON,
+  WOUNDED,
+  XP,
+  XP_GAIN,
+  XP_GAIN_SELECT,
+  ZOMBIES_ROUND
+} from '../../../constants';
+
+import Blood from '../../../assets/images/blood.png';
+import ZombieFace from '../../../assets/images/zombieFace.png';
+import Exit from '../../../assets/images/exit.png';
+import Noise from '../../../assets/images/noise.png';
+import FirstPlayer from '../../../assets/images/firstPlayer.jpg';
+import { CharacterType } from '../../../interfaces/types';
+import {
+  Abilities,
+  AbilitiesInnerSeparator,
+  AbilitiesWrapper,
+  AbilitiesWrapperDesktop,
+  ActionsLabelWrapper,
+  ActionsWrapper,
+  AdmButton,
+  ArrowSign,
+  CardsActions,
+  CardsActionsText,
+  CharItems,
+  CharacterName,
+  CharacterOverlay,
+  CharacterOverlayImage,
+  CharacterOverlayImageShadow,
+  CharacterSheet,
+  ExtraActivationButton,
+  ExtraActivationImage,
+  FirstPlayerToken,
+  FirstPlayerWrapper,
+  HighestXpTag,
+  IndicatorsWrapper,
+  LevelIndicator,
+  MainButton,
+  MidScreenTag,
+  ModalSign,
+  ModalSignExitButton,
+  ModalSignText,
+  MovementIcon,
+  NavIconsWrapper,
+  NextButton,
+  NoiseIcon,
+  NoiseWrapper,
+  PlayerTag,
+  PreviousButton,
+  PromoWrapper,
+  SelectButton,
+  TopActionsLabelWrapper,
+  WoundedSign,
+  WoundedWrapper,
+  XpIcon
+} from './styles';
 import {
   AttackBurronsWrapper,
   AttackInstructions,
   CancelAttackButton,
   ConfirmAttackButton
 } from '../ZombiesSection/styles';
-import { loadSavedGame } from '../../../utils/characters';
-import { ABILITIES_S1 } from '../../../setup/abilities';
-import CharacterFace from '../../CharacterFace';
 
 const PlayersSection = ({
   damageMode,
@@ -191,8 +188,8 @@ const PlayersSection = ({
   toggleDamageMode,
   toggleZombiesArePlaying,
   visible,
-  zombiesRound,
-  zombiesArePlaying
+  zombiesArePlaying,
+  zombiesRound
 }) => {
   /* ------- COMPONENT STATES ------- */
   const [actionsCount, updateActionsCount] = useStateWithLabel(
@@ -331,8 +328,6 @@ const PlayersSection = ({
   const advancingLevel = (xp, char) => {
     let updatedChar = cloneDeep(char);
 
-    console.log('$$$ advancing level', xp, char.name);
-
     switch (true) {
       case xp > orangeThreatThresold:
         if (char.abilities.length === 3) {
@@ -390,7 +385,6 @@ const PlayersSection = ({
             searchActions
           ]);
         } else if (updatedChar.abilities.length !== 2) {
-          console.log('$$$ Yellow skills different than 2', char.name);
           updatedChar.abilities = [];
           updatedChar.actions = [3, 0, 0, 0, 0];
           updatedChar.bonusDices = { combat: 0, melee: 0, ranged: 0 };
@@ -412,7 +406,6 @@ const PlayersSection = ({
 
       default:
         if (updatedChar.abilities.length === 0) {
-          console.log('$$$ No skills yet', char.name);
           updatedChar = handlePromotionEffects(
             char,
             'blue',
@@ -1308,9 +1301,6 @@ const PlayersSection = ({
     }
   }, [extraActivation, toggleExtraActivation, zombiesArePlaying]);
 
-  // useEffect(() => {
-  //   console.log('$$$ change char', character);
-  // }, [character]);
   /* --- */
 
   if (message) {
@@ -1430,7 +1420,7 @@ const PlayersSection = ({
           )}
           {character.wounded !== KILLED && (
             <>
-              <CharName>{character.name}</CharName>
+              <CharacterName>{character.name}</CharacterName>
               <PlayerTag>{character.player}</PlayerTag>
             </>
           )}
@@ -1441,7 +1431,7 @@ const PlayersSection = ({
               {!damageMode && !setupMode && !slot && (
                 <>
                   <ActionsWrapper>
-                    {generalActions &&
+                    {!!generalActions &&
                       character.abilities.includes(
                         ABILITIES_S1.HOLD_YOUR_NOSE.name
                       ) &&
@@ -1457,7 +1447,7 @@ const PlayersSection = ({
                         />
                       )}
 
-                    {generalActions &&
+                    {!!generalActions &&
                       character.abilities.includes(
                         ABILITIES_S1.BORN_LEADER.name
                       ) && (
@@ -1474,7 +1464,7 @@ const PlayersSection = ({
                         />
                       )}
 
-                    {generalActions &&
+                    {!!generalActions &&
                       character.abilities.includes(ABILITIES_S1.LOUD.name) && (
                         <ActionButton
                           actionType={MAKE_NOISE_ACTION}
@@ -1489,7 +1479,7 @@ const PlayersSection = ({
                         />
                       )}
 
-                    {generalActions &&
+                    {!!generalActions &&
                       character.abilities.includes(
                         ABILITIES_S1.LOCK_IT_DOWN.name
                       ) && (
@@ -1503,7 +1493,7 @@ const PlayersSection = ({
                         />
                       )}
 
-                    {generalActions &&
+                    {!!generalActions &&
                       character.abilities.includes(ABILITIES_S1.MEDIC.name) && (
                         <ActionButton
                           actionType={HEAL_ACTION}
@@ -1544,15 +1534,17 @@ const PlayersSection = ({
                         }
                         callback={() => spendAction(MOVE)}
                         car={car}
+                        changeActionLabel={changeActionLabel}
                         interactWithCar={interactWithCar}
                         isMobile={device.current === MOBILE}
-                        startCar={startCar}
-                        type={character.location !== CAR && !car && START}
-                        changeActionLabel={changeActionLabel}
                         label={
                           character.location === CAR ? EXIT_CAR : ENTER_CAR
                         }
                         manyButtons={character.location === CAR}
+                        startCar={startCar}
+                        type={
+                          character.location !== CAR && !car ? START : GENERAL
+                        }
                       />
                     )}
                     {canMove && character.location === CAR && (
@@ -1580,11 +1572,11 @@ const PlayersSection = ({
                       <ActionButton
                         actionType={MOVE_ACTION}
                         callback={() => spendAction(MOVE)}
-                        type={character.movement}
                         changeActionLabel={changeActionLabel}
                         isMobile={device.current === MOBILE}
                         label={MOVE}
                         manyButtons={character.location === CAR}
+                        type={character.movement}
                       />
                     )}
 
@@ -1592,14 +1584,8 @@ const PlayersSection = ({
                       <ActionButton
                         actionType={OPEN_DOOR_ACTION}
                         callback={spendAction}
-                        isMobile={device.current === MOBILE}
-                        setNoise={
-                          character.abilities.includes(ABILITIES_S1.NINJA.name)
-                            ? () => null
-                            : setNoise
-                        }
-                        type={canOpenDoor}
                         changeActionLabel={changeActionLabel}
+                        isMobile={device.current === MOBILE}
                         label={
                           ALL_WEAPONS[canOpenDoor] &&
                           ALL_WEAPONS[canOpenDoor].canOpenDoor === NOISY
@@ -1607,7 +1593,13 @@ const PlayersSection = ({
                             : OPEN_DOOR
                         }
                         manyButtons={character.location === CAR}
+                        setNoise={
+                          character.abilities.includes(ABILITIES_S1.NINJA.name)
+                            ? () => null
+                            : setNoise
+                        }
                         toggleExtraActivation={toggleExtraActivation}
+                        type={canOpenDoor}
                       />
                     )}
                     {!finishedTurn && (
@@ -1712,7 +1704,7 @@ const PlayersSection = ({
                           item !== NONE &&
                           item !== WOUNDED
                         }
-                        canCombine={generalActions && canCombine}
+                        canCombine={!!generalActions && canCombine}
                         canSearch={canSearch}
                         causeDamage={takeDamage}
                         combineItemSelected={
@@ -1863,8 +1855,8 @@ const PlayersSection = ({
                   currentChar={character.name === char.name}
                   key={`charNav-${char.name}`}
                   onClick={() => changeCharIndex(char.index)}
-                  src={char.face}
                   played={charIfCharHasPlayed(char.name)}
+                  src={char.face}
                   wounded={characters.some(
                     charac => charac.name === char.name && charac.wounded
                   )}
@@ -2120,8 +2112,8 @@ PlayersSection.propTypes = {
   toggleDamageMode: func.isRequired,
   toggleZombiesArePlaying: func.isRequired,
   visible: bool.isRequired,
-  zombiesRound: bool.isRequired,
-  zombiesArePlaying: bool.isRequired
+  zombiesArePlaying: bool.isRequired,
+  zombiesRound: bool.isRequired
 };
 
 PlayersSection.defaultProps = {

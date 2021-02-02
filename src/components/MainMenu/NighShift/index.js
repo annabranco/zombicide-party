@@ -1,14 +1,14 @@
 import React from 'react';
+import Car from '../../../assets/images/car.png';
 import {
   Bulb,
+  CarImage,
+  CruiserLight,
   InnerLight,
   LightBar,
   NightShiftOverlay,
-  StrobeLight,
-  CarImage,
-  CruiserLight
+  StrobeLight
 } from './styles';
-import Car from '../../../assets/images/car.png';
 
 const NightShiftIntro = () => (
   <NightShiftOverlay>

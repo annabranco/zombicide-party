@@ -1,15 +1,23 @@
 import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { bool, func } from 'prop-types';
+import { arrayOf, bool, func } from 'prop-types';
 import { cloneDeep } from 'lodash';
-import { getCharacterColor } from '../../utils/players';
 import { useStateWithLabel } from '../../utils/hooks';
+import { getMediaQuery } from '../../utils/devices';
+import { getCharacterColor } from '../../utils/players';
+import { CHARACTERS } from '../../setup/characters';
 import SetupModal from '../SetupModal';
 import BG from '../../assets/images/background/background.jpg';
-import { CHARACTERS } from '../../setup/characters';
 import {
-  CharImage,
-  CharName,
+  CHARACTER_TEXT,
+  CHARACTERS_TEXT,
+  LOCAL_STORAGE_KEY,
+  MOBILE
+} from '../../constants';
+import { CharacterType } from '../../interfaces/types';
+import {
+  CharacterImage,
+  CharacterName,
   CharacterArea,
   PlayerTag,
   Selector,
@@ -17,9 +25,6 @@ import {
   SelectorTitle
 } from './styles';
 import { MenuScreen } from '../MainMenu/styles';
-import { CharacterType } from '../../interfaces/types';
-import { LOCAL_STORAGE_KEY, MOBILE } from '../../constants';
-import { getMediaQuery } from '../../utils/devices';
 
 const NewGame = ({
   currentChars,
@@ -28,6 +33,10 @@ const NewGame = ({
   setInitialCharacters,
   setNewChar
 }) => {
+  const [activePlayers, setActivePlayers] = useStateWithLabel(
+    new Set(),
+    'activePlayers'
+  );
   const [characters, setCharacters] = useStateWithLabel(
     CHARACTERS,
     'characters'
@@ -36,12 +45,7 @@ const NewGame = ({
     new Map(),
     'charactersSelected'
   );
-  const [activePlayers, setActivePlayers] = useStateWithLabel(
-    new Set(),
-    'activePlayers'
-  );
   const [newPlayer, setNewPlayer] = useStateWithLabel(null, 'newPlayer');
-
   const [playerWasSelected, selectPlayer] = useStateWithLabel(
     null,
     'playerWasSelected'
@@ -129,20 +133,20 @@ const NewGame = ({
       );
       setCharacters(updatedChars);
     }
-  }, [currentChars, characters, setCharacters]);
+  }, [currentChars]);
 
   return (
     <MenuScreen dynamic={dynamic} img={BG} type="newChar">
       <SetupModal
+        activePlayers={activePlayers}
         addPlayer={addPlayer}
         dynamic={dynamic}
         loadedGame={loadedGame}
-        activePlayers={activePlayers}
         setActivePlayers={setActivePlayers}
         type="newChar"
       />
       <SelectorTitle dynamic={dynamic}>
-        CHOOSE {dynamic ? 'CHARACTER' : 'CHARACTERS'}
+        CHOOSE {dynamic ? CHARACTER_TEXT : CHARACTERS_TEXT}
       </SelectorTitle>
       {((dynamic && playerWasSelected) || !dynamic) && (
         <CharacterArea dynamic={dynamic} number={characters.length}>
@@ -153,17 +157,17 @@ const NewGame = ({
               number={characters.length}
               onClick={onSelect}
             >
-              <CharImage
+              <CharacterImage
                 active={charactersSelected.has(char.name)}
                 dynamic={dynamic}
                 src={getMediaQuery() === MOBILE ? char.face : char.selector}
               />
-              <CharName
+              <CharacterName
                 active={charactersSelected.has(char.name)}
                 number={characters.length}
               >
                 {char.name}
-              </CharName>
+              </CharacterName>
               {charactersSelected.get(char.name) && (
                 <PlayerTag color={getCharacterColor(char.name)}>
                   {charactersSelected.get(char.name)}
@@ -189,16 +193,18 @@ const NewGame = ({
 };
 
 NewGame.propTypes = {
-  currentChars: CharacterType,
+  currentChars: arrayOf(CharacterType),
   dynamic: bool,
-  loadedGame: bool.isRequired,
-  setInitialCharacters: func.isRequired,
+  loadedGame: bool,
+  setInitialCharacters: func,
   setNewChar: func
 };
 
 NewGame.defaultProps = {
   currentChars: null,
   dynamic: false,
+  loadedGame: null,
+  setInitialCharacters: () => null,
   setNewChar: () => null
 };
 

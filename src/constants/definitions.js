@@ -1,6 +1,7 @@
 export const ACTIVATIONS = 'activations';
 export const CAR = 'car';
 export const FEMALE = 'female';
+export const GENERAL = 'general';
 export const FIRST_PLAYER_TOKEN = 'first player token';
 export const IN_RESERVE = 'inReserve';
 export const IN_HAND = 'inHand';

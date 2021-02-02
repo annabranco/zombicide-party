@@ -1,14 +1,9 @@
 import React, { useEffect, useRef } from 'react';
-import { bool, func, number, string } from 'prop-types';
+import { bool, func, number, string, oneOfType } from 'prop-types';
 import { useStateWithLabel } from '../../utils/hooks';
 import { checkIfItemCanBeCombined } from '../../utils/items';
-import { Block, PlayImageButton, PlayIcon, PlayText, ItemIcon } from './styles';
-import {
-  Action,
-  ZombieActions,
-  ZombieLabel,
-  ZombieImageForMobile
-} from '../Sections/ZombiesSection/styles';
+import ActionButton from '../ActionButton';
+import { SOUNDS } from '../../assets/sounds';
 import {
   ACTIVATE,
   ACTIVATIONS,
@@ -22,8 +17,12 @@ import {
   WOUND,
   ATTACK_SURVIVOR
 } from '../../constants';
-import ActionButton from '../ActionButton';
-import { SOUNDS } from '../../assets/sounds';
+import { Block, PlayImageButton, PlayIcon, PlayText, ItemIcon } from './styles';
+import {
+  Action,
+  ZombieActions,
+  ZombieImageForMobile
+} from '../Sections/ZombiesSection/styles';
 
 const SoundBlock = ({
   activateKillButtons,
@@ -38,8 +37,8 @@ const SoundBlock = ({
   differentSounds,
   img,
   isMobile,
-  isTablet,
   isSelected,
+  isTablet,
   label,
   makeNoise,
   name,
@@ -53,11 +52,11 @@ const SoundBlock = ({
   slotType,
   special,
   spendAmmo,
-  zombieAttack,
   trade,
   type,
   unloaded,
-  wounded
+  wounded,
+  zombieAttack
 }) => {
   const [isActive, activate] = useStateWithLabel(false, 'isActive');
   const [
@@ -226,7 +225,7 @@ SoundBlock.propTypes = {
   activateKillButtons: func,
   callback: func,
   canAttack: bool,
-  canBeAbsorbed: bool.isRequired,
+  canBeAbsorbed: bool,
   canCombine: bool,
   charCanAbsorb: bool,
   combineItemSelected: bool,
@@ -238,31 +237,32 @@ SoundBlock.propTypes = {
   isSelected: bool,
   isTablet: bool,
   label: string,
-  makeNoise: func.isRequired,
+  makeNoise: func,
   name: string.isRequired,
   needsToBeReloaded: bool,
   noAudio: bool,
-  onClickCard: func.isRequired,
+  onClickCard: func,
   onClickCombine: func,
   rows: number,
-  setupMode: bool.isRequired,
+  setupMode: oneOfType([string, bool]),
   slot: number,
   slotType: string,
   special: string,
   spendAmmo: func,
-  zombieAttack: func,
-  trade: bool.isRequired,
+  trade: bool,
   type: string.isRequired,
   unloaded: bool,
-  wounded: bool.isRequired
+  wounded: bool,
+  zombieAttack: func
 };
 
 SoundBlock.defaultProps = {
   activateKillButtons: null,
-  charCanAbsorb: false,
   callback: null,
   canAttack: false,
+  canBeAbsorbed: false,
   canCombine: false,
+  charCanAbsorb: false,
   combineItemSelected: false,
   combinePair: false,
   damageMode: false,
@@ -271,15 +271,20 @@ SoundBlock.defaultProps = {
   isSelected: false,
   isTablet: false,
   label: null,
+  makeNoise: () => null,
   needsToBeReloaded: false,
   noAudio: false,
+  onClickCard: () => null,
   onClickCombine: null,
   rows: null,
+  setupMode: null,
   slot: null,
+  slotType: null,
   special: null,
   spendAmmo: () => null,
-  slotType: null,
+  trade: false,
   unloaded: false,
+  wounded: false,
   zombieAttack: () => null
 };
 

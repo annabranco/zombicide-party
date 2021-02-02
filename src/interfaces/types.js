@@ -24,13 +24,13 @@ export const CharacterType = shape({
 
 const ModalButtonType = shape({
   text: string.isRequired,
-  onClick: func.isRequired,
+  onClick: func,
   type: string.isRequired
 });
 
 export const ModalContentType = shape({
   title: string,
-  text: string.isRequired,
+  text: string,
   buttons: arrayOf(ModalButtonType)
 });
 

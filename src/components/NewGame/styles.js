@@ -5,7 +5,6 @@ import { activeImage, inactiveImage } from '../../styles';
 
 export const CharacterArea = styled.div`
   label: CharacterArea;
-  /* display: flex; */
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -19,15 +18,11 @@ export const CharacterArea = styled.div`
     ${({ number }) => {
       if (number >= 8) {
         return css`
-          ${'' /* position: absolute; */}
           margin-top: 20px;
           display: grid;
           width: 90%;
           grid-template-columns: repeat(4, 150px);
           grid-template-rows: repeat(auto-fill, 1fr);
-          ${'' /* & div:nth-child(n + 5) {
-            margin-left: 5px;
-          } */}
           justify-items: center;
           align-items: start;
         `;
@@ -47,14 +42,10 @@ export const CharacterArea = styled.div`
     ${({ number }) => {
       if (number >= 8) {
         return css`
-          ${'' /* position: absolute; */}
           top: 200px;
           display: grid;
           grid-template-columns: repeat(8, 1fr);
           grid-template-rows: repeat(auto-fill, 100px);
-          & div:nth-child(n + 9) {
-            ${'' /* margin-left: 30px; */}
-          }
         `;
       }
       if (number) {
@@ -70,8 +61,8 @@ export const CharacterArea = styled.div`
 `;
 CharacterArea.displayName = 'CharacterArea';
 
-export const CharImage = styled.img`
-  label: CharImage;
+export const CharacterImage = styled.img`
+  label: CharacterImage;
   ${inactiveImage}
   width: 100%;
 
@@ -90,10 +81,10 @@ export const CharImage = styled.img`
       ${activeImage}
     `}
 `;
-CharImage.displayName = 'CharImage';
+CharacterImage.displayName = 'CharacterImage';
 
-export const CharName = styled.h1`
-  label: CharName;
+export const CharacterName = styled.h1`
+  label: CharacterName;
   position: absolute;
   bottom: -10px;
   left: 50%;
@@ -155,7 +146,7 @@ export const CharName = styled.h1`
       `}
   }
 `;
-CharName.displayName = 'CharName';
+CharacterName.displayName = 'CharacterName';
 
 export const PlayerTag = styled.div`
   label: PlayerTag;

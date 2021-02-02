@@ -816,8 +816,8 @@ export const CharItems = styled.div`
 `;
 CharItems.displayName = 'CharItems';
 
-export const CharName = styled.h1`
-  label: CharName;
+export const CharacterName = styled.h1`
+  label: CharacterName;
   z-index: 3;
   position: absolute;
   top: 30px;
@@ -855,7 +855,7 @@ export const CharName = styled.h1`
     font-size: 8rem;
   }
 `;
-CharName.displayName = 'CharName';
+CharacterName.displayName = 'CharacterName';
 
 export const ExtraActivationButton = styled.div`
   label: ExtraActivationButton;

@@ -1,43 +1,37 @@
 import React, { useEffect, useRef } from 'react';
 import { bool, func } from 'prop-types';
-import { ALL_ZOMBIES, DOGZ, ZOMBIES_S1 } from '../../../setup/zombies';
 import { useStateWithLabel } from '../../../utils/hooks';
-import SoundBlock from '../../SoundBlock';
-import { SelectorArea } from '../../SoundBlock/styles';
-import {
-  AttackInstructions,
-  CancelAttackButton,
-  NoSelectOverlay,
-  SubSectionWrapper,
-  ZombiesArea,
-  ZombiesRoundSign,
-  AttackBurronsWrapper,
-  ConfirmAttackButton,
-  ZombieWrapper,
-  ZombieLabel
-} from './styles';
 import { getMediaQuery } from '../../../utils/devices';
+import { ALL_ZOMBIES } from '../../../setup/zombies';
+import SoundBlock from '../../SoundBlock';
 import {
   ACTIVATIONS,
-  MOBILE,
-  ZOMBIES_ROUND,
   END,
-  DESKTOP,
-  TABLET
+  MOBILE,
+  TABLET,
+  ZOMBIES_ROUND
 } from '../../../constants';
+import { SelectorArea } from '../../SoundBlock/styles';
+import {
+  ConfirmAttackButton,
+  NoSelectOverlay,
+  SubSectionWrapper,
+  ZombieLabel,
+  ZombieWrapper,
+  ZombiesArea,
+  ZombiesRoundSign
+} from './styles';
 
 const ZombiesSection = ({
   damageMode,
-  roundEnded,
   setPlayersRound,
   toggleDamageMode,
   toggleZombiesArePlaying,
-  visible,
   zombiesRound
 }) => {
-  const [zombies, changeZombies] = useStateWithLabel(ALL_ZOMBIES, 'zombies');
-  const [turnLabel, toggleTurnLabel] = useStateWithLabel(true, 'turnLabel');
   const [isHighlighted, highlight] = useStateWithLabel(false, 'isHighlighted');
+  const [turnLabel, toggleTurnLabel] = useStateWithLabel(true, 'turnLabel');
+  const [zombies, changeZombies] = useStateWithLabel(ALL_ZOMBIES, 'zombies');
 
   const device = useRef(getMediaQuery());
 
@@ -60,7 +54,7 @@ const ZombiesSection = ({
   }, [zombiesRound]);
 
   return (
-    <ZombiesArea visible={visible}>
+    <ZombiesArea>
       {damageMode && <NoSelectOverlay />}
       <SubSectionWrapper>
         <SelectorArea columns={device.current === MOBILE ? 3 : 'big'} zombies>
@@ -77,7 +71,9 @@ const ZombiesSection = ({
                 isTablet={device.current === TABLET}
                 name={ALL_ZOMBIES[zombie].name}
                 rows={
-                  device.current === MOBILE && Object.keys(zombies).length / 3
+                  device.current === MOBILE
+                    ? Object.keys(zombies).length / 3
+                    : null
                 }
                 special={ALL_ZOMBIES[zombie].special}
                 type={ACTIVATIONS}
@@ -103,11 +99,9 @@ const ZombiesSection = ({
 
 ZombiesSection.propTypes = {
   damageMode: bool.isRequired,
-  roundEnded: bool.isRequired,
   setPlayersRound: func.isRequired,
   toggleDamageMode: func.isRequired,
   toggleZombiesArePlaying: func.isRequired,
-  visible: bool.isRequired,
   zombiesRound: bool.isRequired
 };
 

@@ -1,27 +1,20 @@
 import React, { useEffect, useRef } from 'react';
-import { bool, func, number, string } from 'prop-types';
+import { bool, func, string } from 'prop-types';
 import { useStateWithLabel } from '../../utils/hooks';
 import { checkForNoiseOpeningDoor } from '../../utils/items';
-import {
-  ActionIcon,
-  SecondaryIcon,
-  PrimaryIcon,
-  DoubleIconWrapper
-} from './styles';
 import { SOUNDS } from '../../assets/sounds';
 import {
+  CANNOT_BE_USED,
   CAR_ATTACK_ACTION,
   CAR_ENTER_ACTION,
   CAR_EXIT_ACTION,
   CAR_MOVE_ACTION,
   COMBINE_ACTION,
-  DESKTOP,
   END_TURN_ACTION,
   GIVE_ORDERS_ACTION,
   HEAL_ACTION,
   LOCK_ACTION,
   MAKE_NOISE_ACTION,
-  MOBILE,
   MOVE_ACTION,
   OBJECTIVE_ACTION,
   OPEN_DOOR,
@@ -30,28 +23,34 @@ import {
   SEARCH_ACTION,
   SEARCH_ZOMBIE_ACTION
 } from '../../constants';
+import {
+  ActionIcon,
+  DoubleIconWrapper,
+  PrimaryIcon,
+  SecondaryIcon
+} from './styles';
 
 const ActionButton = ({
   actionType,
   callback,
   carStarted,
+  changeActionLabel,
   combineItemSelected,
   combinePair,
   disabled,
-  isMobile,
   interactWithCar,
-  setNoise,
-  startCar,
-  type,
-  changeActionLabel,
+  isMobile,
   label,
   manyButtons,
-  toggleExtraActivation
+  setNoise,
+  startCar,
+  toggleExtraActivation,
+  type
 }) => {
-  const [isActive, activate] = useStateWithLabel(false, 'isActive');
+  const [iconSize, setIconSize] = useStateWithLabel(false, 'iconSize');
   const [iconType, setIconType] = useStateWithLabel(false, 'iconType');
   const [iconType2, setIconType2] = useStateWithLabel(false, 'iconType2');
-  const [iconSize, setIconSize] = useStateWithLabel(false, 'iconSize');
+  const [isActive, activate] = useStateWithLabel(false, 'isActive');
 
   const sound = useRef();
   const sound2 = useRef();
@@ -193,16 +192,16 @@ const ActionButton = ({
     <>
       {iconType2 ? (
         <DoubleIconWrapper
-          isActive={isActive}
           disabled={disabled}
+          isActive={isActive}
           onClick={isActive ? () => null : onClickIcon}
-          manyButtons={isMobile && manyButtons}
           onMouseOut={() => changeActionLabel('')}
           onMouseOver={() =>
             changeActionLabel(
               `${disabled ? 'Cannot be used at this time' : label}`
             )
           }
+          manyButtons={isMobile && manyButtons}
         >
           <PrimaryIcon
             actionType={actionType}
@@ -225,16 +224,14 @@ const ActionButton = ({
           combineItemSelected={combineItemSelected}
           combinePair={combinePair}
           disabled={disabled}
+          iconSize={iconSize}
           isActive={isActive}
           onClick={isActive ? () => null : event => onClickIcon(event)}
-          iconSize={iconSize}
-          manyButtons={isMobile && manyButtons}
           onMouseOut={() => changeActionLabel('')}
           onMouseOver={() =>
-            changeActionLabel(
-              `${disabled ? 'Cannot be used at this time' : label}`
-            )
+            changeActionLabel(`${disabled ? CANNOT_BE_USED : label}`)
           }
+          manyButtons={isMobile && manyButtons}
           type={type}
         />
       )}
@@ -246,34 +243,34 @@ ActionButton.propTypes = {
   actionType: string.isRequired,
   callback: func.isRequired,
   carStarted: bool,
+  changeActionLabel: func,
   combineItemSelected: bool,
   combinePair: bool,
   disabled: bool,
-  isMobile: bool,
   interactWithCar: func,
-  setNoise: func,
-  startCar: func,
-  type: string,
-  changeActionLabel: func,
+  isMobile: bool,
   label: string,
   manyButtons: bool,
-  toggleExtraActivation: func
+  setNoise: func,
+  startCar: func,
+  toggleExtraActivation: func,
+  type: string
 };
 
 ActionButton.defaultProps = {
   carStarted: false,
+  changeActionLabel: () => null,
   combineItemSelected: false,
   combinePair: false,
   disabled: false,
+  interactWithCar: () => null,
   isMobile: null,
-  interactWithCar: false,
-  setNoise: () => null,
-  startCar: null,
-  type: null,
-  changeActionLabel: () => null,
   label: null,
   manyButtons: false,
-  toggleExtraActivation: () => null
+  setNoise: () => null,
+  startCar: null,
+  toggleExtraActivation: () => null,
+  type: null
 };
 
 export default ActionButton;
