@@ -221,7 +221,7 @@ const ItemsArea = ({
   useEffect(() => {
     toggleNeedReload(false);
   }, [charName, toggleNeedReload]);
-
+  console.log('$$$ device', device);
   return (
     <ItemWrapper
       id={`${item}-${index + 1}`}

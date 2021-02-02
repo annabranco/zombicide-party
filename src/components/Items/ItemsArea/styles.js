@@ -86,8 +86,8 @@ export const Item = styled.div`
     trade &&
     css`
       margin: -30px 0 0;
-      height: 120px;
-      width: 120px;
+      height: 80px;
+      width: 60px;
     `}
 
   @media all and (min-width: 360px) {
@@ -112,7 +112,7 @@ export const Item = styled.div`
       trade &&
       css`
         height: 200px;
-        width: 160px;
+        width: 150px;
       `}
   }
 
@@ -136,7 +136,7 @@ export const Item = styled.div`
       trade &&
       css`
         height: 240px;
-        width: 200px;
+        width: 180px;
       `}
   }
 `;
@@ -241,7 +241,7 @@ export const ItemBlank = styled.div`
       trade &&
       css`
         height: 240px;
-        width: 200px;
+        width: 180px;
       `}
   }
 `;

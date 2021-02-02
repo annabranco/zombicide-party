@@ -222,7 +222,8 @@ export const PlayIcon = styled.img`
   label: PlayIcon;
   max-height: 100%;
   max-width: 100%;
-  transition: transform ease 0.5s, filter 2s ease-out;
+  /* transition: transform ease 0.5s, filter 2s ease-out; */
+  transition: transform ease 0.5s;
 
   ${({ type, active }) => {
     if (type === WOUND) {
@@ -315,8 +316,8 @@ export const PlayIcon = styled.img`
     `}
 
   @media all and (min-width: 701px) {
-    max-height: 100%;
-    max-width: 100%;
+    height: 100%;
+    width: 100%;
   }
 
   /* ipad pro */

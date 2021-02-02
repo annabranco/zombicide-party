@@ -151,6 +151,10 @@ const SoundBlock = ({
 
       setTimeout(() => {
         activate(false);
+      }, 500);
+
+      setTimeout(() => {
+        activate(false);
         toggleZombieAttackButtons(false);
       }, 4000);
     }

@@ -487,6 +487,11 @@ export const CharacterOverlayImage = styled.img`
     width: 90%;
   }
 
+  @media (min-width: 500px) and (min-height: 700px) {
+    bottom: 10%;
+    width: 60%;
+  }
+
   @media all and (min-width: 701px) {
     bottom: 10%;
     width: 80%;
@@ -533,6 +538,11 @@ export const CharacterOverlayImageShadow = styled(CharacterOverlayImage)`
   @media (min-width: 320px) and (min-height: 640px) {
     height: 65%;
     margin: 0 0 -22% -23%;
+  }
+
+  @media (min-width: 500px) and (min-height: 700px) {
+    height: 65%;
+    margin: 0 0 -14% -15%;
   }
 
   @media all and (min-width: 701px) {
@@ -623,6 +633,17 @@ export const CharItems = styled.div`
       top: 2px;
       right: 10px;
     `}
+
+  @media (min-width: 280px) and (min-height: 650px) {
+    top: 10%;
+
+    ${({ trade }) =>
+      trade &&
+      css`
+        top: 18px;
+        right: 10px;
+      `}
+  }
 
   @media (min-width: 320px) and (min-height: 640px) {
     top: 45%;

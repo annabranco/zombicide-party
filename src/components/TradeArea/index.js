@@ -192,6 +192,7 @@ const TradeArea = ({
             {updatedCharacter.inHand.map((item, index) => (
               <ItemsArea
                 charName={updatedCharacter.name}
+                device={device}
                 index={index}
                 item={item}
                 itemSelected={
@@ -212,6 +213,7 @@ const TradeArea = ({
             {updatedCharacter.inReserve.map((item, index) => (
               <ItemsArea
                 charName={updatedCharacter.name}
+                device={device}
                 index={index}
                 item={item}
                 itemSelected={
