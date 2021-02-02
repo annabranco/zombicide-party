@@ -105,15 +105,11 @@ const ItemsArea = ({
 
       toggleFiredDual(true);
 
-      console.log('$$$ DW dualWeaponEffect', dualWeaponEffect);
-
       if (dualWeaponEffect) {
         console.log('$$$ DW totalDices', totalDices);
         activateDualEffect(totalDices);
       }
 
-      console.log('$$$ DW killButtons', killButtons);
-      console.log('$$$ DW newArray', newArray);
       clearTimeout(killButtonsTimer.current);
 
       setTimeout(() => {

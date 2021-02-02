@@ -442,6 +442,7 @@ const PlayersSection = ({
         abilitiesRef.current = updatedChar.abilities.toString();
         break;
     }
+    checkIfCharHasDualEffect(updatedChar.inHand);
     return updatedChar;
   };
 
@@ -524,9 +525,11 @@ const PlayersSection = ({
   const checkIfCharHasDualEffect = weapons => {
     console.log('$$$ DW weapons', weapons);
     if (
-      weapons[0] === weapons[1] &&
-      ALL_WEAPONS[weapons[0]] &&
-      ALL_WEAPONS[weapons[0]].dual
+      (weapons[0] === weapons[1] &&
+        ALL_WEAPONS[weapons[0]] &&
+        ALL_WEAPONS[weapons[0]].dual) ||
+      (character.abilities &&
+        character.abilities.includes(ABILITIES_S1.AMBIDEXTROUS.name))
     ) {
       activateDualWeaponEffect(true);
       console.log('$$$ DW weapons TRUE');
