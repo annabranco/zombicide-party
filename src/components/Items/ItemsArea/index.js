@@ -37,6 +37,7 @@ import {
 
 const ItemsArea = ({
   actionsLeft,
+  activateDualEffect,
   allSlotsAreEmpty,
   bonusDices,
   callback,
@@ -54,6 +55,8 @@ const ItemsArea = ({
   device,
   dice,
   dropMode,
+  dualWeaponEffect,
+  forcedKillButtons,
   gainCustomXp,
   gainXp,
   handleSearch,
@@ -81,9 +84,10 @@ const ItemsArea = ({
   const [isActive, toggleActive] = useStateWithLabel(false, 'isActive');
   const [killButtons, changeKillButtons] = useStateWithLabel([], 'killButtons');
   const [needReload, toggleNeedReload] = useStateWithLabel(false, 'needReload');
+  const [firedDual, toggleFiredDual] = useStateWithLabel(false, 'firedDual');
 
-  const bonusDiceRef = useRef();
-  const dicesRef = useRef();
+  // const bonusDiceRef = useRef();
+  // const dicesRef = useRef();
   const killButtonsTimer = useRef();
 
   const itemsType = getItemType(item);
@@ -99,7 +103,22 @@ const ItemsArea = ({
         value => value + currentPool
       );
 
+      toggleFiredDual(true);
+
+      console.log('$$$ DW dualWeaponEffect', dualWeaponEffect);
+
+      if (dualWeaponEffect) {
+        console.log('$$$ DW totalDices', totalDices);
+        activateDualEffect(totalDices);
+      }
+
+      console.log('$$$ DW killButtons', killButtons);
+      console.log('$$$ DW newArray', newArray);
       clearTimeout(killButtonsTimer.current);
+
+      setTimeout(() => {
+        toggleFiredDual();
+      }, 2000);
       changeKillButtons([...killButtons, ...newArray]);
       killButtonsTimer.current = setTimeout(() => {
         changeKillButtons([]);
@@ -110,8 +129,9 @@ const ItemsArea = ({
   const calculateTotalDices = () => {
     const { combat, melee, ranged } = bonusDices;
     let totalDices;
-    bonusDiceRef.current = bonusDices;
-    dicesRef.current = dice;
+
+    // bonusDiceRef.current = bonusDices;
+    // dicesRef.current = dice;
 
     totalDices = dice + combat;
 
@@ -124,9 +144,23 @@ const ItemsArea = ({
     }
     return totalDices;
   };
-
   const checkIfReloadIsNeeded = () =>
     ALL_WEAPONS[item] && ALL_WEAPONS[item].needsReloading;
+
+  const forceActivateKillButtons = fkbuttons => {
+    if (!firedDual) {
+      const currentPool = killButtons.length;
+      const newArray = [...Array(fkbuttons).keys()].map(
+        value => value + currentPool
+      );
+
+      clearTimeout(killButtonsTimer.current);
+      changeKillButtons([...killButtons, ...newArray]);
+      killButtonsTimer.current = setTimeout(() => {
+        changeKillButtons([]);
+      }, 10000);
+    }
+  };
 
   const getSlotNumber = itemIndex => {
     const adj = slotType === IN_HAND ? 1 : 3;
@@ -204,6 +238,12 @@ const ItemsArea = ({
   useEffect(() => {
     toggleNeedReload(false);
   }, [charName, toggleNeedReload]);
+
+  useEffect(() => {
+    if (forcedKillButtons > 0) {
+      forceActivateKillButtons(forcedKillButtons);
+    }
+  }, [forcedKillButtons]);
 
   return (
     <ItemWrapper
@@ -315,6 +355,7 @@ const ItemsArea = ({
 
 ItemsArea.propTypes = {
   actionsLeft: number,
+  activateDualEffect: func,
   allSlotsAreEmpty: bool,
   bonusDices: BonusDicesType,
   callback: func,
@@ -332,6 +373,8 @@ ItemsArea.propTypes = {
   device: string.isRequired,
   dice: number,
   dropMode: bool,
+  dualWeaponEffect: bool,
+  forcedKillButtons: number,
   gainCustomXp: func,
   gainXp: func,
   handleSearch: func,
@@ -355,6 +398,7 @@ ItemsArea.propTypes = {
 
 ItemsArea.defaultProps = {
   actionsLeft: null,
+  activateDualEffect: () => null,
   allSlotsAreEmpty: false,
   bonusDices: null,
   callback: () => null,
@@ -371,6 +415,8 @@ ItemsArea.defaultProps = {
   damageMode: false,
   dice: null,
   dropMode: false,
+  dualWeaponEffect: false,
+  forcedKillButtons: null,
   itemSelected: false,
   gainCustomXp: () => null,
   gainXp: () => null,

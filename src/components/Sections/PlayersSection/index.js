@@ -220,6 +220,10 @@ const PlayersSection = ({
     'displayActionsModal'
   );
   const [dropMode, toggleDropMode] = useStateWithLabel(false, 'dropMode');
+  const [
+    dualWeaponEffectIsActive,
+    activateDualWeaponEffect
+  ] = useStateWithLabel(false, 'dualWeaponEffectIsActive');
   const [extraActivation, toggleExtraActivation] = useStateWithLabel(
     false,
     'extraActivation'
@@ -227,6 +231,10 @@ const PlayersSection = ({
   const [firstPlayer, changeFirstPlayer] = useStateWithLabel(
     null,
     'firstPlayer'
+  );
+  const [forcedKillButtons, toggleForcedKillButtons] = useStateWithLabel(
+    null,
+    'forcedKillButtons'
   );
   const [highestXp, updateHighestXp] = useStateWithLabel(
     { name: '', xp: 0 },
@@ -325,6 +333,14 @@ const PlayersSection = ({
   /* --- */
 
   /* ------- MECHANICS METHODS ------- */
+  const activateDualEffect = dices => {
+    console.log('$$$ DW activateDualEffect dices', dices);
+    toggleForcedKillButtons(dices);
+    setTimeout(() => {
+      toggleForcedKillButtons(0);
+    }, 2000);
+  };
+
   const advancingLevel = (xp, char) => {
     let updatedChar = cloneDeep(char);
 
@@ -505,6 +521,20 @@ const PlayersSection = ({
     }
   };
 
+  const checkIfCharHasDualEffect = weapons => {
+    console.log('$$$ DW weapons', weapons);
+    if (
+      weapons[0] === weapons[1] &&
+      ALL_WEAPONS[weapons[0]] &&
+      ALL_WEAPONS[weapons[0]].dual
+    ) {
+      activateDualWeaponEffect(true);
+      console.log('$$$ DW weapons TRUE');
+    } else {
+      activateDualWeaponEffect();
+    }
+  };
+
   const changeToAnotherPlayer = type => {
     const charactersNumber = characters.length;
     const remainingCharacters = characters.filter(
@@ -543,6 +573,8 @@ const PlayersSection = ({
     changeCanUseFlashlight(hasFlashlight);
     toggleCanCombine(charCanCombineItems);
     updatedCharacter.inHand = newItems;
+
+    checkIfCharHasDualEffect(newItems);
 
     if (
       dropMode &&
@@ -1271,6 +1303,7 @@ const PlayersSection = ({
 
         toggleSomeoneIsWounded(characters.some(char => char.wounded));
         changeCharacter(nextChar);
+        checkIfCharHasDualEffect(charInHand);
         setCanOpenDoor(openDoors);
         changeCanUseFlashlight(hasFlashlight);
         toggleCanCombine(charCanCombineItems);
@@ -1689,6 +1722,7 @@ const PlayersSection = ({
                     return (
                       <ItemsArea
                         actionsLeft={generalActions}
+                        activateDualEffect={activateDualEffect}
                         allSlotsAreEmpty={checkIfAllSlotsAreEmpty([
                           ...character.inHand,
                           ...character.inReserve
@@ -1729,6 +1763,8 @@ const PlayersSection = ({
                           ALL_WEAPONS[itemName] && ALL_WEAPONS[itemName].dice
                         }
                         dropMode={dropMode}
+                        dualWeaponEffect={dualWeaponEffectIsActive}
+                        forcedKillButtons={forcedKillButtons}
                         gainCustomXp={gainCustomXp}
                         gainXp={gainXp}
                         handleSearch={handleSearch}
