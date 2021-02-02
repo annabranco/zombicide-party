@@ -334,7 +334,6 @@ const PlayersSection = ({
 
   /* ------- MECHANICS METHODS ------- */
   const activateDualEffect = dices => {
-    console.log('$$$ DW activateDualEffect dices', dices);
     toggleForcedKillButtons(dices);
     setTimeout(() => {
       toggleForcedKillButtons(0);
@@ -523,16 +522,22 @@ const PlayersSection = ({
   };
 
   const checkIfCharHasDualEffect = weapons => {
-    console.log('$$$ DW weapons', weapons);
     if (
       (weapons[0] === weapons[1] &&
         ALL_WEAPONS[weapons[0]] &&
         ALL_WEAPONS[weapons[0]].dual) ||
       (character.abilities &&
-        character.abilities.includes(ABILITIES_S1.AMBIDEXTROUS.name))
+        character.abilities.includes(ABILITIES_S1.AMBIDEXTROUS.name)) ||
+      (character.abilities &&
+        character.abilities.includes(ABILITIES_S1.SWORDMASTER.name) &&
+        ALL_WEAPONS[weapons[0]] &&
+        ALL_WEAPONS[weapons[0]].attack === MELEE) ||
+      (character.abilities &&
+        character.abilities.includes(ABILITIES_S1.GUNSLINGER.name) &&
+        ALL_WEAPONS[weapons[0]] &&
+        ALL_WEAPONS[weapons[0]].attack === RANGED)
     ) {
       activateDualWeaponEffect(true);
-      console.log('$$$ DW weapons TRUE');
     } else {
       activateDualWeaponEffect();
     }

@@ -106,7 +106,6 @@ const ItemsArea = ({
       toggleFiredDual(true);
 
       if (dualWeaponEffect) {
-        console.log('$$$ DW totalDices', totalDices);
         activateDualEffect(totalDices);
       }
 
