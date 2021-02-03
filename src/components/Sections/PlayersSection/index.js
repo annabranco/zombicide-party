@@ -6,6 +6,7 @@ import { useStateWithLabel, useTurnsCounter } from '../../../utils/hooks';
 import { ABILITIES_S1 } from '../../../setup/abilities';
 import { CHARACTERS } from '../../../setup/characters';
 import { ALL_WEAPONS } from '../../../setup/weapons';
+import { ALL_ITEMS } from '../../../setup/items';
 import {
   checkIfHasAnyActionLeft,
   getActionColor
@@ -1105,6 +1106,13 @@ const PlayersSection = ({
         ...woundedCharacter.inHand,
         ...woundedCharacter.inReserve
       ]);
+    const characterIsProtected =
+      [...woundedCharacter.inHand, ...woundedCharacter.inReserve][
+        selectedSlot - 1
+      ] === ALL_ITEMS.GoalieMask.name ||
+      [...woundedCharacter.inHand, ...woundedCharacter.inReserve][
+        selectedSlot - 1
+      ] === ALL_ITEMS.PoliceRiotHelmet.name;
     let remainingCharacters = characters.filter(
       char => char.wounded !== KILLED
     );
@@ -1127,7 +1135,7 @@ const PlayersSection = ({
         setTimeout(() => {
           toggleResistedAttack(false);
         }, 2000);
-      } else if (characterCanAbsorb) {
+      } else if (characterCanAbsorb || characterIsProtected) {
         if (selectedSlot <= 2) {
           woundedCharacter.inHand[selectedSlot - 1] = '';
         } else {
@@ -1161,7 +1169,7 @@ const PlayersSection = ({
       setTimeout(() => {
         toggleResistedAttack(false);
       }, 2000);
-    } else if (characterCanAbsorb) {
+    } else if (characterCanAbsorb || characterIsProtected) {
       toggleResistedAttack(ABSORBED);
       setTimeout(() => {
         toggleResistedAttack(false);
