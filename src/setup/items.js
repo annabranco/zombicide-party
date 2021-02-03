@@ -1,10 +1,11 @@
 import BagOfRice from '../assets/images/items/bag-of-rice.jpg';
 import CannedFood from '../assets/images/items/canned-food.jpg';
-import Flashlight from '../assets/images/items/flash-light.jpg';
+import Flashlight from '../assets/images/items/flashlight.jpg';
 import GasMask from '../assets/images/items/gas-mask.jpg';
 import Gasoline from '../assets/images/items/gasoline.jpg';
 import GlassBottle from '../assets/images/items/glass-bottle.jpg';
 import GoalieMask from '../assets/images/items/goalie-mask.jpg';
+import HandheldTransceiver from '../assets/images/items/handheld-transceiver.jpg';
 import InfraredGoggles from '../assets/images/items/infrared-goggles.jpg';
 import LaserPointer from '../assets/images/items/laser-pointer.jpg';
 import PlentyOfAmmo from '../assets/images/items/plenty-of-ammo.jpg';
@@ -90,6 +91,11 @@ export const ITEMS_NIGHT_SHIFT = {
   GasMask: {
     img: GasMask,
     name: 'GasMask',
+    type: ITEMS
+  },
+  HandheldTransceiver: {
+    img: HandheldTransceiver,
+    name: 'HandheldTransceiver',
     type: ITEMS
   },
   InfraredGoggles: {

@@ -213,7 +213,7 @@ export const CHARACTERS_S1 = {
     noise: 0,
     player: null,
     promotions: {
-      blue: MEDIC,
+      blue: BORN_LEADER,
       yellow: ACTION,
       orange: [DICE_ROLL_MEELEE, SLIPPERY],
       red: [DIE_COMBAT, MOVE_ACTION, ZONE_PER_MOVE]

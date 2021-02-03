@@ -1,7 +1,7 @@
 const ACTION = {
   name: '+1 Action',
   description: 'The Survivor has an extra Action he may use as he pleases.',
-  effect: ([gen, mov, att, sea]) => [gen + 1, mov, att, sea]
+  effect: ([gen, mov, att, sea, bon]) => [gen + 1, mov, att, sea, bon]
 };
 
 const DAMAGE_MELEE = {
@@ -52,19 +52,19 @@ const COMBAT_ACTION = {
   name: '+1 free Combat Action',
   description:
     'The Survivor has one free extra Combat Action. This Action may only be used for Melee or Ranged Combat.',
-  effect: ([gen, mov, att, sea]) => [gen, mov, att + 1, sea]
+  effect: ([gen, mov, att, sea, bon]) => [gen + 1, mov, att + 1, sea, bon]
 };
 const MOVE_ACTION = {
   name: '+1 free Move Action',
   description:
     'The Survivor has one free extra Move Action. This Action may only be used as a Move Action.',
-  effect: ([gen, mov, att, sea]) => [gen, mov + 1, att, sea]
+  effect: ([gen, mov, att, sea, bon]) => [gen, mov + 1, att, sea, bon]
 };
 const SEARCH_ACTION = {
   name: '+1 free Search Action ',
   description:
     'The Survivor has one free extra Search Action. This Action may only be used to Search and the Survivor can still only Search once per turn.',
-  effect: ([gen, mov, att, sea]) => [gen, mov, att, sea + 1]
+  effect: ([gen, mov, att, sea, bon]) => [gen, mov, att, sea + 1, bon]
 };
 const MAX_RANGE = {
   name: '+1 max Range',

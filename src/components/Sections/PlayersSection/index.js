@@ -213,6 +213,10 @@ const PlayersSection = ({
   const [character, changeCharacter] = useStateWithLabel({}, 'character');
   const [characters, updateCharacters] = useStateWithLabel([], 'characters');
   const [charIndex, changeCharIndex] = useStateWithLabel(0, 'charIndex');
+  const [
+    charsReceivingRadioOrders,
+    updateCharsReceivingRadioOrders
+  ] = useStateWithLabel([], 'charsReceivingRadioOrders');
   const [combiningItem, setCombiningItem] = useStateWithLabel(
     null,
     'combiningItem'
@@ -1015,6 +1019,36 @@ const PlayersSection = ({
 
   const onGiveOrders = () => {
     toggleActionsModal(GIVE_ORDERS_ACTION);
+
+    if (
+      [...character.inHand, ...character.inReserve].some(
+        item => item === ALL_ITEMS.HandheldTransceiver.name
+      )
+    ) {
+      const updatedCharacters = cloneDeep(characters);
+      const radioOrdersDelivered = [];
+      updatedCharacters.forEach(char => {
+        if (
+          char.name !== character.name &&
+          [...char.inHand, ...char.inReserve].some(
+            item => item === ALL_ITEMS.HandheldTransceiver.name
+          )
+        ) {
+          if (char.actionsLeft && char.actionsLeft.length > 0) {
+            char.actionsLeft[4] += 1; // eslint-disable-line no-param-reassign
+          } else {
+            const newActionsLeft = [...char.actions];
+            newActionsLeft[4] += 1;
+            char.actionsLeft = newActionsLeft; // eslint-disable-line no-param-reassign
+          }
+          radioOrdersDelivered.push(char.name);
+        }
+        if (radioOrdersDelivered.length > 0) {
+          updateCharsReceivingRadioOrders(radioOrdersDelivered);
+        }
+      });
+      updateCharacters(updatedCharacters);
+    }
   };
 
   const onHeal = healedCharacter => {
@@ -1054,24 +1088,35 @@ const PlayersSection = ({
   };
 
   const onReceiveOrders = characterOrdered => {
-    const updChar = cloneDeep(character);
+    if (!charsReceivingRadioOrders.includes(characterOrdered)) {
+      const orderedChar = characters.filter(
+        char => char.name === characterOrdered
+      )[0];
 
-    const orderedChar = characters.filter(
-      char => char.name === characterOrdered
-    )[0];
-
-    toggleActionsModal();
-    if (orderedChar.actionsLeft && orderedChar.actionsLeft.length > 0) {
-      orderedChar.actionsLeft[4] += 1;
-    } else {
-      const newActionsLeft = [...orderedChar.actions];
-      newActionsLeft[4] += 1;
-      orderedChar.actionsLeft = newActionsLeft;
+      if (orderedChar.actionsLeft && orderedChar.actionsLeft.length > 0) {
+        if (
+          [...orderedChar.inHand, ...orderedChar.inReserve].some(
+            item => item === ALL_ITEMS.HandheldTransceiver.name
+          ) &&
+          checkIfHasAnyActionLeft(orderedChar.actionsLeft) &&
+          orderedChar.actionsLeft[4] > 1
+        ) {
+          return null;
+        }
+        orderedChar.actionsLeft[4] += 1;
+      } else {
+        const newActionsLeft = [...orderedChar.actions];
+        newActionsLeft[4] += 1;
+        orderedChar.actionsLeft = newActionsLeft;
+      }
+      updateData(orderedChar, true);
     }
-    updateData(orderedChar, true);
-
+    const updChar = cloneDeep(character);
     updChar.abilitiesUsed.push(GIVE_ORDERS_ACTION);
     updateData(updChar);
+    toggleActionsModal();
+    updateCharsReceivingRadioOrders([]);
+    return null;
   };
 
   const onSearchZombie = () => {
