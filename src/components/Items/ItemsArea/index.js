@@ -262,7 +262,7 @@ const ItemsArea = ({
             combineItemSelected={combineItemSelected}
             combinePair={combinePair}
             damageMode={damageMode}
-            img={getItemPhoto(item)}
+            img={getItemPhoto(item, slotType)}
             isMobile={device === MOBILE}
             isSelected={itemSelected}
             makeNoise={makeNoise}

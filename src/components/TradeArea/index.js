@@ -27,6 +27,7 @@ import {
   TradeWrapper
 } from './styles';
 import { CharacterType } from '../../interfaces/types';
+import { ALL_WEAPONS } from '../../setup/weapons';
 
 const TradeArea = ({
   character,
@@ -115,37 +116,152 @@ const TradeArea = ({
             ? selectedItem1.slot - 1
             : selectedItem1.slot - 3;
         const index2 = slot <= 2 ? slot - 1 : slot - 3;
+        const expBaton = ALL_WEAPONS.ExpandableBaton.name.replace(' ', '');
 
         if (selectedItem1.item === NONE && item === NONE) {
           return null;
         }
         if (selectedItem1.charTrading === charTrading) {
           if (updChar.name === charTrading) {
+            const oldReserve = [...updChar.inReserve];
             updChar[typeItem1][index1] = item === NONE ? null : item;
             updChar[typeItem2][index2] =
               selectedItem1.item === NONE ? null : selectedItem1.item;
+
+            if (
+              oldReserve.includes(expBaton) &&
+              !updChar.inReserve.includes(expBaton)
+            ) {
+              updChar.inReserve.splice(
+                oldReserve.findIndex(
+                  itemInReserve => itemInReserve === expBaton
+                ),
+                1
+              );
+            } else if (
+              !oldReserve.includes(expBaton) &&
+              updChar.inReserve.includes(expBaton)
+            ) {
+              updChar.inReserve.push(null);
+            }
+
             updateCharacter(updChar);
           } else {
+            const oldReserve = [...updPartn.inReserve];
+
             updPartn[typeItem1][index1] = item === NONE ? null : item;
             updPartn[typeItem2][index2] =
               selectedItem1.item === NONE ? null : selectedItem1.item;
+
+            if (
+              oldReserve.includes(expBaton) &&
+              !updPartn.inReserve.includes(expBaton)
+            ) {
+              updPartn.inReserve.splice(
+                oldReserve.findIndex(
+                  itemInReserve => itemInReserve === expBaton
+                ),
+                1
+              );
+            } else if (
+              !oldReserve.includes(expBaton) &&
+              updPartn.inReserve.includes(expBaton)
+            ) {
+              updPartn.inReserve.push(null);
+            }
             updatePartner(updPartn);
           }
         } else if (selectedItem1.item === WOUNDED || item === WOUNDED) {
           console.log('NOT');
         } else if (selectedItem1.charTrading === updChar.name) {
+          const oldCharReserve = [...updChar.inReserve];
+          const oldPartnReserve = [...updPartn.inReserve];
+
           updChar[typeItem1][index1] = item === NONE ? null : item;
           updPartn[typeItem2][index2] =
             selectedItem1.item === NONE ? null : selectedItem1.item;
+
+          if (
+            oldCharReserve.includes(expBaton) &&
+            !updChar.inReserve.includes(expBaton)
+          ) {
+            updChar.inReserve.splice(
+              oldCharReserve.findIndex(
+                itemInReserve => itemInReserve === expBaton
+              ),
+              1
+            );
+          } else if (
+            !oldCharReserve.includes(expBaton) &&
+            updChar.inReserve.includes(expBaton)
+          ) {
+            updChar.inReserve.push(null);
+          }
+
+          if (
+            oldPartnReserve.includes(expBaton) &&
+            !updPartn.inReserve.includes(expBaton)
+          ) {
+            updPartn.inReserve.splice(
+              oldPartnReserve.findIndex(
+                itemInReserve => itemInReserve === expBaton
+              ),
+              1
+            );
+          } else if (
+            !oldPartnReserve.includes(expBaton) &&
+            updPartn.inReserve.includes(expBaton)
+          ) {
+            updPartn.inReserve.push(null);
+          }
+
           updateCharacter(updChar);
           updatePartner(updPartn);
         } else {
+          const oldCharReserve = [...updChar.inReserve];
+          const oldPartnReserve = [...updPartn.inReserve];
+
           updPartn[typeItem1][index1] = item === NONE ? null : item;
           updChar[typeItem2][index2] =
             selectedItem1.item === NONE ? null : selectedItem1.item;
+
+          if (
+            oldCharReserve.includes(expBaton) &&
+            !updChar.inReserve.includes(expBaton)
+          ) {
+            updChar.inReserve.splice(
+              oldCharReserve.findIndex(
+                itemInReserve => itemInReserve === expBaton
+              ),
+              1
+            );
+          } else if (
+            !oldCharReserve.includes(expBaton) &&
+            updChar.inReserve.includes(expBaton)
+          ) {
+            updChar.inReserve.push(null);
+          }
+
+          if (
+            oldPartnReserve.includes(expBaton) &&
+            !updPartn.inReserve.includes(expBaton)
+          ) {
+            updPartn.inReserve.splice(
+              oldPartnReserve.findIndex(
+                itemInReserve => itemInReserve === expBaton
+              ),
+              1
+            );
+          } else if (
+            !oldPartnReserve.includes(expBaton) &&
+            updPartn.inReserve.includes(expBaton)
+          ) {
+            updPartn.inReserve.push(null);
+          }
           updateCharacter(updChar);
           updatePartner(updPartn);
         }
+
         selectItem1();
         establishTrade(true);
       }

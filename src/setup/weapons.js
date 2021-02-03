@@ -269,7 +269,6 @@ export const WEAPONS_NIGHT_SHIFT = {
     noise: true,
     type: WEAPONS
   },
-
   ExpandableBaton: {
     altImage: ExpandableBatonClosed,
     attack: MELEE,

@@ -1,4 +1,4 @@
-import { NOISY, WOUNDED } from '../constants';
+import { IN_RESERVE, NOISY, WOUNDED } from '../constants';
 import { ALL_ITEMS } from '../setup/items';
 import { SPECIALS_CARDS } from '../setup/specials';
 import { ALL_WEAPONS } from '../setup/weapons';
@@ -22,12 +22,15 @@ export const checkIfCharacterCanOpenDoors = currentItems => {
   return openDoor || false;
 };
 
-export const getItemPhoto = item => {
+export const getItemPhoto = (item, slot) => {
   const photoName = item.replace(' ', '');
   if (Object.keys(SPECIALS_CARDS).find(name => photoName === name)) {
     return SPECIALS_CARDS[photoName].img;
   }
   if (Object.keys(ALL_WEAPONS).find(name => photoName === name)) {
+    if (slot === IN_RESERVE) {
+      return ALL_WEAPONS[photoName].altImage;
+    }
     return ALL_WEAPONS[photoName].img;
   }
   if (Object.keys(ALL_ITEMS).find(name => photoName === name)) {

@@ -605,13 +605,26 @@ const PlayersSection = ({
 
   const changeInReserve = (name, currentSlot = slot - 3, preUpdChar) => {
     const updatedCharacter = preUpdChar || cloneDeep(character);
+    const oldItems = [...updatedCharacter.inReserve];
     const newItems = [...updatedCharacter.inReserve];
-    newItems[currentSlot] = name;
     const hasFlashlight = checkIfCharacterHasFlashlight(newItems);
     const charCanCombineItems = checkIfCharCanCombineItems([
       ...newItems,
       ...updatedCharacter.inHand
     ]);
+    newItems[currentSlot] = name;
+
+    if (name === ALL_WEAPONS.ExpandableBaton.name.replace(' ', '')) {
+      newItems.push(null);
+    }
+
+    if (
+      oldItems.includes(ALL_WEAPONS.ExpandableBaton.name.replace(' ', '')) &&
+      !newItems.includes(ALL_WEAPONS.ExpandableBaton.name.replace(' ', ''))
+    ) {
+      newItems.splice(currentSlot, 1);
+    }
+
     changeCanUseFlashlight(hasFlashlight);
     toggleCanCombine(charCanCombineItems);
     updatedCharacter.inReserve = newItems;

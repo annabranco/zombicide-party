@@ -213,7 +213,7 @@ export const CHARACTERS_S1 = {
     noise: 0,
     player: null,
     promotions: {
-      blue: BORN_LEADER,
+      blue: TWO_ZONES_MOVE,
       yellow: ACTION,
       orange: [DICE_ROLL_MEELEE, SLIPPERY],
       red: [DIE_COMBAT, MOVE_ACTION, ZONE_PER_MOVE]
@@ -271,7 +271,7 @@ export const CHARACTERS_KOPINSKI = {
       blue: REAPER_RANGED,
       yellow: ACTION,
       orange: [ACTION_RANGED, BLITZ],
-      red: [LOUD, DIE_COMBAT, MOVE_ACTION]
+      red: [DICE_ROLL_COMBAT, DIE_COMBAT, MOVE_ACTION]
     },
     selector: SelectorMary,
     voice: FEMALE,
