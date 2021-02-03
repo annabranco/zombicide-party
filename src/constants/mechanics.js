@@ -1,7 +1,9 @@
-export const ABSORBED = 'Absorbed attack';
-export const ABSORBED_ONE = 'Absorbed the first attack';
+export const BLOCKED = 'Blocked attack';
+export const BLOCKED_ONE = 'Blocked the first attack';
 export const CHOOSE_PLAYER = 'Who is gonna play?';
 export const CHOOSE_PLAYER_DYNAMIC = 'Who is gonna play the new character?';
+export const DEFLECTED = 'Deflected attack';
+export const DEFLECTED_ONE = 'Deflected the first attack';
 export const FINISH_SETUP = 'Finish setup';
 export const HAS_BEEN_KILLED = 'has \nbeen killed';
 export const KILLED_EM_ALL = 'All characters are dead';

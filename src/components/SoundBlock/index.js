@@ -28,9 +28,9 @@ const SoundBlock = ({
   activateKillButtons,
   callback,
   canAttack,
-  canBeAbsorbed,
+  canBeDeflected,
   canCombine,
-  charCanAbsorb,
+  charCanDeflect,
   combineItemSelected,
   combinePair,
   damageMode,
@@ -169,8 +169,8 @@ const SoundBlock = ({
 
   return (
     <Block
-      canBeAbsorbed={canBeAbsorbed}
-      charCanAbsorb={charCanAbsorb}
+      canBeDeflected={canBeDeflected}
+      charCanDeflect={charCanDeflect}
       damageMode={damageMode}
       type={type}
       wounded={wounded}
@@ -225,9 +225,9 @@ SoundBlock.propTypes = {
   activateKillButtons: func,
   callback: func,
   canAttack: bool,
-  canBeAbsorbed: bool,
+  canBeDeflected: bool,
   canCombine: bool,
-  charCanAbsorb: bool,
+  charCanDeflect: bool,
   combineItemSelected: bool,
   combinePair: bool,
   damageMode: bool,
@@ -260,9 +260,9 @@ SoundBlock.defaultProps = {
   activateKillButtons: null,
   callback: null,
   canAttack: false,
-  canBeAbsorbed: false,
+  canBeDeflected: false,
   canCombine: false,
-  charCanAbsorb: false,
+  charCanDeflect: false,
   combineItemSelected: false,
   combinePair: false,
   damageMode: false,

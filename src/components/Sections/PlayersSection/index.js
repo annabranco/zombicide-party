@@ -41,8 +41,10 @@ import NewGame from '../../NewGame';
 
 import CharacterFace from '../../CharacterFace';
 import {
-  ABSORBED,
-  ABSORBED_ONE,
+  DEFLECTED,
+  DEFLECTED_ONE,
+  BLOCKED,
+  BLOCKED_ONE,
   ADD_CHARACTER,
   BONUS_ACTION,
   BREAK_DOOR,
@@ -1089,8 +1091,6 @@ const PlayersSection = ({
   const setNewChar = updatedCharacters => {
     addNewChar(false);
     updateCharacters(updatedCharacters);
-
-    console.log('$$$ LS new char', updatedCharacters);
     localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(updatedCharacters));
   };
 
@@ -1100,12 +1100,19 @@ const PlayersSection = ({
     const characterCanResist =
       woundedCharacter.abilities.includes(ABILITIES_S1.TOUGH.name) &&
       !woundedCharacter.abilitiesUsed.includes(RESISTED);
-    const characterCanAbsorb =
-      woundedCharacter.abilities.includes(ABILITIES_S1.ALL_YOUVE_GOT.name) &&
-      !checkIfCharHasNoItems([
-        ...woundedCharacter.inHand,
-        ...woundedCharacter.inReserve
-      ]);
+    const characterCanBlock =
+      woundedCharacter.inHand[selectedSlot - 1] ===
+        ALL_ITEMS.PoliceRiotShield.name &&
+      !woundedCharacter.abilitiesUsed.includes(BLOCKED);
+    const characterCanDeflect =
+      (woundedCharacter.abilities.includes(ABILITIES_S1.ALL_YOUVE_GOT.name) &&
+        !checkIfCharHasNoItems([
+          ...woundedCharacter.inHand,
+          ...woundedCharacter.inReserve
+        ])) ||
+      (woundedCharacter.inHand[selectedSlot - 1] ===
+        ALL_ITEMS.PoliceRiotShield.name &&
+        woundedCharacter.abilitiesUsed.includes(BLOCKED));
     const characterIsProtected =
       [...woundedCharacter.inHand, ...woundedCharacter.inReserve][
         selectedSlot - 1
@@ -1135,13 +1142,22 @@ const PlayersSection = ({
         setTimeout(() => {
           toggleResistedAttack(false);
         }, 2000);
-      } else if (characterCanAbsorb || characterIsProtected) {
+      } else if (characterCanDeflect || characterIsProtected) {
         if (selectedSlot <= 2) {
           woundedCharacter.inHand[selectedSlot - 1] = '';
         } else {
           woundedCharacter.inReserve[selectedSlot - 3] = '';
         }
-        toggleResistedAttack(ABSORBED_ONE);
+        toggleResistedAttack(DEFLECTED_ONE);
+        setTimeout(() => {
+          toggleResistedAttack(false);
+        }, 2000);
+        changeCharacter(woundedCharacter);
+        toggleDamageMode(attacker);
+        return null;
+      } else if (characterCanBlock) {
+        toggleResistedAttack(BLOCKED_ONE);
+        woundedCharacter.abilitiesUsed.push(BLOCKED);
         setTimeout(() => {
           toggleResistedAttack(false);
         }, 2000);
@@ -1155,7 +1171,10 @@ const PlayersSection = ({
 
         woundedCharacter.wounded = KILLED;
         damage = KILL;
-        if (firstPlayer.includes(woundedCharacter.name)) {
+        if (
+          remainingCharacters.length > 1 &&
+          firstPlayer.includes(woundedCharacter.name)
+        ) {
           changeFirstPlayer(`next-${characters[charIndex + 1].name}`);
         }
 
@@ -1169,8 +1188,14 @@ const PlayersSection = ({
       setTimeout(() => {
         toggleResistedAttack(false);
       }, 2000);
-    } else if (characterCanAbsorb || characterIsProtected) {
-      toggleResistedAttack(ABSORBED);
+    } else if (characterCanBlock) {
+      toggleResistedAttack(BLOCKED);
+      woundedCharacter.abilitiesUsed.push(BLOCKED);
+      setTimeout(() => {
+        toggleResistedAttack(false);
+      }, 2000);
+    } else if (characterCanDeflect || characterIsProtected) {
+      toggleResistedAttack(DEFLECTED);
       setTimeout(() => {
         toggleResistedAttack(false);
       }, 2000);
@@ -1746,13 +1771,14 @@ const PlayersSection = ({
                         bonusDices={character.bonusDices}
                         callback={spendAction}
                         canAttack={canAttack}
-                        canBeAbsorbed={
-                          character.abilities.includes(
+                        canBeDeflected={
+                          (character.abilities.includes(
                             ABILITIES_S1.ALL_YOUVE_GOT.name
                           ) &&
-                          item !== '' &&
-                          item !== NONE &&
-                          item !== WOUNDED
+                            item !== '' &&
+                            item !== NONE &&
+                            item !== WOUNDED) ||
+                          item === ALL_ITEMS.PoliceRiotShield.name
                         }
                         canCombine={!!generalActions && canCombine}
                         canSearch={canSearch}
@@ -1763,14 +1789,18 @@ const PlayersSection = ({
                         combinePair={
                           combiningItem && combiningItem.pair === itemName
                         }
-                        charCanAbsorb={
-                          character.abilities.includes(
+                        charCanDeflect={
+                          (character.abilities.includes(
                             ABILITIES_S1.ALL_YOUVE_GOT.name
                           ) &&
-                          !checkIfCharHasNoItems([
-                            ...character.inHand,
-                            ...character.inReserve
-                          ])
+                            !checkIfCharHasNoItems([
+                              ...character.inHand,
+                              ...character.inReserve
+                            ])) ||
+                          character.inHand.some(
+                            inHandItem =>
+                              inHandItem === ALL_ITEMS.PoliceRiotShield.name
+                          )
                         }
                         charVoice={character.voice}
                         damageMode={damageMode}
@@ -1816,7 +1846,7 @@ const PlayersSection = ({
                           ...character.inReserve
                         ])}
                         callback={spendAction}
-                        canBeAbsorbed={
+                        canBeDeflected={
                           character.abilities.includes(
                             ABILITIES_S1.ALL_YOUVE_GOT.name
                           ) &&
@@ -1827,7 +1857,7 @@ const PlayersSection = ({
                         canCombine={!!generalActions && canCombine}
                         canSearch={canSearch}
                         causeDamage={takeDamage}
-                        charCanAbsorb={
+                        charCanDeflect={
                           character.abilities.includes(
                             ABILITIES_S1.ALL_YOUVE_GOT.name
                           ) &&

@@ -18,11 +18,17 @@ export const Block = styled.div`
   border-radius: 5px;
   box-shadow: 0 0 5px 0 black;
   height: 100%;
-  display: ${({ canBeAbsorbed, charCanAbsorb, damageMode, type, wounded }) => {
-    if (damageMode && charCanAbsorb && !canBeAbsorbed) {
+  display: ${({
+    canBeDeflected,
+    charCanDeflect,
+    damageMode,
+    type,
+    wounded
+  }) => {
+    if (damageMode && charCanDeflect && type === WOUND) {
       return 'none';
     }
-    if (damageMode && canBeAbsorbed) {
+    if (damageMode && canBeDeflected) {
       return 'flex';
     }
     if (damageMode && wounded && type !== WOUND) {

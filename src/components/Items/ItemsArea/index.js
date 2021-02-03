@@ -42,11 +42,11 @@ const ItemsArea = ({
   bonusDices,
   callback,
   canAttack,
-  canBeAbsorbed,
+  canBeDeflected,
   canCombine,
   canSearch,
   causeDamage,
-  charCanAbsorb,
+  charCanDeflect,
   charName,
   charVoice,
   combineItemSelected,
@@ -256,9 +256,9 @@ const ItemsArea = ({
             activateKillButtons={activateKillButtons}
             callback={callback}
             canAttack={canAttack}
-            canBeAbsorbed={canBeAbsorbed}
+            canBeDeflected={canBeDeflected}
             canCombine={canCombine && canCombine.includes(item)}
-            charCanAbsorb={charCanAbsorb}
+            charCanDeflect={charCanDeflect}
             combineItemSelected={combineItemSelected}
             combinePair={combinePair}
             damageMode={damageMode}
@@ -355,11 +355,11 @@ ItemsArea.propTypes = {
   bonusDices: BonusDicesType,
   callback: func,
   canAttack: bool,
-  canBeAbsorbed: bool,
+  canBeDeflected: bool,
   canCombine: bool,
   canSearch: bool,
   causeDamage: func,
-  charCanAbsorb: bool,
+  charCanDeflect: bool,
   charName: string,
   charVoice: string,
   combineItemSelected: bool,
@@ -398,11 +398,11 @@ ItemsArea.defaultProps = {
   bonusDices: null,
   callback: () => null,
   canAttack: false,
-  canBeAbsorbed: false,
+  canBeDeflected: false,
   canCombine: false,
   canSearch: false,
   causeDamage: null,
-  charCanAbsorb: false,
+  charCanDeflect: false,
   charName: null,
   charVoice: null,
   combineItemSelected: false,
