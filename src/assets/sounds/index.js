@@ -124,6 +124,7 @@ import FemaleKillFatty from './attacks/female-kill-fatty.mp3';
 import FemaleKillHorde from './attacks/female-kill-horde.mp3';
 import FemaleKillRunner from './attacks/female-kill-runner.mp3';
 import FemaleKillWalker from './attacks/female-kill-walker.mp3';
+import MaleHitAbomination from './attacks/male-hit-abomination.mp3';
 import MaleHitDogz from './attacks/male-hit-dogz.mp3';
 import MaleHitFatty from './attacks/male-hit-fatty.mp3';
 import MaleHitRunner from './attacks/male-hit-runner.mp3';
@@ -263,6 +264,7 @@ export const SOUNDS = {
   'female-kill-horde': FemaleKillHorde,
   'female-kill-runner': FemaleKillRunner,
   'female-kill-walker': FemaleKillWalker,
+  'male-hit-abomination': MaleHitAbomination,
   'male-hit-dogz': MaleHitDogz,
   'male-hit-fatty': MaleHitFatty,
   'male-hit-runner': MaleHitRunner,
