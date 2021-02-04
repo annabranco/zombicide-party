@@ -32,6 +32,8 @@ import CarAttack from './actions/car-attack.mp3';
 import CarEnterStart from './actions/car-enter-start.mp3';
 import CarEnter from './actions/car-enter.mp3';
 import CarExit from './actions/car-exit.mp3';
+import CuredFemale from './actions/cured-female.mp3';
+import CuredMale from './actions/cured-male.mp3';
 import CarMove from './actions/car-move.mp3';
 import FoundFemale1 from './actions/found-female1.mp3';
 import FoundFemale2 from './actions/found-female2.mp3';
@@ -45,6 +47,15 @@ import FoundMale3 from './actions/found-male3.mp3';
 import FoundMale4 from './actions/found-male4.mp3';
 import FoundMale5 from './actions/found-male5.mp3';
 import FoundMale6 from './actions/found-male6.mp3';
+import GiveOrdersFemale from './actions/give-orders-female.mp3';
+import GiveOrdersMale from './actions/give-orders-male.mp3';
+import GiveOrdersRadioFemale from './actions/give-orders-radio-female.mp3';
+import GiveOrdersRadioMale from './actions/give-orders-radio-male.mp3';
+import Heal1 from './actions/heal1.mp3';
+import Heal2 from './actions/heal2.mp3';
+import Heal3 from './actions/heal3.mp3';
+import Lock from './actions/lock.mp3';
+import MakeNoise from './actions/make-noise.mp3';
 import MoveConfident from './actions/move-confident.mp3';
 import MoveFurtive from './actions/move-furtive.mp3';
 import MoveHeavy from './actions/move-heavy.mp3';
@@ -58,6 +69,7 @@ import OpenDoorBatteringRam from './actions/open-door-BatteringRam.mp3';
 import OpenDoorChainsaw from './actions/open-door-Chainsaw.mp3';
 import OpenDoorCrowbar from './actions/open-door-Crowbar.mp3';
 import OpenDoorFireAxe from './actions/open-door-FireAxe.mp3';
+import Reload from './actions/reload.mp3';
 import Search0 from './actions/search0.mp3';
 import Search1 from './actions/search1.mp3';
 import Search2 from './actions/search2.mp3';
@@ -68,6 +80,7 @@ import Search6 from './actions/search6.mp3';
 import Search7 from './actions/search7.mp3';
 import Search8 from './actions/search8.mp3';
 import Search9 from './actions/search9.mp3';
+import SearchZombie from './actions/search-zombie.mp3';
 
 import Abomination1 from './activations/Abomination1.mp3';
 import Abomination2 from './activations/Abomination2.mp3';
@@ -111,6 +124,7 @@ import FemaleKillFatty from './attacks/female-kill-fatty.mp3';
 import FemaleKillHorde from './attacks/female-kill-horde.mp3';
 import FemaleKillRunner from './attacks/female-kill-runner.mp3';
 import FemaleKillWalker from './attacks/female-kill-walker.mp3';
+import MaleHitAbomination from './attacks/male-hit-abomination.mp3';
 import MaleHitDogz from './attacks/male-hit-dogz.mp3';
 import MaleHitFatty from './attacks/male-hit-fatty.mp3';
 import MaleHitRunner from './attacks/male-hit-runner.mp3';
@@ -161,6 +175,8 @@ export const SOUNDS = {
   'car-enter': CarEnter,
   'car-exit': CarExit,
   'car-move': CarMove,
+  'cured-female': CuredFemale,
+  'cured-male': CuredMale,
   'found-female1': FoundFemale1,
   'found-female2': FoundFemale2,
   'found-female3': FoundFemale3,
@@ -173,6 +189,15 @@ export const SOUNDS = {
   'found-male4': FoundMale4,
   'found-male5': FoundMale5,
   'found-male6': FoundMale6,
+  'give-orders-female': GiveOrdersFemale,
+  'give-orders-male': GiveOrdersMale,
+  'give-orders-radio-female': GiveOrdersRadioFemale,
+  'give-orders-radio-male': GiveOrdersRadioMale,
+  hea1l: Heal1,
+  heal2: Heal2,
+  heal3: Heal3,
+  lock: Lock,
+  'make-noise': MakeNoise,
   'move-confident': MoveConfident,
   'move-furtive': MoveFurtive,
   'move-heavy': MoveHeavy,
@@ -186,6 +211,7 @@ export const SOUNDS = {
   'open-door-Chainsaw': OpenDoorChainsaw,
   'open-door-Crowbar': OpenDoorCrowbar,
   'open-door-FireAxe': OpenDoorFireAxe,
+  reload: Reload,
   search0: Search0,
   search1: Search1,
   search2: Search2,
@@ -196,6 +222,7 @@ export const SOUNDS = {
   search7: Search7,
   search8: Search8,
   search9: Search9,
+  'search-zombie': SearchZombie,
   Abomination1,
   Abomination2,
   Abomination3,
@@ -237,6 +264,7 @@ export const SOUNDS = {
   'female-kill-horde': FemaleKillHorde,
   'female-kill-runner': FemaleKillRunner,
   'female-kill-walker': FemaleKillWalker,
+  'male-hit-abomination': MaleHitAbomination,
   'male-hit-dogz': MaleHitDogz,
   'male-hit-fatty': MaleHitFatty,
   'male-hit-runner': MaleHitRunner,

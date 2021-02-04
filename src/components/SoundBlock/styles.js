@@ -17,9 +17,25 @@ export const Block = styled.div`
   justify-content: center;
   border-radius: 5px;
   box-shadow: 0 0 5px 0 black;
-  display: ${({ damageMode, type, wounded }) =>
-    damageMode && type !== WOUND && wounded ? 'none' : 'flex'};
   height: 100%;
+  display: ${({
+    canBeDeflected,
+    charCanDeflect,
+    damageMode,
+    type,
+    wounded
+  }) => {
+    if (damageMode && charCanDeflect && type === WOUND) {
+      return 'none';
+    }
+    if (damageMode && canBeDeflected) {
+      return 'flex';
+    }
+    if (damageMode && wounded && type !== WOUND) {
+      return 'none';
+    }
+    return 'flex';
+  }};
 `;
 Block.displayName = 'Block';
 
@@ -31,8 +47,7 @@ export const ItemIcon = styled.div`
   max-width: 100%;
   transition: transform ease 0.5s, border ease 0.2s;
   background-image: ${({ img }) => img && `url(${img})`};
-  /* background-position: center center;
-  background-size: 150%; */
+
   background-repeat: no-repeat;
   cursor: pointer;
   transition: all ease 0.2s;
@@ -213,6 +228,7 @@ export const PlayIcon = styled.img`
   label: PlayIcon;
   max-height: 100%;
   max-width: 100%;
+  /* transition: transform ease 0.5s, filter 2s ease-out; */
   transition: transform ease 0.5s;
 
   ${({ type, active }) => {
@@ -298,10 +314,17 @@ export const PlayIcon = styled.img`
     `}
 
 
+  ${({ active }) =>
+    active &&
+    css`
+      filter: brightness(80%) sepia(70%) hue-rotate(13deg) saturate(400%)
+        contrast(1.1);
+    `}
+/*
   @media all and (min-width: 701px) {
-    max-height: 100%;
-    max-width: 100%;
-  }
+    height: 100%;
+    width: 100%;
+  } */
 
   /* ipad pro */
   @media (min-width: 1024px) and (min-height: 1300px) {

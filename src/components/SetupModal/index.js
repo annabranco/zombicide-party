@@ -3,6 +3,19 @@ import { useHistory } from 'react-router-dom';
 import { bool, func, instanceOf, string } from 'prop-types';
 import { useStateWithLabel } from '../../utils/hooks';
 import {
+  CANCEL,
+  GO_ON,
+  NEW_GAME_WARNING,
+  MANAGE_PLAYERS,
+  CHOOSE_PLAYER_DYNAMIC,
+  CHOOSE_PLAYER,
+  OK,
+  PLAYERS_DB_EMPTY,
+  WARNING,
+  LOCAL_STORAGE_PLAYERS_KEY,
+  GENERAL
+} from '../../constants';
+import {
   ButtonsArea,
   ModalButton,
   ModalMessage,
@@ -17,28 +30,15 @@ import {
   PlayerRemoveToggle,
   PlayersArea
 } from './styles';
-import {
-  CANCEL,
-  GO_ON,
-  NEW_GAME_WARNING,
-  MANAGE_PLAYERS,
-  CHOOSE_PLAYER_DYNAMIC,
-  CHOOSE_PLAYER,
-  OK,
-  PLAYERS_DB_EMPTY,
-  WARNING,
-  LOCAL_STORAGE_PLAYERS_KEY
-} from '../../constants';
 
 const SetupModal = ({
-  addPlayer,
   activePlayers,
+  addPlayer,
   dynamic,
   loadedGame,
   setActivePlayers,
   type
 }) => {
-  const [visible, toggleVisible] = useStateWithLabel(false, 'visible');
   const [message, setMessage] = useStateWithLabel({ buttons: [] }, 'message');
   const [players, updatePlayers] = useStateWithLabel(
     new Set(['Anya', 'Cris']),
@@ -49,6 +49,7 @@ const SetupModal = ({
     false,
     'showRemovePlayer'
   );
+  const [visible, toggleVisible] = useStateWithLabel(false, 'visible');
 
   const history = useHistory();
 
@@ -160,7 +161,7 @@ const SetupModal = ({
 
   return (
     <ModalWindow visible={visible} type={type}>
-      <ModalTitle type={message.title}>{message.title}</ModalTitle>
+      <ModalTitle type={message.title || GENERAL}>{message.title}</ModalTitle>
       <ModalMessage>{message.text}</ModalMessage>
       {(message.title === MANAGE_PLAYERS || !message.title) && (
         <>
@@ -229,7 +230,7 @@ SetupModal.propTypes = {
   addPlayer: func,
   activePlayers: instanceOf(Set).isRequired,
   dynamic: bool,
-  loadedGame: bool.isRequired,
+  loadedGame: bool,
   setActivePlayers: func.isRequired,
   type: string
 };
@@ -237,6 +238,7 @@ SetupModal.propTypes = {
 SetupModal.defaultProps = {
   addPlayer: () => null,
   dynamic: false,
+  loadedGame: null,
   type: null
 };
 

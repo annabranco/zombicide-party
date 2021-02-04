@@ -71,7 +71,8 @@ export const WEAPONS_S1 = {
     img: EvilTwins,
     name: 'Evil Twins',
     noise: true,
-    type: WEAPONS
+    type: WEAPONS,
+    unique: true
   },
   FireAxe: {
     canOpenDoor: NOISY,
@@ -96,11 +97,13 @@ export const WEAPONS_S1 = {
     img: MasShotgun,
     name: 'Mas Shotgun',
     noise: SPECIAL,
-    type: WEAPONS
+    type: WEAPONS,
+    unique: true
   },
   Machete: {
     attack: MELEE,
     dice: 1,
+    dual: true,
     img: Machete,
     name: 'Machete',
     noise: false,
@@ -108,6 +111,7 @@ export const WEAPONS_S1 = {
   },
   Molotov: {
     attack: SPECIAL,
+    cannotBeFound: true,
     dice: SPECIAL,
     img: Molotov,
     name: 'Molotov',
@@ -126,6 +130,7 @@ export const WEAPONS_S1 = {
   Pistol: {
     attack: RANGED,
     dice: 1,
+    dual: true,
     img: Pistol,
     name: 'Pistol',
     noise: true,
@@ -143,6 +148,7 @@ export const WEAPONS_S1 = {
   SawedOff: {
     attack: RANGED,
     dice: 2,
+    dual: true,
     img: SawedOff,
     name: 'Sawed Off',
     needsReloading: true,
@@ -168,6 +174,7 @@ export const WEAPONS_S1 = {
   SubMG: {
     attack: RANGED,
     dice: 3,
+    dual: true,
     img: SubMG,
     name: 'SubMG',
     noise: true,
@@ -230,7 +237,7 @@ export const WEAPONS_OTHERS = {
     dice: 1,
     img: DesertEagle,
     name: 'Desert Eagle',
-    noise: false,
+    noise: true,
     type: WEAPONS
   }
 };
@@ -254,15 +261,14 @@ export const WEAPONS_NIGHT_SHIFT = {
     type: WEAPONS
   },
   ColtPython: {
-    canOpenDoor: NOISY,
     attack: RANGED,
     dice: 1,
+    dual: true,
     img: ColtPython,
     name: 'Colt Python',
     noise: true,
     type: WEAPONS
   },
-
   ExpandableBaton: {
     altImage: ExpandableBatonClosed,
     attack: MELEE,

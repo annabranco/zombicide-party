@@ -1,4 +1,5 @@
 import { useState, useDebugValue, useEffect } from 'react';
+import { GENERAL } from '../constants';
 import { checkIfHasAnyActionLeft } from './actions';
 
 export const useStateWithLabel = (initialValue, displayName) => {
@@ -10,12 +11,19 @@ export const useStateWithLabel = (initialValue, displayName) => {
 
 export const useTurnsCounter = (
   character,
-  [numOfActions = 3, movements = 0, attacks = 0, searches = 0]
+  [
+    numOfActions = 3,
+    movements = 0,
+    attacks = 0,
+    searches = 0,
+    numOfBonusActions = 0
+  ]
 ) => {
   const [extraMovementActions, setExtraMovementActions] = useState(movements);
   const [extraAttackActions, setExtraAttackActions] = useState(attacks);
   const [searchActions, setSearchActions] = useState(searches);
   const [generalActions, setGeneralActions] = useState(numOfActions);
+  const [bonusActions, setBonusActions] = useState(numOfBonusActions);
   const [finishedTurn, finishTurn] = useState(false);
   const [message, changeMessage] = useState('');
 
@@ -23,12 +31,13 @@ export const useTurnsCounter = (
     act = generalActions,
     mov = extraMovementActions,
     att = extraAttackActions,
-    sea = searchActions
+    sea = searchActions,
+    bon = bonusActions
   } = {}) => {
     if (act === 0 && searchActions === 0) {
       setSearchActions(searchActions - 1);
     }
-    if (!act && !mov && !att && sea <= 0) {
+    if (!act && !mov && !att && sea <= 0 && !bon) {
       changeMessage(`${character} used all actions.`);
       setSearchActions(searchActions - 1);
       finishTurn(true);
@@ -37,7 +46,15 @@ export const useTurnsCounter = (
     return false;
   };
 
-  const spendAction = (type = 'general') => {
+  const spendAction = (type = GENERAL) => {
+    if (bonusActions) {
+      changeMessage(`${character} used 1 bonus action to ${type}.`);
+      setBonusActions(bonusActions - 1);
+      if (type === 'search') {
+        setSearchActions(-1);
+      }
+      return hasUsedAllActions({ bon: bonusActions - 1 });
+    }
     if (type === 'move' && extraMovementActions > 0) {
       changeMessage(
         `${character} used 1 extra move of ${extraMovementActions}.`
@@ -79,8 +96,7 @@ export const useTurnsCounter = (
         return hasUsedAllActions({ act: generalActions - 1 });
       }
       return hasUsedAllActions({
-        act: generalActions - 1,
-        sea: searchActions - 1
+        act: generalActions - 1
       });
     }
     changeMessage(`${character} has no ${type} actions left.`);
@@ -93,12 +109,26 @@ export const useTurnsCounter = (
       setExtraMovementActions(movements);
       setExtraAttackActions(attacks);
       setSearchActions(searches);
+      setBonusActions(numOfBonusActions);
       finishTurn(
-        !checkIfHasAnyActionLeft([numOfActions, movements, attacks, searches])
+        !checkIfHasAnyActionLeft([
+          numOfActions,
+          movements,
+          attacks,
+          searches,
+          numOfBonusActions
+        ])
       );
       changeMessage('');
     }
-  }, [attacks, character, movements, numOfActions, searches]);
+  }, [
+    attacks,
+    character,
+    movements,
+    numOfActions,
+    searches,
+    numOfBonusActions
+  ]);
 
   useEffect(() => {
     if (character) {
@@ -106,16 +136,24 @@ export const useTurnsCounter = (
         gen: `${numOfActions} => ${generalActions}`,
         mov: `${movements} => ${extraMovementActions}`,
         att: `${attacks} => ${extraAttackActions}`,
-        sea: `${searches} => ${searchActions}`
+        sea: `${searches} => ${searchActions}`,
+        bon: `${numOfBonusActions} => ${bonusActions}`
       });
     }
-  }, [generalActions, extraMovementActions, extraAttackActions, searchActions]);
+  }, [
+    generalActions,
+    extraMovementActions,
+    extraAttackActions,
+    searchActions,
+    bonusActions
+  ]);
 
   return {
     generalActions,
     extraMovementActions,
     extraAttackActions,
     searchActions,
+    bonusActions,
     spendAction,
     finishedTurn,
     canMove: generalActions > 0 || extraMovementActions > 0,

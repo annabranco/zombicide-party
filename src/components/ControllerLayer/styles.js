@@ -15,5 +15,9 @@ export const Screen = styled.div`
   @media all and (min-height: 400px) {
     display: none;
   }
+
+  @media (min-width: 700px) and (min-height: 500px) and (max-width: 720px) and (max-height: 540px) {
+    display: flex;
+  }
 `;
 Screen.displayName = 'Screen';

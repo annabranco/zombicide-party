@@ -416,7 +416,7 @@ export const CardsActions = styled.div`
       `}
   }
 
-    @media (min-width: 1300px) and (min-height: 1024px) {
+  @media (min-width: 1300px) and (min-height: 1024px) {
     bottom: 250px;
     left: 25%;
 
@@ -427,7 +427,6 @@ export const CardsActions = styled.div`
         right: 25%;
       `}
   }
-    }
 `;
 CardsActions.displayName = 'CardsActions';
 
@@ -488,6 +487,11 @@ export const CharacterOverlayImage = styled.img`
     width: 90%;
   }
 
+  @media (min-width: 500px) and (min-height: 700px) {
+    bottom: 10%;
+    width: 60%;
+  }
+
   @media all and (min-width: 701px) {
     bottom: 10%;
     width: 80%;
@@ -536,6 +540,11 @@ export const CharacterOverlayImageShadow = styled(CharacterOverlayImage)`
     margin: 0 0 -22% -23%;
   }
 
+  @media (min-width: 500px) and (min-height: 700px) {
+    height: 65%;
+    margin: 0 0 -14% -15%;
+  }
+
   @media all and (min-width: 701px) {
     height: 65%;
     margin: 0 0 -115px -110px;
@@ -552,13 +561,18 @@ export const CharacterOverlayImageShadow = styled(CharacterOverlayImage)`
   }
 
   @media all and (min-width: 1200px) {
-    height: 70%;
-    margin: 0 0 -100px -60px;
+    height: 60%;
+    margin: 0 0 -60px -35px;
   }
 
   @media (min-width: 1300px) and (min-height: 1024px) {
     height: 60%;
     margin: 0 0 -110px -90px;
+  }
+
+  @media all and (min-width: 1400px) {
+    height: 70%;
+    margin: 0 0 -100px -60px;
   }
 `;
 CharacterOverlayImageShadow.displayName = 'CharacterOverlayImageShadow';
@@ -620,6 +634,17 @@ export const CharItems = styled.div`
       right: 10px;
     `}
 
+  @media (min-width: 280px) and (min-height: 650px) {
+    top: 10%;
+
+    ${({ trade }) =>
+      trade &&
+      css`
+        top: 18px;
+        right: 10px;
+      `}
+  }
+
   @media (min-width: 320px) and (min-height: 640px) {
     top: 45%;
 
@@ -680,25 +705,12 @@ export const CharItems = styled.div`
         right: 10px;
         width: 80%;
       `}
-  }
 
-  @media (min-width: 1024px) and (min-height: 1300px) {
-    top: 50%;
-    width: 100%;
-    margin-left: -50px;
-
-    ${({ slotType }) =>
-      slotType === IN_RESERVE &&
+    ${({ numItems }) =>
+      numItems > 3 &&
       css`
-        margin-top: -150px;
-      `}
-
-    ${({ trade }) =>
-      trade &&
-      css`
-        top: 160px;
-        right: 140px;
-        width: 60%;
+        justify-content: flex-end;
+        margin-left: -15%;
       `}
   }
 
@@ -720,6 +732,40 @@ export const CharItems = styled.div`
         top: 180px;
         right: 10px;
       `}
+
+    ${({ numItems }) =>
+      numItems > 3 &&
+      css`
+        justify-content: flex-end;
+        margin-left: -21%;
+      `}
+  }
+
+  @media (min-width: 1024px) and (min-height: 1300px) {
+    top: 50%;
+    width: 100%;
+    margin-left: -50px;
+
+    ${({ slotType }) =>
+      slotType === IN_RESERVE &&
+      css`
+        margin-top: -150px;
+      `}
+
+    ${({ trade }) =>
+      trade &&
+      css`
+        top: 160px;
+        right: 140px;
+        width: 60%;
+      `}
+
+    ${({ numItems }) =>
+      numItems > 3 &&
+      css`
+        justify-content: center;
+        margin-left: -5%;
+      `}
   }
 
   @media all and (min-width: 1400px) {
@@ -730,9 +776,16 @@ export const CharItems = styled.div`
         top: 250px;
         right: 10px;
       `}
+
+    ${({ numItems }) =>
+      numItems > 3 &&
+      css`
+        justify-content: flex-end;
+        margin-right: 50px;
+      `}
   }
 
-    @media (min-width: 1300px) and (min-height: 1024px) {
+  @media (min-width: 1300px) and (min-height: 1024px) {
     top: unset;
     bottom: 120px;
     /* margin: 65px 0 0 20px; */
@@ -752,13 +805,19 @@ export const CharItems = styled.div`
         top: 180px;
         right: 10px;
       `}
-  }
+
+    ${({ numItems }) =>
+      numItems > 3 &&
+      css`
+        justify-content: flex-end;
+        margin-left: -22%;
+      `}
   }
 `;
 CharItems.displayName = 'CharItems';
 
-export const CharName = styled.h1`
-  label: CharName;
+export const CharacterName = styled.h1`
+  label: CharacterName;
   z-index: 3;
   position: absolute;
   top: 30px;
@@ -796,10 +855,58 @@ export const CharName = styled.h1`
     font-size: 8rem;
   }
 `;
-CharName.displayName = 'CharName';
+CharacterName.displayName = 'CharacterName';
 
-export const FinishedTurnTag = styled(AttackInstructions)`
-  label: FinishedTurnTag;
+export const ExtraActivationButton = styled.div`
+  label: ExtraActivationButton;
+  z-index: 15;
+  position: absolute;
+  bottom: 5px;
+  right: 50%;
+  transform: translate(50%, 0);
+  height: 60px;
+  width: 60px;
+  background: linear-gradient(rgba(255, 255, 255, 0.3), rgba(0, 0, 0, 0.7));
+  border-radius: 50px;
+  border: 3px solid crimson;
+  box-shadow: 0px 0px 10px 4px #fff;
+  cursor: pointer;
+
+  @media all and (min-width: 360px) {
+  }
+
+  @media all and (min-width: 701px) {
+  }
+
+  @media all and (min-width: 1200px) {
+  }
+
+  @media all and (min-width: 1400px) {
+  }
+`;
+ExtraActivationButton.displayName = 'ExtraActivationButton';
+
+export const ExtraActivationImage = styled.img`
+  label: ExtraActivationImage;
+  width: 100%;
+
+  @media all and (min-width: 360px) {
+  }
+
+  @media all and (min-width: 701px) {
+  }
+
+  @media all and (min-width: 1200px) {
+  }
+
+  @media all and (min-width: 1400px) {
+  }
+`;
+ExtraActivationImage.displayName = 'ExtraActivationImage';
+
+export const MidScreenTag = styled(AttackInstructions)`
+  label: MidScreenTag;
+  z-index: 15;
   position: absolute;
   top: 50%;
   left: 50%;
@@ -811,7 +918,7 @@ export const FinishedTurnTag = styled(AttackInstructions)`
     0 -2px 2px black, 0 0 2px black, 0 2px 2px black, 2px -2px 2px black,
     2px 0 2px black, 2px 2px 2px black;
 `;
-FinishedTurnTag.displayName = 'FinishedTurnTag';
+MidScreenTag.displayName = 'MidScreenTag';
 
 export const FirstPlayerToken = styled.img`
   label: FirstPlayerToken;
@@ -875,10 +982,16 @@ export const HighestXpTag = styled.span`
   user-select: none;
 
   @media all and (min-width: 701px) {
-    top: 19px;
     top: 20px;
-    font-size: 0.8rem;
+    font-size: 0.7rem;
     color: white;
+
+    ${({ xp }) =>
+      xp <= 4 &&
+      css`
+        font-size: 0.5rem;
+        top: -8px;
+      `}
   }
 `;
 HighestXpTag.displayName = 'HighestXpTag';
@@ -927,7 +1040,7 @@ export const IndicatorsWrapper = styled.div`
       header &&
       css`
         z-index: 11;
-        top: 0;
+        top: 3px;
         left: 0;
         height: 26px;
         width: 100%;
@@ -935,6 +1048,10 @@ export const IndicatorsWrapper = styled.div`
         justify-content: space-around;
         padding: 0 10px 0 10px;
       `}
+  }
+
+  @media all and (min-width: 1200px) {
+    background: #5f5c5c;
   }
 `;
 IndicatorsWrapper.displayName = 'IndicatorsWrapper';
@@ -1037,7 +1154,7 @@ export const MainButton = styled(AppButton)`
 `;
 MainButton.displayName = 'MainButton';
 
-export const ModalSign = styled(AttackInstructions)`
+export const ModalSign = styled.div`
   label: ModalSign;
   position: absolute;
   z-index: 2;
@@ -1045,7 +1162,6 @@ export const ModalSign = styled(AttackInstructions)`
   padding: 30% 0;
   height: 100%;
   background: ${({ noOverlay }) => (noOverlay ? 'none' : 'rgba(0, 0, 0, 0.6)')};
-  /* background: rgba(0, 0, 0, 0.6); */
 
   ${({ noOverlay }) =>
     noOverlay &&
@@ -1071,7 +1187,9 @@ export const ModalSignExitButton = styled.img`
   label: ModalSignExitButton;
   z-index: 10;
   position: absolute;
-  bottom: 52%;
+  bottom: 100px;
+  left: 50%;
+  transform: translate(-50%, 0);
   width: 80px;
   cursor: pointer;
   box-shadow: 0 0 6px 0 white;
@@ -1079,6 +1197,9 @@ export const ModalSignExitButton = styled.img`
   animation-duration: 10s;
   animation-iteration-count: 1;
   animation-fill-mode: forwards;
+
+  @media all and (min-width: 1200px) {
+  }
 `;
 ModalSignExitButton.displayName = 'ModalSignExitButton';
 
@@ -1092,12 +1213,16 @@ export const ModalSignText = styled.p`
   font-size: 3rem;
   font-family: Crackhouse, 'Grandstander', cursive;
   text-align: center;
+  font-size: 3rem;
+  font-weight: 900;
+  line-height: 1.5;
+  color: red;
+  text-shadow: 0 0 2px black;
+  text-transform: uppercase;
 
   @media all and (min-width: 701px) {
     top: 180px;
-    right: 100px;
     font-size: 4rem;
-    text-align: right;
   }
 `;
 ModalSignText.displayName = 'ModalSignText';
@@ -1150,8 +1275,9 @@ export const NavIcons = styled.img`
   margin: 0 2px;
   cursor: pointer;
 
-  ${({ played }) =>
+  ${({ played, damageMode }) =>
     played &&
+    !damageMode &&
     css`
       filter: grayscale(1) brightness(1.3) contrast(0.6);
       width: 30px;
@@ -1168,8 +1294,9 @@ export const NavIcons = styled.img`
     @media all and (min-width: 1400px) {
     width: 70px;
 
-    ${({ played }) =>
+    ${({ played, damageMode }) =>
       played &&
+      !damageMode &&
       css`
         width: 50px;
       `}
@@ -1317,7 +1444,7 @@ NoiseWrapper.displayName = 'NoiseWrapper';
 
 export const PlayerTag = styled.div`
   label: PlayerTag;
-  z-index: 6;
+  z-index: 10;
   position: absolute;
   top: 60px;
   right: 0;
@@ -1358,6 +1485,13 @@ export const PlayerTag = styled.div`
     border: none;
     border-radius: 10px 0 0 10px;
     -webkit-text-stroke: 1px black;
+  }
+
+  @media all and (min-width: 1200px) {
+    top: 28px;
+    height: 15px;
+    line-height: 0.5;
+    background: rgba(0, 0, 0, 0.1);
   }
   filter: brightness(0.8);
 `;

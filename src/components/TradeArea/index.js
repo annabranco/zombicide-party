@@ -1,67 +1,60 @@
 import React, { useEffect, useRef } from 'react';
 import { cloneDeep } from 'lodash';
-import { func, string } from 'prop-types';
-import {
-  ArrowSign,
-  CharItems,
-  NextButton,
-  PreviousButton
-} from '../Sections/PlayersSection/styles';
-import { getCharacterColor } from '../../utils/players';
+import { func, string, arrayOf } from 'prop-types';
 import { useStateWithLabel } from '../../utils/hooks';
+import { getCharacterColor } from '../../utils/players';
 import ItemsArea from '../Items/ItemsArea';
+import {
+  IN_HAND,
+  IN_RESERVE,
+  NONE,
+  SELECT_TRADE_PARTNER,
+  TRADING_WITH,
+  WOUNDED
+} from '../../constants';
+import { ArrowSign, CharItems } from '../Sections/PlayersSection/styles';
 import {
   ButtonsWrapper,
   CancelButton,
   CharacterId,
-  CharacterName,
   CharacterTrading,
-  CurrentCharacterTag,
+  CharacterTradingName,
   ConfirmButton,
   CurrentPartnerTag,
   Face,
+  NavButtonsWrapper,
   PlayerName,
-  TradeWrapper,
-  NavButtonsWrapper
+  TradeWrapper
 } from './styles';
-import {
-  IN_RESERVE,
-  IN_HAND,
-  SELECT_TRADE_PARTNER,
-  TRADING_WITH,
-  WOUNDED,
-  NONE
-} from '../../constants';
+import { CharacterType } from '../../interfaces/types';
+import { ALL_WEAPONS } from '../../setup/weapons';
 
 const TradeArea = ({
-  spendAction,
   character,
   characters,
   confirmTrade,
   device,
+  spendAction,
   startTrade
 }) => {
+  const [partnerIndex, changePartnerIndex] = useStateWithLabel(
+    0,
+    'partnerIndex'
+  );
+  const [selectedItem1, selectItem1] = useStateWithLabel(null, 'selectedItem1');
+  const [tradeEstablished, establishTrade] = useStateWithLabel(
+    null,
+    'tradeEstablished'
+  );
   const [updatedCharacter, updateCharacter] = useStateWithLabel(
     null,
     'updatedCharacter'
   );
-
   const [updatedCharacters, updateCharacters] = useStateWithLabel(
     null,
     'updatedCharacters'
   );
   const [tradePartner, updatePartner] = useStateWithLabel(null, 'tradePartner');
-
-  const [partnerIndex, changePartnerIndex] = useStateWithLabel(
-    0,
-    'partnerIndex'
-  );
-  const [tradeEstablished, establishTrade] = useStateWithLabel(
-    null,
-    'tradeEstablished'
-  );
-
-  const [selectedItem1, selectItem1] = useStateWithLabel(null, 'selectedItem1');
 
   const changeToNextPlayer = () => {
     const nextPlayerIndex =
@@ -107,10 +100,9 @@ const TradeArea = ({
       updatePartner(nextPartner);
       prevPartnerIndex.current = partnerIndex;
     }
-  }, [partnerIndex]);
+  }, [partnerIndex, updatedCharacters, updatePartner]);
 
   const onTrade = ({ item, slot, charTrading }) => {
-    console.log('$$$ item, slot, charTrading ', item, slot, charTrading);
     if (selectedItem1) {
       if (!item) {
         selectItem1();
@@ -124,39 +116,152 @@ const TradeArea = ({
             ? selectedItem1.slot - 1
             : selectedItem1.slot - 3;
         const index2 = slot <= 2 ? slot - 1 : slot - 3;
-        // eslint-disable-next-line no-debugger
-        debugger;
+        const expBaton = ALL_WEAPONS.ExpandableBaton.name.replace(' ', '');
 
         if (selectedItem1.item === NONE && item === NONE) {
           return null;
         }
         if (selectedItem1.charTrading === charTrading) {
           if (updChar.name === charTrading) {
+            const oldReserve = [...updChar.inReserve];
             updChar[typeItem1][index1] = item === NONE ? null : item;
             updChar[typeItem2][index2] =
               selectedItem1.item === NONE ? null : selectedItem1.item;
+
+            if (
+              oldReserve.includes(expBaton) &&
+              !updChar.inReserve.includes(expBaton)
+            ) {
+              updChar.inReserve.splice(
+                oldReserve.findIndex(
+                  itemInReserve => itemInReserve === expBaton
+                ),
+                1
+              );
+            } else if (
+              !oldReserve.includes(expBaton) &&
+              updChar.inReserve.includes(expBaton)
+            ) {
+              updChar.inReserve.push(null);
+            }
+
             updateCharacter(updChar);
           } else {
+            const oldReserve = [...updPartn.inReserve];
+
             updPartn[typeItem1][index1] = item === NONE ? null : item;
             updPartn[typeItem2][index2] =
               selectedItem1.item === NONE ? null : selectedItem1.item;
+
+            if (
+              oldReserve.includes(expBaton) &&
+              !updPartn.inReserve.includes(expBaton)
+            ) {
+              updPartn.inReserve.splice(
+                oldReserve.findIndex(
+                  itemInReserve => itemInReserve === expBaton
+                ),
+                1
+              );
+            } else if (
+              !oldReserve.includes(expBaton) &&
+              updPartn.inReserve.includes(expBaton)
+            ) {
+              updPartn.inReserve.push(null);
+            }
             updatePartner(updPartn);
           }
         } else if (selectedItem1.item === WOUNDED || item === WOUNDED) {
           console.log('NOT');
         } else if (selectedItem1.charTrading === updChar.name) {
+          const oldCharReserve = [...updChar.inReserve];
+          const oldPartnReserve = [...updPartn.inReserve];
+
           updChar[typeItem1][index1] = item === NONE ? null : item;
           updPartn[typeItem2][index2] =
             selectedItem1.item === NONE ? null : selectedItem1.item;
+
+          if (
+            oldCharReserve.includes(expBaton) &&
+            !updChar.inReserve.includes(expBaton)
+          ) {
+            updChar.inReserve.splice(
+              oldCharReserve.findIndex(
+                itemInReserve => itemInReserve === expBaton
+              ),
+              1
+            );
+          } else if (
+            !oldCharReserve.includes(expBaton) &&
+            updChar.inReserve.includes(expBaton)
+          ) {
+            updChar.inReserve.push(null);
+          }
+
+          if (
+            oldPartnReserve.includes(expBaton) &&
+            !updPartn.inReserve.includes(expBaton)
+          ) {
+            updPartn.inReserve.splice(
+              oldPartnReserve.findIndex(
+                itemInReserve => itemInReserve === expBaton
+              ),
+              1
+            );
+          } else if (
+            !oldPartnReserve.includes(expBaton) &&
+            updPartn.inReserve.includes(expBaton)
+          ) {
+            updPartn.inReserve.push(null);
+          }
+
           updateCharacter(updChar);
           updatePartner(updPartn);
         } else {
+          const oldCharReserve = [...updChar.inReserve];
+          const oldPartnReserve = [...updPartn.inReserve];
+
           updPartn[typeItem1][index1] = item === NONE ? null : item;
           updChar[typeItem2][index2] =
             selectedItem1.item === NONE ? null : selectedItem1.item;
+
+          if (
+            oldCharReserve.includes(expBaton) &&
+            !updChar.inReserve.includes(expBaton)
+          ) {
+            updChar.inReserve.splice(
+              oldCharReserve.findIndex(
+                itemInReserve => itemInReserve === expBaton
+              ),
+              1
+            );
+          } else if (
+            !oldCharReserve.includes(expBaton) &&
+            updChar.inReserve.includes(expBaton)
+          ) {
+            updChar.inReserve.push(null);
+          }
+
+          if (
+            oldPartnReserve.includes(expBaton) &&
+            !updPartn.inReserve.includes(expBaton)
+          ) {
+            updPartn.inReserve.splice(
+              oldPartnReserve.findIndex(
+                itemInReserve => itemInReserve === expBaton
+              ),
+              1
+            );
+          } else if (
+            !oldPartnReserve.includes(expBaton) &&
+            updPartn.inReserve.includes(expBaton)
+          ) {
+            updPartn.inReserve.push(null);
+          }
           updateCharacter(updChar);
           updatePartner(updPartn);
         }
+
         selectItem1();
         establishTrade(true);
       }
@@ -184,7 +289,9 @@ const TradeArea = ({
         <CharacterTrading>
           <CharacterId>
             <Face src={updatedCharacter.face} alt="" />
-            <CharacterName trade>{updatedCharacter.name}</CharacterName>
+            <CharacterTradingName trade>
+              {updatedCharacter.name}
+            </CharacterTradingName>
             <PlayerName color={getCharacterColor(updatedCharacter.name)}>
               {updatedCharacter.player}
             </PlayerName>
@@ -193,6 +300,7 @@ const TradeArea = ({
             {updatedCharacter.inHand.map((item, index) => (
               <ItemsArea
                 charName={updatedCharacter.name}
+                device={device}
                 index={index}
                 item={item}
                 itemSelected={
@@ -213,6 +321,7 @@ const TradeArea = ({
             {updatedCharacter.inReserve.map((item, index) => (
               <ItemsArea
                 charName={updatedCharacter.name}
+                device={device}
                 index={index}
                 item={item}
                 itemSelected={
@@ -236,7 +345,9 @@ const TradeArea = ({
         <CharacterTrading>
           <CharacterId>
             <Face src={tradePartner.face} alt="" />
-            <CharacterName trade>{tradePartner.name}</CharacterName>
+            <CharacterTradingName trade>
+              {tradePartner.name}
+            </CharacterTradingName>
             <PlayerName color={getCharacterColor(tradePartner.name)}>
               {tradePartner.player}
             </PlayerName>
@@ -319,8 +430,8 @@ const TradeArea = ({
 };
 
 TradeArea.propTypes = {
-  character: string.isRequired,
-  characters: string.isRequired,
+  character: CharacterType.isRequired,
+  characters: arrayOf(CharacterType).isRequired,
   confirmTrade: func.isRequired,
   device: string.isRequired,
   spendAction: func.isRequired,

@@ -69,7 +69,8 @@ const { ACTION_RANGED } = ABILITIES_MALL;
 export const CHARACTERS_S1 = {
   Amy: {
     abilities: [],
-    actions: [3, 0, 0, 0],
+    abilitiesUsed: [],
+    actions: [3, 0, 0, 0, 0],
     bonusDices: { combat: 0, melee: 0, ranged: 0 },
     color: '#a015a3',
     experience: 0,
@@ -80,6 +81,7 @@ export const CHARACTERS_S1 = {
     location: null,
     movement: 'quick',
     name: 'Amy',
+    noise: 0,
     player: null,
     promotions: {
       blue: MOVE_ACTION,
@@ -93,7 +95,8 @@ export const CHARACTERS_S1 = {
   },
   Doug: {
     abilities: [],
-    actions: [3, 0, 0, 0],
+    abilitiesUsed: [],
+    actions: [3, 0, 0, 0, 0],
     bonusDices: { combat: 0, melee: 0, ranged: 0 },
     color: '#3566c6',
     experience: 0,
@@ -104,6 +107,7 @@ export const CHARACTERS_S1 = {
     location: null,
     movement: 'confident',
     name: 'Doug',
+    noise: 0,
     player: null,
     promotions: {
       blue: MATCHING_SET,
@@ -117,7 +121,8 @@ export const CHARACTERS_S1 = {
   },
   Josh: {
     abilities: [],
-    actions: [3, 0, 0, 0],
+    abilitiesUsed: [],
+    actions: [3, 0, 0, 0, 0],
     bonusDices: { combat: 0, melee: 0, ranged: 0 },
     color: '#ba761d',
     experience: 0,
@@ -128,6 +133,7 @@ export const CHARACTERS_S1 = {
     location: null,
     movement: 'furtive',
     name: 'Josh',
+    noise: 0,
     player: null,
     promotions: {
       blue: SLIPPERY,
@@ -141,7 +147,8 @@ export const CHARACTERS_S1 = {
   },
   Ned: {
     abilities: [],
-    actions: [3, 0, 0, 0],
+    abilitiesUsed: [],
+    actions: [3, 0, 0, 0, 0],
     bonusDices: { combat: 0, melee: 0, ranged: 0 },
     color: '#b52929',
     experience: 0,
@@ -152,6 +159,7 @@ export const CHARACTERS_S1 = {
     location: null,
     movement: 'heavy',
     name: 'Ned',
+    noise: 0,
     player: null,
     promotions: {
       blue: SEARCH_ACTION,
@@ -165,16 +173,18 @@ export const CHARACTERS_S1 = {
   },
   Phil: {
     abilities: [],
-    actions: [3, 0, 0, 0],
+    abilitiesUsed: [],
+    actions: [3, 0, 0, 0, 0],
     bonusDices: { combat: 0, melee: 0, ranged: 0 },
     color: '#565656',
     experience: 0,
     face: PhilFace,
     img: Phil,
     inReserve: [null, null, null],
-    inHand: [null, 'Pistol'],
+    inHand: [null, null],
     movement: 'tactical',
     name: 'Phil',
+    noise: 0,
     player: null,
     selector: SelectorPhil,
     promotions: {
@@ -188,7 +198,8 @@ export const CHARACTERS_S1 = {
   },
   Wanda: {
     abilities: [],
-    actions: [3, 0, 0, 0],
+    abilitiesUsed: [],
+    actions: [3, 0, 0, 0, 0],
     bonusDices: { combat: 0, melee: 0, ranged: 0 },
     color: '#339b35',
     experience: 0,
@@ -199,6 +210,7 @@ export const CHARACTERS_S1 = {
     location: null,
     movement: 'rolling',
     name: 'Wanda',
+    noise: 0,
     player: null,
     promotions: {
       blue: TWO_ZONES_MOVE,
@@ -215,7 +227,8 @@ export const CHARACTERS_S1 = {
 export const CHARACTERS_KOPINSKI = {
   Ben: {
     abilities: [],
-    actions: [3, 0, 0, 0],
+    abilitiesUsed: [],
+    actions: [3, 0, 0, 0, 0],
     bonusDices: { combat: 0, melee: 0, ranged: 0 },
     color: '#537c6f',
     experience: 0,
@@ -226,6 +239,7 @@ export const CHARACTERS_KOPINSKI = {
     location: null,
     movement: 'confident',
     name: 'Ben',
+    noise: 0,
     player: null,
     promotions: {
       blue: BLITZ,
@@ -239,7 +253,8 @@ export const CHARACTERS_KOPINSKI = {
   },
   Mary: {
     abilities: [],
-    actions: [3, 0, 0, 0],
+    abilitiesUsed: [],
+    actions: [3, 0, 0, 0, 0],
     bonusDices: { combat: 0, melee: 0, ranged: 0 },
     color: '#3e4c84',
     experience: 0,
@@ -250,6 +265,7 @@ export const CHARACTERS_KOPINSKI = {
     location: null,
     movement: 'normal',
     name: 'Mary',
+    noise: 0,
     player: null,
     promotions: {
       blue: REAPER_RANGED,

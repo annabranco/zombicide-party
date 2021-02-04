@@ -1,11 +1,11 @@
 import React, { useEffect, useRef } from 'react';
-import { bool, func, arrayOf } from 'prop-types';
+import { bool, func, arrayOf, oneOfType, string } from 'prop-types';
+import { useStateWithLabel } from '../../utils/hooks';
 import PlayersSection from '../Sections/PlayersSection';
 import ZombiesSection from '../Sections/ZombiesSection';
-import { MainArea, RoundTag } from './styles';
-import { CharacterType } from '../../interfaces/types';
-import { useStateWithLabel } from '../../utils/hooks';
 import { LESS_THAN_1_MIN, PLAYERS, ROUND, ZOMBIES } from '../../constants';
+import { CharacterType } from '../../interfaces/types';
+import { MainArea, RoundTag } from './styles';
 
 const MainScreen = ({
   damageMode,
@@ -63,9 +63,9 @@ const MainScreen = ({
         initialCharacters={initialCharacters}
         loadGame={loadGame}
         loadedGame={loadedGame}
-        toggleDamageMode={toggleDamageMode}
-        setZombiesRound={() => changeActiveSide(ZOMBIES)}
         nextGameRound={nextGameRound}
+        setZombiesRound={() => changeActiveSide(ZOMBIES)}
+        toggleDamageMode={toggleDamageMode}
         toggleZombiesArePlaying={toggleZombiesArePlaying}
         visible={activeSide === PLAYERS}
         zombiesArePlaying={zombiesArePlaying}
@@ -86,11 +86,16 @@ const MainScreen = ({
 };
 
 MainScreen.propTypes = {
-  damageMode: bool.isRequired,
-  initialCharacters: arrayOf(CharacterType).isRequired,
+  damageMode: oneOfType([string, bool]).isRequired,
+  initialCharacters: arrayOf(CharacterType),
   loadGame: func.isRequired,
-  loadedGame: arrayOf(CharacterType).isRequired,
+  loadedGame: arrayOf(CharacterType),
   toggleDamageMode: func.isRequired
+};
+
+MainScreen.defaultProps = {
+  initialCharacters: null,
+  loadedGame: null
 };
 
 export default MainScreen;

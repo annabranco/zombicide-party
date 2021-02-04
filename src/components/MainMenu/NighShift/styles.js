@@ -51,7 +51,7 @@ const Strobe = (border, bg, shadow) => keyframes`
   }
 `;
 
-const StrobeBulb = (border, bg, shadow) => keyframes`
+const StrobeBulb = () => keyframes`
   0%, 25%    {
     background: ${bulbGradient};  box-shadow: ${bulbDimShadow}
   }
@@ -74,6 +74,13 @@ const StrobeBulb = (border, bg, shadow) => keyframes`
     background: ${bulbGradient}; box-shadow: ${bulbDimShadow}
   }
 `;
+
+export const BottomLight = styled.div`
+  label: BottomLight;
+  position: absolute;
+  top: 235px;
+`;
+BottomLight.displayName = 'BottomLight';
 
 export const Bulb = styled.span`
   label: Bulb;
@@ -218,13 +225,6 @@ export const InnerLight = styled.div`
   }
 `;
 InnerLight.displayName = 'InnerLight';
-
-export const BottomLight = styled.div`
-  label: BottomLight;
-  position: absolute;
-  top: 235px;
-`;
-BottomLight.displayName = 'BottomLight';
 
 export const LightBar = styled.div`
   label: LightBar;

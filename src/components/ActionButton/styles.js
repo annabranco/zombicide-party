@@ -7,11 +7,13 @@ import {
   CAR_MOVE_ACTION,
   COMBINE_ACTION,
   END_TURN_ACTION,
+  GIVE_ORDERS_ACTION,
   MOVE_ACTION,
   OBJECTIVE_ACTION,
   OPEN_DOOR_ACTION,
   RELOAD_ACTION,
-  SEARCH_ACTION
+  SEARCH_ACTION,
+  SEARCH_ZOMBIE_ACTION
 } from '../../constants';
 
 export const ActionIcon = styled.i`
@@ -48,11 +50,13 @@ export const ActionIcon = styled.i`
         z-index: 10;
         background: none;
         position: absolute;
+        height: 100%;
+        width: 100%;
         top: -70px;
-        left: 42%;
+        left: 52%;
         transform: translate(-50%, 0);
         padding: 0;
-        line-height: 0.9;
+        line-height: 3.1;
         border: none;
         font-size: 5rem;
         color: rgba(255, 255, 255, 0.7);
@@ -60,7 +64,7 @@ export const ActionIcon = styled.i`
         border: 0;
         box-shadow: none;
 
-        @media all and (min-width: 768px) {
+        @media all and (min-width: 701px) {
           cursor: ${isActive ? 'not-allowed' : 'pointer'};
           z-index: 10;
           background: none;
@@ -69,7 +73,7 @@ export const ActionIcon = styled.i`
           left: 50%;
           transform: translate(-50%, 0);
           padding: 0;
-          line-height: 0.9;
+          line-height: 3.4;
           border: none;
           font-size: 5rem;
           color: rgba(255, 255, 255, 0.7);
@@ -88,6 +92,13 @@ export const ActionIcon = styled.i`
       return css`
         font-size: 2.2rem;
         line-height: 1.4;
+      `;
+    }
+
+    if (actionType === SEARCH_ZOMBIE_ACTION) {
+      return css`
+        font-size: 2.6rem;
+        line-height: 1.3;
       `;
     }
 
@@ -171,6 +182,30 @@ export const ActionIcon = styled.i`
     return null;
   }}
 
+  ${({ actionType }) =>
+    actionType === RELOAD_ACTION &&
+    css`
+      top: -70px;
+
+      @media all and (min-width: 701px) {
+        top: -20px;
+      }
+    `}
+
+  ${({ disabled }) =>
+    disabled &&
+    css`
+      color: gray;
+      cursor: not-allowed;
+      &:hover {
+        color: gray;
+        font-size: 2.5rem;
+        line-height: 1.3;
+        text-shadow: none;
+      }
+    `}
+
+
   @media (min-width: 1024px) and (min-height: 1300px) {
     height: 60px;
     width: 60px;
@@ -179,8 +214,117 @@ export const ActionIcon = styled.i`
 `;
 ActionIcon.displayName = 'ActionIcon';
 
-export const CarActionIcon = styled.i`
-  label: CarActionIcon;
+export const DoubleIconWrapper = styled.div`
+  label: DoubleIconWrapper;
+  height: 66px;
+  width: 66px;
+  background: ${({ isActive }) =>
+    isActive ? 'yellow' : 'rgba(255, 255, 255, 0.8)'};
+  border: 1px solid black;
+  padding: 7px;
+  border-radius: 15px;
+  transition: background ease 5s;
+  opacity: ${({ isActive }) => (isActive ? 0.2 : 1)};
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+
+  &:hover {
+    & > i {
+      color: ${({ isActive }) => (isActive ? 'red' : 'yellow')};
+      text-shadow: 0 0 2px black;
+      color: yellow;
+    }
+  }
+
+  ${({ disabled }) =>
+    disabled &&
+    css`
+      color: gray;
+      cursor: not-allowed;
+      &:hover {
+        & > i {
+          color: gray;
+          text-shadow: none;
+        }
+      }
+    `}
+
+  ${({ manyButtons }) =>
+    manyButtons &&
+    css`
+      height: 56px;
+      width: 55px;
+      font-size: 2rem;
+    `}
+
+  @media all and (min-width: 768px) {
+    cursor: ${({ isActive }) => (isActive ? 'not-allowed' : 'pointer')};
+    ${({ disabled }) =>
+      disabled &&
+      css`
+        color: gray;
+        cursor: not-allowed;
+        &:hover {
+          & > i {
+            color: gray;
+            text-shadow: none;
+          }
+        }
+      `}
+  }
+
+  @media (min-width: 1024px) and (min-height: 1300px) {
+    height: 76px;
+    width: 76px;
+  }
+`;
+DoubleIconWrapper.displayName = 'DoubleIconWrapper';
+
+export const PrimaryIcon = styled.i`
+  label: PrimaryIcon;
+  z-index: 6;
+  margin-left: 2px;
+  font-size: 2.5rem;
+  line-height: 1;
+  text-align: center;
+
+  ${({ manyButtons }) =>
+    manyButtons &&
+    css`
+      font-size: 2rem;
+    `}
+
+  ${({ actionType }) => {
+    if (actionType === CAR_ATTACK_ACTION) {
+      return css`
+        transform: rotate(2deg);
+      `;
+    }
+    if (actionType === CAR_MOVE_ACTION) {
+      return css`
+        color: gray;
+      `;
+    }
+    if (actionType === GIVE_ORDERS_ACTION) {
+      return css`
+        font-size: 3rem;
+        margin-left: -10px;
+      `;
+    }
+    return null;
+  }}
+
+  @media (min-width: 1024px) and (min-height: 1300px) {
+    font-size: 2.7rem;
+  }
+`;
+PrimaryIcon.displayName = 'PrimaryIcon';
+
+export const SecondaryIcon = styled.i`
+  label: SecondaryIcon;
   margin-top: 5px;
   font-size: 1.8rem;
   line-height: 0.3;
@@ -210,6 +354,14 @@ export const CarActionIcon = styled.i`
         margin-left: -10px;
       `;
     }
+    if (actionType === GIVE_ORDERS_ACTION) {
+      return css`
+        z-index: 7;
+        margin-top: -2px;
+        margin-left: -35px;
+        font-size: 1.6rem;
+      `;
+    }
     return null;
   }}
 
@@ -223,82 +375,4 @@ export const CarActionIcon = styled.i`
     font-size: 2rem;
   }
 `;
-CarActionIcon.displayName = 'CarActionIcon';
-
-export const CarIcon = styled.i`
-  label: CarIcon;
-  z-index: 6;
-  margin-left: 2px;
-  font-size: 2.5rem;
-  line-height: 1;
-  text-align: center;
-
-  ${({ manyButtons }) =>
-    manyButtons &&
-    css`
-      font-size: 2rem;
-    `}
-
-  ${({ actionType }) => {
-    if (actionType === CAR_ATTACK_ACTION) {
-      return css`
-        transform: rotate(2deg);
-      `;
-    }
-    if (actionType === CAR_MOVE_ACTION) {
-      return css`
-        color: gray;
-      `;
-    }
-    return null;
-  }}
-
-  @media (min-width: 1024px) and (min-height: 1300px) {
-    font-size: 2.7rem;
-  }
-`;
-CarIcon.displayName = 'CarIcon';
-
-export const CarIconWrapper = styled.div`
-  label: CarIconWrapper;
-  height: 66px;
-  width: 66px;
-  background: ${({ isActive }) =>
-    isActive ? 'yellow' : 'rgba(255, 255, 255, 0.8)'};
-  border: 1px solid black;
-  padding: 7px;
-  border-radius: 15px;
-  transition: background ease 5s;
-  opacity: ${({ isActive }) => (isActive ? 0.2 : 1)};
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-
-  @media all and (min-width: 768px) {
-    cursor: ${({ isActive }) => (isActive ? 'not-allowed' : 'pointer')};
-  }
-
-  &:hover {
-    & > i {
-      color: ${({ isActive }) => (isActive ? 'red' : 'yellow')};
-      text-shadow: 0 0 2px black;
-      color: yellow;
-    }
-  }
-
-  @media (min-width: 1024px) and (min-height: 1300px) {
-    height: 76px;
-    width: 76px;
-  }
-
-  ${({ manyButtons }) =>
-    manyButtons &&
-    css`
-      height: 56px;
-      width: 55px;
-      font-size: 2rem;
-    `}
-`;
-CarIconWrapper.displayName = 'CarIconWrapper';
+SecondaryIcon.displayName = 'SecondaryIcon';

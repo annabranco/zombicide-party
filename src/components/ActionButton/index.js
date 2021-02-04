@@ -1,50 +1,57 @@
 import React, { useEffect, useRef } from 'react';
-import { bool, func, number, string } from 'prop-types';
+import { bool, func, string } from 'prop-types';
 import { useStateWithLabel } from '../../utils/hooks';
 import { checkForNoiseOpeningDoor } from '../../utils/items';
-import { ActionIcon, CarActionIcon, CarIcon, CarIconWrapper } from './styles';
 import { SOUNDS } from '../../assets/sounds';
 import {
+  CANNOT_BE_USED,
   CAR_ATTACK_ACTION,
   CAR_ENTER_ACTION,
   CAR_EXIT_ACTION,
   CAR_MOVE_ACTION,
   COMBINE_ACTION,
-  DESKTOP,
   END_TURN_ACTION,
   GIVE_ORDERS_ACTION,
   HEAL_ACTION,
   LOCK_ACTION,
   MAKE_NOISE_ACTION,
-  MOBILE,
   MOVE_ACTION,
   OBJECTIVE_ACTION,
   OPEN_DOOR,
   OPEN_DOOR_ACTION,
   RELOAD_ACTION,
-  SEARCH_ACTION
+  SEARCH_ACTION,
+  SEARCH_ZOMBIE_ACTION
 } from '../../constants';
+import {
+  ActionIcon,
+  DoubleIconWrapper,
+  PrimaryIcon,
+  SecondaryIcon
+} from './styles';
 
 const ActionButton = ({
   actionType,
   callback,
   carStarted,
+  changeActionLabel,
   combineItemSelected,
   combinePair,
-  isMobile,
+  disabled,
   interactWithCar,
-  noise,
+  isMobile,
+  label,
+  manyButtons,
   setNoise,
   startCar,
+  toggleExtraActivation,
   type,
-  changeActionLabel,
-  label,
-  manyButtons
+  type2
 }) => {
-  const [isActive, activate] = useStateWithLabel(false, 'isActive');
+  const [iconSize, setIconSize] = useStateWithLabel(false, 'iconSize');
   const [iconType, setIconType] = useStateWithLabel(false, 'iconType');
   const [iconType2, setIconType2] = useStateWithLabel(false, 'iconType2');
-  const [iconSize, setIconSize] = useStateWithLabel(false, 'iconSize');
+  const [isActive, activate] = useStateWithLabel(false, 'isActive');
 
   const sound = useRef();
   const sound2 = useRef();
@@ -63,41 +70,37 @@ const ActionButton = ({
   };
 
   const onClickIcon = event => {
-    activate(true);
+    if (!disabled) {
+      activate(true);
 
-    if (actionType === CAR_ENTER_ACTION && !carStarted) {
-      startCar(true);
-      interactWithCar(true);
-    } else if (actionType === CAR_EXIT_ACTION) {
-      interactWithCar(false);
-    }
-
-    if (sound.current) {
-      sound.current.currentTime = 0;
-      sound.current.play();
-      if (sound2.current) {
-        sound2.current.currentTime = 0;
-        setTimeout(() => sound2.current.play(), 3100);
+      if (actionType === CAR_ENTER_ACTION && !carStarted) {
+        startCar(true);
+        interactWithCar(true);
+      } else if (actionType === CAR_EXIT_ACTION) {
+        interactWithCar(false);
       }
-    }
 
-    if (actionType === SEARCH_ACTION) {
-      sound.current = new Audio(
-        SOUNDS[type && `${actionType}${Math.floor(Math.random() * 10)}`]
-      );
-      sound2.current = new Audio(
-        SOUNDS[`found-${type}${Math.ceil(Math.random() * 6)}`]
-      );
-    }
+      if (sound.current) {
+        sound.current.currentTime = 0;
+        sound.current.play();
+        if (sound2.current) {
+          sound2.current.currentTime = 0;
+          setTimeout(() => sound2.current.play(), 3100);
+        }
+      }
 
-    if (actionType === OPEN_DOOR_ACTION && checkForNoiseOpeningDoor(type)) {
-      setNoise(noise + 1);
-    }
+      if (actionType === OPEN_DOOR_ACTION) {
+        toggleExtraActivation(true);
+        if (checkForNoiseOpeningDoor(type)) {
+          setNoise(1);
+        }
+      }
 
-    setTimeout(() => {
-      activate(false);
-    }, delay());
-    callback(event);
+      setTimeout(() => {
+        activate(false);
+      }, delay());
+      callback(event);
+    }
   };
 
   useEffect(() => {
@@ -150,26 +153,35 @@ const ActionButton = ({
           SOUNDS[`found-${type}${Math.ceil(Math.random() * 6)}`]
         );
         break;
+      case SEARCH_ZOMBIE_ACTION:
+        setIconSize('medium');
+        setIconType('fas fa-search');
+        sound.current = new Audio(SOUNDS[`${actionType}`]);
+        sound2.current = new Audio(
+          SOUNDS[`found-${type}${Math.ceil(Math.random() * 6)}`]
+        );
+        break;
       case GIVE_ORDERS_ACTION:
-        setIconType('far fa-comment'); // fa)s
-        setIconType2('fas fa-running');
-        // sound go go go
+        setIconType2('far fa-comment'); // fas
+        setIconType('fas fa-running');
+        sound.current = new Audio(
+          SOUNDS[`${actionType}${type2 === 'radio' ? '-radio' : ''}-${type}`]
+        );
         break;
       case LOCK_ACTION:
         setIconType('fas fa-lock');
-        // sound lock
+        sound.current = new Audio(SOUNDS[`${actionType}`]);
         break;
       case MAKE_NOISE_ACTION:
         setIconType('fas fa-volume-up');
-        // sound making noise
+        sound.current = new Audio(SOUNDS[`${actionType}`]);
         break;
       case RELOAD_ACTION:
         setIconType('fas fa-sync-alt');
-        // sound reloading
+        sound.current = new Audio(SOUNDS[`${actionType}`]);
         break;
       case HEAL_ACTION:
         setIconType('fas fa-hand-holding-medical');
-        // sound bandaging
         break;
       default:
         break;
@@ -179,24 +191,31 @@ const ActionButton = ({
   return (
     <>
       {iconType2 ? (
-        <CarIconWrapper
+        <DoubleIconWrapper
+          disabled={disabled}
           isActive={isActive}
           onClick={isActive ? () => null : onClickIcon}
-          manyButtons={isMobile && manyButtons}
           onMouseOut={() => changeActionLabel('')}
-          onMouseOver={() => changeActionLabel(label)}
+          onMouseOver={() =>
+            changeActionLabel(
+              `${disabled ? 'Cannot be used at this time' : label}`
+            )
+          }
+          manyButtons={isMobile && manyButtons}
         >
-          <CarIcon
+          <PrimaryIcon
             actionType={actionType}
             className={iconType2}
+            disabled={disabled}
             manyButtons={manyButtons}
           />
-          <CarActionIcon
+          <SecondaryIcon
             actionType={actionType}
             className={iconType}
+            disabled={disabled}
             manyButtons={isMobile && manyButtons}
           />
-        </CarIconWrapper>
+        </DoubleIconWrapper>
       ) : (
         <ActionIcon
           actionType={actionType}
@@ -204,12 +223,15 @@ const ActionButton = ({
           className={iconType}
           combineItemSelected={combineItemSelected}
           combinePair={combinePair}
+          disabled={disabled}
+          iconSize={iconSize}
           isActive={isActive}
           onClick={isActive ? () => null : event => onClickIcon(event)}
-          iconSize={iconSize}
-          manyButtons={isMobile && manyButtons}
           onMouseOut={() => changeActionLabel('')}
-          onMouseOver={() => changeActionLabel(label)}
+          onMouseOver={() =>
+            changeActionLabel(`${disabled ? CANNOT_BE_USED : label}`)
+          }
+          manyButtons={isMobile && manyButtons}
           type={type}
         />
       )}
@@ -221,32 +243,36 @@ ActionButton.propTypes = {
   actionType: string.isRequired,
   callback: func.isRequired,
   carStarted: bool,
+  changeActionLabel: func,
   combineItemSelected: bool,
   combinePair: bool,
-  isMobile: bool,
+  disabled: bool,
   interactWithCar: func,
-  noise: number,
+  isMobile: bool,
+  label: string,
+  manyButtons: bool,
   setNoise: func,
   startCar: func,
+  toggleExtraActivation: func,
   type: string,
-  changeActionLabel: func,
-  label: string,
-  manyButtons: bool
+  type2: string
 };
 
 ActionButton.defaultProps = {
   carStarted: false,
+  changeActionLabel: () => null,
   combineItemSelected: false,
   combinePair: false,
+  disabled: false,
+  interactWithCar: () => null,
   isMobile: null,
-  interactWithCar: false,
-  noise: 0,
-  setNoise: null,
-  startCar: null,
-  type: null,
-  changeActionLabel: () => null,
   label: null,
-  manyButtons: false
+  manyButtons: false,
+  setNoise: () => null,
+  startCar: null,
+  toggleExtraActivation: () => null,
+  type: null,
+  type2: null
 };
 
 export default ActionButton;

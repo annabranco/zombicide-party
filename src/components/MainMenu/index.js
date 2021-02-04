@@ -1,15 +1,19 @@
 import React, { useEffect, useRef } from 'react';
-import { bool, func } from 'prop-types';
+import { func, arrayOf } from 'prop-types';
 import appInfo from '../../../package.json';
 import { useStateWithLabel } from '../../utils/hooks';
+import NightShiftIntro from './NighShift';
+import { ZOMBIES_INTRO } from '../../setup/zombies';
+import { CONTINUE, NEW_GAME, STOP_SOUND, TEST_SOUND } from '../../constants';
+import { SOUNDS } from '../../assets/sounds';
 import BG from '../../assets/images/background/background2.jpg';
 import Logo from '../../assets/images/logo.png';
 import {
-  SelectionButton,
   ButtonsArea,
   LogoArea,
   MainTitle,
   MenuScreen,
+  SelectionButton,
   StyledLink,
   TestButton,
   ThunderOverlay,
@@ -18,14 +22,11 @@ import {
   ZombieImage,
   ZombieImageShadow
 } from './styles';
-import NightShiftIntro from './NighShift';
-import { ZOMBIES_INTRO } from '../../setup/zombies';
-import { CONTINUE, NEW_GAME, STOP_SOUND, TEST_SOUND } from '../../constants';
-import { SOUNDS } from '../../assets/sounds';
+import { CharacterType } from '../../interfaces/types';
 
 const MainMenu = ({ loadedGame, setInitialCharacters }) => {
+  const [nightShift, toggleNightShift] = useStateWithLabel(false, 'nightShift');
   const [testSound, toggleTestSound] = useStateWithLabel(false, 'testSound');
-  const [nightShift, toggleNightShift] = useStateWithLabel(false, 'testSound');
 
   const APP_VERSION = appInfo.version;
   // const zombieImage = useRef(
@@ -92,8 +93,12 @@ const MainMenu = ({ loadedGame, setInitialCharacters }) => {
 };
 
 MainMenu.propTypes = {
-  loadedGame: bool.isRequired,
+  loadedGame: arrayOf(CharacterType),
   setInitialCharacters: func.isRequired
+};
+
+MainMenu.defaultProps = {
+  loadedGame: false
 };
 
 export default MainMenu;

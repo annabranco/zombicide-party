@@ -86,8 +86,8 @@ export const Item = styled.div`
     trade &&
     css`
       margin: -30px 0 0;
-      height: 120px;
-      width: 120px;
+      height: 80px;
+      width: 60px;
     `}
 
   @media all and (min-width: 360px) {
@@ -112,7 +112,7 @@ export const Item = styled.div`
       trade &&
       css`
         height: 200px;
-        width: 160px;
+        width: 150px;
       `}
   }
 
@@ -136,7 +136,7 @@ export const Item = styled.div`
       trade &&
       css`
         height: 240px;
-        width: 200px;
+        width: 180px;
       `}
   }
 `;
@@ -149,11 +149,10 @@ export const ItemBlank = styled.div`
     damageMode && !allSlotsAreEmpty ? 'none' : 'flex'};
   flex-direction: column;
   align-items: center;
-  justify-content: flex-start;
+  justify-content: center;
   height: 100px;
   /* width: 70px; */
   background: rgba(255, 255, 255, 0.25);
-  padding-top: 20px;
   font-family: 'Grandstander', cursive;
   font-size: 0.9rem;
   font-weight: 500;
@@ -171,7 +170,6 @@ export const ItemBlank = styled.div`
     & > i {
       display: block;
       position: absolute;
-      top: 40%;
       opacity: 0.8;
     }
   }
@@ -206,8 +204,8 @@ export const ItemBlank = styled.div`
     `;
   }}
 
+
   @media all and (min-width: 360px) {
-    padding-top: 30px;
     height: 110px;
     font-size: 1.1rem;
   }
@@ -215,7 +213,6 @@ export const ItemBlank = styled.div`
   @media all and (min-width: 701px) {
     height: 270px;
     width: 200px;
-    padding-top: 50px;
 
     ${({ trade }) =>
       trade &&
@@ -244,7 +241,7 @@ export const ItemBlank = styled.div`
       trade &&
       css`
         height: 240px;
-        width: 200px;
+        width: 180px;
       `}
   }
 `;
@@ -289,18 +286,55 @@ export const ItemWrapper = styled.div`
     return null;
   }}
 
+  ${({ numItems }) =>
+    numItems > 3 &&
+    css`
+      margin: 50px -5px 0;
+    `}
+
+@media all and (min-width: 360px) {
+    ${({ numItems }) =>
+      numItems > 3 &&
+      css`
+        margin: 50px -10px 0;
+      `}
+  }
+
   @media all and (min-width: 701px) {
     margin: 50px 10px 0;
+    ${({ numItems }) =>
+      numItems > 3 &&
+      css`
+        margin: 50px -30px 0;
+      `}
   }
 
   @media all and (min-width: 1024px) {
     margin: 50px 20px 0;
+
+    ${({ numItems }) =>
+      numItems > 3 &&
+      css`
+        margin: 50px 0 0;
+      `}
+  }
+
+  @media (min-width: 1024px) and (min-height: 1300px) {
+    ${({ numItems }) =>
+      numItems > 3 &&
+      css`
+        margin: 50px -30px 0;
+      `}
   }
 `;
 ItemWrapper.displayName = 'ItemWrapper';
 
 export const KillButton = styled(AppButton)`
   label: KillButton;
+  position: absolute;
+  top: 25%;
+  left: 50%;
+  transform: translate(-50%, 0);
   color: red;
   margin: 0 3px;
   border-radius: 50%;
@@ -320,6 +354,10 @@ export const KillButton = styled(AppButton)`
     css`
       visibility: visible;
     `}
+
+  @media all and (min-width: 701px) {
+    position: initial;
+  }
 `;
 KillButton.displayName = 'KillButton';
 
@@ -334,14 +372,16 @@ export const KillButtonsWrapper = styled.div`
   label: KillButtonsWrapper;
   z-index: 10;
   position: absolute;
+  top: 0;
+  left: 0;
   display: flex;
   flex-direction: row;
   flex-flow: wrap;
   align-items: center;
   justify-content: center;
   padding: 50px 1px 50px;
-  height: auto;
-  width: auto;
+  height: 100%;
+  width: 100%;
   cursor: pointer;
 
   ${({ displaySplash }) =>
@@ -349,5 +389,12 @@ export const KillButtonsWrapper = styled.div`
     css`
       cursor: url(${IconBlood}) 12 12, auto;
     `}
+
+  @media all and (min-width: 701px) {
+    top: unset;
+    left: unset;
+    height: auto;
+    width: auto;
+  }
 `;
 KillButtonsWrapper.displayName = 'KillButtonsWrapper';

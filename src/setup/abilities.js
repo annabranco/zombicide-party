@@ -1,77 +1,77 @@
 const ACTION = {
-  name: '1 Action',
+  name: '+1 Action',
   description: 'The Survivor has an extra Action he may use as he pleases.',
-  effect: ([gen, mov, att, sea]) => [gen + 1, mov, att, sea]
+  effect: ([gen, mov, att, sea, bon]) => [gen + 1, mov, att, sea, bon]
 };
 
-const DAMAGEMELEE = {
-  name: 'Damage to melee',
+const DAMAGE_MELEE = {
+  name: '+1 Damage: Melee',
   description: 'The Survivor gets a +1 Damage bonus with Melee attacks.'
 };
 
 const DAMAGE_RANGED = {
-  name: 'Damage to ranged',
+  name: '+1 Damage: ranged',
   description: 'The Survivor gets a +1 Damage bonus with Ranged attacks.'
 };
 
 const DICE_ROLL_COMBAT = {
-  name: '1 to dice: Combat',
+  name: '+1 to dice: Combat',
   description:
     'The Survivor adds 1 to the result of each die he rolls on a Combat Action (Melee or Ranged). The maximum result is always 6.'
 };
 
 const DICE_ROLL_MEELEE = {
-  name: '1 to dice: Melee',
+  name: '+1 to dice: Melee',
   description:
     'The Survivor adds 1 to the result of each die he rolls in Melee Combat. The maximum result is always 6.'
 };
 const DICE_ROLL_RANGED = {
-  name: '1 to dice: Ranged',
+  name: '+1 to dice: Ranged',
   description:
     'The Survivor adds 1 to the result of each die he rolls in Ranged Combat. The maximum result is always 6.'
 };
 const DIE_COMBAT = {
-  name: '1 die: Combat',
+  name: '+1 die: Combat',
   description:
     'The Survivor’s weapons roll an extra die in Combat (Melee or Ranged). Dual weapons gain a die each, for a total of +2 dice per Dual Combat Action.',
   effect: ({ combat, melee, ranged }) => ({ combat: combat + 1, melee, ranged })
 };
 const DIE_MELEE = {
-  name: '1 die: Melee',
+  name: '+1 die: Melee',
   description:
     'The Survivor’s Melee weapons rolls an extra die in Combat. Dual melee weapons gain a die each, for a total of +2 dice per Dual Melee Combat Action.',
   effect: ({ combat, melee, ranged }) => ({ combat, melee: melee + 1, ranged })
 };
 const DIE_RANGED = {
-  name: '1 die: Ranged',
+  name: '+1 die: Ranged',
   description:
     'The Survivor’s Ranged weapons roll an extra die in Combat. Dual ranged weapons gain a die each, for a total of +2 dice per Dual Ranged Combat Action.',
   effect: ({ combat, melee, ranged }) => ({ combat, melee, ranged: ranged + 1 })
 };
 const COMBAT_ACTION = {
-  name: '1 Combat Action',
+  name: '+1 free Combat Action',
   description:
     'The Survivor has one free extra Combat Action. This Action may only be used for Melee or Ranged Combat.',
-  effect: ([gen, mov, att, sea]) => [gen, mov, att + 1, sea]
+  effect: ([gen, mov, att, sea, bon]) => [gen + 1, mov, att + 1, sea, bon]
 };
 const MOVE_ACTION = {
-  name: '1 Move Action',
+  name: '+1 free Move Action',
   description:
     'The Survivor has one free extra Move Action. This Action may only be used as a Move Action.',
-  effect: ([gen, mov, att, sea]) => [gen, mov + 1, att, sea]
+  effect: ([gen, mov, att, sea, bon]) => [gen, mov + 1, att, sea, bon]
 };
 const SEARCH_ACTION = {
-  name: '1 Search Action ',
+  name: '+1 free Search Action ',
   description:
     'The Survivor has one free extra Search Action. This Action may only be used to Search and the Survivor can still only Search once per turn.',
-  effect: ([gen, mov, att, sea]) => [gen, mov, att, sea + 1]
+  effect: ([gen, mov, att, sea, bon]) => [gen, mov, att, sea + 1, bon]
 };
 const MAX_RANGE = {
-  name: '1 max Range',
+  name: '+1 max Range',
   description: 'The Survivor’s Ranged weapons’ maximum Range is increased by 1.'
 };
 const ZONE_PER_MOVE = {
-  name: '1 Zone per Move',
+  name: '+1 Zone per Move',
   description:
     'The Survivor can move through one extra Zone each time he performs a Move Action. This Skill stacks with other effects benefitting Move Actions.'
 };
@@ -81,12 +81,12 @@ const RE_ROLL = {
     'Once per turn, you can re-roll all the dice related to the resolution of an Action made by the Survivor. The new result takes the place of the previous one. This Skill stacks with the effects of Equipment that allow re-rolls.'
 };
 const TWO_COCKTAILS = {
-  name: '2 cocktails',
+  name: '2 cocktails are better than 1',
   description:
     'The Survivor gets two Molotov cards instead of one when he creates a Molotov.'
 };
 const TWO_ZONES_MOVE = {
-  name: '2 Zones per Move ',
+  name: '2 Zones per Move Action',
   description:
     'When the Survivor spends one Action to Move, he can move one or two Zones instead of one.'
 };
@@ -110,9 +110,10 @@ const GUNSLINGER = {
   description:
     ' The Survivor treats all Ranged weapons as if they had the Dual symbol'
 };
-const HEARD = {
+const HOARD = {
   name: 'Hoard',
-  description: ' The Survivor can carry one extra Equipment card in reserve'
+  description: ' The Survivor can carry one extra Equipment card in reserve',
+  effect: itemsInReserve => [...itemsInReserve, null]
 };
 const HOLD_YOUR_NOSE = {
   name: 'Hold your nose',
@@ -120,7 +121,7 @@ const HOLD_YOUR_NOSE = {
     'This Skill can be used once per turn. The Survivor gets a free Search Action in the Zone if he has eliminated a Zombie (even outside a building) the very same turn. This Action may only be used to Search and the Survivor can still only Search once per turn.'
 };
 const ALL_YOUVE_GOT = {
-  name: 'Is that all?',
+  name: "Is that all you've got?",
   description:
     'You can use this Skill any time the Survivor is about to get Wounded cards. Discard one Equipment card in your Survivor’s inventory for each Wound he’s about to receive. Negate a Wounded card per discarded Equipment card.'
 };
@@ -142,7 +143,8 @@ const LUCKY = {
 const MATCHING_SET = {
   name: 'Matching Set',
   description:
-    'When a Survivor performs a Search Action and draws a weapon card with the Dual symbol, he can immediately take a second card of the same type from the Equipment deck. Shuffle the deck afterward.'
+    'When a Survivor performs a Search Action and draws a weapon card with the Dual symbol, he can immediately take a second card of the same type from the Equipment deck. Shuffle the deck afterward.',
+  effect: () => 'matchingSet'
 };
 const MEDIC = {
   name: 'Medic',
@@ -168,7 +170,8 @@ const SNIPER = {
 const STARTS_WITH = equipment => ({
   name: `Starts with ${equipment}`,
   description:
-    ' The Survivor begins the game with the indicated Equipment; its card is automatically assigned to him before the beginning of the game.'
+    ' The Survivor begins the game with the indicated Equipment; its card is automatically assigned to him before the beginning of the game.',
+  effect: () => equipment
 });
 
 const SWORDMASTER = {
@@ -189,7 +192,7 @@ const TRICK_SHOT = {
 
 export const ABILITIES_S1 = {
   ACTION,
-  DAMAGEMELEE,
+  DAMAGE_MELEE,
   DAMAGE_RANGED,
   DICE_ROLL_COMBAT,
   DICE_ROLL_MEELEE,
@@ -209,7 +212,7 @@ export const ABILITIES_S1 = {
   BORN_LEADER,
   DESTINY,
   GUNSLINGER,
-  HEARD,
+  HOARD,
   HOLD_YOUR_NOSE,
   ALL_YOUVE_GOT,
   LOCK_IT_DOWN,
@@ -250,4 +253,9 @@ const BLITZ = {
 export const ABILITIES_S2 = {
   REAPER_RANGED,
   BLITZ
+};
+
+export const ALL_ABILITIES = {
+  ...ABILITIES_S1,
+  ...ABILITIES_S2
 };

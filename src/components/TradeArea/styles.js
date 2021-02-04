@@ -1,6 +1,6 @@
 import styled from '@emotion/styled';
 import { css } from '@emotion/core';
-import { CharName } from '../Sections/PlayersSection/styles';
+import { CharacterName } from '../Sections/PlayersSection/styles';
 
 export const ButtonsWrapper = styled.div`
   label: ButtonsWrapper;
@@ -110,8 +110,27 @@ export const CharacterId = styled.div`
 `;
 CharacterId.displayName = 'CharacterId';
 
-export const CharacterName = styled(CharName)`
-  label: CharacterName;
+export const CharacterTrading = styled.div`
+  label: CharacterTrading;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  justify-content: flex-end;
+  margin: 0 auto;
+  height: 100%;
+  width: 100%;
+  background: #232222;
+  border: 3px solid rgba(255, 255, 255, 0.1);
+
+  &:nth-of-type(2) {
+    background: rgba(0, 163, 21, 0.15);
+  }
+`;
+CharacterTrading.displayName = 'CharacterTrading';
+
+export const CharacterTradingName = styled(CharacterName)`
+  label: CharacterTradingName;
   right: unset;
   left: 50%;
   top: 45px;
@@ -143,26 +162,7 @@ export const CharacterName = styled(CharName)`
     -webkit-text-stroke: 1px black;
   }
 `;
-CharacterName.displayName = 'CharacterName';
-
-export const CharacterTrading = styled.div`
-  label: CharacterTrading;
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  justify-content: flex-end;
-  margin: 0 auto;
-  height: 100%;
-  width: 100%;
-  background: #232222;
-  border: 3px solid rgba(255, 255, 255, 0.1);
-
-  &:nth-child(2) {
-    background: rgba(0, 163, 21, 0.15);
-  }
-`;
-CharacterTrading.displayName = 'CharacterTrading';
+CharacterTradingName.displayName = 'CharacterTradingName';
 
 export const CurrentCharacterTag = styled.p`
   label: CurrentCharacterTag;
