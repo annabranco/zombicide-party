@@ -963,7 +963,7 @@ const PlayersSection = ({
         changeFirstPlayer(updatedCharacters[nextFirstPlayer].name);
         updateCharacters(updatedCharacters);
         nextGameRound();
-
+        toggleHasKilledZombie();
         if (charIndex === nextFirstPlayer) {
           changeCharacter(updatedCharacters[nextFirstPlayer]);
         } else {
@@ -1035,6 +1035,10 @@ const PlayersSection = ({
   };
 
   const onGiveOrders = () => {
+    const updChar = cloneDeep(character);
+    updChar.abilitiesUsed.push(GIVE_ORDERS_ACTION);
+    updateData(updChar);
+
     toggleActionsModal(GIVE_ORDERS_ACTION);
 
     if (
@@ -1073,9 +1077,17 @@ const PlayersSection = ({
     const woundIndex = [...updChar.inHand, ...updChar.inReserve].findIndex(
       itemInSlot => itemInSlot === WOUNDED
     );
-
+    const healingSound = new Audio(
+      SOUNDS[`heal${Math.ceil(Math.random() * 3)}`]
+    );
+    const healedSound = new Audio(SOUNDS[`cured-${updChar.voice}`]);
     updChar.wounded = false;
     spendAction(HEAL_ACTION);
+
+    healingSound.currentTime = 0;
+    healedSound.currentTime = 0;
+    healingSound.play();
+    setTimeout(() => healedSound.play(), 3500);
 
     toggleActionsModal();
     if (woundIndex <= 1 && woundIndex !== -1) {
@@ -1085,7 +1097,7 @@ const PlayersSection = ({
     }
 
     if (healedCharacter === character.name) {
-      updChar.abilitiesUsed.push(HEAL_ACTION);
+      // updChar.abilitiesUsed.push(HEAL_ACTION);
       updateData(updChar);
     } else {
       const updHealer = cloneDeep(character);
@@ -1128,9 +1140,6 @@ const PlayersSection = ({
       }
       updateData(orderedChar, true);
     }
-    const updChar = cloneDeep(character);
-    updChar.abilitiesUsed.push(GIVE_ORDERS_ACTION);
-    updateData(updChar);
     toggleActionsModal();
     updateCharsReceivingRadioOrders([]);
     return null;
@@ -1432,6 +1441,7 @@ const PlayersSection = ({
         setCanOpenDoor(openDoors);
         changeCanUseFlashlight(hasFlashlight);
         toggleCanCombine(charCanCombineItems);
+        toggleHasKilledZombie();
         changeActionLabel('');
         prevCharIndex.current = charIndex;
       }
@@ -1602,6 +1612,7 @@ const PlayersSection = ({
                           isMobile={device.current === MOBILE}
                           label={SEARCH_ZOMBIE}
                           manyButtons={character.location === CAR}
+                          type={character.voice}
                         />
                       )}
 
@@ -1619,6 +1630,13 @@ const PlayersSection = ({
                           isMobile={device.current === MOBILE}
                           label={GIVE_ORDERS}
                           manyButtons={character.location === CAR}
+                          type={character.voice}
+                          type2={
+                            [...character.inHand, ...character.inReserve].some(
+                              item =>
+                                item === ALL_ITEMS.HandheldTransceiver.name
+                            ) && 'radio'
+                          }
                         />
                       )}
 
@@ -2248,12 +2266,7 @@ const PlayersSection = ({
             title: GIVE_ORDERS,
             text: GIVE_ORDERS_CHOOSE,
             type: 'faces',
-            buttons: [
-              {
-                text: CANCEL,
-                type: 'cancel'
-              }
-            ]
+            buttons: []
           }}
           onConfirmModal={onReceiveOrders}
         />

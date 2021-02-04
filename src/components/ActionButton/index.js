@@ -45,7 +45,8 @@ const ActionButton = ({
   setNoise,
   startCar,
   toggleExtraActivation,
-  type
+  type,
+  type2
 }) => {
   const [iconSize, setIconSize] = useStateWithLabel(false, 'iconSize');
   const [iconType, setIconType] = useStateWithLabel(false, 'iconType');
@@ -155,33 +156,32 @@ const ActionButton = ({
       case SEARCH_ZOMBIE_ACTION:
         setIconSize('medium');
         setIconType('fas fa-search');
-        sound.current = new Audio(
-          SOUNDS[type && `${actionType}${Math.floor(Math.random() * 10)}`]
-        );
+        sound.current = new Audio(SOUNDS[`${actionType}`]);
         sound2.current = new Audio(
           SOUNDS[`found-${type}${Math.ceil(Math.random() * 6)}`]
         );
         break;
       case GIVE_ORDERS_ACTION:
-        setIconType2('far fa-comment'); // fa)s
+        setIconType2('far fa-comment'); // fas
         setIconType('fas fa-running');
-        // sound go go go
+        sound.current = new Audio(
+          SOUNDS[`${actionType}${type2 === 'radio' ? '-radio' : ''}-${type}`]
+        );
         break;
       case LOCK_ACTION:
         setIconType('fas fa-lock');
-        // sound lock
+        sound.current = new Audio(SOUNDS[`${actionType}`]);
         break;
       case MAKE_NOISE_ACTION:
         setIconType('fas fa-volume-up');
-        // sound making noise
+        sound.current = new Audio(SOUNDS[`${actionType}`]);
         break;
       case RELOAD_ACTION:
         setIconType('fas fa-sync-alt');
-        // sound reloading
+        sound.current = new Audio(SOUNDS[`${actionType}`]);
         break;
       case HEAL_ACTION:
         setIconType('fas fa-hand-holding-medical');
-        // sound bandaging
         break;
       default:
         break;
@@ -254,7 +254,8 @@ ActionButton.propTypes = {
   setNoise: func,
   startCar: func,
   toggleExtraActivation: func,
-  type: string
+  type: string,
+  type2: string
 };
 
 ActionButton.defaultProps = {
@@ -270,7 +271,8 @@ ActionButton.defaultProps = {
   setNoise: () => null,
   startCar: null,
   toggleExtraActivation: () => null,
-  type: null
+  type: null,
+  type2: null
 };
 
 export default ActionButton;

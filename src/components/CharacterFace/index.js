@@ -32,17 +32,19 @@ const CharacterFace = ({
 
 CharacterFace.propTypes = {
   big: bool,
-  currentChar: bool.isRequired,
+  currentChar: bool,
   damageMode: oneOfType([string, bool]),
   onClick: func.isRequired,
-  played: bool.isRequired,
+  played: bool,
   src: string.isRequired,
   wounded: bool.isRequired
 };
 
 CharacterFace.defaultProps = {
   big: false,
-  damageMode: false
+  currentChar: false,
+  damageMode: false,
+  played: null
 };
 
 export default CharacterFace;
