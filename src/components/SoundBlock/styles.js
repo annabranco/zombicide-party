@@ -320,11 +320,11 @@ export const PlayIcon = styled.img`
       filter: brightness(80%) sepia(70%) hue-rotate(13deg) saturate(400%)
         contrast(1.1);
     `}
-
+/*
   @media all and (min-width: 701px) {
     height: 100%;
     width: 100%;
-  }
+  } */
 
   /* ipad pro */
   @media (min-width: 1024px) and (min-height: 1300px) {

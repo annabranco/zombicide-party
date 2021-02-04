@@ -647,7 +647,9 @@ const PlayersSection = ({
 
   const exitGame = () => {
     loadGame();
+    localStorage.removeItem(LOCAL_STORAGE_KEY);
     history.push('/');
+    window.location.reload();
   };
 
   const generateActionsCountArray = actionsLeft => {
@@ -1257,6 +1259,7 @@ const PlayersSection = ({
 
         if (remainingCharacters.length === 0) {
           toggleGameOver(KILLED_EM_ALL);
+          toggleZombiesArePlaying();
           toggleStartedZombieAttack();
           localStorage.removeItem(LOCAL_STORAGE_KEY);
         } else {
@@ -1311,6 +1314,7 @@ const PlayersSection = ({
 
       if (remainingCharacters.length === 0) {
         toggleGameOver(KILLED_EM_ALL);
+        toggleZombiesArePlaying();
         localStorage.removeItem(LOCAL_STORAGE_KEY);
       }
     } else if (selectedSlot <= 2) {
@@ -1365,6 +1369,14 @@ const PlayersSection = ({
       updateCharacters(updatedCharacters);
       prevCharIndex.current = charIndex;
       changeFirstPlayer(updatedCharacters[0].name);
+
+      if (
+        updatedCharacters.length === 1 &&
+        updatedCharacters[0].actionsLeft &&
+        !checkIfHasAnyActionLeft(updatedCharacters[0].actionsLeft)
+      ) {
+        endRound(true);
+      }
 
       console.log('$$$ LS Hook dataLoaded', updatedCharacters);
       localStorage.setItem(

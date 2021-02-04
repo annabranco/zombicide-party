@@ -86,8 +86,6 @@ const ItemsArea = ({
   const [needReload, toggleNeedReload] = useStateWithLabel(false, 'needReload');
   const [firedDual, toggleFiredDual] = useStateWithLabel(false, 'firedDual');
 
-  // const bonusDiceRef = useRef();
-  // const dicesRef = useRef();
   const killButtonsTimer = useRef();
 
   const itemsType = getItemType(item);

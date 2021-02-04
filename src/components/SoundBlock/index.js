@@ -67,7 +67,7 @@ const SoundBlock = ({
   const quickAttackDebounce = useRef();
   const sound = useRef();
 
-  const randomNumber = max => Math.floor(Math.random() * max + 1);
+  const randomNumber = max => Math.ceil(Math.random() * max);
   const filename =
     !noAudio &&
     slotType !== IN_RESERVE &&
@@ -160,11 +160,13 @@ const SoundBlock = ({
   };
 
   useEffect(() => {
-    sound.current = new Audio(
-      SOUNDS[
-        `${filename}${differentSounds ? randomNumber(differentSounds) : ''}`
-      ]
-    );
+    if (!sound.current) {
+      sound.current = new Audio(
+        SOUNDS[
+          `${filename}${differentSounds ? randomNumber(differentSounds) : ''}`
+        ]
+      );
+    }
   }, [filename, differentSounds]);
 
   return (

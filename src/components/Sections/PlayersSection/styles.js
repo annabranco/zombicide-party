@@ -1162,7 +1162,6 @@ export const ModalSign = styled.div`
   padding: 30% 0;
   height: 100%;
   background: ${({ noOverlay }) => (noOverlay ? 'none' : 'rgba(0, 0, 0, 0.6)')};
-  /* background: rgba(0, 0, 0, 0.6); */
 
   ${({ noOverlay }) =>
     noOverlay &&
@@ -1223,9 +1222,7 @@ export const ModalSignText = styled.p`
 
   @media all and (min-width: 701px) {
     top: 180px;
-    right: 100px;
     font-size: 4rem;
-    text-align: right;
   }
 `;
 ModalSignText.displayName = 'ModalSignText';
