@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from 'react';
-import { bool, func, arrayOf } from 'prop-types';
+import { bool, func, arrayOf, oneOfType, string } from 'prop-types';
 import { useStateWithLabel } from '../../utils/hooks';
 import PlayersSection from '../Sections/PlayersSection';
 import ZombiesSection from '../Sections/ZombiesSection';
@@ -86,7 +86,7 @@ const MainScreen = ({
 };
 
 MainScreen.propTypes = {
-  damageMode: bool.isRequired,
+  damageMode: oneOfType([string, bool]).isRequired,
   initialCharacters: arrayOf(CharacterType),
   loadGame: func.isRequired,
   loadedGame: arrayOf(CharacterType),

@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import { useHistory } from 'react-router-dom';
 import { cloneDeep, isEqual } from 'lodash';
-import { arrayOf, bool, func } from 'prop-types';
+import { arrayOf, bool, func, oneOfType, string } from 'prop-types';
 import { useStateWithLabel, useTurnsCounter } from '../../../utils/hooks';
 import { ABILITIES_S1 } from '../../../setup/abilities';
 import { CHARACTERS } from '../../../setup/characters';
@@ -243,6 +243,7 @@ const PlayersSection = ({
     null,
     'forcedKillButtons'
   );
+  const [gameOver, toggleGameOver] = useStateWithLabel(null, 'gameOver');
   const [highestXp, updateHighestXp] = useStateWithLabel(
     { name: '', xp: 0 },
     'highestXp'
@@ -267,6 +268,10 @@ const PlayersSection = ({
     'someoneIsWounded'
   );
   const [slot, selectSlot] = useStateWithLabel(null, 'slot');
+  const [startedZombieAttack, toggleStartedZombieAttack] = useStateWithLabel(
+    false,
+    'startedZombieAttack'
+  );
   const [trade, startTrade] = useStateWithLabel(false, 'trade');
   const [xpCounter, updateXpCounter] = useStateWithLabel([], 'xpCounter');
   const [topActionsLabel, changeTopActionLabel] = useStateWithLabel(
@@ -642,7 +647,6 @@ const PlayersSection = ({
   };
 
   const exitGame = () => {
-    localStorage.removeItem(LOCAL_STORAGE_KEY);
     loadGame();
     history.push('/');
   };
@@ -1182,12 +1186,14 @@ const PlayersSection = ({
       char => char.wounded !== KILLED
     );
     let damage = HIT;
+    let someoneIsKilled = false;
+
+    toggleStartedZombieAttack(true);
 
     if (oneActionKill) {
       if (characterCanResist && !woundedCharacter.wounded) {
         woundedCharacter.abilitiesUsed.push(RESISTED);
         toggleResistedAttack(RESISTED_ONE);
-
         if (selectedSlot <= 2) {
           woundedCharacter.wounded = true;
           woundedCharacter.inHand[selectedSlot - 1] = WOUNDED;
@@ -1229,6 +1235,7 @@ const PlayersSection = ({
 
         woundedCharacter.wounded = KILLED;
         damage = KILL;
+        someoneIsKilled = true;
         if (
           remainingCharacters.length > 1 &&
           firstPlayer.includes(woundedCharacter.name)
@@ -1237,7 +1244,17 @@ const PlayersSection = ({
         }
 
         if (remainingCharacters.length === 0) {
-          updateCharacters(remainingCharacters);
+          toggleGameOver(KILLED_EM_ALL);
+          toggleStartedZombieAttack();
+          localStorage.removeItem(LOCAL_STORAGE_KEY);
+        } else {
+          setTimeout(
+            () =>
+              changeCharIndex(
+                charIndex + 1 >= remainingCharacters.length ? 0 : charIndex + 1
+              ),
+            5000
+          );
         }
       }
     } else if (characterCanResist) {
@@ -1267,6 +1284,7 @@ const PlayersSection = ({
         char => char.name !== woundedCharacter.name
       );
 
+      someoneIsKilled = true;
       woundedCharacter.wounded = KILLED;
       damage = KILL;
       if (firstPlayer.includes(woundedCharacter.name)) {
@@ -1274,7 +1292,8 @@ const PlayersSection = ({
       }
 
       if (remainingCharacters.length === 0) {
-        updateCharacters(remainingCharacters);
+        toggleGameOver(KILLED_EM_ALL);
+        localStorage.removeItem(LOCAL_STORAGE_KEY);
       }
     } else if (selectedSlot <= 2) {
       woundedCharacter.wounded = true;
@@ -1293,17 +1312,24 @@ const PlayersSection = ({
     sound.play();
 
     updateData(woundedCharacter);
-    if (woundedCharacter.wounded === KILLED) {
-      toggleDamageMode(false);
-      if (remainingCharacters.length > 0) {
-        setTimeout(() => changeToAnotherPlayer(NEXT), 5000);
-      }
+
+    if (
+      woundedCharacter.wounded === KILLED &&
+      remainingCharacters.length === 0
+    ) {
+      return null;
     }
 
-    setTimeout(() => {
-      setZombiesRound();
-      toggleDamageMode(false);
-    }, 2000);
+    setTimeout(() => changeToAnotherPlayer(NEXT), 5000);
+
+    setTimeout(
+      () => {
+        toggleStartedZombieAttack();
+        toggleDamageMode(false);
+        setZombiesRound();
+      },
+      someoneIsKilled ? 4000 : 2000
+    );
     return null;
   };
   /* --- */
@@ -1789,13 +1815,13 @@ const PlayersSection = ({
           {character.wounded === KILLED && (
             <>
               <ModalSign killed>
-                {!characters || characters.length === 0 ? (
-                  <ModalSignText>{KILLED_EM_ALL}</ModalSignText>
+                {gameOver ? (
+                  <ModalSignText>{gameOver}</ModalSignText>
                 ) : (
                   <ModalSignText>{`${character.name} ${HAS_BEEN_KILLED}`}</ModalSignText>
                 )}
               </ModalSign>
-              {characters.length === 0 && (
+              {gameOver && (
                 <ModalSignExitButton onClick={exitGame} src={Exit} />
               )}
             </>
@@ -1987,62 +2013,80 @@ const PlayersSection = ({
               </MainButton>
             )}
 
-          {device.current === DESKTOP && !slot && characters.length > 0 && (
-            <NavIconsWrapper>
-              {calculateCharactersOrder().map(char => (
-                <CharacterFace
-                  alt={`${CHANGE_CHARACTER(char.name)}`}
-                  currentChar={character.name === char.name}
-                  key={`charNav-${char.name}`}
-                  onClick={() => changeCharIndex(char.index)}
-                  played={charIfCharHasPlayed(char.name)}
-                  src={char.face}
-                  wounded={characters.some(
-                    charac => charac.name === char.name && charac.wounded
-                  )}
-                />
-              ))}
-            </NavIconsWrapper>
-          )}
+          {device.current === DESKTOP &&
+            !slot &&
+            characters.length > 0 &&
+            !startedZombieAttack && (
+              <NavIconsWrapper>
+                {calculateCharactersOrder().map(char => {
+                  if (
+                    characters.find(
+                      charac =>
+                        charac.name === char.name && charac.wounded !== KILLED
+                    )
+                  ) {
+                    return (
+                      <CharacterFace
+                        alt={`${CHANGE_CHARACTER(char.name)}`}
+                        currentChar={character.name === char.name}
+                        damageMode={damageMode}
+                        key={`charNav-${char.name}`}
+                        onClick={() => changeCharIndex(char.index)}
+                        played={charIfCharHasPlayed(char.name)}
+                        src={char.face}
+                        wounded={characters.some(
+                          charac => charac.name === char.name && charac.wounded
+                        )}
+                      />
+                    );
+                  }
+                  return null;
+                })}
+              </NavIconsWrapper>
+            )}
 
           {((device.current !== MOBILE &&
             (characters.length > 1 || prevCharIndex.current === null)) ||
-            (device.current === MOBILE && !dropMode)) && (
-            <>
-              <PreviousButton
-                damageMode={damageMode}
-                onClick={() => changeToAnotherPlayer(PREVIOUS)}
-                type="button"
-              >
-                <ArrowSign className="fas fa-caret-left" />
-              </PreviousButton>
-              <NextButton
-                damageMode={damageMode}
-                numOfChars={device.current === DESKTOP && characters.length}
-                onClick={() => changeToAnotherPlayer(NEXT)}
-                type="button"
-              >
-                <ArrowSign className="fas fa-caret-right" />
-              </NextButton>
-            </>
-          )}
+            (device.current === MOBILE && !dropMode)) &&
+            !startedZombieAttack && (
+              <>
+                <PreviousButton
+                  damageMode={damageMode}
+                  onClick={() => changeToAnotherPlayer(PREVIOUS)}
+                  type="button"
+                >
+                  <ArrowSign className="fas fa-caret-left" />
+                </PreviousButton>
+                <NextButton
+                  damageMode={damageMode}
+                  numOfChars={device.current === DESKTOP && characters.length}
+                  onClick={() => changeToAnotherPlayer(NEXT)}
+                  type="button"
+                >
+                  <ArrowSign className="fas fa-caret-right" />
+                </NextButton>
+              </>
+            )}
           {selectCharOverlay && (
             <SelectButton onClick={selectCharacter} type="button">
               {SELECT}
             </SelectButton>
           )}
 
-          {damageMode && (
-            <AttackBurronsWrapper>
-              <CancelAttackButton onClick={cancelZombieAttack}>
-                {CANCEL}
-              </CancelAttackButton>
-              {device.current === MOBILE && (
-                <ConfirmAttackButton onClick={() => null}>
-                  {OK}
-                </ConfirmAttackButton>
-              )}
-            </AttackBurronsWrapper>
+          {damageMode && zombiesArePlaying && !startedZombieAttack && (
+            <>
+              <AttackInstructions>{SELECT_DAMAGE}</AttackInstructions>
+              <AttackBurronsWrapper>
+                <CancelAttackButton onClick={cancelZombieAttack}>
+                  {CANCEL}
+                </CancelAttackButton>
+                {device.current === MOBILE && (
+                  <ConfirmAttackButton onClick={() => null}>
+                    {OK}
+                  </ConfirmAttackButton>
+                )}
+              </AttackBurronsWrapper>
+            </>
           )}
 
           {/* ----- ABILITIES DISPLAY ----- */}
@@ -2234,16 +2278,12 @@ const PlayersSection = ({
           onConfirmModal={learnNewAbility}
         />
       )}
-
-      {damageMode && zombiesArePlaying && (
-        <AttackInstructions>{SELECT_DAMAGE}</AttackInstructions>
-      )}
     </CharacterSheet>
   );
 };
 
 PlayersSection.propTypes = {
-  damageMode: bool.isRequired,
+  damageMode: oneOfType([string, bool]).isRequired,
   initialCharacters: arrayOf(CharacterType),
   loadGame: func.isRequired,
   loadedGame: arrayOf(CharacterType),

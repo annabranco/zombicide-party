@@ -364,7 +364,7 @@ ItemsArea.propTypes = {
   charVoice: string,
   combineItemSelected: bool,
   combinePair: bool,
-  damageMode: bool,
+  damageMode: oneOfType([string, bool]),
   device: string.isRequired,
   dice: number,
   dropMode: bool,

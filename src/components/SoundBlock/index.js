@@ -230,7 +230,7 @@ SoundBlock.propTypes = {
   charCanDeflect: bool,
   combineItemSelected: bool,
   combinePair: bool,
-  damageMode: bool,
+  damageMode: oneOfType([string, bool]),
   differentSounds: number,
   img: string,
   isMobile: bool.isRequired,

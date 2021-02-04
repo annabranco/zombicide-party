@@ -1154,7 +1154,7 @@ export const MainButton = styled(AppButton)`
 `;
 MainButton.displayName = 'MainButton';
 
-export const ModalSign = styled(AttackInstructions)`
+export const ModalSign = styled.div`
   label: ModalSign;
   position: absolute;
   z-index: 2;
@@ -1209,6 +1209,12 @@ export const ModalSignText = styled.p`
   font-size: 3rem;
   font-family: Crackhouse, 'Grandstander', cursive;
   text-align: center;
+  font-size: 3rem;
+  font-weight: 900;
+  line-height: 1.5;
+  color: red;
+  text-shadow: 0 0 2px black;
+  text-transform: uppercase;
 
   @media all and (min-width: 701px) {
     top: 180px;
@@ -1267,8 +1273,9 @@ export const NavIcons = styled.img`
   margin: 0 2px;
   cursor: pointer;
 
-  ${({ played }) =>
+  ${({ played, damageMode }) =>
     played &&
+    !damageMode &&
     css`
       filter: grayscale(1) brightness(1.3) contrast(0.6);
       width: 30px;
@@ -1285,8 +1292,9 @@ export const NavIcons = styled.img`
     @media all and (min-width: 1400px) {
     width: 70px;
 
-    ${({ played }) =>
+    ${({ played, damageMode }) =>
       played &&
+      !damageMode &&
       css`
         width: 50px;
       `}
