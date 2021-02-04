@@ -517,19 +517,18 @@ const PlayersSection = ({
   };
 
   const checkIfRoundHasFinished = () => {
-    if (
-      characters.every(
-        char => char.actionsLeft && !checkIfHasAnyActionLeft(char.actionsLeft)
-      )
-    ) {
-      endRound(true);
-      toggleZombiesShouldAct(true);
+    if (!roundEnded) {
+      if (
+        characters.every(
+          char => char.actionsLeft && !checkIfHasAnyActionLeft(char.actionsLeft)
+        )
+      ) {
+        endRound(true);
+        toggleZombiesShouldAct(true);
 
-      console.log('$$$ LS has finished', characters);
-      localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(characters));
-    } else if (roundEnded) {
-      endRound(false);
-      toggleZombiesShouldAct(false);
+        console.log('$$$ LS has finished', characters);
+        localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(characters));
+      }
     }
   };
 
@@ -896,6 +895,9 @@ const PlayersSection = ({
     updateData(updatedCharacter);
     if (charsStillToAct.length > 0) {
       setTimeout(() => changeToAnotherPlayer(NEXT), 800);
+    } else {
+      endRound(true);
+      toggleZombiesShouldAct(true);
     }
   };
 
@@ -922,7 +924,7 @@ const PlayersSection = ({
     } else if (zombiesShouldAct) {
       setZombiesRound();
       toggleZombiesArePlaying(true);
-      toggleZombiesShouldAct(false);
+      toggleZombiesShouldAct();
     } else {
       const updatedCharacters = cloneDeep(characters);
       if (roundEnded) {
@@ -981,6 +983,7 @@ const PlayersSection = ({
         changeCharIndex(charIndex);
         changeCharacter(currentCharacter);
       }
+      endRound();
     }
   };
 
@@ -1297,7 +1300,13 @@ const PlayersSection = ({
       woundedCharacter.wounded = KILLED;
       damage = KILL;
       if (firstPlayer.includes(woundedCharacter.name)) {
-        changeFirstPlayer(`next-${characters[charIndex + 1].name}`);
+        changeFirstPlayer(
+          `next-${
+            characters[
+              charIndex + 1 >= remainingCharacters.length ? 0 : charIndex + 1
+            ].name
+          }`
+        );
       }
 
       if (remainingCharacters.length === 0) {

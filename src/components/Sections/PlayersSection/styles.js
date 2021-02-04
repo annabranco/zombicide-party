@@ -1188,7 +1188,9 @@ export const ModalSignExitButton = styled.img`
   label: ModalSignExitButton;
   z-index: 10;
   position: absolute;
-  bottom: 52%;
+  bottom: 100px;
+  left: 50%;
+  transform: translate(-50%, 0);
   width: 80px;
   cursor: pointer;
   box-shadow: 0 0 6px 0 white;
@@ -1196,6 +1198,9 @@ export const ModalSignExitButton = styled.img`
   animation-duration: 10s;
   animation-iteration-count: 1;
   animation-fill-mode: forwards;
+
+  @media all and (min-width: 1200px) {
+  }
 `;
 ModalSignExitButton.displayName = 'ModalSignExitButton';
 
