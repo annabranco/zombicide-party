@@ -334,13 +334,28 @@ const PlayersSection = ({
         char => char.name === charWithChangedData.name
       );
 
-      updatedCharacters[changedCharIndex] = charWithChangedData;
-      updateCharacters(updatedCharacters);
+      if (charWithChangedData.wounded === KILLED) {
+        const charactersLeft = updatedCharacters.filter(
+          char => char.name !== charWithChangedData.name
+        );
+        updateCharacters(charactersLeft);
+        if (charactersLeft.length === 0) {
+          console.log('$$$ LS CLEARING LS');
+          localStorage.removeItem(LOCAL_STORAGE_KEY);
+          return null;
+        }
+      } else {
+        updatedCharacters[changedCharIndex] = charWithChangedData;
+        updateCharacters(updatedCharacters);
+      }
+
+      console.log('$$$ LS UPDATING DATA', updatedCharacters);
       localStorage.setItem(
         LOCAL_STORAGE_KEY,
         JSON.stringify(updatedCharacters)
       );
     }
+    return null;
   };
 
   const resetInitialState = () => {
@@ -1262,7 +1277,7 @@ const PlayersSection = ({
         remainingCharacters = characters.filter(
           char => char.name !== woundedCharacter.name
         );
-
+        console.log('$$$ remainingCharacters', remainingCharacters);
         woundedCharacter.wounded = KILLED;
         damage = KILL;
         someoneIsKilled = true;
@@ -1277,7 +1292,8 @@ const PlayersSection = ({
           toggleGameOver(KILLED_EM_ALL);
           toggleZombiesArePlaying();
           toggleStartedZombieAttack();
-          localStorage.removeItem(LOCAL_STORAGE_KEY);
+          updateData(woundedCharacter);
+          // localStorage.removeItem(LOCAL_STORAGE_KEY);
           loadGame();
         } else {
           setTimeout(
@@ -1380,23 +1396,26 @@ const PlayersSection = ({
       const updatedCharacters =
         (initialCharacters && [...initialCharacters]) ||
         (loadedGame && cloneDeep(loadedGame)) ||
-        game ||
-        cloneDeep(CHARACTERS);
+        game;
 
-      resetInitialState();
+      if (!updatedCharacters) {
+        history.push('/');
+      } else {
+        resetInitialState();
 
-      updateCharacters(updatedCharacters);
-      prevCharIndex.current = charIndex;
-      changeFirstPlayer(updatedCharacters[0].name);
+        updateCharacters(updatedCharacters);
+        prevCharIndex.current = charIndex;
+        changeFirstPlayer(updatedCharacters[0].name);
 
-      if (
-        updatedCharacters.length === 1 &&
-        updatedCharacters[0].actionsLeft &&
-        !checkIfHasAnyActionLeft(updatedCharacters[0].actionsLeft)
-      ) {
-        endRound(true);
+        if (
+          updatedCharacters.length === 1 &&
+          updatedCharacters[0].actionsLeft &&
+          !checkIfHasAnyActionLeft(updatedCharacters[0].actionsLeft)
+        ) {
+          endRound(true);
+        }
+        setDataLoaded(true);
       }
-      setDataLoaded(true);
     }
   }, [charIndex, dataLoaded, initialCharacters, loadedGame]);
 
@@ -1507,6 +1526,12 @@ const PlayersSection = ({
       console.log('$$$ message', message);
     }
   }, [message]);
+
+  // useEffect(() => {
+  //   if (gameOver) {
+  //     history.push('/');
+  //   }
+  // }, []);
 
   /* --- */
 
