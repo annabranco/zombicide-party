@@ -26,6 +26,7 @@ import {
   PlayerActionButtonsArea,
   PlayerNew,
   PlayerNewInput,
+  PlayerOrderTag,
   PlayerRemove,
   PlayerRemoveToggle,
   PlayersArea
@@ -158,7 +159,7 @@ const SetupModal = ({
       onSelectPlayer(event);
     }
   };
-
+  console.log('$$$ activePlayers', activePlayers);
   return (
     <ModalWindow visible={visible} type={type}>
       <ModalTitle type={message.title || GENERAL}>{message.title}</ModalTitle>
@@ -167,7 +168,7 @@ const SetupModal = ({
         <>
           <PlayersArea>
             {players.size > 0 ? (
-              [...players].map(player => (
+              [...players].map((player, index) => (
                 <Player
                   active={activePlayers.has(player)}
                   dynamic={dynamic}
@@ -177,6 +178,11 @@ const SetupModal = ({
                   showRemovePlayer={showRemovePlayer}
                 >
                   {player}
+                  {[...activePlayers].includes(player) && (
+                    <PlayerOrderTag>
+                      {[...activePlayers].indexOf(player) + 1}
+                    </PlayerOrderTag>
+                  )}
                   {showRemovePlayer && (
                     <PlayerRemove onClick={onClickRemovePlayer}>x</PlayerRemove>
                   )}

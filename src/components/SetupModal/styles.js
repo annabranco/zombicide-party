@@ -369,6 +369,21 @@ export const PlayerNewInput = styled.input`
 `;
 PlayerNew.displayName = 'PlayerNew';
 
+export const PlayerOrderTag = styled.div`
+  label: PlayerOrderTag;
+  position: absolute;
+  top: -10px;
+  right: -10px;
+  font-size: 0.9rem;
+  line-height: 1.2;
+  height: 15px;
+  width: 15px;
+  border-radius: 50%;
+  background: crimson;
+  color: white;
+`;
+PlayerOrderTag.displayName = 'PlayerOrderTag';
+
 export const PlayerRemove = styled.div`
   label: PlayerRemove;
   z-index: 10;
