@@ -53,12 +53,13 @@ export const NotifyButton = styled.button`
   label: NotifyButton;
   margin-top: 40px;
   position: fixed;
-  bottom: 5%;
-  opacity: 1;
+  bottom: 10%;
+  opacity: 0;
   border-radius: 10px;
   width: 200px;
   cursor: pointer;
   outline: none;
+  min-height: 35px;
 
   &: hover {
     color: red;
@@ -68,7 +69,7 @@ export const NotifyButton = styled.button`
     visible &&
     css`
       opacity: 1;
-      transition: opacity 10s;
+      transition: opacity 4s;
     `}
 `;
 NotifyButton.displayName = 'NotifyButton';
@@ -101,11 +102,10 @@ export const SorryText = styled.p`
   label: SorryText;
   margin: 0 0 20px;
   width: 80%;
-  font-style: italic;
   font-size: 1.3rem;
   line-height: 1.5;
   color: white;
-  text-align: left;
+  text-align: center;
   font-family: 'Cairo', sans-serif;
 `;
 SorryText.displayName = 'SorryText';

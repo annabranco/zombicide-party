@@ -9,6 +9,13 @@ export const DEFAULT_ERROR_TEXTS = {
   notifyMe: 'Notify me',
   title: 'Aaahh!'
 };
+export const ERROR_TEXTS_404 = {
+  errorLine1: '404: PAGE NOT FOUND',
+  errorLine2:
+    'The page you are trying to reach does not exist or it has been moved.',
+  title: 'Aaahh!',
+  notifyMe: 'Oh, no...'
+};
 export const GO_ON = 'Go on';
 export const INITIAL = 'initial';
 export const LOCAL_STORAGE_KEY = 'ZombicideParty';

@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import { Global } from '@emotion/core';
 import { useStateWithLabel } from '../../utils/hooks';
-import { LOCAL_STORAGE_KEY } from '../../constants';
+import { LOCAL_STORAGE_KEY, ERROR_TEXTS_404 } from '../../constants';
 import MainMenu from '../MainMenu';
 import NewGame from '../NewGame';
 
@@ -11,6 +11,7 @@ import MainScreen from '../MainScreen';
 import ControllerLayer from '../ControllerLayer';
 import { loadSavedGame } from '../../utils/characters';
 import ErrorBoundary from '../ErrorBoundary';
+import ErrorComponent from '../ErrorBoundary/ErrorComponent';
 
 window.addEventListener('orientationchange', () => {
   window.location.reload();
@@ -51,6 +52,7 @@ const App = () => {
             )}
           />
           <Route
+            exact
             path="/new"
             render={() => (
               <NewGame
@@ -60,6 +62,7 @@ const App = () => {
             )}
           />
           <Route
+            exact
             path="/play"
             render={() => (
               <MainScreen
@@ -69,6 +72,11 @@ const App = () => {
                 loadedGame={loadedGame}
                 toggleDamageMode={toggleDamageMode}
               />
+            )}
+          />
+          <Route
+            render={() => (
+              <ErrorComponent texts={ERROR_TEXTS_404} notifyButtonLink="/" />
             )}
           />
         </Switch>
