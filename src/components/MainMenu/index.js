@@ -23,6 +23,7 @@ import {
   ZombieImageShadow
 } from './styles';
 import { CharacterType } from '../../interfaces/types';
+import FogEffect from '../Fog';
 
 const MainMenu = ({ loadedGame, setInitialCharacters }) => {
   const [nightShift, toggleNightShift] = useStateWithLabel(false, 'nightShift');
@@ -63,6 +64,7 @@ const MainMenu = ({ loadedGame, setInitialCharacters }) => {
   return (
     <MenuScreen img={BG} type="main">
       <ThunderOverlay testSound={testSound} />
+      <FogEffect />
       {nightShift && <NightShiftIntro />}
       <LogoArea nightShift={nightShift}>
         <ZombicideLogo src={Logo} />

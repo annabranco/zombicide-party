@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { bool, string } from 'prop-types';
+import { string } from 'prop-types';
 import { useHistory } from 'react-router-dom';
 import appInfo from '../../../package.json';
 import { useStateWithLabel } from '../../utils/hooks';
@@ -17,6 +17,7 @@ import { errorTextsPropType } from '../../interfaces/types';
 import { DEFAULT_ERROR_TEXTS } from '../../constants';
 import { MenuScreen } from '../MainMenu/styles';
 import BG from '../../assets/images/background/background2.jpg';
+import FogEffect from '../Fog';
 
 const REPORT_ISSUE_PAGE = `${appInfo.bugs.url}/new`;
 
@@ -43,6 +44,7 @@ const ErrorComponent = ({ error, texts, notifyButtonLink }) => {
 
   return (
     <MenuScreen img={BG} type="main">
+      <FogEffect />
       <ErrorTitle>{texts.title}</ErrorTitle>
       <NotificationArea>
         <SorryText>{texts.errorLine1}</SorryText>

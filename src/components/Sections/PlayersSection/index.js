@@ -180,6 +180,7 @@ import {
   CancelAttackButton,
   ConfirmAttackButton
 } from '../ZombiesSection/styles';
+import FogEffect from '../../Fog';
 
 const PlayersSection = ({
   damageMode,
@@ -1613,7 +1614,7 @@ const PlayersSection = ({
             <CharacterOverlayImage src={character.img} />
             <CharacterOverlayImageShadow src={character.img} />
           </CharacterOverlay>
-
+          <FogEffect inChar={character.name} />
           {/* ----- TOP BAR ----- */}
           {!damageMode && setupMode && characters.length < CHARACTERS.length && (
             <AdmButton

@@ -26,6 +26,7 @@ ErrorDetailsArea.displayName = 'ErrorDetailsArea';
 
 export const ErrorTitle = styled.h2`
   label: ErrorTitle;
+  z-index: 15;
   position: absolute;
   top: 10%;
   margin-left: 0;
@@ -51,6 +52,7 @@ NotificationArea.displayName = 'NotificationArea';
 
 export const NotifyButton = styled.button`
   label: NotifyButton;
+  z-index: 15;
   margin-top: 40px;
   position: fixed;
   bottom: 10%;
