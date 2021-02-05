@@ -56,6 +56,7 @@ const MainScreen = ({
       clearInterval(timer);
     };
   }, []);
+
   return (
     <MainArea>
       <PlayersSection

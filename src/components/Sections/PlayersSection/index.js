@@ -279,7 +279,7 @@ const PlayersSection = ({
     'topActionsLabel'
   );
   const [zombiesShouldAct, toggleZombiesShouldAct] = useStateWithLabel(
-    '',
+    false,
     'zombiesShouldAct'
   );
 
@@ -327,20 +327,46 @@ const PlayersSection = ({
     if (!isEqual(charWithChangedData, character) && !background) {
       changeCharacter(charWithChangedData);
     }
+
     if (!isEqual(charWithChangedData, charOnGlobalList)) {
       const updatedCharacters = cloneDeep(characters);
       const changedCharIndex = updatedCharacters.findIndex(
         char => char.name === charWithChangedData.name
       );
+
       updatedCharacters[changedCharIndex] = charWithChangedData;
       updateCharacters(updatedCharacters);
-
-      console.log('$$$ LS upd data', updatedCharacters);
       localStorage.setItem(
         LOCAL_STORAGE_KEY,
         JSON.stringify(updatedCharacters)
       );
     }
+  };
+
+  const resetInitialState = () => {
+    console.log('$$$ Resetting initial state');
+    changeActionLabel('');
+    toggleCanCombine(false);
+    changeCanUseFlashlight(false);
+    startCar(false);
+    setCanOpenDoor(false);
+    setCombiningItem(null);
+    toggleActionsModal(false);
+    toggleDropMode(false);
+    activateDualWeaponEffect(false);
+    toggleExtraActivation(false);
+    toggleForcedKillButtons(null);
+    toggleHasKilledZombie(false);
+    addNewChar(false);
+    toggleResistedAttack(false);
+    // toggleSetupMode(false);
+    toggleSomeoneIsWounded(false);
+    selectSlot(null);
+    toggleStartedZombieAttack(false);
+    startTrade(false);
+    changeTopActionLabel('');
+    toggleZombiesShouldAct(false);
+    toggleDamageMode(false);
   };
   /* --- */
 
@@ -525,9 +551,6 @@ const PlayersSection = ({
       ) {
         endRound(true);
         toggleZombiesShouldAct(true);
-
-        console.log('$$$ LS has finished', characters);
-        localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(characters));
       }
     }
   };
@@ -810,9 +833,6 @@ const PlayersSection = ({
     updateCharacters(updatedCharacters);
     setCanOpenDoor(openDoors);
     changeCanUseFlashlight(hasFlashlight);
-
-    console.log('$$$ LS trade confirm', updatedCharacters);
-    localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(updatedCharacters));
   };
 
   const handleSearch = () => {
@@ -820,8 +840,6 @@ const PlayersSection = ({
       const updatedCharacter = cloneDeep(character);
       updatedCharacter.hasUsedFlashlight = true;
       updateData(updatedCharacter);
-    } else if (canSearch) {
-      spendAction(SEARCH);
     }
   };
 
@@ -920,9 +938,6 @@ const PlayersSection = ({
     }
     if (setupMode) {
       toggleSetupMode(false);
-
-      console.log('$$$ LS main button', characters);
-      localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(characters));
     } else if (zombiesShouldAct) {
       setZombiesRound();
       toggleZombiesArePlaying(true);
@@ -1036,6 +1051,7 @@ const PlayersSection = ({
         return null;
       }, 1000);
     }
+    spendAction(SEARCH);
     return change(item, findingSlot);
   };
 
@@ -1262,6 +1278,7 @@ const PlayersSection = ({
           toggleZombiesArePlaying();
           toggleStartedZombieAttack();
           localStorage.removeItem(LOCAL_STORAGE_KEY);
+          loadGame();
         } else {
           setTimeout(
             () =>
@@ -1360,12 +1377,14 @@ const PlayersSection = ({
   useEffect(() => {
     if (!dataLoaded) {
       const game = loadSavedGame();
-
       const updatedCharacters =
         (initialCharacters && [...initialCharacters]) ||
         (loadedGame && cloneDeep(loadedGame)) ||
         game ||
         cloneDeep(CHARACTERS);
+
+      resetInitialState();
+
       updateCharacters(updatedCharacters);
       prevCharIndex.current = charIndex;
       changeFirstPlayer(updatedCharacters[0].name);
@@ -1377,13 +1396,6 @@ const PlayersSection = ({
       ) {
         endRound(true);
       }
-
-      console.log('$$$ LS Hook dataLoaded', updatedCharacters);
-      localStorage.setItem(
-        LOCAL_STORAGE_KEY,
-        JSON.stringify(updatedCharacters)
-      );
-
       setDataLoaded(true);
     }
   }, [charIndex, dataLoaded, initialCharacters, loadedGame]);
@@ -1490,11 +1502,13 @@ const PlayersSection = ({
     }
   }, [extraActivation, toggleExtraActivation, zombiesArePlaying]);
 
-  /* --- */
+  useEffect(() => {
+    if (message) {
+      console.log('$$$ message', message);
+    }
+  }, [message]);
 
-  if (message) {
-    console.log('$$$ message', message);
-  }
+  /* --- */
 
   return (
     <CharacterSheet visible={visible}>
