@@ -159,7 +159,6 @@ const SetupModal = ({
       onSelectPlayer(event);
     }
   };
-  console.log('$$$ activePlayers', activePlayers);
   return (
     <ModalWindow visible={visible} type={type}>
       <ModalTitle type={message.title || GENERAL}>{message.title}</ModalTitle>

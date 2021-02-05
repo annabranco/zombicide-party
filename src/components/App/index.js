@@ -10,6 +10,7 @@ import { globalStyles } from '../../styles';
 import MainScreen from '../MainScreen';
 import ControllerLayer from '../ControllerLayer';
 import { loadSavedGame } from '../../utils/characters';
+import ErrorBoundary from '../ErrorBoundary';
 
 window.addEventListener('orientationchange', () => {
   window.location.reload();
@@ -36,40 +37,42 @@ const App = () => {
   return (
     <Router>
       <Global styles={globalStyles} />
-      <ControllerLayer />
-      <Switch>
-        <Route
-          exact
-          path="/"
-          render={() => (
-            <MainMenu
-              loadedGame={loadedGame}
-              setInitialCharacters={setInitialCharacters}
-            />
-          )}
-        />
-        <Route
-          path="/new"
-          render={() => (
-            <NewGame
-              loadedGame={Boolean(loadedGame)}
-              setInitialCharacters={setInitialCharacters}
-            />
-          )}
-        />
-        <Route
-          path="/play"
-          render={() => (
-            <MainScreen
-              damageMode={damageMode}
-              initialCharacters={initialCharacters}
-              loadGame={loadGame}
-              loadedGame={loadedGame}
-              toggleDamageMode={toggleDamageMode}
-            />
-          )}
-        />
-      </Switch>
+      <ErrorBoundary>
+        <ControllerLayer />
+        <Switch>
+          <Route
+            exact
+            path="/"
+            render={() => (
+              <MainMenu
+                loadedGame={loadedGame}
+                setInitialCharacters={setInitialCharacters}
+              />
+            )}
+          />
+          <Route
+            path="/new"
+            render={() => (
+              <NewGame
+                loadedGame={Boolean(loadedGame)}
+                setInitialCharacters={setInitialCharacters}
+              />
+            )}
+          />
+          <Route
+            path="/play"
+            render={() => (
+              <MainScreen
+                damageMode={damageMode}
+                initialCharacters={initialCharacters}
+                loadGame={loadGame}
+                loadedGame={loadedGame}
+                toggleDamageMode={toggleDamageMode}
+              />
+            )}
+          />
+        </Switch>
+      </ErrorBoundary>
     </Router>
   );
 };
