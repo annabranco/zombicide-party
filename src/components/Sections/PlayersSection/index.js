@@ -67,7 +67,6 @@ import {
   FREE_ATTACK,
   FREE_MOVE,
   FREE_SEARCH,
-  GENERAL,
   GET_OBJECTIVE,
   GIVE_ORDERS,
   GIVE_ORDERS_ACTION,
@@ -85,6 +84,7 @@ import {
   KILLED,
   KILLED_EM_ALL,
   LEARNED_NEW_ABILITY,
+  LEFT_AREA,
   LOCAL_STORAGE_KEY,
   LOCK_ACTION,
   LOCK_DOOR,
@@ -124,7 +124,9 @@ import {
   ZOMBIES_ROUND,
   LOST,
   WIN_GAME,
-  WON
+  WON,
+  LEAVE_GAME_ACTION,
+  LEAVE_GAME
 } from '../../../constants';
 import Blood from '../../../assets/images/blood.png';
 import ZombieFace from '../../../assets/images/zombieFace.png';
@@ -214,6 +216,7 @@ const PlayersSection = ({
   const [character, changeCharacter] = useStateWithLabel({}, 'character');
   const [characters, updateCharacters] = useStateWithLabel([], 'characters');
   const [charIndex, changeCharIndex] = useStateWithLabel(0, 'charIndex');
+  const [charsSaved, updateCharSaved] = useStateWithLabel([], 'charsSaved');
   const [
     charsReceivingRadioOrders,
     updateCharsReceivingRadioOrders
@@ -227,6 +230,10 @@ const PlayersSection = ({
     false,
     'displayActionsModal'
   );
+  const [displayEndGameScreen, toggleDisplayEndGameScreen] = useStateWithLabel(
+    false,
+    'displayEndGameScreen'
+  );
   const [dropMode, toggleDropMode] = useStateWithLabel(false, 'dropMode');
   const [
     dualWeaponEffectIsActive,
@@ -235,10 +242,6 @@ const PlayersSection = ({
   const [extraActivation, toggleExtraActivation] = useStateWithLabel(
     false,
     'extraActivation'
-  );
-  const [displayEndGameScreen, toggleDisplayEndGameScreen] = useStateWithLabel(
-    false,
-    'displayEndGameScreen'
   );
   const [firstPlayer, changeFirstPlayer] = useStateWithLabel(
     null,
@@ -597,13 +600,13 @@ const PlayersSection = ({
     }
   };
 
-  const changeToAnotherPlayer = type => {
+  const changeToAnotherPlayer = (type, skip) => {
     const charactersNumber = characters.length;
     const remainingCharacters = characters.filter(
-      char => char.wounded !== KILLED
+      char => char.wounded !== KILLED && !char.hasLeft && char.name !== skip
     );
     let nextPlayerIndex;
-
+    console.log('$$$ remainingCharacters', remainingCharacters);
     if (charactersNumber !== remainingCharacters.length) {
       updateCharacters(remainingCharacters);
     }
@@ -1141,6 +1144,24 @@ const PlayersSection = ({
     }
   };
 
+  const onLeaveGame = () => {
+    const updChar = cloneDeep(character);
+    const charsStillInArea = characters.filter(
+      char => char.name !== character.name
+    );
+    updChar.hasLeft = true;
+    updChar.actionsLeft = [0, 0, 0, 0, 0];
+    toggleZombiesArePlaying(true);
+    updateCharSaved([...charsSaved, updChar]);
+    updateData(updChar);
+
+    if (charsStillInArea.length > 0) {
+      setTimeout(() => changeToAnotherPlayer(NEXT, updChar.name), 3000);
+    } else {
+      setTimeout(() => toggleDisplayEndGameScreen(WON), 3000);
+    }
+  };
+
   const onMakeLoudNoise = () => {
     const updChar = cloneDeep(character);
 
@@ -1275,7 +1296,6 @@ const PlayersSection = ({
         remainingCharacters = characters.filter(
           char => char.name !== woundedCharacter.name
         );
-        console.log('$$$ remainingCharacters', remainingCharacters);
         woundedCharacter.wounded = KILLED;
         damage = KILL;
         someoneIsKilled = true;
@@ -1659,6 +1679,23 @@ const PlayersSection = ({
               {!damageMode && !setupMode && !slot && (
                 <>
                   <ActionsWrapper>
+                    {canMove && (
+                      <ActionButton
+                        actionType={LEAVE_GAME_ACTION}
+                        callback={onLeaveGame}
+                        changeActionLabel={changeActionLabel}
+                        isMobile={device.current === MOBILE}
+                        label={LEAVE_GAME}
+                        manyButtons={character.location === CAR}
+                        type={character.voice}
+                        type2={
+                          character.location === CAR
+                            ? CAR_MOVE_ACTION
+                            : `move-${character.movement}`
+                        }
+                      />
+                    )}
+
                     {!!generalActions && (
                       <ActionButton
                         actionType={WIN_GAME}
@@ -1669,6 +1706,7 @@ const PlayersSection = ({
                         manyButtons={character.location === CAR}
                       />
                     )}
+
                     {!!generalActions &&
                       character.abilities.includes(
                         ABILITIES_S1.HOLD_YOUR_NOSE.name
@@ -1788,9 +1826,7 @@ const PlayersSection = ({
                         }
                         manyButtons={character.location === CAR}
                         startCar={startCar}
-                        type={
-                          character.location !== CAR && !car ? START : GENERAL
-                        }
+                        type={character.location !== CAR && !car ? START : null}
                       />
                     )}
                     {canMove && character.location === CAR && (
@@ -1886,7 +1922,9 @@ const PlayersSection = ({
             </WoundedWrapper>
           )}
           {finishedTurn && character.wounded !== KILLED && !damageMode && (
-            <MidScreenTag>{`${character.name}${TURN_FINISHED}`}</MidScreenTag>
+            <MidScreenTag>{`${character.name}${
+              character.hasLeft ? LEFT_AREA : TURN_FINISHED
+            }`}</MidScreenTag>
           )}
 
           {resistedAttack && <MidScreenTag>{resistedAttack}</MidScreenTag>}
@@ -2360,7 +2398,7 @@ const PlayersSection = ({
       )}
       {displayEndGameScreen && (
         <EndGame
-          characters={characters}
+          characters={charsSaved.length > 0 ? charsSaved : characters}
           loadGame={loadGame}
           type={displayEndGameScreen}
         />

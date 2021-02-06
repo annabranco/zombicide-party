@@ -54,6 +54,8 @@ import GiveOrdersRadioMale from './actions/give-orders-radio-male.mp3';
 import Heal1 from './actions/heal1.mp3';
 import Heal2 from './actions/heal2.mp3';
 import Heal3 from './actions/heal3.mp3';
+import LeaveGameFemale from './actions/leave-game-female.mp3';
+import LeaveGameMale from './actions/leave-game-male.mp3';
 import Lock from './actions/lock.mp3';
 import MakeNoise from './actions/make-noise.mp3';
 import MoveConfident from './actions/move-confident.mp3';
@@ -196,6 +198,8 @@ export const SOUNDS = {
   hea1l: Heal1,
   heal2: Heal2,
   heal3: Heal3,
+  'leave-game-female': LeaveGameFemale,
+  'leave-game-male': LeaveGameMale,
   lock: Lock,
   'make-noise': MakeNoise,
   'move-confident': MoveConfident,

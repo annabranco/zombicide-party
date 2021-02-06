@@ -13,6 +13,7 @@ import {
   END_TURN_ACTION,
   GIVE_ORDERS_ACTION,
   HEAL_ACTION,
+  LEAVE_GAME_ACTION,
   LOCK_ACTION,
   MAKE_NOISE_ACTION,
   MOVE_ACTION,
@@ -81,7 +82,13 @@ const ActionButton = ({
         interactWithCar(false);
       }
 
-      if (sound.current) {
+      if (actionType === LEAVE_GAME_ACTION) {
+        sound2.current = new Audio(SOUNDS[type2]);
+        sound.current.currentTime = 0;
+        sound2.current.currentTime = 0;
+        sound.current.play();
+        setTimeout(() => sound2.current.play(), 700);
+      } else if (sound.current) {
         sound.current.currentTime = 0;
         sound.current.play();
         if (sound2.current) {
@@ -110,6 +117,12 @@ const ActionButton = ({
         setIconType('fas fa-running');
         sound.current = new Audio(SOUNDS[`${actionType}-${type}`]);
         break;
+      case LEAVE_GAME_ACTION:
+        setIconType2('fas fa-running');
+        setIconType('fas fa-sign-out-alt');
+        sound.current = new Audio(SOUNDS[`${actionType}-${type}`]);
+        sound2.current = new Audio(SOUNDS[type2]);
+        break;
       case WIN_GAME:
         setIconType('fas fa-trophy');
         break;
@@ -134,6 +147,8 @@ const ActionButton = ({
         sound.current = new Audio(
           SOUNDS[type ? `car-enter-${type}` : CAR_ENTER_ACTION]
         );
+        console.log('$$$ sound.current ', sound.current);
+
         break;
       case CAR_MOVE_ACTION:
         setIconSize('small');

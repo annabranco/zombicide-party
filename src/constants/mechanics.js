@@ -8,6 +8,7 @@ export const FINISH_SETUP = 'Finish setup';
 export const HAS_BEEN_KILLED = 'has \nbeen killed';
 export const KILLED_EM_ALL = 'All characters are dead';
 export const LEARNED_NEW_ABILITY = 'New ability learned';
+export const LEFT_AREA = ' has left the area safely';
 export const LESS_THAN_1_MIN = `Less than 1 minute`;
 export const MANAGE_PLAYERS = 'Manage Players';
 export const NEW_GAME_WARNING =
