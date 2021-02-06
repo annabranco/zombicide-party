@@ -37,6 +37,7 @@ const SetupModal = ({
   addPlayer,
   dynamic,
   loadedGame,
+  playIntro,
   setActivePlayers,
   type
 }) => {
@@ -99,6 +100,9 @@ const SetupModal = ({
   const onClickOkButton = () => {
     localStorage.setItem(LOCAL_STORAGE_PLAYERS_KEY, JSON.stringify(players));
     toggleVisible(false);
+    if (playIntro) {
+      playIntro();
+    }
   };
 
   const onClickGoOn = () => {
@@ -236,6 +240,7 @@ SetupModal.propTypes = {
   activePlayers: instanceOf(Set).isRequired,
   dynamic: bool,
   loadedGame: bool,
+  playIntro: func,
   setActivePlayers: func.isRequired,
   type: string
 };
@@ -244,6 +249,7 @@ SetupModal.defaultProps = {
   addPlayer: () => null,
   dynamic: false,
   loadedGame: null,
+  playIntro: null,
   type: null
 };
 

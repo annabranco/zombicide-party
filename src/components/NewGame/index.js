@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { arrayOf, bool, func } from 'prop-types';
 import { cloneDeep } from 'lodash';
@@ -7,6 +7,8 @@ import { getMediaQuery } from '../../utils/devices';
 import { getCharacterColor } from '../../utils/players';
 import { CHARACTERS } from '../../setup/characters';
 import SetupModal from '../SetupModal';
+import Intro from '../../assets/sounds/music/TheHorrorShowShort.mp3';
+
 import BG from '../../assets/images/background/background.jpg';
 import {
   CHARACTER_TEXT,
@@ -50,6 +52,22 @@ const NewGame = ({
     null,
     'playerWasSelected'
   );
+
+  const intro = useRef(new Audio(Intro));
+
+  const addPlayer = newPlayerSelected => {
+    setNewPlayer(newPlayerSelected);
+    selectPlayer(true);
+  };
+
+  const onClickConfirm = () => {
+    localStorage.removeItem(LOCAL_STORAGE_KEY);
+    const newgameCharacters = [];
+    charactersSelected.forEach((player, name) => {
+      newgameCharacters.push(characters.find(char => char.name === name));
+    });
+    setInitialCharacters(newgameCharacters);
+  };
 
   const onSelect = event => {
     if (dynamic) {
@@ -110,18 +128,23 @@ const NewGame = ({
     });
   };
 
-  const onClickConfirm = () => {
-    localStorage.removeItem(LOCAL_STORAGE_KEY);
-    const newgameCharacters = [];
-    charactersSelected.forEach((player, name) => {
-      newgameCharacters.push(characters.find(char => char.name === name));
-    });
-    setInitialCharacters(newgameCharacters);
+  const playIntro = () => {
+    intro.current.currentTime = 0;
+    intro.current.volume = 0.4;
+    intro.current.loop = true;
+    intro.current.play();
   };
 
-  const addPlayer = newPlayerSelected => {
-    setNewPlayer(newPlayerSelected);
-    selectPlayer(true);
+  const stopIntro = () => {
+    const fadeInterval = setInterval(() => {
+      if (intro.current.volume < 0.1) {
+        // intro.current.volume -= 0.1;
+        clearInterval(fadeInterval);
+        intro.current.pause();
+      } else if (intro.current.volume > 0) {
+        intro.current.volume -= 0.05;
+      }
+    }, 500);
   };
 
   useEffect(() => {
@@ -135,6 +158,10 @@ const NewGame = ({
     }
   }, [currentChars]);
 
+  useEffect(() => {
+    return () => stopIntro();
+  }, []);
+
   return (
     <MenuScreen dynamic={dynamic} img={BG} type="newChar">
       <SetupModal
@@ -142,6 +169,7 @@ const NewGame = ({
         addPlayer={addPlayer}
         dynamic={dynamic}
         loadedGame={loadedGame}
+        playIntro={playIntro}
         setActivePlayers={setActivePlayers}
         type="newChar"
       />
