@@ -1183,26 +1183,6 @@ export const ModalSign = styled.div`
 `;
 ModalSign.displayName = 'ModalSign';
 
-export const ModalSignExitButton = styled.img`
-  label: ModalSignExitButton;
-  z-index: 10;
-  position: absolute;
-  bottom: 100px;
-  left: 50%;
-  transform: translate(-50%, 0);
-  width: 80px;
-  cursor: pointer;
-  box-shadow: 0 0 6px 0 white;
-  animation-name: ${Appear};
-  animation-duration: 10s;
-  animation-iteration-count: 1;
-  animation-fill-mode: forwards;
-
-  @media all and (min-width: 1200px) {
-  }
-`;
-ModalSignExitButton.displayName = 'ModalSignExitButton';
-
 export const ModalSignText = styled.p`
   label: ModalSignText;
   position: absolute;

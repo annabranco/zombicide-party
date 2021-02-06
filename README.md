@@ -53,6 +53,13 @@ Virtual cards: https://patrickgalbraith.github.io/zombicide-card-database/?
 Base zombies sounds: https://www.fesliyanstudios.com/
 Base weapons soundS: http://soundbible.com/
 
+#### Songs
+##### Intro
+
+##### Ending Game
+"Funeral Procession" by Twin Musicom (twinmusicom.org)
+"Video Game Soldiers" by Twin Musicom (twinmusicom.org)
+
 ## Final words
 
 I really hope you like and it helps you have a wonderful experience while playing Zombicide with your family, friends or even by yourself.

@@ -21,7 +21,8 @@ import {
   OPEN_DOOR_ACTION,
   RELOAD_ACTION,
   SEARCH_ACTION,
-  SEARCH_ZOMBIE_ACTION
+  SEARCH_ZOMBIE_ACTION,
+  WIN_GAME
 } from '../../constants';
 import {
   ActionIcon,
@@ -108,6 +109,9 @@ const ActionButton = ({
       case MOVE_ACTION:
         setIconType('fas fa-running');
         sound.current = new Audio(SOUNDS[`${actionType}-${type}`]);
+        break;
+      case WIN_GAME:
+        setIconType('fas fa-trophy');
         break;
       case END_TURN_ACTION:
         setIconType('fas fa-ban');

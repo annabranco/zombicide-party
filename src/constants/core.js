@@ -16,10 +16,13 @@ export const ERROR_TEXTS_404 = {
   title: 'Aaahh!',
   notifyMe: 'Oh, no...'
 };
+export const GAME_OVER = 'Game Over';
 export const GO_ON = 'Go on';
 export const INITIAL = 'initial';
+export const LIVE_ANOTHER_DAY = "You've survived another day";
 export const LOCAL_STORAGE_KEY = 'ZombicideParty';
 export const LOCAL_STORAGE_PLAYERS_KEY = 'ZombicideParty Players';
+export const LOST = 'lost';
 export const MOBILE = 'mobile';
 export const NEXT = 'next';
 export const NONE = 'none';
@@ -33,3 +36,4 @@ export const TABLET = 'tablet';
 export const WARNING = 'Warning';
 export const YEAH = 'YEAH!';
 export const ZOMBIES = 'ZOMBIES';
+export const WON = 'won';

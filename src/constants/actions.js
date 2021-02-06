@@ -51,3 +51,4 @@ export const TRADE = 'trade';
 export const UPGRADE_WEAPON = 'upgrade weapon';
 export const XP_GAIN = 'XP Gain';
 export const XP_GAIN_SELECT = 'Select the ammount of XP gained';
+export const WIN_GAME = 'Win game';

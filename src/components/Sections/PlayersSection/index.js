@@ -38,7 +38,6 @@ import ItemsArea from '../../Items/ItemsArea';
 import ActionButton from '../../ActionButton';
 import TradeArea from '../../TradeArea';
 import NewGame from '../../NewGame';
-
 import CharacterFace from '../../CharacterFace';
 import {
   DEFLECTED,
@@ -122,12 +121,13 @@ import {
   XP,
   XP_GAIN,
   XP_GAIN_SELECT,
-  ZOMBIES_ROUND
+  ZOMBIES_ROUND,
+  LOST,
+  WIN_GAME,
+  WON
 } from '../../../constants';
-
 import Blood from '../../../assets/images/blood.png';
 import ZombieFace from '../../../assets/images/zombieFace.png';
-import Exit from '../../../assets/images/exit.png';
 import Noise from '../../../assets/images/noise.png';
 import FirstPlayer from '../../../assets/images/firstPlayer.jpg';
 import { CharacterType } from '../../../interfaces/types';
@@ -158,7 +158,6 @@ import {
   MainButton,
   MidScreenTag,
   ModalSign,
-  ModalSignExitButton,
   ModalSignText,
   MovementIcon,
   NavIconsWrapper,
@@ -181,6 +180,7 @@ import {
   ConfirmAttackButton
 } from '../ZombiesSection/styles';
 import FogEffect from '../../Fog';
+import EndGame from '../../EndGame';
 
 const PlayersSection = ({
   damageMode,
@@ -235,6 +235,10 @@ const PlayersSection = ({
   const [extraActivation, toggleExtraActivation] = useStateWithLabel(
     false,
     'extraActivation'
+  );
+  const [displayEndGameScreen, toggleDisplayEndGameScreen] = useStateWithLabel(
+    false,
+    'displayEndGameScreen'
   );
   const [firstPlayer, changeFirstPlayer] = useStateWithLabel(
     null,
@@ -682,13 +686,6 @@ const PlayersSection = ({
 
     updateData(updatedCharacter);
     selectSlot();
-  };
-
-  const exitGame = () => {
-    loadGame();
-    localStorage.removeItem(LOCAL_STORAGE_KEY);
-    history.push('/');
-    window.location.reload();
   };
 
   const generateActionsCountArray = actionsLeft => {
@@ -1528,11 +1525,13 @@ const PlayersSection = ({
     }
   }, [message]);
 
-  // useEffect(() => {
-  //   if (gameOver) {
-  //     history.push('/');
-  //   }
-  // }, []);
+  useEffect(() => {
+    if (gameOver) {
+      setTimeout(() => {
+        toggleDisplayEndGameScreen(LOST);
+      }, 5000);
+    }
+  }, [gameOver]);
 
   /* --- */
 
@@ -1660,6 +1659,16 @@ const PlayersSection = ({
               {!damageMode && !setupMode && !slot && (
                 <>
                   <ActionsWrapper>
+                    {!!generalActions && (
+                      <ActionButton
+                        actionType={WIN_GAME}
+                        callback={() => toggleDisplayEndGameScreen(WON)}
+                        changeActionLabel={changeActionLabel}
+                        isMobile={device.current === MOBILE}
+                        label={WIN_GAME}
+                        manyButtons={character.location === CAR}
+                      />
+                    )}
                     {!!generalActions &&
                       character.abilities.includes(
                         ABILITIES_S1.HOLD_YOUR_NOSE.name
@@ -1900,9 +1909,6 @@ const PlayersSection = ({
                   <ModalSignText>{`${character.name} ${HAS_BEEN_KILLED}`}</ModalSignText>
                 )}
               </ModalSign>
-              {gameOver && (
-                <ModalSignExitButton onClick={exitGame} src={Exit} />
-              )}
             </>
           )}
 
@@ -2350,6 +2356,13 @@ const PlayersSection = ({
           }}
           isMobile={device.current === MOBILE}
           onConfirmModal={learnNewAbility}
+        />
+      )}
+      {displayEndGameScreen && (
+        <EndGame
+          characters={characters}
+          loadGame={loadGame}
+          type={displayEndGameScreen}
         />
       )}
     </CharacterSheet>
