@@ -228,7 +228,7 @@ export const PlayIcon = styled.img`
   label: PlayIcon;
   max-height: 100%;
   max-width: 100%;
-  /* transition: transform ease 0.5s, filter 2s ease-out; */
+  width: 100%;
   transition: transform ease 0.5s;
 
   ${({ type, active }) => {

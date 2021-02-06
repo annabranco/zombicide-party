@@ -104,6 +104,7 @@ import {
   OPEN_DOOR_ACTION,
   PREVIOUS,
   RANGED,
+  REORDER,
   RESISTED,
   RESISTED_ONE,
   RUN_OVER,
@@ -251,6 +252,10 @@ const PlayersSection = ({
     null,
     'forcedKillButtons'
   );
+  const [freeReorder, toggleFreeReorder] = useStateWithLabel(
+    false,
+    'freeReorder'
+  );
   const [gameOver, toggleGameOver] = useStateWithLabel(null, 'gameOver');
   const [highestXp, updateHighestXp] = useStateWithLabel(
     { name: '', xp: 0 },
@@ -357,6 +362,12 @@ const PlayersSection = ({
         updateCharacters(updatedCharacters);
       }
 
+      if (freeReorder === NEXT) {
+        toggleFreeReorder(false);
+      } else if (freeReorder) {
+        toggleFreeReorder(NEXT);
+      }
+
       console.log('$$$ LS UPDATING DATA', updatedCharacters);
       localStorage.setItem(
         LOCAL_STORAGE_KEY,
@@ -367,7 +378,6 @@ const PlayersSection = ({
   };
 
   const resetInitialState = () => {
-    console.log('$$$ Resetting initial state');
     changeActionLabel('');
     toggleCanCombine(false);
     changeCanUseFlashlight(false);
@@ -382,6 +392,7 @@ const PlayersSection = ({
     toggleHasKilledZombie(false);
     addNewChar(false);
     toggleResistedAttack(false);
+    toggleFreeReorder(false);
     // toggleSetupMode(false);
     toggleSomeoneIsWounded(false);
     selectSlot(null);
@@ -606,7 +617,7 @@ const PlayersSection = ({
       char => char.wounded !== KILLED && !char.hasLeft && char.name !== skip
     );
     let nextPlayerIndex;
-    console.log('$$$ remainingCharacters', remainingCharacters);
+
     if (charactersNumber !== remainingCharacters.length) {
       updateCharacters(remainingCharacters);
     }
@@ -619,6 +630,7 @@ const PlayersSection = ({
         charIndex - 1 < 0 ? remainingCharacters.length - 1 : charIndex - 1;
     }
 
+    toggleFreeReorder(false);
     toggleExtraActivation(false);
     changeCharIndex(nextPlayerIndex);
   };
@@ -844,6 +856,7 @@ const PlayersSection = ({
     const hasFlashlight = checkIfCharacterHasFlashlight(newItems);
     const charCanCombineItems = checkIfCharCanCombineItems(newItems);
 
+    toggleFreeReorder(false);
     toggleCanCombine(charCanCombineItems);
     changeCharacter(updatedCharacter);
     updateCharacters(updatedCharacters);
@@ -1067,6 +1080,7 @@ const PlayersSection = ({
         return null;
       }, 1000);
     }
+    toggleFreeReorder(true);
     spendAction(SEARCH);
     return change(item, findingSlot);
   };
@@ -1621,6 +1635,7 @@ const PlayersSection = ({
           characters={characters}
           confirmTrade={confirmTrade}
           device={device.current}
+          reorder={trade === REORDER}
           spendAction={spendAction}
           startTrade={startTrade}
         />
@@ -1958,11 +1973,18 @@ const PlayersSection = ({
                 character.actionsLeft &&
                 checkIfHasAnyActionLeft(character.actionsLeft) && (
                   <CardsActions>
-                    <CardsActionsText onClick={startTrade}>
+                    <CardsActionsText onClick={() => startTrade(true)}>
                       {TRADE}
                     </CardsActionsText>
                   </CardsActions>
                 )}
+              {freeReorder && !setupMode && (
+                <CardsActions reOrder>
+                  <CardsActionsText onClick={() => startTrade(REORDER)}>
+                    {REORDER}
+                  </CardsActionsText>
+                </CardsActions>
+              )}
               <CharItems slotType={IN_HAND}>
                 {character.inHand &&
                   character.inHand.map((item, index) => {

@@ -72,7 +72,6 @@ const ItemsArea = ({
   slotType,
   spendAction,
   spendSingleUseWeapon,
-  startTrade,
   trade,
   tradeItem,
   wounded
@@ -383,7 +382,6 @@ ItemsArea.propTypes = {
   slotType: string.isRequired,
   spendAction: func,
   spendSingleUseWeapon: func,
-  startTrade: func,
   trade: bool,
   tradeItem: func,
   wounded: bool.isRequired
@@ -422,7 +420,6 @@ ItemsArea.defaultProps = {
   setupMode: null,
   spendAction: () => null,
   spendSingleUseWeapon: () => null,
-  startTrade: () => null,
   trade: false,
   tradeItem: () => null
 };

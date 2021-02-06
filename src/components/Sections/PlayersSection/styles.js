@@ -331,6 +331,28 @@ export const CardsActions = styled.div`
       background: green;
     `}
 
+  ${({ reOrder }) =>
+    reOrder &&
+    css`
+      transform: none;
+      bottom: 160px;
+      left: 80px;
+      background: linear-gradient(
+        60deg,
+        rgba(0, 0, 0, 0.5),
+        rgba(51, 204, 51, 0.5),
+        rgba(0, 0, 0, 0.5),
+        rgba(51, 204, 51, 0.5),
+        rgba(0, 0, 0, 0.5),
+        rgba(51, 204, 51, 0.5),
+        rgba(0, 0, 0, 0.5)
+      );
+    `}
+
+  @media all and (max-height: 600px) {
+    bottom: 100px;
+  }
+
   @media all and (min-width: 360px) {
     bottom: 100px;
     left: 10px;
@@ -345,14 +367,49 @@ export const CardsActions = styled.div`
         left: unset;
         right: 100px;
       `}
+
+    ${({ reOrder }) =>
+      reOrder &&
+      css`
+        transform: none;
+        bottom: 200px;
+        left: 100px;
+      `}
   }
 
   @media all and (min-width: 410px) {
     bottom: 100px;
+    ${({ reOrder }) =>
+      reOrder &&
+      css`
+        transform: none;
+        bottom: 210px;
+        left: 120px;
+      `}
   }
 
   @media all and (min-height: 800px) {
     bottom: 200px;
+  }
+
+  @media all and (min-width: 410px) and (min-height: 800px) {
+    bottom: 150px;
+    left: 20px;
+
+    ${({ drop }) =>
+      drop &&
+      css`
+        left: unset;
+        right: 30%;
+      `}
+
+    ${({ reOrder }) =>
+      reOrder &&
+      css`
+        transform: none;
+        bottom: 110px;
+        left: 120px;
+      `}
   }
 
   @media all and (min-width: 701px) {
@@ -366,6 +423,11 @@ export const CardsActions = styled.div`
         left: unset;
         right: 15%;
       `}
+    ${({ reOrder }) =>
+      reOrder &&
+      css`
+        bottom: 170px;
+      `}
   }
 
   @media (min-width: 1024px) and (min-height: 701px) {
@@ -378,6 +440,11 @@ export const CardsActions = styled.div`
         left: unset;
         right: 15%;
       `}
+    ${({ reOrder }) =>
+      reOrder &&
+      css`
+        bottom: 120px;
+      `}
   }
 
   @media (min-width: 1024px) and (min-height: 1300px) {
@@ -389,6 +456,11 @@ export const CardsActions = styled.div`
       css`
         left: unset;
         right: 15%;
+      `}
+    ${({ reOrder }) =>
+      reOrder &&
+      css`
+        bottom: 320px;
       `}
   }
 
@@ -414,6 +486,12 @@ export const CardsActions = styled.div`
         left: unset;
         right: 27%;
       `}
+
+    ${({ reOrder }) =>
+      reOrder &&
+      css`
+        bottom: 220px;
+      `}
   }
 
   @media (min-width: 1300px) and (min-height: 1024px) {
@@ -425,6 +503,11 @@ export const CardsActions = styled.div`
       css`
         left: unset;
         right: 25%;
+      `}
+    ${({ reOrder }) =>
+      reOrder &&
+      css`
+        bottom: 200px;
       `}
   }
 `;

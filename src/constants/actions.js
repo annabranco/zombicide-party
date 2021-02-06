@@ -41,6 +41,7 @@ export const OPEN_DOOR = 'open door';
 export const OPEN_DOOR_ACTION = 'open-door';
 export const RELOAD = 'reload';
 export const RELOAD_ACTION = 'reload';
+export const REORDER = 'reorder';
 export const RUN_OVER = 'run over';
 export const SEARCH = 'search';
 export const SEARCH_ACTION = 'search';
