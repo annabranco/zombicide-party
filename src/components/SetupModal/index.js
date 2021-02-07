@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
 import { bool, func, instanceOf, string } from 'prop-types';
-import { useStateWithLabel } from '../../utils/hooks';
+import { useStateWithLabel } from '../../utils';
 import {
   CANCEL,
   GO_ON,

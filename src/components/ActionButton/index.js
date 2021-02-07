@@ -1,7 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import { bool, func, string } from 'prop-types';
-import { useStateWithLabel } from '../../utils/hooks';
-import { checkForNoiseOpeningDoor } from '../../utils/items';
+import { checkForNoiseOpeningDoor, useStateWithLabel } from '../../utils';
 import { SOUNDS } from '../../assets/sounds';
 import {
   CANNOT_BE_USED,
@@ -147,8 +146,6 @@ const ActionButton = ({
         sound.current = new Audio(
           SOUNDS[type ? `car-enter-${type}` : CAR_ENTER_ACTION]
         );
-        console.log('$$$ sound.current ', sound.current);
-
         break;
       case CAR_MOVE_ACTION:
         setIconSize('small');

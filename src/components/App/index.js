@@ -1,17 +1,24 @@
 import React, { useEffect } from 'react';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import { Global } from '@emotion/core';
-import { useStateWithLabel } from '../../utils/hooks';
-import { LOCAL_STORAGE_KEY, ERROR_TEXTS_404 } from '../../constants';
+import { cloneDeep } from 'lodash';
+import { loadSavedGame, logger, useStateWithLabel } from '../../utils';
 import MainMenu from '../MainMenu';
 import NewGame from '../NewGame';
-
-import { globalStyles } from '../../styles';
 import MainScreen from '../MainScreen';
 import ControllerLayer from '../ControllerLayer';
-import { loadSavedGame } from '../../utils/characters';
 import ErrorBoundary from '../ErrorBoundary';
 import ErrorComponent from '../ErrorBoundary/ErrorComponent';
+import {
+  CLEAR_LS,
+  ERROR_TEXTS_404,
+  LOCAL_STORAGE_KEY,
+  LOG_APP_INIT,
+  LOG_LOADED_GAME,
+  LOG_TYPE_CORE,
+  LOG_TYPE_INFO
+} from '../../constants';
+import { globalStyles } from '../../styles';
 
 window.addEventListener('orientationchange', () => {
   window.location.reload();
@@ -28,9 +35,13 @@ const App = () => {
   useEffect(() => {
     const game = loadSavedGame();
 
+    logger(LOG_TYPE_CORE, LOG_APP_INIT);
+
     if (game && game.length !== 0) {
       loadGame(game);
+      logger(LOG_TYPE_CORE, LOG_LOADED_GAME, cloneDeep(game));
     } else {
+      logger(LOG_TYPE_INFO, CLEAR_LS);
       localStorage.removeItem(LOCAL_STORAGE_KEY);
     }
   }, [loadGame]);

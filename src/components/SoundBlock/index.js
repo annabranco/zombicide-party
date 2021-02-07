@@ -1,7 +1,6 @@
 import React, { useEffect, useRef } from 'react';
-import { bool, func, number, string, oneOfType } from 'prop-types';
-import { useStateWithLabel } from '../../utils/hooks';
-import { checkIfItemCanBeCombined } from '../../utils/items';
+import { bool, func, number, oneOfType, string } from 'prop-types';
+import { checkIfItemCanBeCombined, useStateWithLabel } from '../../utils';
 import ActionButton from '../ActionButton';
 import { SOUNDS } from '../../assets/sounds';
 import {
@@ -17,12 +16,12 @@ import {
   WOUND,
   ATTACK_SURVIVOR
 } from '../../constants';
-import { Block, PlayImageButton, PlayIcon, PlayText, ItemIcon } from './styles';
 import {
   Action,
   ZombieActions,
   ZombieImageForMobile
 } from '../Sections/ZombiesSection/styles';
+import { Block, PlayImageButton, PlayIcon, PlayText, ItemIcon } from './styles';
 
 const SoundBlock = ({
   activateKillButtons,

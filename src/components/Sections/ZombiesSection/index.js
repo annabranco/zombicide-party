@@ -1,15 +1,17 @@
 import React, { useEffect, useRef } from 'react';
 import { bool, func } from 'prop-types';
-import { useStateWithLabel } from '../../../utils/hooks';
-import { getMediaQuery } from '../../../utils/devices';
 import { ALL_ZOMBIES } from '../../../setup/zombies';
+import { getMediaQuery, logger, useStateWithLabel } from '../../../utils';
 import SoundBlock from '../../SoundBlock';
 import {
   ACTIVATIONS,
   END,
   MOBILE,
   TABLET,
-  ZOMBIES_ROUND
+  ZOMBIES_ROUND,
+  LOG_TYPE_EXTENDED,
+  END_ZOMBIE_ROUND,
+  ZOMBIE_ATTACK
 } from '../../../constants';
 import { SelectorArea } from '../../SoundBlock/styles';
 import {
@@ -36,11 +38,13 @@ const ZombiesSection = ({
   const device = useRef(getMediaQuery());
 
   const endZombiesRound = () => {
+    logger(LOG_TYPE_EXTENDED, END_ZOMBIE_ROUND);
     setPlayersRound();
     toggleZombiesArePlaying(false);
   };
 
   const zombieAttack = zombie => {
+    logger(LOG_TYPE_EXTENDED, ZOMBIE_ATTACK);
     setPlayersRound();
     toggleDamageMode(zombie);
   };

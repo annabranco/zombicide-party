@@ -2,16 +2,9 @@ import React, { useEffect } from 'react';
 import { func, string } from 'prop-types';
 import { ALL_WEAPONS } from '../../../setup/weapons';
 import { ALL_ITEMS } from '../../../setup/items';
-import { useStateWithLabel } from '../../../utils/hooks';
+import { useStateWithLabel } from '../../../utils';
 import SelectionItem from '../ItemSelector';
 import { SelectorArea } from '../../SoundBlock/styles';
-import {
-  SelectorButton,
-  SelectorModal,
-  SelectorWrapper,
-  SubSectionTitle
-} from './styles';
-import { ButtonsWrapper, CancelButton } from '../../TradeArea/styles';
 import {
   DESKTOP,
   IN_HAND,
@@ -20,6 +13,13 @@ import {
   TABLET,
   WEAPONS
 } from '../../../constants';
+import { ButtonsWrapper, CancelButton } from '../../TradeArea/styles';
+import {
+  SelectorButton,
+  SelectorModal,
+  SelectorWrapper,
+  SubSectionTitle
+} from './styles';
 
 const ItemsSelectorModal = ({ device, onSelect, selectSlot, slotType }) => {
   const [items, changeItems] = useStateWithLabel(ALL_ITEMS, ITEMS);

@@ -2,49 +2,53 @@ import React, { useEffect, useRef } from 'react';
 import { useHistory } from 'react-router-dom';
 import { cloneDeep, isEqual } from 'lodash';
 import { arrayOf, bool, func, oneOfType, string } from 'prop-types';
-import { useStateWithLabel, useTurnsCounter } from '../../../utils/hooks';
 import { ABILITIES_S1 } from '../../../setup/abilities';
 import { CHARACTERS } from '../../../setup/characters';
 import { ALL_WEAPONS } from '../../../setup/weapons';
 import { ALL_ITEMS } from '../../../setup/items';
 import {
-  checkIfHasAnyActionLeft,
-  getActionColor
-} from '../../../utils/actions';
-import { loadSavedGame } from '../../../utils/characters';
-import { getMediaQuery } from '../../../utils/devices';
-import {
+  blueThreatThresold,
+  calculateXpBar,
   checkForNoise,
   checkIfAllSlotsAreEmpty,
   checkIfCharCanCombineItems,
   checkIfCharHasNoItems,
   checkIfCharacterCanOpenDoors,
   checkIfCharacterHasFlashlight,
-  getCombiningReference
-} from '../../../utils/items';
-import { getCharacterColor } from '../../../utils/players';
-import { handlePromotionEffects } from '../../../utils/promotions';
-import {
-  blueThreatThresold,
-  calculateXpBar,
+  checkIfHasAnyActionLeft,
+  getActionColor,
+  getCharacterColor,
+  getCombiningReference,
+  getMediaQuery,
   getXpColor,
+  handlePromotionEffects,
+  loadSavedGame,
+  logger,
   orangeThreatThresold,
+  useStateWithLabel,
+  useTurnsCounter,
   yellowThreatThresold
-} from '../../../utils/xp';
+} from '../../../utils';
 import ActionsModal from '../../ActionsModal';
 import { SOUNDS } from '../../../assets/sounds';
-import ItemsSelectorModal from '../../Items/ItemsSelectorModal';
-import ItemsArea from '../../Items/ItemsArea';
 import ActionButton from '../../ActionButton';
-import TradeArea from '../../TradeArea';
-import NewGame from '../../NewGame';
+import EndGame from '../../EndGame';
 import CharacterFace from '../../CharacterFace';
+import FogEffect from '../../Fog';
+import ItemsArea from '../../Items/ItemsArea';
+import ItemsSelectorModal from '../../Items/ItemsSelectorModal';
+import NewGame from '../../NewGame';
+import TradeArea from '../../TradeArea';
+import Blood from '../../../assets/images/blood.png';
+import FirstPlayer from '../../../assets/images/firstPlayer.jpg';
+import Noise from '../../../assets/images/noise.png';
+import ZombieFace from '../../../assets/images/zombieFace.png';
 import {
-  DEFLECTED,
-  DEFLECTED_ONE,
+  ADD_CHARACTER,
+  ADD_NEW_CHAR,
+  ADVANCE_LEVEL,
   BLOCKED,
   BLOCKED_ONE,
-  ADD_CHARACTER,
   BONUS_ACTION,
   BREAK_DOOR,
   BURNEM_ALL,
@@ -55,6 +59,15 @@ import {
   CAR_EXIT_ACTION,
   CAR_MOVE_ACTION,
   CHANGE_CHARACTER,
+  CHANGE_IN_HAND,
+  CHANGE_IN_RESERVE,
+  CHAR_KILLED,
+  CLEAR_LS,
+  CLICK_EDIT,
+  CLICK_END_TURN,
+  COMBINE_ITEM,
+  DEFLECTED,
+  DEFLECTED_ONE,
   DESKTOP,
   DROP,
   EDIT_CHARACTERS,
@@ -67,6 +80,8 @@ import {
   FREE_ATTACK,
   FREE_MOVE,
   FREE_SEARCH,
+  GAIN_XP,
+  GAME_OVER,
   GET_OBJECTIVE,
   GIVE_ORDERS,
   GIVE_ORDERS_ACTION,
@@ -84,10 +99,17 @@ import {
   KILLED,
   KILLED_EM_ALL,
   LEARNED_NEW_ABILITY,
+  LEAVE_GAME,
+  LEAVE_GAME_ACTION,
   LEFT_AREA,
   LOCAL_STORAGE_KEY,
   LOCK_ACTION,
   LOCK_DOOR,
+  LOG_ACTION,
+  LOG_TYPE_CORE,
+  LOG_TYPE_EXTENDED,
+  LOG_TYPE_INFO,
+  LOST,
   MAKE_LOUD_NOISE,
   MAKE_NOISE_ACTION,
   MELEE,
@@ -98,16 +120,20 @@ import {
   NEXT,
   NOISY,
   NONE,
+  NO_GAME_LOADED,
   OBJECTIVE_ACTION,
   OK,
   OPEN_DOOR,
   OPEN_DOOR_ACTION,
+  PLAYERS_ROUND_FINISHED,
   PREVIOUS,
   RANGED,
   REORDER,
+  RESET_STATE,
   RESISTED,
   RESISTED_ONE,
   RUN_OVER,
+  SAVE_TO_LS,
   SEARCH,
   SEARCH_ZOMBIE,
   SEARCH_ZOMBIE_ACTION,
@@ -115,25 +141,28 @@ import {
   SELECT_DAMAGE,
   START,
   START_NEXT_ROUND,
+  START_ROUND_ENDED,
+  START_ZOMBIE_ROUND,
+  TAKE_DAMAGE,
   TRADE,
   TURN_FINISHED,
+  UPDATE_DATA,
   UPGRADE_WEAPON,
+  WIN_GAME,
+  WON,
   WOUNDED,
   XP,
   XP_GAIN,
   XP_GAIN_SELECT,
-  ZOMBIES_ROUND,
-  LOST,
-  WIN_GAME,
-  WON,
-  LEAVE_GAME_ACTION,
-  LEAVE_GAME
+  ZOMBIES_ROUND
 } from '../../../constants';
-import Blood from '../../../assets/images/blood.png';
-import ZombieFace from '../../../assets/images/zombieFace.png';
-import Noise from '../../../assets/images/noise.png';
-import FirstPlayer from '../../../assets/images/firstPlayer.jpg';
 import { CharacterType } from '../../../interfaces/types';
+import {
+  AttackBurronsWrapper,
+  AttackInstructions,
+  CancelAttackButton,
+  ConfirmAttackButton
+} from '../ZombiesSection/styles';
 import {
   Abilities,
   AbilitiesInnerSeparator,
@@ -176,14 +205,6 @@ import {
   WoundedWrapper,
   XpIcon
 } from './styles';
-import {
-  AttackBurronsWrapper,
-  AttackInstructions,
-  CancelAttackButton,
-  ConfirmAttackButton
-} from '../ZombiesSection/styles';
-import FogEffect from '../../Fog';
-import EndGame from '../../EndGame';
 
 const PlayersSection = ({
   damageMode,
@@ -347,13 +368,15 @@ const PlayersSection = ({
         char => char.name === charWithChangedData.name
       );
 
+      logger(LOG_TYPE_EXTENDED, UPDATE_DATA);
+
       if (charWithChangedData.wounded === KILLED) {
         const charactersLeft = updatedCharacters.filter(
           char => char.name !== charWithChangedData.name
         );
         updateCharacters(charactersLeft);
         if (charactersLeft.length === 0) {
-          console.log('$$$ LS CLEARING LS');
+          logger(LOG_TYPE_INFO, CLEAR_LS);
           localStorage.removeItem(LOCAL_STORAGE_KEY);
           return null;
         }
@@ -368,7 +391,7 @@ const PlayersSection = ({
         toggleFreeReorder(NEXT);
       }
 
-      console.log('$$$ LS UPDATING DATA', updatedCharacters);
+      logger(LOG_TYPE_EXTENDED, SAVE_TO_LS, updatedCharacters);
       localStorage.setItem(
         LOCAL_STORAGE_KEY,
         JSON.stringify(updatedCharacters)
@@ -378,6 +401,7 @@ const PlayersSection = ({
   };
 
   const resetInitialState = () => {
+    logger(LOG_TYPE_INFO, RESET_STATE);
     changeActionLabel('');
     toggleCanCombine(false);
     changeCanUseFlashlight(false);
@@ -415,6 +439,7 @@ const PlayersSection = ({
   const advancingLevel = (xp, char) => {
     let updatedChar = cloneDeep(char);
 
+    logger(LOG_TYPE_EXTENDED, ADVANCE_LEVEL, char.name, xp);
     switch (true) {
       case xp > orangeThreatThresold:
         if (char.abilities.length === 3) {
@@ -583,6 +608,7 @@ const PlayersSection = ({
           char => char.actionsLeft && !checkIfHasAnyActionLeft(char.actionsLeft)
         )
       ) {
+        logger(LOG_TYPE_EXTENDED, PLAYERS_ROUND_FINISHED);
         endRound(true);
         toggleZombiesShouldAct(true);
       }
@@ -630,6 +656,7 @@ const PlayersSection = ({
         charIndex - 1 < 0 ? remainingCharacters.length - 1 : charIndex - 1;
     }
 
+    logger(LOG_TYPE_INFO, CHANGE_CHARACTER(characters[nextPlayerIndex].name));
     toggleFreeReorder(false);
     toggleExtraActivation(false);
     changeCharIndex(nextPlayerIndex);
@@ -646,6 +673,7 @@ const PlayersSection = ({
       ...updatedCharacter.inReserve
     ]);
 
+    logger(LOG_TYPE_EXTENDED, CHANGE_IN_HAND, name, currentSlot);
     setCanOpenDoor(openDoors);
     changeCanUseFlashlight(hasFlashlight);
     toggleCanCombine(charCanCombineItems);
@@ -687,6 +715,7 @@ const PlayersSection = ({
       newItems.splice(currentSlot, 1);
     }
 
+    logger(LOG_TYPE_EXTENDED, CHANGE_IN_RESERVE, name, currentSlot);
     changeCanUseFlashlight(hasFlashlight);
     toggleCanCombine(charCanCombineItems);
     updatedCharacter.inReserve = newItems;
@@ -755,6 +784,8 @@ const PlayersSection = ({
       updateHighestXp({ name: character.name, xp: newXp });
     }
 
+    logger(LOG_TYPE_EXTENDED, GAIN_XP, `xp: ${xp} newXp: ${newXp}`);
+
     toggleHasKilledZombie(true);
     updatedCharacter.experience = newXp;
     updateData(updatedCharacter);
@@ -805,6 +836,7 @@ const PlayersSection = ({
   };
 
   const setCustomXp = (newXp, prevXp, nextXp) => {
+    const updatedCharacter = cloneDeep(character);
     let updatedXp = newXp;
     if (newXp === '...') {
       if (prevXp === 19 && nextXp === 43) {
@@ -821,12 +853,13 @@ const PlayersSection = ({
         updatedXp = 31;
       }
     }
-    const updatedCharacter = cloneDeep(character);
     updatedCharacter.experience = updatedXp;
 
     if (updatedXp > highestXp.xp || highestXp.name === character.name) {
       updateHighestXp({ name: character.name, xp: updatedXp });
     }
+
+    logger(LOG_TYPE_EXTENDED, GAIN_XP, `xp: ${prevXp} newXp: ${updatedXp}`);
 
     toggleHasKilledZombie(true);
     updateData(updatedCharacter);
@@ -856,6 +889,7 @@ const PlayersSection = ({
     const hasFlashlight = checkIfCharacterHasFlashlight(newItems);
     const charCanCombineItems = checkIfCharCanCombineItems(newItems);
 
+    logger(LOG_TYPE_EXTENDED, TRADE, newItems);
     toggleFreeReorder(false);
     toggleCanCombine(charCanCombineItems);
     changeCharacter(updatedCharacter);
@@ -889,6 +923,8 @@ const PlayersSection = ({
       if (item === pair) {
         const updatedCharacter = cloneDeep(character);
         const secondSlot = itemSlot;
+
+        logger(LOG_TYPE_EXTENDED, COMBINE_ITEM, finalItem);
 
         if (firstSlot <= 2) {
           if (
@@ -930,6 +966,7 @@ const PlayersSection = ({
   const onClickEdit = () => {
     toggleSetupMode(true);
     changeTopActionLabel('');
+    logger(LOG_TYPE_EXTENDED, CLICK_EDIT);
   };
 
   const onClickEndTurn = () => {
@@ -940,6 +977,7 @@ const PlayersSection = ({
         checkIfHasAnyActionLeft(char.actionsLeft || [3])
     );
 
+    logger(LOG_TYPE_EXTENDED, CLICK_END_TURN);
     updatedCharacter.actionsLeft = [0, 0, 0, 0, 0];
     updateData(updatedCharacter);
     if (charsStillToAct.length > 0) {
@@ -968,6 +1006,8 @@ const PlayersSection = ({
     if (setupMode) {
       toggleSetupMode(false);
     } else if (zombiesShouldAct) {
+      logger(LOG_TYPE_EXTENDED, START_ZOMBIE_ROUND);
+
       setZombiesRound();
       toggleZombiesArePlaying(true);
       toggleZombiesShouldAct();
@@ -976,6 +1016,7 @@ const PlayersSection = ({
       if (roundEnded) {
         let nextFirstPlayer;
 
+        logger(LOG_TYPE_EXTENDED, START_NEXT_ROUND);
         updatedCharacters.forEach((char, index) => {
           const restingBonusActions = char.actionsLeft[4];
 
@@ -1163,6 +1204,7 @@ const PlayersSection = ({
     const charsStillInArea = characters.filter(
       char => char.name !== character.name
     );
+    spendAction(LEAVE_GAME); // TODO: TRY IT
     updChar.hasLeft = true;
     updChar.actionsLeft = [0, 0, 0, 0, 0];
     toggleZombiesArePlaying(true);
@@ -1230,6 +1272,7 @@ const PlayersSection = ({
 
   const setNewChar = updatedCharacters => {
     addNewChar(false);
+    logger(LOG_TYPE_EXTENDED, ADD_NEW_CHAR, cloneDeep(updatedCharacters));
     updateCharacters(updatedCharacters);
     localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(updatedCharacters));
   };
@@ -1272,6 +1315,8 @@ const PlayersSection = ({
       if (characterCanResist && !woundedCharacter.wounded) {
         woundedCharacter.abilitiesUsed.push(RESISTED);
         toggleResistedAttack(RESISTED_ONE);
+        logger(LOG_TYPE_EXTENDED, RESISTED_ONE, woundedCharacter, damageMode);
+
         if (selectedSlot <= 2) {
           woundedCharacter.wounded = true;
           woundedCharacter.inHand[selectedSlot - 1] = WOUNDED;
@@ -1281,6 +1326,7 @@ const PlayersSection = ({
           woundedCharacter.inReserve[selectedSlot - 3] = WOUNDED;
           toggleSomeoneIsWounded(true);
         }
+        logger(LOG_TYPE_EXTENDED, TAKE_DAMAGE, woundedCharacter, damageMode);
         setTimeout(() => {
           toggleResistedAttack(false);
         }, 2000);
@@ -1290,6 +1336,7 @@ const PlayersSection = ({
         } else {
           woundedCharacter.inReserve[selectedSlot - 3] = '';
         }
+        logger(LOG_TYPE_EXTENDED, DEFLECTED_ONE, woundedCharacter, damageMode);
         toggleResistedAttack(DEFLECTED_ONE);
         setTimeout(() => {
           toggleResistedAttack(false);
@@ -1299,6 +1346,8 @@ const PlayersSection = ({
         return null;
       } else if (characterCanBlock) {
         toggleResistedAttack(BLOCKED_ONE);
+        logger(LOG_TYPE_EXTENDED, BLOCKED_ONE, woundedCharacter, damageMode);
+
         woundedCharacter.abilitiesUsed.push(BLOCKED);
         setTimeout(() => {
           toggleResistedAttack(false);
@@ -1313,6 +1362,8 @@ const PlayersSection = ({
         woundedCharacter.wounded = KILLED;
         damage = KILL;
         someoneIsKilled = true;
+        logger(LOG_TYPE_INFO, CHAR_KILLED, woundedCharacter, damageMode);
+
         if (
           remainingCharacters.length > 1 &&
           firstPlayer.includes(woundedCharacter.name)
@@ -1321,11 +1372,11 @@ const PlayersSection = ({
         }
 
         if (remainingCharacters.length === 0) {
+          logger(LOG_TYPE_CORE, KILLED_EM_ALL);
           toggleGameOver(KILLED_EM_ALL);
           toggleZombiesArePlaying();
           toggleStartedZombieAttack();
           updateData(woundedCharacter);
-          // localStorage.removeItem(LOCAL_STORAGE_KEY);
           loadGame();
         } else {
           setTimeout(
@@ -1339,18 +1390,29 @@ const PlayersSection = ({
       }
     } else if (characterCanResist) {
       toggleResistedAttack(RESISTED);
-      woundedCharacter.abilitiesUsed.push(RESISTED);
+      logger(LOG_TYPE_EXTENDED, RESISTED);
+      woundedCharacter.abilitiesUsed.push(
+        RESISTED,
+        woundedCharacter,
+        damageMode
+      );
       setTimeout(() => {
         toggleResistedAttack(false);
       }, 2000);
     } else if (characterCanBlock) {
       toggleResistedAttack(BLOCKED);
-      woundedCharacter.abilitiesUsed.push(BLOCKED);
+      logger(LOG_TYPE_EXTENDED, BLOCKED);
+      woundedCharacter.abilitiesUsed.push(
+        BLOCKED,
+        woundedCharacter,
+        damageMode
+      );
       setTimeout(() => {
         toggleResistedAttack(false);
       }, 2000);
     } else if (characterCanDeflect || characterIsProtected) {
       toggleResistedAttack(DEFLECTED);
+      logger(LOG_TYPE_EXTENDED, DEFLECTED, woundedCharacter, damageMode);
       setTimeout(() => {
         toggleResistedAttack(false);
       }, 2000);
@@ -1359,6 +1421,7 @@ const PlayersSection = ({
       } else {
         woundedCharacter.inReserve[selectedSlot - 3] = '';
       }
+      logger(LOG_TYPE_EXTENDED, TAKE_DAMAGE, woundedCharacter, damageMode);
     } else if (woundedCharacter.wounded) {
       remainingCharacters = characters.filter(
         char => char.name !== woundedCharacter.name
@@ -1367,6 +1430,8 @@ const PlayersSection = ({
       someoneIsKilled = true;
       woundedCharacter.wounded = KILLED;
       damage = KILL;
+      logger(LOG_TYPE_INFO, CHAR_KILLED, woundedCharacter, damageMode);
+
       if (firstPlayer.includes(woundedCharacter.name)) {
         changeFirstPlayer(
           `next-${
@@ -1378,8 +1443,10 @@ const PlayersSection = ({
       }
 
       if (remainingCharacters.length === 0) {
+        logger(LOG_TYPE_CORE, KILLED_EM_ALL);
         toggleGameOver(KILLED_EM_ALL);
         toggleZombiesArePlaying();
+        logger(LOG_TYPE_INFO, CLEAR_LS);
         localStorage.removeItem(LOCAL_STORAGE_KEY);
       }
     } else if (selectedSlot <= 2) {
@@ -1431,6 +1498,7 @@ const PlayersSection = ({
         game;
 
       if (!updatedCharacters) {
+        logger(LOG_TYPE_CORE, NO_GAME_LOADED);
         history.push('/');
       } else {
         resetInitialState();
@@ -1444,6 +1512,7 @@ const PlayersSection = ({
           updatedCharacters[0].actionsLeft &&
           !checkIfHasAnyActionLeft(updatedCharacters[0].actionsLeft)
         ) {
+          logger(LOG_TYPE_EXTENDED, START_ROUND_ENDED);
           endRound(true);
         }
         setDataLoaded(true);
@@ -1555,12 +1624,13 @@ const PlayersSection = ({
 
   useEffect(() => {
     if (message) {
-      console.log('$$$ message', message);
+      logger(LOG_TYPE_INFO, LOG_ACTION, message);
     }
   }, [message]);
 
   useEffect(() => {
     if (gameOver) {
+      logger(LOG_TYPE_INFO, GAME_OVER, LOST);
       setTimeout(() => {
         toggleDisplayEndGameScreen(LOST);
       }, 5000);
@@ -1978,13 +2048,14 @@ const PlayersSection = ({
                     </CardsActionsText>
                   </CardsActions>
                 )}
-              {freeReorder && !setupMode && (
-                <CardsActions reOrder>
-                  <CardsActionsText onClick={() => startTrade(REORDER)}>
-                    {REORDER}
-                  </CardsActionsText>
-                </CardsActions>
-              )}
+              {freeReorder ||
+                (setupMode && (
+                  <CardsActions reOrder>
+                    <CardsActionsText onClick={() => startTrade(REORDER)}>
+                      {REORDER}
+                    </CardsActionsText>
+                  </CardsActions>
+                ))}
               <CharItems slotType={IN_HAND}>
                 {character.inHand &&
                   character.inHand.map((item, index) => {

@@ -1,10 +1,12 @@
 import React, { useEffect, useRef } from 'react';
 import { bool, func, number, string, oneOfType } from 'prop-types';
-import { useStateWithLabel } from '../../../utils/hooks';
-import { getItemPhoto, getItemType } from '../../../utils/items';
+import { ALL_WEAPONS } from '../../../setup/weapons';
+import { getItemPhoto, getItemType, useStateWithLabel } from '../../../utils';
 import SoundBlock from '../../SoundBlock';
 import ActionButton from '../../ActionButton';
-import { ALL_WEAPONS } from '../../../setup/weapons';
+import ZombieFace from '../../../assets/images/zombieFace.png';
+import { BonusDicesType } from '../../../interfaces/types';
+import { AppButton } from '../../Sections/PlayersSection/styles';
 import {
   DROP,
   IN_HAND,
@@ -21,9 +23,6 @@ import {
   SPECIAL,
   WEAPONS
 } from '../../../constants';
-import ZombieFace from '../../../assets/images/zombieFace.png';
-import { BonusDicesType } from '../../../interfaces/types';
-import { AppButton } from '../../Sections/PlayersSection/styles';
 import {
   ActionButtonIcon,
   ActionButtonsWrapper,

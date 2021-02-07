@@ -2,7 +2,11 @@ import React, { useEffect } from 'react';
 import { string } from 'prop-types';
 import { useHistory } from 'react-router-dom';
 import appInfo from '../../../package.json';
-import { useStateWithLabel } from '../../utils/hooks';
+import { logger, useStateWithLabel } from '../../utils';
+import { errorTextsPropType } from '../../interfaces/types';
+import FogEffect from '../Fog';
+import BG from '../../assets/images/background/background2.jpg';
+import { DEFAULT_ERROR_TEXTS, ERROR, LOG_TYPE_CORE } from '../../constants';
 import {
   DetailsText,
   ErrorDetailsArea,
@@ -13,15 +17,11 @@ import {
   NotifyButtonText,
   SorryText
 } from './styles';
-import { errorTextsPropType } from '../../interfaces/types';
-import { DEFAULT_ERROR_TEXTS } from '../../constants';
 import { MenuScreen } from '../MainMenu/styles';
-import BG from '../../assets/images/background/background2.jpg';
-import FogEffect from '../Fog';
 
 const REPORT_ISSUE_PAGE = `${appInfo.bugs.url}/new`;
 
-const ErrorComponent = ({ error, texts, notifyButtonLink }) => {
+const ErrorComponent = ({ error, notifyButtonLink, texts }) => {
   const [showNotifyButton, toggleNotifyButton] = useStateWithLabel(
     false,
     'showNotifyButton'
@@ -37,10 +37,9 @@ const ErrorComponent = ({ error, texts, notifyButtonLink }) => {
   };
 
   useEffect(() => {
+    logger(LOG_TYPE_CORE, ERROR, error);
     setTimeout(() => toggleNotifyButton(true), 3000);
   }, []);
-
-  console.log('$$$ texts', texts);
 
   return (
     <MenuScreen img={BG} type="main">
@@ -55,10 +54,10 @@ const ErrorComponent = ({ error, texts, notifyButtonLink }) => {
           </ErrorDetailsArea>
         )}
         <NotifyButton
-          visible={showNotifyButton}
           onClick={onClickButton}
-          target="_Blank"
           rel="noopener noreferrer"
+          target="_Blank"
+          visible={showNotifyButton}
         >
           <NotifyButtonText>{texts.notifyMe}</NotifyButtonText>
           {!notifyButtonLink && (
@@ -72,13 +71,13 @@ const ErrorComponent = ({ error, texts, notifyButtonLink }) => {
 
 ErrorComponent.propTypes = {
   error: string.isRequired,
-  texts: errorTextsPropType,
-  notifyButtonLink: string
+  notifyButtonLink: string,
+  texts: errorTextsPropType
 };
 
 ErrorComponent.defaultProps = {
-  texts: DEFAULT_ERROR_TEXTS,
-  notifyButtonLink: null
+  notifyButtonLink: null,
+  texts: DEFAULT_ERROR_TEXTS
 };
 
 export default ErrorComponent;

@@ -2,21 +2,32 @@ import React, { useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { arrayOf, bool, func } from 'prop-types';
 import { cloneDeep } from 'lodash';
-import { useStateWithLabel } from '../../utils/hooks';
-import { getMediaQuery } from '../../utils/devices';
-import { getCharacterColor } from '../../utils/players';
 import { CHARACTERS } from '../../setup/characters';
+import {
+  getCharacterColor,
+  getMediaQuery,
+  logger,
+  useStateWithLabel
+} from '../../utils';
 import SetupModal from '../SetupModal';
 import Intro from '../../assets/sounds/music/TheHorrorShowShort.mp3';
-
 import BG from '../../assets/images/background/background.jpg';
 import {
-  CHARACTER_TEXT,
+  CLICK_NEW_GAME,
+  LOG_TYPE_CORE,
+  ADD_NEW_PLAYER,
   CHARACTERS_TEXT,
+  CHARACTER_TEXT,
+  CLEAR_LS,
   LOCAL_STORAGE_KEY,
-  MOBILE
+  LOG_TYPE_EXTENDED,
+  LOG_TYPE_INFO,
+  MOBILE,
+  PLAYER_NAMES,
+  START_GAME
 } from '../../constants';
 import { CharacterType } from '../../interfaces/types';
+import { MenuScreen } from '../MainMenu/styles';
 import {
   CharacterImage,
   CharacterName,
@@ -26,7 +37,6 @@ import {
   SelectorButton,
   SelectorTitle
 } from './styles';
-import { MenuScreen } from '../MainMenu/styles';
 
 const NewGame = ({
   currentChars,
@@ -57,15 +67,20 @@ const NewGame = ({
 
   const addPlayer = newPlayerSelected => {
     setNewPlayer(newPlayerSelected);
+    logger(LOG_TYPE_EXTENDED, ADD_NEW_PLAYER, newPlayerSelected);
     selectPlayer(true);
   };
 
   const onClickConfirm = () => {
+    logger(LOG_TYPE_INFO, CLEAR_LS);
     localStorage.removeItem(LOCAL_STORAGE_KEY);
     const newgameCharacters = [];
     charactersSelected.forEach((player, name) => {
       newgameCharacters.push(characters.find(char => char.name === name));
     });
+    logger(LOG_TYPE_CORE, START_GAME, cloneDeep(newgameCharacters));
+    logger(LOG_TYPE_INFO, PLAYER_NAMES, [...activePlayers].toString());
+
     setInitialCharacters(newgameCharacters);
   };
 
@@ -138,7 +153,6 @@ const NewGame = ({
   const stopIntro = () => {
     const fadeInterval = setInterval(() => {
       if (intro.current.volume < 0.1) {
-        // intro.current.volume -= 0.1;
         clearInterval(fadeInterval);
         intro.current.pause();
       } else if (intro.current.volume > 0) {
@@ -159,6 +173,8 @@ const NewGame = ({
   }, [currentChars]);
 
   useEffect(() => {
+    logger(LOG_TYPE_EXTENDED, CLICK_NEW_GAME);
+
     return () => stopIntro();
   }, []);
 

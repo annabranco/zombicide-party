@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from 'react';
-import { bool, func, arrayOf, oneOfType, string } from 'prop-types';
-import { useStateWithLabel } from '../../utils/hooks';
+import { arrayOf, bool, func, oneOfType, string } from 'prop-types';
+import { useStateWithLabel } from '../../utils';
 import PlayersSection from '../Sections/PlayersSection';
 import ZombiesSection from '../Sections/ZombiesSection';
 import { LESS_THAN_1_MIN, PLAYERS, ROUND, ZOMBIES } from '../../constants';

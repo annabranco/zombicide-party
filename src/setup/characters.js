@@ -304,5 +304,3 @@ export const CHARACTERS = ALL_CHARACTERS.reduce((result, char) => {
   }
   return [...result, char[1]];
 });
-
-console.log('$$$ CHARACTERS', CHARACTERS);

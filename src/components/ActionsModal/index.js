@@ -1,10 +1,9 @@
 import React, { useEffect } from 'react';
 import { bool, func, string } from 'prop-types';
-import { useStateWithLabel } from '../../utils/hooks';
-import { NO_WAY, CONFIRMATION_NEEDED, YEAH } from '../../constants';
+import { useStateWithLabel } from '../../utils';
+import { CONFIRMATION_NEEDED, NO_WAY, YEAH } from '../../constants';
 import CharacterFace from '../CharacterFace';
 import { ModalContentType } from '../../interfaces/types';
-import { ModalSelect, XpSlider } from './styles';
 import {
   ModalButton,
   ModalMessage,
@@ -15,6 +14,7 @@ import {
   FacesWrapper
 } from '../SetupModal/styles';
 import { ButtonsArea } from '../MainMenu/styles';
+import { ModalSelect, XpSlider } from './styles';
 
 const ActionsModal = ({
   content,

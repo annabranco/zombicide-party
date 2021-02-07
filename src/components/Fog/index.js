@@ -1,6 +1,6 @@
 /* eslint-disable no-plusplus */
 import React, { useEffect, useRef } from 'react';
-import { bool } from 'prop-types';
+import { bool, string } from 'prop-types';
 import { Fog } from './styles';
 import FogImage from '../../assets/images/fog.png';
 
@@ -119,11 +119,11 @@ const FogEffect = ({ inChar }) => {
 };
 
 FogEffect.propTypes = {
-  inChar: bool
+  inChar: string
 };
 
 FogEffect.defaultProps = {
-  inChar: false
+  inChar: null
 };
 
 export default FogEffect;

@@ -1,8 +1,8 @@
 import React, { useEffect, useRef } from 'react';
 import { cloneDeep } from 'lodash';
-import { func, string, arrayOf, bool } from 'prop-types';
-import { useStateWithLabel } from '../../utils/hooks';
-import { getCharacterColor } from '../../utils/players';
+import { arrayOf, bool, func, string } from 'prop-types';
+import { ALL_WEAPONS } from '../../setup/weapons';
+import { getCharacterColor, useStateWithLabel } from '../../utils';
 import ItemsArea from '../Items/ItemsArea';
 import {
   IN_HAND,
@@ -12,6 +12,7 @@ import {
   TRADING_WITH,
   WOUNDED
 } from '../../constants';
+import { CharacterType } from '../../interfaces/types';
 import { ArrowSign, CharItems } from '../Sections/PlayersSection/styles';
 import {
   ButtonsWrapper,
@@ -26,8 +27,6 @@ import {
   PlayerName,
   TradeWrapper
 } from './styles';
-import { CharacterType } from '../../interfaces/types';
-import { ALL_WEAPONS } from '../../setup/weapons';
 
 const TradeArea = ({
   character,
@@ -71,7 +70,6 @@ const TradeArea = ({
   };
 
   const prevPartnerIndex = useRef();
-  console.log('$$$ characters', characters);
   const onClickConfirm = () => {
     const updCharsAfterTrade = cloneDeep(characters);
     updCharsAfterTrade.forEach((char, index) => {

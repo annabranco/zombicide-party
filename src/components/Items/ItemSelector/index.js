@@ -8,16 +8,16 @@ import {
 } from '../../SoundBlock/styles';
 import { SELECTION } from '../../../constants';
 
-const SelectionItem = ({ type, onSelect, onHover, name, label, img }) => {
+const SelectionItem = ({ img, label, name, onHover, onSelect, type }) => {
   return (
     <Block>
       <PlayImageButton onClick={() => onSelect(name)} slotType={SELECTION}>
         {img ? (
           <PlayIcon
+            onMouseOut={() => onHover()}
+            onMouseOver={() => onHover(label || name)}
             src={img}
             type={type}
-            onMouseOver={() => onHover(label || name)}
-            onMouseOut={() => onHover()}
           />
         ) : (
           <PlayText>{label || name}</PlayText>
