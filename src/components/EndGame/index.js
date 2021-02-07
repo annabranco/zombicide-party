@@ -43,7 +43,6 @@ const EndGame = ({ characters, loadGame, round, time, type }) => {
     localStorage.removeItem(LOCAL_STORAGE_ROUNDS_KEY);
     localStorage.removeItem(LOCAL_STORAGE_KEY);
     history.push('/');
-    window.location.reload();
   };
 
   useEffect(() => {

@@ -66,6 +66,7 @@ const ActionsModal = ({
     if (modalMessage.type === 'slider') {
       changeModalState(1);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [changeModalMessage, content]);
 
   return (

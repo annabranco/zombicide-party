@@ -85,6 +85,7 @@ const ItemsArea = ({
   const [firedDual, toggleFiredDual] = useStateWithLabel(false, 'firedDual');
 
   const killButtonsTimer = useRef();
+  const dualTimer = useRef();
 
   const itemsType = getItemType(item);
 
@@ -106,11 +107,11 @@ const ItemsArea = ({
       }
 
       clearTimeout(killButtonsTimer.current);
+      changeKillButtons([...killButtons, ...newArray]);
 
-      setTimeout(() => {
+      dualTimer.current = setTimeout(() => {
         toggleFiredDual();
       }, 2000);
-      changeKillButtons([...killButtons, ...newArray]);
       killButtonsTimer.current = setTimeout(() => {
         changeKillButtons([]);
       }, 10000);
@@ -120,9 +121,6 @@ const ItemsArea = ({
   const calculateTotalDices = () => {
     const { combat, melee, ranged } = bonusDices;
     let totalDices;
-
-    // bonusDiceRef.current = bonusDices;
-    // dicesRef.current = dice;
 
     totalDices = dice + combat;
 
@@ -234,7 +232,15 @@ const ItemsArea = ({
     if (forcedKillButtons > 0) {
       forceActivateKillButtons(forcedKillButtons);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [forcedKillButtons]);
+
+  useEffect(() => {
+    return () => {
+      clearTimeout(killButtonsTimer.current);
+      clearTimeout(dualTimer.current);
+    };
+  }, []);
 
   return (
     <ItemWrapper
@@ -362,7 +368,7 @@ ItemsArea.propTypes = {
   combinePair: bool,
   damageMode: oneOfType([string, bool]),
   device: string.isRequired,
-  dice: number,
+  dice: oneOfType([number, string]),
   dropMode: bool,
   dualWeaponEffect: bool,
   forcedKillButtons: number,

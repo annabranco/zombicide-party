@@ -173,7 +173,7 @@ const TradeArea = ({
             updatePartner(updPartn);
           }
         } else if (selectedItem1.item === WOUNDED || item === WOUNDED) {
-          console.log('NOT');
+          // do nothing
         } else if (tradePartner) {
           if (selectedItem1.charTrading === updChar.name) {
             const oldCharReserve = [...updChar.inReserve];
@@ -309,7 +309,14 @@ const TradeArea = ({
       updateCharacters(updChars);
       updatePartner(updChars[0]);
     }
-  }, [updatePartner, character, characters, updateCharacter, updateCharacters]);
+  }, [
+    updatePartner,
+    character,
+    characters,
+    updateCharacter,
+    updateCharacters,
+    reorder
+  ]);
 
   useEffect(() => {
     if (updatedCharacters && partnerIndex !== prevPartnerIndex.current) {

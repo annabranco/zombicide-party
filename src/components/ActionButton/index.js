@@ -56,6 +56,7 @@ const ActionButton = ({
 
   const sound = useRef();
   const sound2 = useRef();
+  const activateTimeout = useRef();
 
   const delay = () => {
     switch (actionType) {
@@ -103,7 +104,7 @@ const ActionButton = ({
         }
       }
 
-      setTimeout(() => {
+      activateTimeout.current = setTimeout(() => {
         activate(false);
       }, delay());
       callback(event);
@@ -202,7 +203,11 @@ const ActionButton = ({
       default:
         break;
     }
-  }, [actionType, type, setIconType, setIconType2, setIconSize]);
+  }, [actionType, type, type2, setIconType, setIconType2, setIconSize]);
+
+  useEffect(() => {
+    return () => clearTimeout(activateTimeout.current);
+  }, []);
 
   return (
     <>

@@ -94,7 +94,7 @@ const MainScreen = ({
     return () => {
       clearInterval(timer);
     };
-  }, []);
+  }, [updateRounds]);
 
   return (
     <MainArea>

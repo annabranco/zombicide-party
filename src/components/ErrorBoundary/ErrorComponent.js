@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { string } from 'prop-types';
 import { useHistory } from 'react-router-dom';
 import appInfo from '../../../package.json';
@@ -27,6 +27,7 @@ const ErrorComponent = ({ error, notifyButtonLink, texts }) => {
     'showNotifyButton'
   );
   const history = useHistory();
+  const timerTimeout = useRef();
 
   const onClickButton = () => {
     if (notifyButtonLink) {
@@ -38,7 +39,11 @@ const ErrorComponent = ({ error, notifyButtonLink, texts }) => {
 
   useEffect(() => {
     logger(LOG_TYPE_ERROR, ERROR, error);
-    setTimeout(() => toggleNotifyButton(true), 3000);
+    timerTimeout.current = setTimeout(() => toggleNotifyButton(true), 3000);
+  }, [error, toggleNotifyButton]);
+
+  useEffect(() => {
+    return () => clearTimeout(timerTimeout.current);
   }, []);
 
   return (

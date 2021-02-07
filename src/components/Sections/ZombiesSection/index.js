@@ -36,6 +36,7 @@ const ZombiesSection = ({
   const [zombies, changeZombies] = useStateWithLabel(ALL_ZOMBIES, 'zombies');
 
   const device = useRef(getMediaQuery());
+  const timerTimeout = useRef();
 
   const endZombiesRound = () => {
     logger(LOG_TYPE_EXTENDED, END_ZOMBIE_ROUND);
@@ -51,11 +52,15 @@ const ZombiesSection = ({
 
   useEffect(() => {
     if (turnLabel && zombiesRound) {
-      setTimeout(() => {
+      timerTimeout.current = setTimeout(() => {
         toggleTurnLabel(false);
       }, 2000);
     }
-  }, [zombiesRound]);
+  }, [toggleTurnLabel, turnLabel, zombiesRound]);
+
+  useEffect(() => {
+    return () => clearTimeout(timerTimeout.current);
+  }, []);
 
   return (
     <ZombiesArea>

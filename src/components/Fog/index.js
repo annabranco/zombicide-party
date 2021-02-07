@@ -1,6 +1,6 @@
 /* eslint-disable no-plusplus */
 import React, { useEffect, useRef } from 'react';
-import { bool, string } from 'prop-types';
+import { bool, string, oneOfType } from 'prop-types';
 import { Fog } from './styles';
 import FogImage from '../../assets/images/fog.png';
 
@@ -113,13 +113,14 @@ const FogEffect = ({ inChar }) => {
       }
     }
     draw(new Date().getTime(), 3000);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [inChar]);
 
   return <Fog ref={CanvasElement} height="200" width="800" inChar={inChar} />;
 };
 
 FogEffect.propTypes = {
-  inChar: string
+  inChar: oneOfType([bool, string])
 };
 
 FogEffect.defaultProps = {

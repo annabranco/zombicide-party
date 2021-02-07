@@ -1519,6 +1519,7 @@ const PlayersSection = ({
         setDataLoaded(true);
       }
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [charIndex, dataLoaded, initialCharacters, loadedGame]);
 
   useEffect(() => {
@@ -1538,8 +1539,8 @@ const PlayersSection = ({
         updateData(updatedCharacter);
       }
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
-    // character.name,
     generalActions,
     extraMovementActions,
     extraAttackActions,
@@ -1553,7 +1554,12 @@ const PlayersSection = ({
     if (!isEqual(actionsArray, actionsCount)) {
       updateActionsCount(actionsArray);
     }
-  }, [character.actionsLeft]);
+  }, [
+    actionsCount,
+    character.actionsLeft,
+    generateActionsCountArray,
+    updateActionsCount
+  ]);
 
   useEffect(() => {
     if (characters) {
@@ -1600,6 +1606,7 @@ const PlayersSection = ({
         prevCharIndex.current = charIndex;
       }
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [charIndex, characters]);
 
   useEffect(() => {
@@ -1615,6 +1622,7 @@ const PlayersSection = ({
       updateXpCounter(newXpBar);
       updateData(updatedChar);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [character.experience, updateXpCounter]);
 
   useEffect(() => {
@@ -1636,7 +1644,7 @@ const PlayersSection = ({
         toggleDisplayEndGameScreen(LOST);
       }, 5000);
     }
-  }, [gameOver]);
+  }, [gameOver, toggleDisplayEndGameScreen]);
 
   /* --- */
 
@@ -2554,13 +2562,14 @@ PlayersSection.propTypes = {
   toggleDamageMode: func.isRequired,
   toggleZombiesArePlaying: func.isRequired,
   visible: bool.isRequired,
-  zombiesArePlaying: bool.isRequired,
+  zombiesArePlaying: bool,
   zombiesRound: bool.isRequired
 };
 
 PlayersSection.defaultProps = {
   initialCharacters: null,
-  loadedGame: null
+  loadedGame: null,
+  zombiesArePlaying: false
 };
 
 export default PlayersSection;

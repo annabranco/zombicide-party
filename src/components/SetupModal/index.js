@@ -78,6 +78,7 @@ const SetupModal = ({
       openPlayerWindow();
     }
     toggleInput(false);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [history, loadedGame]);
 
   const openPlayerWindow = () => {
