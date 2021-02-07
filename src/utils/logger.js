@@ -57,7 +57,11 @@ export const logger = (logType, message, ...args) => {
     } (${formatDate})`
   );
 
-  if (window.gameDebug || logType === LOG_TYPE_CORE) {
+  if (
+    window.gameDebug ||
+    logType === LOG_TYPE_CORE ||
+    logType === LOG_TYPE_ERROR
+  ) {
     if (
       logType === LOG_TYPE_EXTENDED &&
       window.gameDebug !== LOG_TYPE_EXTENDED

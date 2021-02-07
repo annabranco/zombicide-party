@@ -1,9 +1,17 @@
 import React, { useEffect, useRef } from 'react';
 import { arrayOf, bool, func, oneOfType, string } from 'prop-types';
-import { useStateWithLabel } from '../../utils';
+import { logger, useStateWithLabel } from '../../utils';
 import PlayersSection from '../Sections/PlayersSection';
 import ZombiesSection from '../Sections/ZombiesSection';
-import { LESS_THAN_1_MIN, PLAYERS, ROUND, ZOMBIES } from '../../constants';
+import {
+  GAME_TIME,
+  LESS_THAN_1_MIN,
+  LOCAL_STORAGE_ROUNDS_KEY,
+  LOG_TYPE_INFO,
+  PLAYERS,
+  ROUND,
+  ZOMBIES
+} from '../../constants';
 import { CharacterType } from '../../interfaces/types';
 import { MainArea, RoundTag } from './styles';
 
@@ -27,11 +35,24 @@ const MainScreen = ({
     false,
     'zombiesArePlaying'
   );
-  const gameTime = useRef();
+  const gameTime = useRef(0);
+  const formatedGameTime = useRef(LESS_THAN_1_MIN);
+
+  const formatGameTime = time => {
+    const digits = time.replace('m', '').split('h');
+    if (digits.length === 2) {
+      return Number(digits[0]) * 60 + Number(digits[1]);
+    }
+    if (digits[0].length > 2) {
+      return 0;
+    }
+    return Number(digits[0]);
+  };
 
   const nextGameRound = () => {
     const updRounds = [...rounds];
-    updRounds.push(gameTime.current);
+    updRounds.push(formatedGameTime.current);
+    localStorage.setItem(LOCAL_STORAGE_ROUNDS_KEY, JSON.stringify(updRounds));
     updateRounds(updRounds);
     toggleDisplayRounds(true);
     setTimeout(() => {
@@ -40,17 +61,35 @@ const MainScreen = ({
   };
 
   useEffect(() => {
-    window.time = LESS_THAN_1_MIN;
-    const timer = setInterval(() => {
+    const gameRounds = JSON.parse(
+      localStorage.getItem(LOCAL_STORAGE_ROUNDS_KEY)
+    );
+
+    const handleGameTime = () => {
       const updatedGameTime = gameTime.current ? gameTime.current + 1 : 1;
       let hours = Math.floor(updatedGameTime / 60);
       let minutes = Math.floor(updatedGameTime % 60);
 
       hours = hours === 0 ? '' : `${hours}h`;
       minutes = `${minutes}m`;
+
       gameTime.current = updatedGameTime;
-      window.time = `${hours}${minutes}`;
+      formatedGameTime.current = `${hours}${minutes}`;
+      window.gametime = formatedGameTime.current;
+      logger(LOG_TYPE_INFO, GAME_TIME, formatedGameTime.current);
+    };
+
+    const timer = setInterval(() => {
+      handleGameTime();
     }, 60000);
+
+    if (gameRounds) {
+      gameTime.current = formatGameTime(gameRounds[gameRounds.length - 1]);
+      handleGameTime();
+      updateRounds(gameRounds);
+    }
+
+    window.gametime = formatedGameTime.current;
 
     return () => {
       clearInterval(timer);
@@ -65,7 +104,9 @@ const MainScreen = ({
         loadGame={loadGame}
         loadedGame={loadedGame}
         nextGameRound={nextGameRound}
+        round={rounds.length}
         setZombiesRound={() => changeActiveSide(ZOMBIES)}
+        time={formatedGameTime.current}
         toggleDamageMode={toggleDamageMode}
         toggleZombiesArePlaying={toggleZombiesArePlaying}
         visible={activeSide === PLAYERS}

@@ -21,6 +21,7 @@ export const getActionColor = action => {
 };
 
 export const checkIfHasAnyActionLeft = actionsArray =>
+  actionsArray &&
   actionsArray.reduce((a, b, index) => {
     if (index === 4) {
       return a;

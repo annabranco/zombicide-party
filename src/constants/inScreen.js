@@ -6,6 +6,7 @@ export const CONTINUE = 'Continue';
 export const FREE_ATTACK = 'free attack';
 export const FREE_MOVE = 'free move';
 export const FREE_SEARCH = 'free search';
+export const GAME_DURATION = (rounds, time) => `ROUNDS: ${rounds} (${time})`;
 export const ITEM_IN_HAND = 'Item in hand';
 export const ITEM_IN_RESERVE = 'Item in reserve';
 export const NEW_GAME = 'New game';

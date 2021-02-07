@@ -13,6 +13,7 @@ import {
   CLEAR_LS,
   ERROR_TEXTS_404,
   LOCAL_STORAGE_KEY,
+  LOCAL_STORAGE_ROUNDS_KEY,
   LOG_APP_INIT,
   LOG_LOADED_GAME,
   LOG_TYPE_CORE,
@@ -42,6 +43,7 @@ const App = () => {
       logger(LOG_TYPE_CORE, LOG_LOADED_GAME, cloneDeep(game));
     } else {
       logger(LOG_TYPE_INFO, CLEAR_LS);
+      localStorage.removeItem(LOCAL_STORAGE_ROUNDS_KEY);
       localStorage.removeItem(LOCAL_STORAGE_KEY);
     }
   }, [loadGame]);

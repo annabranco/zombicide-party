@@ -6,7 +6,7 @@ import { logger, useStateWithLabel } from '../../utils';
 import { errorTextsPropType } from '../../interfaces/types';
 import FogEffect from '../Fog';
 import BG from '../../assets/images/background/background2.jpg';
-import { DEFAULT_ERROR_TEXTS, ERROR, LOG_TYPE_CORE } from '../../constants';
+import { DEFAULT_ERROR_TEXTS, ERROR, LOG_TYPE_ERROR } from '../../constants';
 import {
   DetailsText,
   ErrorDetailsArea,
@@ -37,7 +37,7 @@ const ErrorComponent = ({ error, notifyButtonLink, texts }) => {
   };
 
   useEffect(() => {
-    logger(LOG_TYPE_CORE, ERROR, error);
+    logger(LOG_TYPE_ERROR, ERROR, error);
     setTimeout(() => toggleNotifyButton(true), 3000);
   }, []);
 

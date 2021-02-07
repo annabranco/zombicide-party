@@ -266,3 +266,23 @@ export const ExitButton = styled.img`
   }
 `;
 ExitButton.displayName = 'ExitButton';
+
+export const GameInfo = styled.p`
+  label: GameInfo;
+  z-index: 20;
+  position: absolute;
+  bottom: 20px;
+  right: 50px;
+  text-align: right;
+  -webkit-text-stroke: 1px black;
+  opacity: 0;
+  animation-name: ${Appear};
+  animation-duration: 10s;
+  animation-delay: ${({ delay }) => (delay ? `${delay * 2 + 5}s` : '5s')};
+  animation-iteration-count: 1;
+  animation-fill-mode: forwards;
+  font-family: 'Grandstander', cursive;
+  font-size: 1.5rem;
+  color: white;
+`;
+GameInfo.displayName = 'GameInfo';

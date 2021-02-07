@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import { useHistory } from 'react-router-dom';
-import { arrayOf, func, string } from 'prop-types';
+import { arrayOf, func, number, string } from 'prop-types';
 import { getMediaQuery, logger } from '../../utils';
 import FogEffect from '../Fog';
 import BG from '../../assets/images/background/background2.jpg';
@@ -9,16 +9,18 @@ import YouLose from '../../assets/sounds/music/FuneralProcession.mp3';
 import YouWin from '../../assets/sounds/music/VideoGameSoldiers.mp3';
 import Exit from '../../assets/images/exit.png';
 import {
+  CLEAR_LS,
+  END_GAME_SCREEN,
+  GAME_DURATION,
   GAME_OVER,
   KILLED,
   LIVE_ANOTHER_DAY,
   LOCAL_STORAGE_KEY,
+  LOCAL_STORAGE_ROUNDS_KEY,
+  LOG_TYPE_INFO,
   LOST,
   MOBILE,
-  WON,
-  LOG_TYPE_INFO,
-  CLEAR_LS,
-  END_GAME_SCREEN
+  WON
 } from '../../constants';
 import { CharacterType } from '../../interfaces/types';
 import {
@@ -27,16 +29,18 @@ import {
   EndGameText,
   EndingCharacterImage,
   EndingCharacters,
-  ExitButton
+  ExitButton,
+  GameInfo
 } from './styles';
 
-const EndGame = ({ characters, loadGame, type }) => {
+const EndGame = ({ characters, loadGame, round, time, type }) => {
   const ambience = useRef();
   const history = useHistory();
 
   const exitGame = () => {
     loadGame();
     logger(LOG_TYPE_INFO, CLEAR_LS);
+    localStorage.removeItem(LOCAL_STORAGE_ROUNDS_KEY);
     localStorage.removeItem(LOCAL_STORAGE_KEY);
     history.push('/');
     window.location.reload();
@@ -91,6 +95,7 @@ const EndGame = ({ characters, loadGame, type }) => {
         src={Exit}
         type={type}
       />
+      <GameInfo>{GAME_DURATION(round, time)}</GameInfo>
     </MenuScreen>
   );
 };
@@ -98,6 +103,8 @@ const EndGame = ({ characters, loadGame, type }) => {
 EndGame.propTypes = {
   characters: arrayOf(CharacterType),
   loadGame: func.isRequired,
+  round: number.isRequired,
+  time: string.isRequired,
   type: string.isRequired
 };
 

@@ -24,7 +24,8 @@ import {
   LOG_TYPE_INFO,
   MOBILE,
   PLAYER_NAMES,
-  START_GAME
+  START_GAME,
+  LOCAL_STORAGE_ROUNDS_KEY
 } from '../../constants';
 import { CharacterType } from '../../interfaces/types';
 import { MenuScreen } from '../MainMenu/styles';
@@ -73,6 +74,7 @@ const NewGame = ({
 
   const onClickConfirm = () => {
     logger(LOG_TYPE_INFO, CLEAR_LS);
+    localStorage.removeItem(LOCAL_STORAGE_ROUNDS_KEY);
     localStorage.removeItem(LOCAL_STORAGE_KEY);
     const newgameCharacters = [];
     charactersSelected.forEach((player, name) => {

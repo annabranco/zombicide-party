@@ -98,7 +98,10 @@ const SetupModal = ({
   };
 
   const onClickOkButton = () => {
-    localStorage.setItem(LOCAL_STORAGE_PLAYERS_KEY, JSON.stringify(players));
+    localStorage.setItem(
+      LOCAL_STORAGE_PLAYERS_KEY,
+      JSON.stringify([...players])
+    );
     toggleVisible(false);
     if (playIntro) {
       playIntro();
