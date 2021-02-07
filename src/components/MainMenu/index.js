@@ -114,7 +114,7 @@ MainMenu.propTypes = {
 };
 
 MainMenu.defaultProps = {
-  loadedGame: false
+  loadedGame: null
 };
 
 export default MainMenu;

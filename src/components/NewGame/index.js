@@ -38,6 +38,7 @@ import {
   SelectorButton,
   SelectorTitle
 } from './styles';
+import ConfigGame from '../ConfigGame';
 
 const NewGame = ({
   currentChars,
@@ -58,6 +59,7 @@ const NewGame = ({
     new Map(),
     'charactersSelected'
   );
+  const [config, toggleConfig] = useStateWithLabel(true, 'config');
   const [newPlayer, setNewPlayer] = useStateWithLabel(null, 'newPlayer');
   const [playerWasSelected, selectPlayer] = useStateWithLabel(
     null,
@@ -183,6 +185,7 @@ const NewGame = ({
 
   return (
     <MenuScreen dynamic={dynamic} img={BG} type="newChar">
+      {config && <ConfigGame toggleConfig={toggleConfig} />}
       <SetupModal
         activePlayers={activePlayers}
         addPlayer={addPlayer}

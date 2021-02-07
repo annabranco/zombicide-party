@@ -168,7 +168,11 @@ const SetupModal = ({
     }
   };
   return (
-    <ModalWindow visible={visible} type={type}>
+    <ModalWindow
+      onTop={message.title === WARNING}
+      type={type}
+      visible={visible}
+    >
       <ModalTitle type={message.title || GENERAL}>{message.title}</ModalTitle>
       <ModalMessage>{message.text}</ModalMessage>
       {(message.title === MANAGE_PLAYERS || !message.title) && (

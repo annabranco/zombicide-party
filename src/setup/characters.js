@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import Amy from '../assets/images/survivors/amy.png';
 import Ben from '../assets/images/survivors/ben.png';
 import Mary from '../assets/images/survivors/mary.png';

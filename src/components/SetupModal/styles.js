@@ -274,10 +274,24 @@ export const ModalWindow = styled.div`
       display: flex;
     `}
 
-  ${({ type }) =>
-    type === 'newChar' &&
+  ${({ type }) => {
+    if (type === 'newChar') {
+      return css`
+        border-radius: 0;
+      `;
+    }
+    if (type === 'config') {
+      return css`
+        z-index: 16;
+        background: black;
+      `;
+    }
+    return null;
+  }}
+      ${({ onTop }) =>
+    onTop &&
     css`
-      border-radius: 0;
+      z-index: 20;
     `}
 `;
 ModalWindow.displayName = 'ModalWindow';
