@@ -119,12 +119,19 @@ const TradeArea = ({
               oldReserve.includes(expBaton) &&
               !updChar.inReserve.includes(expBaton)
             ) {
-              updChar.inReserve.splice(
-                oldReserve.findIndex(
-                  itemInReserve => itemInReserve === expBaton
-                ),
-                1
+              const emptySlot = updChar.inReserve.indexOf(
+                itemInReserve => !itemInReserve || item === NONE
               );
+              if (emptySlot !== -1) {
+                updChar.inReserve.splice(
+                  oldReserve.findIndex(
+                    itemInReserve => itemInReserve === expBaton
+                  ),
+                  1
+                );
+              } else {
+                updChar.inReserve.splice(emptySlot, 1);
+              }
             } else if (
               !oldReserve.includes(expBaton) &&
               updChar.inReserve.includes(expBaton)
@@ -144,12 +151,19 @@ const TradeArea = ({
               oldReserve.includes(expBaton) &&
               !updPartn.inReserve.includes(expBaton)
             ) {
-              updPartn.inReserve.splice(
-                oldReserve.findIndex(
-                  itemInReserve => itemInReserve === expBaton
-                ),
-                1
+              const emptySlot = updPartn.inReserve.indexOf(
+                itemInReserve => !itemInReserve || item === NONE
               );
+              if (emptySlot !== -1) {
+                updPartn.inReserve.splice(
+                  oldReserve.findIndex(
+                    itemInReserve => itemInReserve === expBaton
+                  ),
+                  1
+                );
+              } else {
+                updPartn.inReserve.splice(emptySlot, 1);
+              }
             } else if (
               !oldReserve.includes(expBaton) &&
               updPartn.inReserve.includes(expBaton)
@@ -173,12 +187,19 @@ const TradeArea = ({
               oldCharReserve.includes(expBaton) &&
               !updChar.inReserve.includes(expBaton)
             ) {
-              updChar.inReserve.splice(
-                oldCharReserve.findIndex(
-                  itemInReserve => itemInReserve === expBaton
-                ),
-                1
+              const emptySlot = updChar.inReserve.indexOf(
+                itemInReserve => !itemInReserve || item === NONE
               );
+              if (emptySlot !== -1) {
+                updChar.inReserve.splice(
+                  oldCharReserve.findIndex(
+                    itemInReserve => itemInReserve === expBaton
+                  ),
+                  1
+                );
+              } else {
+                updChar.inReserve.splice(emptySlot, 1);
+              }
             } else if (
               !oldCharReserve.includes(expBaton) &&
               updChar.inReserve.includes(expBaton)
@@ -190,12 +211,19 @@ const TradeArea = ({
               oldPartnReserve.includes(expBaton) &&
               !updPartn.inReserve.includes(expBaton)
             ) {
-              updPartn.inReserve.splice(
-                oldPartnReserve.findIndex(
-                  itemInReserve => itemInReserve === expBaton
-                ),
-                1
+              const emptySlot = updPartn.inReserve.indexOf(
+                itemInReserve => !itemInReserve || item === NONE
               );
+              if (emptySlot !== -1) {
+                updPartn.inReserve.splice(
+                  oldPartnReserve.findIndex(
+                    itemInReserve => itemInReserve === expBaton
+                  ),
+                  1
+                );
+              } else {
+                updPartn.inReserve.splice(emptySlot, 1);
+              }
             } else if (
               !oldPartnReserve.includes(expBaton) &&
               updPartn.inReserve.includes(expBaton)
