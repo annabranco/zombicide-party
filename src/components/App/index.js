@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
+import { HashRouter, Switch, Route } from 'react-router-dom';
 import { Global } from '@emotion/core';
 import { cloneDeep } from 'lodash';
 import { loadSavedGame, logger, useStateWithLabel } from '../../utils';
@@ -56,7 +56,7 @@ const App = () => {
   }, [loadGame, updateContext]);
 
   return (
-    <Router>
+    <HashRouter basename="/">
       <Global styles={globalStyles} />
       <ErrorBoundary>
         <AppContext.Provider value={{ context, updateContext }}>
@@ -103,7 +103,7 @@ const App = () => {
           </Switch>
         </AppContext.Provider>
       </ErrorBoundary>
-    </Router>
+    </HashRouter>
   );
 };
 

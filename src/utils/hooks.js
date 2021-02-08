@@ -139,6 +139,7 @@ export const useTurnsCounter = (
         `${character}, { gen: ${numOfActions} => ${generalActions}, mov: ${movements} => ${extraMovementActions}, att: ${attacks} => ${extraAttackActions}, sea: ${searches} => ${searchActions}, bon: ${numOfBonusActions} => ${bonusActions} }`
       );
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     generalActions,
     extraMovementActions,

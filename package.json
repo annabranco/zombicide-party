@@ -1,10 +1,10 @@
 {
   "name": "zombicide-party",
-  "version": "0.10.0",
+  "version": "0.11.0",
   "author": "Anna Branco <anna.branco@icloud.com> (https://github.com/annabranco)",
   "description": "This is Anna Branco's developer profile",
   "repository": "github:annabranco/zombicide-party",
-  "homepage": "./",
+  "homepage": "http://annabranco.github.io/zombicide-party/",
   "keywords": [
     "zombicide",
     "tabletop",
@@ -20,7 +20,9 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build"
   },
   "dependencies": {
     "@emotion/core": "^10.1.1",
@@ -49,6 +51,7 @@
     "eslint-plugin-prettier": "^3.1.4",
     "eslint-plugin-react": "^7.21.5",
     "eslint-plugin-react-hooks": "^4.2.0",
+    "gh-pages": "^3.1.0",
     "prettier": "^2.1.2"
   },
   "eslintConfig": {

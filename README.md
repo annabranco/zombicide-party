@@ -1,7 +1,9 @@
-# Zombicide Party (prerelease v0.10.0) _by Anna Branco_
+# Zombicide Party (prerelease v0.11.0) _by Anna Branco_
 
-What party is a party without people shouting, shots being fired, police sirens ringing, motolovs exploding and... yeah, of course... lots zombies grows?
-This app brings you all of this and much more to make your Zombicide parties rock and shine like never before.
+<https://annabranco.github.io/zombicide-party/>
+
+_What party is a party without people shouting, shots being fired, police sirens ringing, motolovs exploding and... yeah, of course... lots zombies grows?
+This app brings you all of this and much more to make your Zombicide parties rock and shine like never before._
 
 ## DISCLAIMER
 
@@ -23,7 +25,8 @@ You can also activate Night Shift Campaign Expansion. This is a custom campaign 
 
 ## How to use it
 
-You can just open the page XXX on any desktop computer, tablet or mobile devices and enjoy the experience. Note that the desktop version is the most recommended version to play it. If you are an experienced user or developer, you may clone this repo and run it with `yarn start`.
+You can just open the page <https://annabranco.github.io/zombicide-party/>. on any desktop computer, tablet or mobile devices and enjoy the experience. Note that the desktop version is the most recommended version to play it. If you are an experienced user or developer, you may clone this repo and run it with `yarn start`.
+Note: even though you run it locally, you still need internet access to see part of the content.
 
 ## Future developments
 
@@ -45,19 +48,26 @@ Most of the cards images were basicaly downloaded from the great page Zombicide 
 The sounds used on this app were mostly downloaded from free sources (under Creative Commons Attribution license), remixed and edited in order to create the desired atmosphere for the Zombicide games. Some sounds were recorded since the beginning by me.
 
 If you think any of the material on this app is violating any copyright protection, please notify me as soon as possible so we can clarify it and if necesary remove the offending content.
-### References and credits:
 
-Guillotine Games: https://www.guillotine.com
-Zombicide Game: https://www.zombicide.com
-Virtual cards: https://patrickgalbraith.github.io/zombicide-card-database/?
-Base zombies sounds: https://www.fesliyanstudios.com/
-Base weapons soundS: http://soundbible.com/
+### References and credits
+
+- Guillotine Games: <https://www.guillotine.com>
+- Zombicide Game: <https://www.zombicide.com>
+- Virtual cards: <https://patrickgalbraith.github.io/zombicide-card-database/>
+- Base zombies sounds: <https://www.fesliyanstudios.com/>
+- Base weapons soundS: <http://soundbible.com/>
+- Music: <http://www.twinmusicom.org/> & <https://www.playonloop.com/>
 
 #### Songs
+
 All songs used here are under Creative Commons Attribution license.
+
 ##### Intro
+
 "The Horror Show" short free version from PlayOnLoop.com
+
 ##### Ending Game
+
 "Funeral Procession" by Twin Musicom (twinmusicom.org)
 "Video Game Soldiers" by Twin Musicom (twinmusicom.org)
 
