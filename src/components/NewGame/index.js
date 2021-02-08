@@ -1,8 +1,7 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useContext, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { arrayOf, bool, func } from 'prop-types';
 import { cloneDeep } from 'lodash';
-import { CHARACTERS } from '../../setup/characters';
 import {
   getCharacterColor,
   getMediaQuery,
@@ -39,6 +38,7 @@ import {
   SelectorTitle
 } from './styles';
 import ConfigGame from '../ConfigGame';
+import { AppContext } from '../../setup/rules';
 
 const NewGame = ({
   currentChars,
@@ -51,10 +51,7 @@ const NewGame = ({
     new Set(),
     'activePlayers'
   );
-  const [characters, setCharacters] = useStateWithLabel(
-    CHARACTERS,
-    'characters'
-  );
+  const [characters, setCharacters] = useStateWithLabel([], 'characters');
   const [charactersSelected, updateSelectedCharacters] = useStateWithLabel(
     new Map(),
     'charactersSelected'
@@ -67,6 +64,7 @@ const NewGame = ({
   );
 
   const intro = useRef(new Audio(Intro));
+  const { context } = useContext(AppContext);
 
   const addPlayer = newPlayerSelected => {
     setNewPlayer(newPlayerSelected);
@@ -87,7 +85,6 @@ const NewGame = ({
 
     setInitialCharacters(newgameCharacters);
   };
-
   const onSelect = event => {
     if (dynamic) {
       const character = event.currentTarget.getAttribute('name');
@@ -166,10 +163,16 @@ const NewGame = ({
   };
 
   useEffect(() => {
-    if (currentChars) {
+    if (context.characters) {
+      setCharacters(context.characters);
+    }
+  }, [context.characters, setCharacters]);
+
+  useEffect(() => {
+    if (currentChars && dynamic) {
       const currentCharacters = new Set();
       currentChars.forEach(char => currentCharacters.add(char.name));
-      const updatedChars = characters.filter(
+      const updatedChars = context.characters.filter(
         char => !currentCharacters.has(char.name)
       );
       setCharacters(updatedChars);
@@ -179,7 +182,6 @@ const NewGame = ({
 
   useEffect(() => {
     logger(LOG_TYPE_EXTENDED, CLICK_NEW_GAME);
-
     return () => stopIntro();
   }, []);
 
@@ -219,7 +221,9 @@ const NewGame = ({
                 {char.name}
               </CharacterName>
               {charactersSelected.get(char.name) && (
-                <PlayerTag color={getCharacterColor(char.name)}>
+                <PlayerTag
+                  color={getCharacterColor(char.name, context.characters)}
+                >
                   {charactersSelected.get(char.name)}
                 </PlayerTag>
               )}

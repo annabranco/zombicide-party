@@ -1,13 +1,21 @@
 import Season1 from '../assets/images/sets/season1.jpg';
 import DogZ from '../assets/images/sets/dogz.jpg';
 import Kopinski from '../assets/images/sets/kopinski.jpg';
+import { CHARACTERS_KOPINSKI, CHARACTERS_S1 } from './characters';
+import { WEAPONS_S1, WEAPONS_NIGHT_SHIFT } from './weapons';
+import { DOGZ, ZOMBIES_S1 } from './zombies';
+import { ITEMS_S1, ITEMS_NIGHT_SHIFT } from './items';
 
 export const SETS = {
   season1: {
+    characters: CHARACTERS_S1,
     cover: Season1,
     deselectable: false,
+    items: ITEMS_S1,
     label: 'Season 1',
-    name: 'season1'
+    name: 'season1',
+    weapons: WEAPONS_S1,
+    zombies: ZOMBIES_S1
   }
 };
 
@@ -17,9 +25,11 @@ export const EXPANSIONS = {
     coverSize: 'medium',
     deselectable: true,
     label: 'DogZ',
-    name: 'dogZ'
+    name: 'dogZ',
+    zombies: DOGZ
   },
   kopinski: {
+    characters: CHARACTERS_KOPINSKI,
     cover: Kopinski,
     coverSize: 'medium',
     deselectable: true,
@@ -30,7 +40,9 @@ export const EXPANSIONS = {
     cover: Season1,
     coverSize: 'small',
     deselectable: true,
+    items: ITEMS_NIGHT_SHIFT,
     label: 'Night Shift Campaign (beta)',
-    name: 'nightShift'
+    name: 'nightShift',
+    weapons: WEAPONS_NIGHT_SHIFT
   }
 };

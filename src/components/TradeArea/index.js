@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useContext, useEffect, useRef } from 'react';
 import { cloneDeep } from 'lodash';
 import { arrayOf, bool, func, string } from 'prop-types';
 import { ALL_WEAPONS } from '../../setup/weapons';
@@ -27,6 +27,7 @@ import {
   PlayerName,
   TradeWrapper
 } from './styles';
+import { AppContext } from '../../setup/rules';
 
 const TradeArea = ({
   character,
@@ -55,6 +56,8 @@ const TradeArea = ({
     'updatedCharacters'
   );
   const [tradePartner, updatePartner] = useStateWithLabel(null, 'tradePartner');
+
+  const { context } = useContext(AppContext);
 
   const changeToNextPlayer = () => {
     const nextPlayerIndex =
@@ -335,7 +338,12 @@ const TradeArea = ({
             <CharacterTradingName trade>
               {updatedCharacter.name}
             </CharacterTradingName>
-            <PlayerName color={getCharacterColor(updatedCharacter.name)}>
+            <PlayerName
+              color={getCharacterColor(
+                updatedCharacter.name,
+                context.characters
+              )}
+            >
               {updatedCharacter.player}
             </PlayerName>
           </CharacterId>
@@ -391,7 +399,9 @@ const TradeArea = ({
             <CharacterTradingName trade>
               {tradePartner.name}
             </CharacterTradingName>
-            <PlayerName color={getCharacterColor(tradePartner.name)}>
+            <PlayerName
+              color={getCharacterColor(tradePartner.name, context.characters)}
+            >
               {tradePartner.player}
             </PlayerName>
           </CharacterId>

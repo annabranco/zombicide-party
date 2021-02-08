@@ -17,6 +17,8 @@ export const END_CHAR_TURN = char => `End ${char}'s turn`;
 export const END_TURN_ACTION = 'endTurn';
 export const ENTER_CAR = 'enter car';
 export const EXIT_CAR = 'exit car';
+export const EXPLODE = 'trigger an explosion';
+export const EXPLOSION_ACTION = 'explosion';
 export const GET_OBJECTIVE = 'get objective';
 export const GIVE_ORDERS = 'Give orders';
 export const GIVE_ORDERS_ACTION = 'give-orders';

@@ -1,13 +1,12 @@
-import React, { useEffect } from 'react';
+import React, { useContext, useEffect } from 'react';
 import { func, string } from 'prop-types';
-import { ALL_WEAPONS } from '../../../setup/weapons';
-import { ALL_ITEMS } from '../../../setup/items';
 import { useStateWithLabel } from '../../../utils';
 import SelectionItem from '../ItemSelector';
 import { SelectorArea } from '../../SoundBlock/styles';
 import {
   DESKTOP,
   IN_HAND,
+  IN_RESERVE,
   ITEMS,
   MOBILE,
   TABLET,
@@ -20,17 +19,19 @@ import {
   SelectorWrapper,
   SubSectionTitle
 } from './styles';
+import { AppContext } from '../../../setup/rules';
 
 const ItemsSelectorModal = ({ device, onSelect, selectSlot, slotType }) => {
-  const [items, changeItems] = useStateWithLabel(ALL_ITEMS, ITEMS);
+  const [items, changeItems] = useStateWithLabel({}, ITEMS);
   const [itemsType, changeItemsType] = useStateWithLabel(ITEMS, 'itemsType');
+  const { context } = useContext(AppContext);
 
   const changeType = () => {
     if (itemsType === ITEMS) {
-      changeItems(ALL_WEAPONS);
+      changeItems(context.weapons);
       changeItemsType(WEAPONS);
     } else {
-      changeItems(ALL_ITEMS);
+      changeItems(context.items);
       changeItemsType(ITEMS);
     }
   };
@@ -49,8 +50,11 @@ const ItemsSelectorModal = ({ device, onSelect, selectSlot, slotType }) => {
 
   useEffect(() => {
     if (slotType === IN_HAND) {
-      changeItems(ALL_WEAPONS);
+      changeItems(context.weapons);
       changeItemsType(WEAPONS);
+    } else if (slotType === IN_RESERVE) {
+      changeItems(context.items);
+      changeItemsType(ITEMS);
     }
   }, [changeItems, slotType, changeItemsType]);
 

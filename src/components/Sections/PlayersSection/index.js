@@ -1,11 +1,8 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useContext, useEffect, useRef } from 'react';
 import { useHistory } from 'react-router-dom';
 import { cloneDeep, isEqual } from 'lodash';
 import { arrayOf, bool, func, number, oneOfType, string } from 'prop-types';
 import { ABILITIES_S1 } from '../../../setup/abilities';
-import { CHARACTERS } from '../../../setup/characters';
-import { ALL_WEAPONS } from '../../../setup/weapons';
-import { ALL_ITEMS } from '../../../setup/items';
 import {
   blueThreatThresold,
   calculateXpBar,
@@ -75,6 +72,8 @@ import {
   END_TURN_ACTION,
   ENTER_CAR,
   EXIT_CAR,
+  EXPLODE,
+  EXPLOSION_ACTION,
   FINISH_SETUP,
   FIRST_PLAYER_TOKEN,
   FREE_ATTACK,
@@ -206,6 +205,9 @@ import {
   WoundedWrapper,
   XpIcon
 } from './styles';
+import { AppContext } from '../../../setup/rules';
+import { ALL_WEAPONS } from '../../../setup/weapons';
+import { ALL_ITEMS } from '../../../setup/items';
 
 const PlayersSection = ({
   damageMode,
@@ -328,7 +330,7 @@ const PlayersSection = ({
   const prevCharIndex = useRef();
   const abilitiesRef = useRef();
   const device = useRef(getMediaQuery());
-
+  const { context } = useContext(AppContext);
   const {
     generalActions,
     extraMovementActions,
@@ -620,18 +622,18 @@ const PlayersSection = ({
   const checkIfCharHasDualEffect = weapons => {
     if (
       (weapons[0] === weapons[1] &&
-        ALL_WEAPONS[weapons[0]] &&
-        ALL_WEAPONS[weapons[0]].dual) ||
+        context.weapons[weapons[0]] &&
+        context.weapons[weapons[0]].dual) ||
       (character.abilities &&
         character.abilities.includes(ABILITIES_S1.AMBIDEXTROUS.name)) ||
       (character.abilities &&
         character.abilities.includes(ABILITIES_S1.SWORDMASTER.name) &&
-        ALL_WEAPONS[weapons[0]] &&
-        ALL_WEAPONS[weapons[0]].attack === MELEE) ||
+        context.weapons[weapons[0]] &&
+        context.weapons[weapons[0]].attack === MELEE) ||
       (character.abilities &&
         character.abilities.includes(ABILITIES_S1.GUNSLINGER.name) &&
-        ALL_WEAPONS[weapons[0]] &&
-        ALL_WEAPONS[weapons[0]].attack === RANGED)
+        context.weapons[weapons[0]] &&
+        context.weapons[weapons[0]].attack === RANGED)
     ) {
       activateDualWeaponEffect(true);
     } else {
@@ -706,13 +708,15 @@ const PlayersSection = ({
     ]);
     newItems[currentSlot] = name;
 
-    if (name === ALL_WEAPONS.ExpandableBaton.name.replace(' ', '')) {
+    if (name === context.weapons.ExpandableBaton.name.replace(' ', '')) {
       newItems.push(null);
     }
 
     if (
-      oldItems.includes(ALL_WEAPONS.ExpandableBaton.name.replace(' ', '')) &&
-      !newItems.includes(ALL_WEAPONS.ExpandableBaton.name.replace(' ', ''))
+      oldItems.includes(
+        context.weapons.ExpandableBaton.name.replace(' ', '')
+      ) &&
+      !newItems.includes(context.weapons.ExpandableBaton.name.replace(' ', ''))
     ) {
       newItems.splice(currentSlot, 1);
     }
@@ -763,7 +767,7 @@ const PlayersSection = ({
 
   const spendSingleUseWeapon = (weaponSlot, weapon) => {
     const weaponName = weapon.replace(' ', '');
-    if (ALL_WEAPONS[weaponName].useOnce) {
+    if (context.weapons[weaponName].useOnce) {
       const updatedCharacter = cloneDeep(character);
       updatedCharacter.inHand[weaponSlot] = '';
       changeCharacter(updatedCharacter);
@@ -930,7 +934,7 @@ const PlayersSection = ({
 
         if (firstSlot <= 2) {
           if (
-            finalItem === ALL_WEAPONS.Molotov.name &&
+            finalItem === context.weapons.Molotov.name &&
             character.abilities.includes(ABILITIES_S1.TWO_COCKTAILS.name)
           ) {
             updatedCharacter.inHand[firstSlot - 1] = finalItem;
@@ -938,7 +942,7 @@ const PlayersSection = ({
             updatedCharacter.inHand[firstSlot - 1] = '';
           }
         } else if (
-          finalItem === ALL_WEAPONS.Molotov.name &&
+          finalItem === context.weapons.Molotov.name &&
           character.abilities.includes(ABILITIES_S1.TWO_COCKTAILS.name)
         ) {
           updatedCharacter.inReserve[firstSlot - 3] = finalItem;
@@ -1079,6 +1083,12 @@ const PlayersSection = ({
   const onClickObjective = () => {
     spendAction(GET_OBJECTIVE);
     gainXp(5);
+  };
+
+  const onExplode = () => {
+    const updChar = cloneDeep(character);
+    updChar.noise += 3;
+    updateData(updChar);
   };
 
   const onFindingItem = change => (item, currentSlot = slot - 1) => {
@@ -1554,12 +1564,8 @@ const PlayersSection = ({
     if (!isEqual(actionsArray, actionsCount)) {
       updateActionsCount(actionsArray);
     }
-  }, [
-    actionsCount,
-    character.actionsLeft,
-    generateActionsCountArray,
-    updateActionsCount
-  ]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [actionsCount, character.actionsLeft]);
 
   useEffect(() => {
     if (characters) {
@@ -1723,7 +1729,7 @@ const PlayersSection = ({
           ) : (
             <>
               <CharacterOverlay
-                color={getCharacterColor(character.name)}
+                color={getCharacterColor(character.name, context.characters)}
                 damageMode={damageMode}
               >
                 <CharacterOverlayImage src={character.img} />
@@ -1732,8 +1738,11 @@ const PlayersSection = ({
               <FogEffect inChar={character.name} />
               {/* ----- TOP BAR ----- */}
               {!damageMode &&
-                setupMode &&
-                characters.length < CHARACTERS.length && (
+                characters.length < context.characters.length &&
+                ((context.rules.editInGame &&
+                  setupMode &&
+                  context.rules.addChars) ||
+                  (!context.rules.editInGame && context.rules.addChars)) && (
                   <AdmButton
                     type="button"
                     onClick={() => addNewChar(true)}
@@ -1746,6 +1755,7 @@ const PlayersSection = ({
               {!damageMode &&
                 !setupMode &&
                 !roundEnded &&
+                context.rules.editInGame &&
                 character.wounded !== KILLED && (
                   <AdmButton
                     type="button"
@@ -1780,7 +1790,7 @@ const PlayersSection = ({
                   {!damageMode && !setupMode && !slot && (
                     <>
                       <ActionsWrapper>
-                        {canMove && round >= 3 && (
+                        {canMove && context.rules.exit && round >= 3 && (
                           <ActionButton
                             actionType={LEAVE_GAME_ACTION}
                             callback={onLeaveGame}
@@ -1797,13 +1807,26 @@ const PlayersSection = ({
                           />
                         )}
 
-                        {!!generalActions && round >= 5 && (
+                        {!!generalActions &&
+                          context.rules.winGame &&
+                          round >= 5 && (
+                            <ActionButton
+                              actionType={WIN_GAME}
+                              callback={() => toggleDisplayEndGameScreen(WON)}
+                              changeActionLabel={changeActionLabel}
+                              isMobile={device.current === MOBILE}
+                              label={WIN_GAME}
+                              manyButtons={character.location === CAR}
+                            />
+                          )}
+
+                        {!!generalActions && context.rules.explosion && (
                           <ActionButton
-                            actionType={WIN_GAME}
-                            callback={() => toggleDisplayEndGameScreen(WON)}
+                            actionType={EXPLOSION_ACTION}
+                            callback={onExplode}
                             changeActionLabel={changeActionLabel}
                             isMobile={device.current === MOBILE}
-                            label={WIN_GAME}
+                            label={EXPLODE}
                             manyButtons={character.location === CAR}
                           />
                         )}
@@ -1907,17 +1930,19 @@ const PlayersSection = ({
                             />
                           )}
 
-                        {!finishedTurn && generalActions && (
-                          <ActionButton
-                            actionType={OBJECTIVE_ACTION}
-                            callback={onClickObjective}
-                            changeActionLabel={changeActionLabel}
-                            isMobile={device.current === MOBILE}
-                            label={GET_OBJECTIVE}
-                            manyButtons={character.location === CAR}
-                          />
-                        )}
-                        {canMove && (
+                        {!finishedTurn &&
+                          context.rules.objective &&
+                          generalActions && (
+                            <ActionButton
+                              actionType={OBJECTIVE_ACTION}
+                              callback={onClickObjective}
+                              changeActionLabel={changeActionLabel}
+                              isMobile={device.current === MOBILE}
+                              label={GET_OBJECTIVE}
+                              manyButtons={character.location === CAR}
+                            />
+                          )}
+                        {canMove && context.rules.car && (
                           <ActionButton
                             actionType={
                               character.location === CAR
@@ -1939,26 +1964,28 @@ const PlayersSection = ({
                             }
                           />
                         )}
-                        {canMove && character.location === CAR && (
-                          <>
-                            <ActionButton
-                              actionType={CAR_MOVE_ACTION}
-                              callback={() => spendAction(MOVE)}
-                              changeActionLabel={changeActionLabel}
-                              isMobile={device.current === MOBILE}
-                              label={MOVE_CAR}
-                              manyButtons={character.location === CAR}
-                            />
-                            <ActionButton
-                              actionType={CAR_ATTACK_ACTION}
-                              callback={() => spendAction(MOVE)}
-                              changeActionLabel={changeActionLabel}
-                              isMobile={device.current === MOBILE}
-                              label={RUN_OVER}
-                              manyButtons={character.location === CAR}
-                            />
-                          </>
-                        )}
+                        {canMove &&
+                          context.rules.car &&
+                          character.location === CAR && (
+                            <>
+                              <ActionButton
+                                actionType={CAR_MOVE_ACTION}
+                                callback={() => spendAction(MOVE)}
+                                changeActionLabel={changeActionLabel}
+                                isMobile={device.current === MOBILE}
+                                label={MOVE_CAR}
+                                manyButtons={character.location === CAR}
+                              />
+                              <ActionButton
+                                actionType={CAR_ATTACK_ACTION}
+                                callback={() => spendAction(MOVE)}
+                                changeActionLabel={changeActionLabel}
+                                isMobile={device.current === MOBILE}
+                                label={RUN_OVER}
+                                manyButtons={character.location === CAR}
+                              />
+                            </>
+                          )}
 
                         {canMove && character.location !== CAR && (
                           <ActionButton
@@ -1979,8 +2006,8 @@ const PlayersSection = ({
                             changeActionLabel={changeActionLabel}
                             isMobile={device.current === MOBILE}
                             label={
-                              ALL_WEAPONS[canOpenDoor] &&
-                              ALL_WEAPONS[canOpenDoor].canOpenDoor === NOISY
+                              context.weapons[canOpenDoor] &&
+                              context.weapons[canOpenDoor].canOpenDoor === NOISY
                                 ? BREAK_DOOR
                                 : OPEN_DOOR
                             }
@@ -2139,8 +2166,8 @@ const PlayersSection = ({
                             damageMode={damageMode}
                             device={device.current}
                             dice={
-                              ALL_WEAPONS[itemName] &&
-                              ALL_WEAPONS[itemName].dice
+                              context.weapons[itemName] &&
+                              context.weapons[itemName].dice
                             }
                             dropMode={dropMode}
                             dualWeaponEffect={dualWeaponEffectIsActive}

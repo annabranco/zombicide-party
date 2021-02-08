@@ -12,6 +12,7 @@ import ErrorComponent from '../ErrorBoundary/ErrorComponent';
 import {
   CLEAR_LS,
   ERROR_TEXTS_404,
+  LOCAL_STORAGE_CONFIG_KEY,
   LOCAL_STORAGE_KEY,
   LOCAL_STORAGE_ROUNDS_KEY,
   LOG_APP_INIT,
@@ -20,6 +21,8 @@ import {
   LOG_TYPE_INFO
 } from '../../constants';
 import { globalStyles } from '../../styles';
+import { AppContext } from '../../setup/rules';
+import { setupGame } from '../../setup/config';
 
 window.addEventListener('orientationchange', () => {
   window.location.reload();
@@ -32,11 +35,15 @@ const App = () => {
   );
   const [damageMode, toggleDamageMode] = useStateWithLabel(false, 'damageMode');
   const [loadedGame, loadGame] = useStateWithLabel(null, 'loadedGame');
+  const [context, updateContext] = useStateWithLabel({}, 'context');
 
   useEffect(() => {
     const game = loadSavedGame();
-
+    const rules = JSON.parse(localStorage.getItem(LOCAL_STORAGE_CONFIG_KEY));
     logger(LOG_TYPE_CORE, LOG_APP_INIT);
+    if (rules) {
+      updateContext(setupGame(rules));
+    }
 
     if (game && game.length !== 0) {
       loadGame(game);
@@ -46,53 +53,55 @@ const App = () => {
       localStorage.removeItem(LOCAL_STORAGE_ROUNDS_KEY);
       localStorage.removeItem(LOCAL_STORAGE_KEY);
     }
-  }, [loadGame]);
+  }, [loadGame, updateContext]);
 
   return (
     <Router>
       <Global styles={globalStyles} />
       <ErrorBoundary>
-        <ControllerLayer />
-        <Switch>
-          <Route
-            exact
-            path="/"
-            render={() => (
-              <MainMenu
-                loadedGame={loadedGame}
-                setInitialCharacters={setInitialCharacters}
-              />
-            )}
-          />
-          <Route
-            exact
-            path="/new"
-            render={() => (
-              <NewGame
-                loadedGame={Boolean(loadedGame)}
-                setInitialCharacters={setInitialCharacters}
-              />
-            )}
-          />
-          <Route
-            exact
-            path="/play"
-            render={() => (
-              <MainScreen
-                damageMode={damageMode}
-                initialCharacters={initialCharacters}
-                loadGame={loadGame}
-                loadedGame={loadedGame}
-                toggleDamageMode={toggleDamageMode}
-              />
-            )}
-          />
-          <Route
-            render={() => (
-              <ErrorComponent texts={ERROR_TEXTS_404} notifyButtonLink="/" />
-            )}
-          />
-        </Switch>
+        <AppContext.Provider value={{ context, updateContext }}>
+          <ControllerLayer />
+          <Switch>
+            <Route
+              exact
+              path="/"
+              render={() => (
+                <MainMenu
+                  loadedGame={loadedGame}
+                  setInitialCharacters={setInitialCharacters}
+                />
+              )}
+            />
+            <Route
+              exact
+              path="/new"
+              render={() => (
+                <NewGame
+                  loadedGame={Boolean(loadedGame)}
+                  setInitialCharacters={setInitialCharacters}
+                />
+              )}
+            />
+            <Route
+              exact
+              path="/play"
+              render={() => (
+                <MainScreen
+                  damageMode={damageMode}
+                  initialCharacters={initialCharacters}
+                  loadGame={loadGame}
+                  loadedGame={loadedGame}
+                  toggleDamageMode={toggleDamageMode}
+                />
+              )}
+            />
+            <Route
+              render={() => (
+                <ErrorComponent texts={ERROR_TEXTS_404} notifyButtonLink="/" />
+              )}
+            />
+          </Switch>
+        </AppContext.Provider>
       </ErrorBoundary>
     </Router>
   );

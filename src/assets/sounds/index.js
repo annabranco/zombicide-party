@@ -35,6 +35,7 @@ import CarExit from './actions/car-exit.mp3';
 import CuredFemale from './actions/cured-female.mp3';
 import CuredMale from './actions/cured-male.mp3';
 import CarMove from './actions/car-move.mp3';
+import Explosion from './actions/explosion.mp3';
 import FoundFemale1 from './actions/found-female1.mp3';
 import FoundFemale2 from './actions/found-female2.mp3';
 import FoundFemale3 from './actions/found-female3.mp3';
@@ -179,6 +180,7 @@ export const SOUNDS = {
   'car-move': CarMove,
   'cured-female': CuredFemale,
   'cured-male': CuredMale,
+  explosion: Explosion,
   'found-female1': FoundFemale1,
   'found-female2': FoundFemale2,
   'found-female3': FoundFemale3,

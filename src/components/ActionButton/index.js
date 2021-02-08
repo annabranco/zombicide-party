@@ -10,6 +10,7 @@ import {
   CAR_MOVE_ACTION,
   COMBINE_ACTION,
   END_TURN_ACTION,
+  EXPLOSION_ACTION,
   GIVE_ORDERS_ACTION,
   HEAL_ACTION,
   LEAVE_GAME_ACTION,
@@ -113,32 +114,11 @@ const ActionButton = ({
 
   useEffect(() => {
     switch (actionType) {
-      case MOVE_ACTION:
-        setIconType('fas fa-running');
-        sound.current = new Audio(SOUNDS[`${actionType}-${type}`]);
-        break;
-      case LEAVE_GAME_ACTION:
-        setIconType2('fas fa-running');
-        setIconType('fas fa-sign-out-alt');
-        sound.current = new Audio(SOUNDS[`${actionType}-${type}`]);
-        sound2.current = new Audio(SOUNDS[type2]);
-        break;
-      case WIN_GAME:
-        setIconType('fas fa-trophy');
-        break;
-      case END_TURN_ACTION:
-        setIconType('fas fa-ban');
-        break;
-      case COMBINE_ACTION:
-        setIconType('fas fa-wrench');
-        break;
-      case OBJECTIVE_ACTION:
-        setIconType('far fa-times-circle');
-        break;
-      case OPEN_DOOR_ACTION:
-        setIconSize('small');
-        setIconType('fas fa-door-open');
-        sound.current = new Audio(SOUNDS[`${actionType}-${type}`]);
+      case CAR_ATTACK_ACTION:
+        setIconSize('medium');
+        setIconType('fas fa-child');
+        setIconType2('fas fa-car-side');
+        sound.current = new Audio(SOUNDS[`${actionType}`]);
         break;
       case CAR_ENTER_ACTION:
       case CAR_EXIT_ACTION:
@@ -154,10 +134,55 @@ const ActionButton = ({
         setIconType('fas fa-car-side');
         sound.current = new Audio(SOUNDS[`${actionType}`]);
         break;
-      case CAR_ATTACK_ACTION:
-        setIconSize('medium');
-        setIconType('fas fa-child');
-        setIconType2('fas fa-car-side');
+      case COMBINE_ACTION:
+        setIconType('fas fa-wrench');
+        break;
+      case END_TURN_ACTION:
+        setIconType('fas fa-ban');
+        break;
+      case EXPLOSION_ACTION:
+        setIconType('fas fa-bahai');
+        sound.current = new Audio(SOUNDS[`${actionType}`]);
+        break;
+      case GIVE_ORDERS_ACTION:
+        setIconType2('far fa-comment'); // fas
+        setIconType('fas fa-running');
+        sound.current = new Audio(
+          SOUNDS[`${actionType}${type2 === 'radio' ? '-radio' : ''}-${type}`]
+        );
+        break;
+      case HEAL_ACTION:
+        setIconType('fas fa-hand-holding-medical');
+        break;
+      case LEAVE_GAME_ACTION:
+        setIconType2('fas fa-running');
+        setIconType('fas fa-sign-out-alt');
+        sound.current = new Audio(SOUNDS[`${actionType}-${type}`]);
+        sound2.current = new Audio(SOUNDS[type2]);
+        break;
+
+      case LOCK_ACTION:
+        setIconType('fas fa-lock');
+        sound.current = new Audio(SOUNDS[`${actionType}`]);
+        break;
+      case MAKE_NOISE_ACTION:
+        setIconType('fas fa-volume-up');
+        sound.current = new Audio(SOUNDS[`${actionType}`]);
+        break;
+      case MOVE_ACTION:
+        setIconType('fas fa-running');
+        sound.current = new Audio(SOUNDS[`${actionType}-${type}`]);
+        break;
+      case OBJECTIVE_ACTION:
+        setIconType('far fa-times-circle');
+        break;
+      case OPEN_DOOR_ACTION:
+        setIconSize('small');
+        setIconType('fas fa-door-open');
+        sound.current = new Audio(SOUNDS[`${actionType}-${type}`]);
+        break;
+      case RELOAD_ACTION:
+        setIconType('fas fa-sync-alt');
         sound.current = new Audio(SOUNDS[`${actionType}`]);
         break;
       case SEARCH_ACTION:
@@ -178,27 +203,8 @@ const ActionButton = ({
           SOUNDS[`found-${type}${Math.ceil(Math.random() * 6)}`]
         );
         break;
-      case GIVE_ORDERS_ACTION:
-        setIconType2('far fa-comment'); // fas
-        setIconType('fas fa-running');
-        sound.current = new Audio(
-          SOUNDS[`${actionType}${type2 === 'radio' ? '-radio' : ''}-${type}`]
-        );
-        break;
-      case LOCK_ACTION:
-        setIconType('fas fa-lock');
-        sound.current = new Audio(SOUNDS[`${actionType}`]);
-        break;
-      case MAKE_NOISE_ACTION:
-        setIconType('fas fa-volume-up');
-        sound.current = new Audio(SOUNDS[`${actionType}`]);
-        break;
-      case RELOAD_ACTION:
-        setIconType('fas fa-sync-alt');
-        sound.current = new Audio(SOUNDS[`${actionType}`]);
-        break;
-      case HEAL_ACTION:
-        setIconType('fas fa-hand-holding-medical');
+      case WIN_GAME:
+        setIconType('fas fa-trophy');
         break;
       default:
         break;
@@ -262,7 +268,7 @@ const ActionButton = ({
 
 ActionButton.propTypes = {
   actionType: string.isRequired,
-  callback: func.isRequired,
+  callback: func,
   carStarted: bool,
   changeActionLabel: func,
   combineItemSelected: bool,
@@ -280,6 +286,7 @@ ActionButton.propTypes = {
 };
 
 ActionButton.defaultProps = {
+  callback: () => null,
   carStarted: false,
   changeActionLabel: () => null,
   combineItemSelected: false,

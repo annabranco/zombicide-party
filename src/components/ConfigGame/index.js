@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useContext, useEffect } from 'react';
 import FormGroup from '@material-ui/core/FormGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import { func } from 'prop-types';
@@ -22,7 +22,8 @@ import {
   RuleSwitch,
   RulesWrapper
 } from './styles';
-import { GAME_RULES } from '../../setup/rules';
+import { AppContext, GAME_RULES } from '../../setup/rules';
+import { setupGame } from '../../setup/config';
 
 const ConfigGame = ({ toggleConfig }) => {
   const [setLabel, changeSetLabel] = useStateWithLabel(null, 'setLabel');
@@ -32,13 +33,13 @@ const ConfigGame = ({ toggleConfig }) => {
   );
   const [rules, changeRules] = useStateWithLabel({}, 'rules');
 
+  const { updateContext } = useContext(AppContext);
+
   const confirmConfig = () => {
-    console.log({ ...rules });
-    localStorage.setItem(
-      LOCAL_STORAGE_CONFIG_KEY,
-      JSON.stringify({ ...rules })
-    );
+    const { characters, items, weapons, zombies } = setupGame(rules);
+    localStorage.setItem(LOCAL_STORAGE_CONFIG_KEY, JSON.stringify(rules));
     toggleConfig(false);
+    updateContext({ rules, characters, items, weapons, zombies });
   };
 
   const handleChange = event => {
@@ -50,7 +51,6 @@ const ConfigGame = ({ toggleConfig }) => {
     updRules[expansion] = !updRules[expansion];
     changeRules(updRules);
   };
-
   useEffect(() => {
     const savedConfig = JSON.parse(
       localStorage.getItem(LOCAL_STORAGE_CONFIG_KEY)
@@ -122,7 +122,7 @@ const ConfigGame = ({ toggleConfig }) => {
           <RulesWrapper>
             {Object.keys(rules).length > 0 && (
               <>
-                <FormGroup column>
+                <FormGroup>
                   {GAME_RULES.filter(rule => rule.order % 2 !== 0).map(rule => (
                     <FormControlLabel
                       control={
@@ -138,7 +138,7 @@ const ConfigGame = ({ toggleConfig }) => {
                     />
                   ))}
                 </FormGroup>
-                <FormGroup column>
+                <FormGroup>
                   {GAME_RULES.filter(rule => rule.order % 2 === 0).map(rule => (
                     <FormControlLabel
                       control={

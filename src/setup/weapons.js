@@ -243,6 +243,14 @@ export const WEAPONS_OTHERS = {
 };
 
 export const WEAPONS_NIGHT_SHIFT = {
+  AssaultRifle: {
+    attack: RANGED,
+    dice: 3,
+    img: AssaultRifle,
+    name: 'Assault Rifle',
+    noise: true,
+    type: WEAPONS
+  },
   AutomaticShotgun: {
     attack: RANGED,
     dice: 3,
@@ -266,6 +274,14 @@ export const WEAPONS_NIGHT_SHIFT = {
     dual: true,
     img: ColtPython,
     name: 'Colt Python',
+    noise: true,
+    type: WEAPONS
+  },
+  DesertEagle: {
+    attack: RANGED,
+    dice: 1,
+    img: DesertEagle,
+    name: 'Desert Eagle',
     noise: true,
     type: WEAPONS
   },
@@ -321,21 +337,30 @@ export const WEAPONS_NIGHT_SHIFT = {
   }
 };
 
-const selectedSets = [
-  WEAPONS_S1,
-  WEAPONS_MALL,
-  WEAPONS_S2,
-  WEAPONS_S3,
-  WEAPONS_OTHERS,
-  WEAPONS_NIGHT_SHIFT
-];
+// const selectedSets = [
+//   WEAPONS_S1,
+//   WEAPONS_MALL,
+//   WEAPONS_S2,
+//   WEAPONS_S3,
+//   WEAPONS_OTHERS,
+//   WEAPONS_NIGHT_SHIFT
+// ];
 
-export const setupWeapons = sets => {
-  let allWeapons = {};
-  sets.forEach(set => {
-    allWeapons = { ...allWeapons, ...set };
-  });
-  return allWeapons;
+// export const setupWeapons = sets => {
+//   let allWeapons = {};
+//   sets.forEach(set => {
+//     allWeapons = { ...allWeapons, ...set };
+//   });
+//   return allWeapons;
+// };
+
+// export const ALL_WEAPONS = setupWeapons(selectedSets);
+
+export const ALL_WEAPONS = {
+  ...WEAPONS_S1,
+  ...WEAPONS_MALL,
+  ...WEAPONS_S2,
+  ...WEAPONS_S3,
+  ...WEAPONS_OTHERS,
+  ...WEAPONS_NIGHT_SHIFT
 };
-
-export const ALL_WEAPONS = setupWeapons(selectedSets);
