@@ -24,6 +24,7 @@ import { AppContext } from '../../../setup/rules';
 const ItemsSelectorModal = ({ device, onSelect, selectSlot, slotType }) => {
   const [items, changeItems] = useStateWithLabel({}, ITEMS);
   const [itemsType, changeItemsType] = useStateWithLabel(ITEMS, 'itemsType');
+
   const { context } = useContext(AppContext);
 
   const changeType = () => {
@@ -56,7 +57,7 @@ const ItemsSelectorModal = ({ device, onSelect, selectSlot, slotType }) => {
       changeItems(context.items);
       changeItemsType(ITEMS);
     }
-  }, [changeItems, slotType, changeItemsType]);
+  }, [changeItems, slotType, changeItemsType, context.weapons, context.items]);
 
   return (
     <>

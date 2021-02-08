@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useContext, useEffect, useRef } from 'react';
 import { bool, func } from 'prop-types';
 import { ALL_ZOMBIES } from '../../../setup/zombies';
 import { getMediaQuery, logger, useStateWithLabel } from '../../../utils';
@@ -23,6 +23,7 @@ import {
   ZombiesArea,
   ZombiesRoundSign
 } from './styles';
+import { AppContext } from '../../../setup/rules';
 
 const ZombiesSection = ({
   damageMode,
@@ -33,10 +34,11 @@ const ZombiesSection = ({
 }) => {
   const [isHighlighted, highlight] = useStateWithLabel(false, 'isHighlighted');
   const [turnLabel, toggleTurnLabel] = useStateWithLabel(true, 'turnLabel');
-  const [zombies, changeZombies] = useStateWithLabel(ALL_ZOMBIES, 'zombies');
+  const [zombies, changeZombies] = useStateWithLabel({}, 'zombies');
 
   const device = useRef(getMediaQuery());
   const timerTimeout = useRef();
+  const { context } = useContext(AppContext);
 
   const endZombiesRound = () => {
     logger(LOG_TYPE_EXTENDED, END_ZOMBIE_ROUND);
@@ -59,6 +61,10 @@ const ZombiesSection = ({
   }, [toggleTurnLabel, turnLabel, zombiesRound]);
 
   useEffect(() => {
+    changeZombies(context.zombies);
+  }, [changeZombies, context.zombies]);
+
+  useEffect(() => {
     return () => clearTimeout(timerTimeout.current);
   }, []);
 
@@ -66,7 +72,12 @@ const ZombiesSection = ({
     <ZombiesArea>
       {damageMode && <NoSelectOverlay />}
       <SubSectionWrapper>
-        <SelectorArea columns={device.current === MOBILE ? 3 : 'big'} zombies>
+        <SelectorArea
+          columns={
+            device.current === MOBILE || device.current === TABLET ? 3 : 'big'
+          }
+          zombies
+        >
           {Object.keys(zombies).map(zombie => (
             <ZombieWrapper
               key={ALL_ZOMBIES[zombie].name}

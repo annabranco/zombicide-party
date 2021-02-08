@@ -49,7 +49,6 @@ export const ConfigSection = styled.div`
 
   @media all and (min-width: 1200px) {
     height: 55vh;
-    padding: 50px 10px 30px;
 
     &:last-of-type {
       width: 200%;
@@ -59,7 +58,6 @@ export const ConfigSection = styled.div`
 
   @media all and (min-width: 1400px) {
     height: 50vh;
-    padding: 10px;
 
     &:last-of-type {
       width: 200%;
@@ -112,6 +110,22 @@ export const Cover = styled.img`
         margin: 5px;
       `};
   }
+
+  @media all and (min-width: 1200px) {
+    ${({ small }) =>
+      small &&
+      css`
+        width: 80%;
+      `};
+  }
+
+  @media all and (min-width: 1200px) {
+    ${({ small }) =>
+      small &&
+      css`
+        width: 60%;
+      `};
+  }
 `;
 Cover.displayName = 'Cover';
 
@@ -125,14 +139,21 @@ export const CoverLabel = styled.p`
   font-family: 'Cairo', sans-serif;
 
   @media all and (min-width: 768px) {
-    bottom: 20px;
+    bottom: 5px;
+  }
+  @media all and (min-width: 1200px) {
+    bottom: 10px;
+  }
+
+  @media all and (min-width: 1400px) {
+    bottom: 15px;
   }
 `;
 CoverLabel.displayName = 'CoverLabel';
 
 export const CoversWrapper = styled.div`
   label: CoversWrapper;
-  width: 80%;
+  width: 100%;
   display: flex;
   flex-direction: row;
   align-items: center;

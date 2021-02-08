@@ -2,7 +2,7 @@ import styled from '@emotion/styled';
 import { css } from '@emotion/core';
 import { rgba } from 'emotion-rgba';
 import { AttackInstructions } from '../ZombiesSection/styles';
-import { Appear, Shadow } from '../../../styles';
+import { Shadow } from '../../../styles';
 import { IN_RESERVE, MOBILE } from '../../../constants';
 import Background from '../../../assets/images/background/background.jpg';
 
@@ -114,7 +114,7 @@ export const AbilitiesWrapperDesktop = styled.div`
   z-index: 10;
   position: absolute;
   padding: 20px 0;
-  bottom: 80px;
+  bottom: 100px;
   right: 20px;
   background: rgba(0, 0, 0, 0.15);
   border: 1px solid rgba(0, 0, 0, 0.5);
@@ -129,7 +129,7 @@ export const AbilitiesWrapperDesktop = styled.div`
   justify-content: space-around;
 
   @media all and (min-width: 1400px) {
-    bottom: 120px;
+    bottom: 140px;
   }
 `;
 AbilitiesWrapperDesktop.displayName = 'AbilitiesWrapperDesktop';
@@ -151,6 +151,13 @@ export const ActionsLabelWrapper = styled.div`
   letter-spacing: 0.2rem;
   color: rgba(255, 255, 180, 0.6);
   text-transform: uppercase;
+
+  @media all and (min-width: 1200px) {
+    bottom: 65px;
+  }
+  @media all and (min-width: 1400px) {
+    bottom: 85px;
+  }
 `;
 ActionsLabelWrapper.displayName = 'ActionsLabelWrapper';
 

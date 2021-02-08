@@ -188,7 +188,7 @@ const NewGame = ({
   return (
     <MenuScreen dynamic={dynamic} img={BG} type="newChar">
       {config && <ConfigGame toggleConfig={toggleConfig} />}
-      {/* <SetupModal
+      <SetupModal
         activePlayers={activePlayers}
         addPlayer={addPlayer}
         dynamic={dynamic}
@@ -196,7 +196,7 @@ const NewGame = ({
         playIntro={playIntro}
         setActivePlayers={setActivePlayers}
         type="newChar"
-      /> */}
+      />
       <SelectorTitle dynamic={dynamic}>
         CHOOSE {dynamic ? CHARACTER_TEXT : CHARACTERS_TEXT}
       </SelectorTitle>

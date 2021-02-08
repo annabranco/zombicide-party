@@ -277,6 +277,17 @@ export const ZombieWrapper = styled.h3`
 
   @media all and (min-width: 701px) {
     position: initial;
+    width: 100px;
+    margin: 0 10px;
+  }
+
+  @media all and (min-width: 1200px) {
+    margin: 0 30px;
+    max-width: 140px;
+    width: 100%;
+  }
+  @media all and (min-width: 1400px) {
+    max-width: 180px;
   }
 `;
 ZombieWrapper.displayName = 'ZombieWrapper';

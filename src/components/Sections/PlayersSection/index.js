@@ -1530,7 +1530,7 @@ const PlayersSection = ({
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [charIndex, dataLoaded, initialCharacters, loadedGame]);
+  }, [dataLoaded, initialCharacters, loadedGame]);
 
   useEffect(() => {
     if (character.name) {
