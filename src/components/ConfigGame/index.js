@@ -3,8 +3,22 @@ import FormGroup from '@material-ui/core/FormGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import { func } from 'prop-types';
 import { EXPANSIONS, SETS } from '../../setup/sets';
-import { useStateWithLabel } from '../../utils';
-import { CANT_DESELECT, LOCAL_STORAGE_CONFIG_KEY } from '../../constants';
+import { getMediaQuery, useStateWithLabel } from '../../utils';
+import {
+  ALL,
+  CANT_DESELECT,
+  CONFIG_EXPANSIONS,
+  CONFIG_RULES,
+  CONFIG_SETS,
+  CONFIG_GAME,
+  CONFIRM,
+  CONFIRM_SETTINGS,
+  DESKTOP,
+  GAME_RULES_TITLE,
+  GAME_SETS,
+  LOCAL_STORAGE_CONFIG_KEY,
+  LOOKS_GREAT
+} from '../../constants';
 import {
   ModalButton,
   ModalMessage,
@@ -26,12 +40,16 @@ import { AppContext, GAME_RULES } from '../../setup/rules';
 import { setupGame } from '../../setup/config';
 
 const ConfigGame = ({ toggleConfig }) => {
-  const [setLabel, changeSetLabel] = useStateWithLabel(null, 'setLabel');
+  const [activeSection, changeActiveSection] = useStateWithLabel(
+    CONFIG_RULES,
+    'rules'
+  );
   const [expansionLabel, changeExpansionLabel] = useStateWithLabel(
     null,
     'expansionLabel'
   );
   const [rules, changeRules] = useStateWithLabel({}, 'rules');
+  const [setLabel, changeSetLabel] = useStateWithLabel(null, 'setLabel');
 
   const { updateContext } = useContext(AppContext);
 
@@ -46,11 +64,22 @@ const ConfigGame = ({ toggleConfig }) => {
     changeRules({ ...rules, [event.target.name]: event.target.checked });
   };
 
+  const onClickButton = () => {
+    if (activeSection === CONFIG_SETS) {
+      changeActiveSection(CONFIG_EXPANSIONS);
+    } else if (activeSection === CONFIG_EXPANSIONS) {
+      changeActiveSection(CONFIG_RULES);
+    } else {
+      confirmConfig();
+    }
+  };
+
   const onClickExpansion = expansion => {
     const updRules = { ...rules };
     updRules[expansion] = !updRules[expansion];
     changeRules(updRules);
   };
+
   useEffect(() => {
     const savedConfig = JSON.parse(
       localStorage.getItem(LOCAL_STORAGE_CONFIG_KEY)
@@ -79,94 +108,137 @@ const ConfigGame = ({ toggleConfig }) => {
     changeRules(rulesObj);
   }, [changeRules]);
 
+  useEffect(() => {
+    if (getMediaQuery() === DESKTOP) {
+      changeActiveSection(ALL);
+    } else {
+      changeActiveSection(CONFIG_SETS);
+    }
+  }, [changeActiveSection]);
+
   return (
     <ModalWindow type="config" visible>
-      <ModalTitle>Config New Game</ModalTitle>
-      <ModalMessage>Confirm or change next game config</ModalMessage>
+      <ModalTitle>{CONFIG_GAME}</ModalTitle>
+      <ModalMessage small>{CONFIRM_SETTINGS}</ModalMessage>
       <ConfigWrapper>
-        <ConfigSection>
-          <ConfigTitle>Game sets</ConfigTitle>
-          <CoversWrapper>
-            {Object.values(SETS).map(set => (
-              <Cover
-                active
-                key={`Set-${set.name}`}
-                src={set.cover}
-                onMouseOver={() => changeSetLabel(set.name)}
-                onMouseOut={() => changeSetLabel()}
-                onClick={() => changeSetLabel(CANT_DESELECT)}
-              />
-            ))}
-            <CoverLabel>{setLabel}</CoverLabel>
-          </CoversWrapper>
-        </ConfigSection>
-        <ConfigSection>
-          <ConfigTitle>Expansions</ConfigTitle>
-          <CoversWrapper>
-            {Object.values(EXPANSIONS).map(expansion => (
-              <Cover
-                active={rules[expansion.name]}
-                key={`Expansion-${expansion.name}`}
-                medium
-                src={expansion.cover}
-                onMouseOver={() => changeExpansionLabel(expansion.label)}
-                onMouseOut={() => changeExpansionLabel()}
-                onClick={() => onClickExpansion(expansion.name)}
-              />
-            ))}
-            <CoverLabel>{expansionLabel}</CoverLabel>
-          </CoversWrapper>
-        </ConfigSection>
-        <ConfigSection>
-          <ConfigTitle>Game rules</ConfigTitle>
-          <RulesWrapper>
-            {Object.keys(rules).length > 0 && (
-              <>
-                <FormGroup>
-                  {GAME_RULES.filter(rule => rule.order % 2 !== 0).map(rule => (
-                    <FormControlLabel
-                      control={
-                        <RuleSwitch
-                          checked={rules[rule.name]}
-                          onChange={handleChange}
-                          name={rule.name}
+        {(activeSection === ALL || activeSection === CONFIG_SETS) && (
+          <ConfigSection>
+            <ConfigTitle>{GAME_SETS}</ConfigTitle>
+            <CoversWrapper>
+              {Object.values(SETS).map(set => (
+                <Cover
+                  active
+                  key={`Set-${set.name}`}
+                  src={set.cover}
+                  onMouseOver={() => changeSetLabel(set.name)}
+                  onMouseOut={() => changeSetLabel()}
+                  onClick={() => changeSetLabel(CANT_DESELECT)}
+                />
+              ))}
+              <CoverLabel>{setLabel}</CoverLabel>
+            </CoversWrapper>
+          </ConfigSection>
+        )}
+        {(activeSection === ALL || activeSection === CONFIG_EXPANSIONS) && (
+          <ConfigSection>
+            <ConfigTitle>{CONFIG_EXPANSIONS}</ConfigTitle>
+            <CoversWrapper>
+              {Object.values(EXPANSIONS).map(expansion => (
+                <Cover
+                  active={rules[expansion.name]}
+                  key={`Expansion-${expansion.name}`}
+                  small
+                  src={expansion.cover}
+                  onMouseOver={() => changeExpansionLabel(expansion.label)}
+                  onMouseOut={() => changeExpansionLabel()}
+                  onClick={() => onClickExpansion(expansion.name)}
+                />
+              ))}
+              <CoverLabel>{expansionLabel}</CoverLabel>
+            </CoversWrapper>
+          </ConfigSection>
+        )}
+        {(activeSection === ALL || activeSection === CONFIG_RULES) && (
+          <ConfigSection>
+            <ConfigTitle>{GAME_RULES_TITLE}</ConfigTitle>
+            <RulesWrapper>
+              {Object.keys(rules).length > 0 && (
+                <>
+                  {window.innerWidth > 1400 ? (
+                    <>
+                      <FormGroup>
+                        {GAME_RULES.filter(rule => rule.order % 2 !== 0).map(
+                          rule => (
+                            <FormControlLabel
+                              control={
+                                <RuleSwitch
+                                  checked={rules[rule.name]}
+                                  onChange={handleChange}
+                                  name={rule.name}
+                                />
+                              }
+                              disabled={rule.disabled}
+                              key={`rule-${rule.name}`}
+                              label={rule.label}
+                            />
+                          )
+                        )}
+                      </FormGroup>
+                      <FormGroup>
+                        {GAME_RULES.filter(rule => rule.order % 2 === 0).map(
+                          rule => (
+                            <FormControlLabel
+                              control={
+                                <RuleSwitch
+                                  checked={rules[rule.name]}
+                                  onChange={handleChange}
+                                  name={rule.name}
+                                />
+                              }
+                              disabled={rule.disabled}
+                              key={`rule-${rule.name}`}
+                              label={rule.label}
+                            />
+                          )
+                        )}
+                      </FormGroup>
+                    </>
+                  ) : (
+                    <FormGroup>
+                      {GAME_RULES.sort((ruleA, ruleB) =>
+                        ruleA.order > ruleB.order ? 1 : -1
+                      ).map(rule => (
+                        <FormControlLabel
+                          control={
+                            <RuleSwitch
+                              checked={rules[rule.name]}
+                              onChange={handleChange}
+                              name={rule.name}
+                            />
+                          }
+                          disabled={rule.disabled}
+                          key={`rule-${rule.name}`}
+                          label={rule.label}
                         />
-                      }
-                      disabled={rule.disabled}
-                      key={`rule-${rule.name}`}
-                      label={rule.label}
-                    />
-                  ))}
-                </FormGroup>
-                <FormGroup>
-                  {GAME_RULES.filter(rule => rule.order % 2 === 0).map(rule => (
-                    <FormControlLabel
-                      control={
-                        <RuleSwitch
-                          checked={rules[rule.name]}
-                          onChange={handleChange}
-                          name={rule.name}
-                        />
-                      }
-                      disabled={rule.disabled}
-                      key={`rule-${rule.name}`}
-                      label={rule.label}
-                    />
-                  ))}
-                </FormGroup>
-              </>
-            )}
-          </RulesWrapper>
-        </ConfigSection>
+                      ))}
+                    </FormGroup>
+                  )}
+                </>
+              )}
+            </RulesWrapper>
+          </ConfigSection>
+        )}
       </ConfigWrapper>
       <ButtonsArea>
         <ModalButton
           disabled={false}
           inactive={false}
-          onClick={confirmConfig}
+          onClick={onClickButton}
           type="accept"
         >
-          Looks great!
+          {activeSection === ALL || activeSection === CONFIG_RULES
+            ? LOOKS_GREAT
+            : CONFIRM}
         </ModalButton>
       </ButtonsArea>
     </ModalWindow>

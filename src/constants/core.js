@@ -1,5 +1,9 @@
+export const ALL = 'all';
 export const CANCEL = 'Cancel';
 export const CANT_DESELECT = 'Cannot be deselected';
+export const CONFIG_EXPANSIONS = 'expansions';
+export const CONFIG_RULES = 'rules';
+export const CONFIG_SETS = 'sets';
 export const CONFIRM = 'confirm';
 export const DESKTOP = 'desktop';
 export const END = 'End';

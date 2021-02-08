@@ -182,13 +182,33 @@ export const ModalMessage = styled.p`
       color: yellow;
     `}
 
+  ${({ small }) =>
+    small &&
+    css`
+      position: absolute;
+      top: 90px;
+    `}
+
   @media all and (min-width: 768px) {
     width: 60%;
+
+    ${({ small }) =>
+      small &&
+      css`
+        position: absolute;
+        top: 120px;
+      `}
   }
 
   @media all and (min-width: 1400px) {
     margin-top: -50px;
     width: 40%;
+
+    ${({ small }) =>
+      small &&
+      css`
+        position: initial;
+      `}
   }
 `;
 ModalMessage.displayName = 'ModalMessage';
@@ -288,8 +308,8 @@ export const ModalWindow = styled.div`
     }
     return null;
   }}
-      ${({ onTop }) =>
-    onTop &&
+  ${({ inFront }) =>
+    inFront &&
     css`
       z-index: 20;
     `}

@@ -20,9 +20,9 @@ export const ConfigSection = styled.div`
   background: yellow;
   width: 100%;
   margin: 0 20px;
-  padding: 10px;
+  padding: 40px 10px 50px;
   border-radius: 10px;
-  height: 50vh;
+  height: 60vh;
   background: hsla(0, 0%, 100%, 0.2) border-box;
   border-radius: 0.4em;
   box-shadow: 0 0 0 0.1em hsla(0, 0%, 100%, 0.1) inset;
@@ -43,8 +43,28 @@ export const ConfigSection = styled.div`
     filter: blur(40px);
   }
 
-  &:last-of-type {
-    width: 200%;
+  @media all and (min-width: 701px) {
+    padding: 50px 10px 40px;
+  }
+
+  @media all and (min-width: 1200px) {
+    height: 55vh;
+    padding: 50px 10px 30px;
+
+    &:last-of-type {
+      width: 200%;
+      padding: 50px 10px 20px;
+    }
+  }
+
+  @media all and (min-width: 1400px) {
+    height: 50vh;
+    padding: 10px;
+
+    &:last-of-type {
+      width: 200%;
+      padding: 10px;
+    }
   }
 `;
 ConfigSection.displayName = 'ConfigSection';
@@ -54,10 +74,14 @@ export const ConfigTitle = styled.h2`
   position: absolute;
   top: 20px;
   color: white;
-  font-size: 2rem;
+  font-size: 1rem;
   text-align: center;
   text-transform: uppercase;
   font-family: 'Grandstander', cursive;
+
+  @media all and (min-width: 768px) {
+    font-size: 2rem;
+  }
 `;
 ConfigTitle.displayName = 'ConfigTitle';
 
@@ -67,11 +91,11 @@ export const Cover = styled.img`
   cursor: pointer;
   filter: sepia(1) contrast(2.5) brightness(0.5) opacity(0.5);
 
-  ${({ medium }) =>
-    medium &&
+  ${({ small }) =>
+    small &&
     css`
-      width: 40%;
-      margin: 0 20px;
+      width: 65%;
+      margin: 0;
     `};
 
   ${({ active }) =>
@@ -79,17 +103,30 @@ export const Cover = styled.img`
     css`
       filter: saturate(1.2) brightness(1.2);
     `};
+
+  @media all and (min-width: 768px) {
+    ${({ small }) =>
+      small &&
+      css`
+        width: 45%;
+        margin: 5px;
+      `};
+  }
 `;
 Cover.displayName = 'Cover';
 
 export const CoverLabel = styled.p`
   label: CoverLabel;
   position: absolute;
-  bottom: 20px;
+  bottom: 2px;
   color: white;
   font-size: 1.3rem;
   text-align: center;
   font-family: 'Cairo', sans-serif;
+
+  @media all and (min-width: 768px) {
+    bottom: 20px;
+  }
 `;
 CoverLabel.displayName = 'CoverLabel';
 
@@ -101,6 +138,7 @@ export const CoversWrapper = styled.div`
   align-items: center;
   justify-content: center;
   flex-wrap: wrap;
+  overflow-y: auto;
 `;
 CoversWrapper.displayName = 'CoversWrapper';
 
@@ -108,10 +146,10 @@ export const RuleSwitch = withStyles({
   switchBase: {
     color: 'gray',
     '&$checked': {
-      color: 'green'
+      color: 'limegreen'
     },
     '&$checked + $track': {
-      backgroundColor: 'darkgreen'
+      backgroundColor: 'gray'
     }
   },
   checked: {},
@@ -127,5 +165,15 @@ export const RulesWrapper = styled.div`
   flex-wrap: wrap;
   color: white;
   font-family: 'Grandstander', cursive;
+  overflow-y: auto;
+  padding-left: 10px;
+
+  @media all and (min-width: 768px) {
+    width: 100%;
+    padding: 0;
+  }
+  @media all and (min-width: 1400px) {
+    justify-content: space-around;
+  }
 `;
 RulesWrapper.displayName = 'RulesWrapper';

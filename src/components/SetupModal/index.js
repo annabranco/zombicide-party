@@ -169,7 +169,7 @@ const SetupModal = ({
   };
   return (
     <ModalWindow
-      onTop={message.title === WARNING}
+      inFront={message.title === WARNING}
       type={type}
       visible={visible}
     >

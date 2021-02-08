@@ -231,8 +231,17 @@ export const SelectionButton = styled.button`
 
   &: hover {
     color: yellow;
-    folter: brightness(1.8);
+    filter: brightness(1.8);
   }
+
+  ${({ disabled }) =>
+    disabled &&
+    css`
+      &: hover {
+        color: lightgray;
+        filter: none;
+      }
+    `}
 `;
 SelectionButton.displayName = 'SelectionButton';
 
