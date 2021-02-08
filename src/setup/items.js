@@ -130,14 +130,18 @@ export const ITEMS_NIGHT_SHIFT = {
   }
 };
 
-const selectedSets = [ITEMS_S1, ITEMS_MALL, ITEMS_NIGHT_SHIFT];
+// const selectedSets = [ITEMS_S1, ITEMS_MALL, ITEMS_NIGHT_SHIFT];
 
-export const setupItems = sets => {
-  let allItems = {};
-  sets.forEach(set => {
-    allItems = { ...allItems, ...set };
-  });
-  return allItems;
+// export const setupItems = sets => {
+//   let allItems = {};
+//   sets.forEach(set => {
+//     allItems = { ...allItems, ...set };
+//   });
+//   return allItems;
+// };
+
+export const ALL_ITEMS = {
+  ...ITEMS_S1,
+  ...ITEMS_MALL,
+  ...ITEMS_NIGHT_SHIFT
 };
-
-export const ALL_ITEMS = setupItems(selectedSets);

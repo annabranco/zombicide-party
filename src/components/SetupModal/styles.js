@@ -182,13 +182,33 @@ export const ModalMessage = styled.p`
       color: yellow;
     `}
 
+  ${({ small }) =>
+    small &&
+    css`
+      position: absolute;
+      top: 90px;
+    `}
+
   @media all and (min-width: 768px) {
     width: 60%;
+
+    ${({ small }) =>
+      small &&
+      css`
+        position: absolute;
+        top: 120px;
+      `}
   }
 
   @media all and (min-width: 1400px) {
     margin-top: -50px;
     width: 40%;
+
+    ${({ small }) =>
+      small &&
+      css`
+        position: initial;
+      `}
   }
 `;
 ModalMessage.displayName = 'ModalMessage';
@@ -274,10 +294,24 @@ export const ModalWindow = styled.div`
       display: flex;
     `}
 
-  ${({ type }) =>
-    type === 'newChar' &&
+  ${({ type }) => {
+    if (type === 'newChar') {
+      return css`
+        border-radius: 0;
+      `;
+    }
+    if (type === 'config') {
+      return css`
+        z-index: 16;
+        background: black;
+      `;
+    }
+    return null;
+  }}
+  ${({ inFront }) =>
+    inFront &&
     css`
-      border-radius: 0;
+      z-index: 20;
     `}
 `;
 ModalWindow.displayName = 'ModalWindow';
@@ -368,6 +402,21 @@ export const PlayerNewInput = styled.input`
   text-transform: uppercase;
 `;
 PlayerNew.displayName = 'PlayerNew';
+
+export const PlayerOrderTag = styled.div`
+  label: PlayerOrderTag;
+  position: absolute;
+  top: -10px;
+  right: -10px;
+  font-size: 0.9rem;
+  line-height: 1.2;
+  height: 15px;
+  width: 15px;
+  border-radius: 50%;
+  background: crimson;
+  color: white;
+`;
+PlayerOrderTag.displayName = 'PlayerOrderTag';
 
 export const PlayerRemove = styled.div`
   label: PlayerRemove;

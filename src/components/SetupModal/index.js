@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
 import { bool, func, instanceOf, string } from 'prop-types';
-import { useStateWithLabel } from '../../utils/hooks';
+import { useStateWithLabel } from '../../utils';
 import {
   CANCEL,
   GO_ON,
@@ -26,6 +26,7 @@ import {
   PlayerActionButtonsArea,
   PlayerNew,
   PlayerNewInput,
+  PlayerOrderTag,
   PlayerRemove,
   PlayerRemoveToggle,
   PlayersArea
@@ -36,6 +37,7 @@ const SetupModal = ({
   addPlayer,
   dynamic,
   loadedGame,
+  playIntro,
   setActivePlayers,
   type
 }) => {
@@ -76,6 +78,7 @@ const SetupModal = ({
       openPlayerWindow();
     }
     toggleInput(false);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [history, loadedGame]);
 
   const openPlayerWindow = () => {
@@ -96,8 +99,14 @@ const SetupModal = ({
   };
 
   const onClickOkButton = () => {
-    localStorage.setItem(LOCAL_STORAGE_PLAYERS_KEY, JSON.stringify(players));
+    localStorage.setItem(
+      LOCAL_STORAGE_PLAYERS_KEY,
+      JSON.stringify([...players])
+    );
     toggleVisible(false);
+    if (playIntro) {
+      playIntro();
+    }
   };
 
   const onClickGoOn = () => {
@@ -158,16 +167,19 @@ const SetupModal = ({
       onSelectPlayer(event);
     }
   };
-
   return (
-    <ModalWindow visible={visible} type={type}>
+    <ModalWindow
+      inFront={message.title === WARNING}
+      type={type}
+      visible={visible}
+    >
       <ModalTitle type={message.title || GENERAL}>{message.title}</ModalTitle>
       <ModalMessage>{message.text}</ModalMessage>
       {(message.title === MANAGE_PLAYERS || !message.title) && (
         <>
           <PlayersArea>
             {players.size > 0 ? (
-              [...players].map(player => (
+              [...players].map((player, index) => (
                 <Player
                   active={activePlayers.has(player)}
                   dynamic={dynamic}
@@ -177,6 +189,11 @@ const SetupModal = ({
                   showRemovePlayer={showRemovePlayer}
                 >
                   {player}
+                  {[...activePlayers].includes(player) && (
+                    <PlayerOrderTag>
+                      {[...activePlayers].indexOf(player) + 1}
+                    </PlayerOrderTag>
+                  )}
                   {showRemovePlayer && (
                     <PlayerRemove onClick={onClickRemovePlayer}>x</PlayerRemove>
                   )}
@@ -231,6 +248,7 @@ SetupModal.propTypes = {
   activePlayers: instanceOf(Set).isRequired,
   dynamic: bool,
   loadedGame: bool,
+  playIntro: func,
   setActivePlayers: func.isRequired,
   type: string
 };
@@ -239,6 +257,7 @@ SetupModal.defaultProps = {
   addPlayer: () => null,
   dynamic: false,
   loadedGame: null,
+  playIntro: null,
   type: null
 };
 

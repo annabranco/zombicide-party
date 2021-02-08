@@ -1,8 +1,8 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useContext, useEffect, useRef } from 'react';
 import { cloneDeep } from 'lodash';
-import { func, string, arrayOf } from 'prop-types';
-import { useStateWithLabel } from '../../utils/hooks';
-import { getCharacterColor } from '../../utils/players';
+import { arrayOf, bool, func, string } from 'prop-types';
+import { ALL_WEAPONS } from '../../setup/weapons';
+import { getCharacterColor, useStateWithLabel } from '../../utils';
 import ItemsArea from '../Items/ItemsArea';
 import {
   IN_HAND,
@@ -12,6 +12,7 @@ import {
   TRADING_WITH,
   WOUNDED
 } from '../../constants';
+import { CharacterType } from '../../interfaces/types';
 import { ArrowSign, CharItems } from '../Sections/PlayersSection/styles';
 import {
   ButtonsWrapper,
@@ -26,14 +27,14 @@ import {
   PlayerName,
   TradeWrapper
 } from './styles';
-import { CharacterType } from '../../interfaces/types';
-import { ALL_WEAPONS } from '../../setup/weapons';
+import { AppContext } from '../../setup/rules';
 
 const TradeArea = ({
   character,
   characters,
   confirmTrade,
   device,
+  reorder,
   spendAction,
   startTrade
 }) => {
@@ -56,6 +57,8 @@ const TradeArea = ({
   );
   const [tradePartner, updatePartner] = useStateWithLabel(null, 'tradePartner');
 
+  const { context } = useContext(AppContext);
+
   const changeToNextPlayer = () => {
     const nextPlayerIndex =
       partnerIndex + 1 >= updatedCharacters.length ? 0 : partnerIndex + 1;
@@ -70,13 +73,12 @@ const TradeArea = ({
   };
 
   const prevPartnerIndex = useRef();
-
   const onClickConfirm = () => {
     const updCharsAfterTrade = cloneDeep(characters);
     updCharsAfterTrade.forEach((char, index) => {
       if (char.name === updatedCharacter.name) {
         updCharsAfterTrade[index] = updatedCharacter;
-      } else if (char.name === tradePartner.name) {
+      } else if (tradePartner && char.name === tradePartner.name) {
         updCharsAfterTrade[index] = tradePartner;
       }
     });
@@ -86,29 +88,12 @@ const TradeArea = ({
     spendAction();
   };
 
-  useEffect(() => {
-    const mainChar = cloneDeep(character);
-    const updChar = characters.filter(char => char.name !== mainChar.name);
-    updateCharacter(mainChar);
-    updateCharacters(updChar);
-    updatePartner(updChar[0]);
-  }, [updatePartner, character, characters, updateCharacter, updateCharacters]);
-
-  useEffect(() => {
-    if (updatedCharacters && partnerIndex !== prevPartnerIndex.current) {
-      const nextPartner = updatedCharacters[partnerIndex];
-      updatePartner(nextPartner);
-      prevPartnerIndex.current = partnerIndex;
-    }
-  }, [partnerIndex, updatedCharacters, updatePartner]);
-
   const onTrade = ({ item, slot, charTrading }) => {
     if (selectedItem1) {
       if (!item) {
         selectItem1();
       } else {
         const updChar = cloneDeep(updatedCharacter);
-        const updPartn = cloneDeep(tradePartner);
         const typeItem1 = selectedItem1.slot <= 2 ? IN_HAND : IN_RESERVE;
         const typeItem2 = slot <= 2 ? IN_HAND : IN_RESERVE;
         const index1 =
@@ -117,6 +102,11 @@ const TradeArea = ({
             : selectedItem1.slot - 3;
         const index2 = slot <= 2 ? slot - 1 : slot - 3;
         const expBaton = ALL_WEAPONS.ExpandableBaton.name.replace(' ', '');
+        let updPartn;
+
+        if (tradePartner) {
+          updPartn = cloneDeep(tradePartner);
+        }
 
         if (selectedItem1.item === NONE && item === NONE) {
           return null;
@@ -132,12 +122,19 @@ const TradeArea = ({
               oldReserve.includes(expBaton) &&
               !updChar.inReserve.includes(expBaton)
             ) {
-              updChar.inReserve.splice(
-                oldReserve.findIndex(
-                  itemInReserve => itemInReserve === expBaton
-                ),
-                1
+              const emptySlot = updChar.inReserve.indexOf(
+                itemInReserve => !itemInReserve || item === NONE
               );
+              if (emptySlot !== -1) {
+                updChar.inReserve.splice(
+                  oldReserve.findIndex(
+                    itemInReserve => itemInReserve === expBaton
+                  ),
+                  1
+                );
+              } else {
+                updChar.inReserve.splice(emptySlot, 1);
+              }
             } else if (
               !oldReserve.includes(expBaton) &&
               updChar.inReserve.includes(expBaton)
@@ -157,12 +154,19 @@ const TradeArea = ({
               oldReserve.includes(expBaton) &&
               !updPartn.inReserve.includes(expBaton)
             ) {
-              updPartn.inReserve.splice(
-                oldReserve.findIndex(
-                  itemInReserve => itemInReserve === expBaton
-                ),
-                1
+              const emptySlot = updPartn.inReserve.indexOf(
+                itemInReserve => !itemInReserve || item === NONE
               );
+              if (emptySlot !== -1) {
+                updPartn.inReserve.splice(
+                  oldReserve.findIndex(
+                    itemInReserve => itemInReserve === expBaton
+                  ),
+                  1
+                );
+              } else {
+                updPartn.inReserve.splice(emptySlot, 1);
+              }
             } else if (
               !oldReserve.includes(expBaton) &&
               updPartn.inReserve.includes(expBaton)
@@ -172,102 +176,118 @@ const TradeArea = ({
             updatePartner(updPartn);
           }
         } else if (selectedItem1.item === WOUNDED || item === WOUNDED) {
-          console.log('NOT');
-        } else if (selectedItem1.charTrading === updChar.name) {
-          const oldCharReserve = [...updChar.inReserve];
-          const oldPartnReserve = [...updPartn.inReserve];
+          // do nothing
+        } else if (tradePartner) {
+          if (selectedItem1.charTrading === updChar.name) {
+            const oldCharReserve = [...updChar.inReserve];
+            const oldPartnReserve = [...updPartn.inReserve];
 
-          updChar[typeItem1][index1] = item === NONE ? null : item;
-          updPartn[typeItem2][index2] =
-            selectedItem1.item === NONE ? null : selectedItem1.item;
+            updChar[typeItem1][index1] = item === NONE ? null : item;
+            updPartn[typeItem2][index2] =
+              selectedItem1.item === NONE ? null : selectedItem1.item;
 
-          if (
-            oldCharReserve.includes(expBaton) &&
-            !updChar.inReserve.includes(expBaton)
-          ) {
-            updChar.inReserve.splice(
-              oldCharReserve.findIndex(
-                itemInReserve => itemInReserve === expBaton
-              ),
-              1
-            );
-          } else if (
-            !oldCharReserve.includes(expBaton) &&
-            updChar.inReserve.includes(expBaton)
-          ) {
-            updChar.inReserve.push(null);
+            if (
+              oldCharReserve.includes(expBaton) &&
+              !updChar.inReserve.includes(expBaton)
+            ) {
+              const emptySlot = updChar.inReserve.indexOf(
+                itemInReserve => !itemInReserve || item === NONE
+              );
+              if (emptySlot !== -1) {
+                updChar.inReserve.splice(
+                  oldCharReserve.findIndex(
+                    itemInReserve => itemInReserve === expBaton
+                  ),
+                  1
+                );
+              } else {
+                updChar.inReserve.splice(emptySlot, 1);
+              }
+            } else if (
+              !oldCharReserve.includes(expBaton) &&
+              updChar.inReserve.includes(expBaton)
+            ) {
+              updChar.inReserve.push(null);
+            }
+
+            if (
+              oldPartnReserve.includes(expBaton) &&
+              !updPartn.inReserve.includes(expBaton)
+            ) {
+              const emptySlot = updPartn.inReserve.indexOf(
+                itemInReserve => !itemInReserve || item === NONE
+              );
+              if (emptySlot !== -1) {
+                updPartn.inReserve.splice(
+                  oldPartnReserve.findIndex(
+                    itemInReserve => itemInReserve === expBaton
+                  ),
+                  1
+                );
+              } else {
+                updPartn.inReserve.splice(emptySlot, 1);
+              }
+            } else if (
+              !oldPartnReserve.includes(expBaton) &&
+              updPartn.inReserve.includes(expBaton)
+            ) {
+              updPartn.inReserve.push(null);
+            }
+
+            updateCharacter(updChar);
+            updatePartner(updPartn);
+          } else {
+            const oldCharReserve = [...updChar.inReserve];
+            const oldPartnReserve = [...updPartn.inReserve];
+
+            updPartn[typeItem1][index1] = item === NONE ? null : item;
+            updChar[typeItem2][index2] =
+              selectedItem1.item === NONE ? null : selectedItem1.item;
+
+            if (
+              oldCharReserve.includes(expBaton) &&
+              !updChar.inReserve.includes(expBaton)
+            ) {
+              updChar.inReserve.splice(
+                oldCharReserve.findIndex(
+                  itemInReserve => itemInReserve === expBaton
+                ),
+                1
+              );
+            } else if (
+              !oldCharReserve.includes(expBaton) &&
+              updChar.inReserve.includes(expBaton)
+            ) {
+              updChar.inReserve.push(null);
+            }
+
+            if (
+              oldPartnReserve.includes(expBaton) &&
+              !updPartn.inReserve.includes(expBaton)
+            ) {
+              updPartn.inReserve.splice(
+                oldPartnReserve.findIndex(
+                  itemInReserve => itemInReserve === expBaton
+                ),
+                1
+              );
+            } else if (
+              !oldPartnReserve.includes(expBaton) &&
+              updPartn.inReserve.includes(expBaton)
+            ) {
+              updPartn.inReserve.push(null);
+            }
+            updateCharacter(updChar);
+            updatePartner(updPartn);
           }
-
-          if (
-            oldPartnReserve.includes(expBaton) &&
-            !updPartn.inReserve.includes(expBaton)
-          ) {
-            updPartn.inReserve.splice(
-              oldPartnReserve.findIndex(
-                itemInReserve => itemInReserve === expBaton
-              ),
-              1
-            );
-          } else if (
-            !oldPartnReserve.includes(expBaton) &&
-            updPartn.inReserve.includes(expBaton)
-          ) {
-            updPartn.inReserve.push(null);
-          }
-
-          updateCharacter(updChar);
-          updatePartner(updPartn);
-        } else {
-          const oldCharReserve = [...updChar.inReserve];
-          const oldPartnReserve = [...updPartn.inReserve];
-
-          updPartn[typeItem1][index1] = item === NONE ? null : item;
-          updChar[typeItem2][index2] =
-            selectedItem1.item === NONE ? null : selectedItem1.item;
-
-          if (
-            oldCharReserve.includes(expBaton) &&
-            !updChar.inReserve.includes(expBaton)
-          ) {
-            updChar.inReserve.splice(
-              oldCharReserve.findIndex(
-                itemInReserve => itemInReserve === expBaton
-              ),
-              1
-            );
-          } else if (
-            !oldCharReserve.includes(expBaton) &&
-            updChar.inReserve.includes(expBaton)
-          ) {
-            updChar.inReserve.push(null);
-          }
-
-          if (
-            oldPartnReserve.includes(expBaton) &&
-            !updPartn.inReserve.includes(expBaton)
-          ) {
-            updPartn.inReserve.splice(
-              oldPartnReserve.findIndex(
-                itemInReserve => itemInReserve === expBaton
-              ),
-              1
-            );
-          } else if (
-            !oldPartnReserve.includes(expBaton) &&
-            updPartn.inReserve.includes(expBaton)
-          ) {
-            updPartn.inReserve.push(null);
-          }
-          updateCharacter(updChar);
-          updatePartner(updPartn);
         }
-
         selectItem1();
         establishTrade(true);
       }
     } else {
       selectItem1({ item, slot, charTrading });
     }
+
     return null;
   };
 
@@ -283,6 +303,32 @@ const TradeArea = ({
     }
   };
 
+  useEffect(() => {
+    const mainChar = cloneDeep(character);
+    updateCharacter(mainChar);
+
+    if (!reorder) {
+      const updChars = characters.filter(char => char.name !== mainChar.name);
+      updateCharacters(updChars);
+      updatePartner(updChars[0]);
+    }
+  }, [
+    updatePartner,
+    character,
+    characters,
+    updateCharacter,
+    updateCharacters,
+    reorder
+  ]);
+
+  useEffect(() => {
+    if (updatedCharacters && partnerIndex !== prevPartnerIndex.current) {
+      const nextPartner = updatedCharacters[partnerIndex];
+      updatePartner(nextPartner);
+      prevPartnerIndex.current = partnerIndex;
+    }
+  }, [partnerIndex, updatedCharacters, updatePartner]);
+
   return (
     <TradeWrapper>
       {updatedCharacter && (
@@ -292,7 +338,12 @@ const TradeArea = ({
             <CharacterTradingName trade>
               {updatedCharacter.name}
             </CharacterTradingName>
-            <PlayerName color={getCharacterColor(updatedCharacter.name)}>
+            <PlayerName
+              color={getCharacterColor(
+                updatedCharacter.name,
+                context.characters
+              )}
+            >
               {updatedCharacter.player}
             </PlayerName>
           </CharacterId>
@@ -348,7 +399,9 @@ const TradeArea = ({
             <CharacterTradingName trade>
               {tradePartner.name}
             </CharacterTradingName>
-            <PlayerName color={getCharacterColor(tradePartner.name)}>
+            <PlayerName
+              color={getCharacterColor(tradePartner.name, context.characters)}
+            >
               {tradePartner.player}
             </PlayerName>
           </CharacterId>
@@ -434,6 +487,7 @@ TradeArea.propTypes = {
   characters: arrayOf(CharacterType).isRequired,
   confirmTrade: func.isRequired,
   device: string.isRequired,
+  reorder: bool.isRequired,
   spendAction: func.isRequired,
   startTrade: func.isRequired
 };

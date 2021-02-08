@@ -1,7 +1,5 @@
-import { CHARACTERS } from '../setup/characters';
-
-export const getCharacterColor = name => {
-  const character = CHARACTERS.find(char => char.name === name);
+export const getCharacterColor = (name, characters) => {
+  const character = characters.find(char => char.name === name);
   return character && character.color;
 };
 

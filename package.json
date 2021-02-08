@@ -1,6 +1,20 @@
 {
   "name": "zombicide-party",
   "version": "0.10.0",
+  "author": "Anna Branco <anna.branco@icloud.com> (https://github.com/annabranco)",
+  "description": "This is Anna Branco's developer profile",
+  "repository": "github:annabranco/zombicide-party",
+  "homepage": "./",
+  "keywords": [
+    "zombicide",
+    "tabletop",
+    "game",
+    "zombie"
+  ],
+  "bugs": {
+    "url": "https://github.com/annabranco/zombicide-party/issues"
+  },
+  "license": "MIT",
   "private": true,
   "scripts": {
     "start": "react-scripts start",

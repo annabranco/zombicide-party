@@ -1,20 +1,33 @@
-import React, { useEffect } from 'react';
+import React, { useContext, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { arrayOf, bool, func } from 'prop-types';
 import { cloneDeep } from 'lodash';
-import { useStateWithLabel } from '../../utils/hooks';
-import { getMediaQuery } from '../../utils/devices';
-import { getCharacterColor } from '../../utils/players';
-import { CHARACTERS } from '../../setup/characters';
+import {
+  getCharacterColor,
+  getMediaQuery,
+  logger,
+  useStateWithLabel
+} from '../../utils';
 import SetupModal from '../SetupModal';
+import Intro from '../../assets/sounds/music/TheHorrorShowShort.mp3';
 import BG from '../../assets/images/background/background.jpg';
 import {
-  CHARACTER_TEXT,
+  CLICK_NEW_GAME,
+  LOG_TYPE_CORE,
+  ADD_NEW_PLAYER,
   CHARACTERS_TEXT,
+  CHARACTER_TEXT,
+  CLEAR_LS,
   LOCAL_STORAGE_KEY,
-  MOBILE
+  LOG_TYPE_EXTENDED,
+  LOG_TYPE_INFO,
+  MOBILE,
+  PLAYER_NAMES,
+  START_GAME,
+  LOCAL_STORAGE_ROUNDS_KEY
 } from '../../constants';
 import { CharacterType } from '../../interfaces/types';
+import { MenuScreen } from '../MainMenu/styles';
 import {
   CharacterImage,
   CharacterName,
@@ -24,7 +37,8 @@ import {
   SelectorButton,
   SelectorTitle
 } from './styles';
-import { MenuScreen } from '../MainMenu/styles';
+import ConfigGame from '../ConfigGame';
+import { AppContext } from '../../setup/rules';
 
 const NewGame = ({
   currentChars,
@@ -37,20 +51,40 @@ const NewGame = ({
     new Set(),
     'activePlayers'
   );
-  const [characters, setCharacters] = useStateWithLabel(
-    CHARACTERS,
-    'characters'
-  );
+  const [characters, setCharacters] = useStateWithLabel([], 'characters');
   const [charactersSelected, updateSelectedCharacters] = useStateWithLabel(
     new Map(),
     'charactersSelected'
   );
+  const [config, toggleConfig] = useStateWithLabel(!dynamic, 'config');
   const [newPlayer, setNewPlayer] = useStateWithLabel(null, 'newPlayer');
   const [playerWasSelected, selectPlayer] = useStateWithLabel(
     null,
     'playerWasSelected'
   );
 
+  const intro = useRef(new Audio(Intro));
+  const { context } = useContext(AppContext);
+
+  const addPlayer = newPlayerSelected => {
+    setNewPlayer(newPlayerSelected);
+    logger(LOG_TYPE_EXTENDED, ADD_NEW_PLAYER, newPlayerSelected);
+    selectPlayer(true);
+  };
+
+  const onClickConfirm = () => {
+    logger(LOG_TYPE_INFO, CLEAR_LS);
+    localStorage.removeItem(LOCAL_STORAGE_ROUNDS_KEY);
+    localStorage.removeItem(LOCAL_STORAGE_KEY);
+    const newgameCharacters = [];
+    charactersSelected.forEach((player, name) => {
+      newgameCharacters.push(characters.find(char => char.name === name));
+    });
+    logger(LOG_TYPE_CORE, START_GAME, cloneDeep(newgameCharacters));
+    logger(LOG_TYPE_INFO, PLAYER_NAMES, [...activePlayers].toString());
+
+    setInitialCharacters(newgameCharacters);
+  };
   const onSelect = event => {
     if (dynamic) {
       const character = event.currentTarget.getAttribute('name');
@@ -110,38 +144,56 @@ const NewGame = ({
     });
   };
 
-  const onClickConfirm = () => {
-    localStorage.removeItem(LOCAL_STORAGE_KEY);
-    const newgameCharacters = [];
-    charactersSelected.forEach((player, name) => {
-      newgameCharacters.push(characters.find(char => char.name === name));
-    });
-    setInitialCharacters(newgameCharacters);
+  const playIntro = () => {
+    intro.current.currentTime = 0;
+    intro.current.volume = 0.4;
+    intro.current.loop = true;
+    intro.current.play();
   };
 
-  const addPlayer = newPlayerSelected => {
-    setNewPlayer(newPlayerSelected);
-    selectPlayer(true);
+  const stopIntro = () => {
+    const fadeInterval = setInterval(() => {
+      if (intro.current.volume < 0.1) {
+        clearInterval(fadeInterval);
+        intro.current.pause();
+      } else if (intro.current.volume > 0) {
+        intro.current.volume -= 0.05;
+      }
+    }, 500);
   };
 
   useEffect(() => {
-    if (currentChars) {
+    if (context.characters) {
+      setCharacters(context.characters);
+    }
+  }, [context.characters, setCharacters]);
+
+  useEffect(() => {
+    if (currentChars && dynamic) {
       const currentCharacters = new Set();
       currentChars.forEach(char => currentCharacters.add(char.name));
-      const updatedChars = characters.filter(
+      const updatedChars = context.characters.filter(
         char => !currentCharacters.has(char.name)
       );
       setCharacters(updatedChars);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentChars]);
+
+  useEffect(() => {
+    logger(LOG_TYPE_EXTENDED, CLICK_NEW_GAME);
+    return () => stopIntro();
+  }, []);
 
   return (
     <MenuScreen dynamic={dynamic} img={BG} type="newChar">
+      {config && <ConfigGame toggleConfig={toggleConfig} />}
       <SetupModal
         activePlayers={activePlayers}
         addPlayer={addPlayer}
         dynamic={dynamic}
         loadedGame={loadedGame}
+        playIntro={playIntro}
         setActivePlayers={setActivePlayers}
         type="newChar"
       />
@@ -169,7 +221,9 @@ const NewGame = ({
                 {char.name}
               </CharacterName>
               {charactersSelected.get(char.name) && (
-                <PlayerTag color={getCharacterColor(char.name)}>
+                <PlayerTag
+                  color={getCharacterColor(char.name, context.characters)}
+                >
                   {charactersSelected.get(char.name)}
                 </PlayerTag>
               )}

@@ -8,6 +8,7 @@ import {
   COMBINE_ACTION,
   END_TURN_ACTION,
   GIVE_ORDERS_ACTION,
+  LEAVE_GAME_ACTION,
   MOVE_ACTION,
   OBJECTIVE_ACTION,
   OPEN_DOOR_ACTION,
@@ -314,6 +315,12 @@ export const PrimaryIcon = styled.i`
         margin-left: -10px;
       `;
     }
+    if (actionType === LEAVE_GAME_ACTION) {
+      return css`
+        font-size: 2rem;
+        transform: rotateY(180deg);
+      `;
+    }
     return null;
   }}
 
@@ -360,6 +367,12 @@ export const SecondaryIcon = styled.i`
         margin-top: -2px;
         margin-left: -35px;
         font-size: 1.6rem;
+      `;
+    }
+    if (actionType === LEAVE_GAME_ACTION) {
+      return css`
+        transform: rotateY(180deg);
+        margin-left: -2px;
       `;
     }
     return null;

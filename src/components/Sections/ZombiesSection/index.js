@@ -1,15 +1,17 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useContext, useEffect, useRef } from 'react';
 import { bool, func } from 'prop-types';
-import { useStateWithLabel } from '../../../utils/hooks';
-import { getMediaQuery } from '../../../utils/devices';
 import { ALL_ZOMBIES } from '../../../setup/zombies';
+import { getMediaQuery, logger, useStateWithLabel } from '../../../utils';
 import SoundBlock from '../../SoundBlock';
 import {
   ACTIVATIONS,
   END,
   MOBILE,
   TABLET,
-  ZOMBIES_ROUND
+  ZOMBIES_ROUND,
+  LOG_TYPE_EXTENDED,
+  END_ZOMBIE_ROUND,
+  ZOMBIE_ATTACK
 } from '../../../constants';
 import { SelectorArea } from '../../SoundBlock/styles';
 import {
@@ -21,6 +23,7 @@ import {
   ZombiesArea,
   ZombiesRoundSign
 } from './styles';
+import { AppContext } from '../../../setup/rules';
 
 const ZombiesSection = ({
   damageMode,
@@ -31,33 +34,50 @@ const ZombiesSection = ({
 }) => {
   const [isHighlighted, highlight] = useStateWithLabel(false, 'isHighlighted');
   const [turnLabel, toggleTurnLabel] = useStateWithLabel(true, 'turnLabel');
-  const [zombies, changeZombies] = useStateWithLabel(ALL_ZOMBIES, 'zombies');
+  const [zombies, changeZombies] = useStateWithLabel({}, 'zombies');
 
   const device = useRef(getMediaQuery());
+  const timerTimeout = useRef();
+  const { context } = useContext(AppContext);
 
   const endZombiesRound = () => {
+    logger(LOG_TYPE_EXTENDED, END_ZOMBIE_ROUND);
     setPlayersRound();
     toggleZombiesArePlaying(false);
   };
 
   const zombieAttack = zombie => {
+    logger(LOG_TYPE_EXTENDED, ZOMBIE_ATTACK);
     setPlayersRound();
     toggleDamageMode(zombie);
   };
 
   useEffect(() => {
     if (turnLabel && zombiesRound) {
-      setTimeout(() => {
+      timerTimeout.current = setTimeout(() => {
         toggleTurnLabel(false);
       }, 2000);
     }
-  }, [zombiesRound]);
+  }, [toggleTurnLabel, turnLabel, zombiesRound]);
+
+  useEffect(() => {
+    changeZombies(context.zombies);
+  }, [changeZombies, context.zombies]);
+
+  useEffect(() => {
+    return () => clearTimeout(timerTimeout.current);
+  }, []);
 
   return (
     <ZombiesArea>
       {damageMode && <NoSelectOverlay />}
       <SubSectionWrapper>
-        <SelectorArea columns={device.current === MOBILE ? 3 : 'big'} zombies>
+        <SelectorArea
+          columns={
+            device.current === MOBILE || device.current === TABLET ? 3 : 'big'
+          }
+          zombies
+        >
           {Object.keys(zombies).map(zombie => (
             <ZombieWrapper
               key={ALL_ZOMBIES[zombie].name}

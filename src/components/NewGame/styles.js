@@ -187,6 +187,7 @@ export const Selector = styled.div`
   width: ${({ number }) => number && `calc(100vw / ${number} + 30px)`};
   margin: 0 20px;
   cursor: pointer;
+  max-width: 300px;
 
   @media all and (min-width: 701px) {
     margin: 0 -25px;

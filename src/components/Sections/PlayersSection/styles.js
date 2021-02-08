@@ -2,7 +2,7 @@ import styled from '@emotion/styled';
 import { css } from '@emotion/core';
 import { rgba } from 'emotion-rgba';
 import { AttackInstructions } from '../ZombiesSection/styles';
-import { Appear, Shadow } from '../../../styles';
+import { Shadow } from '../../../styles';
 import { IN_RESERVE, MOBILE } from '../../../constants';
 import Background from '../../../assets/images/background/background.jpg';
 
@@ -114,7 +114,7 @@ export const AbilitiesWrapperDesktop = styled.div`
   z-index: 10;
   position: absolute;
   padding: 20px 0;
-  bottom: 80px;
+  bottom: 90px;
   right: 20px;
   background: rgba(0, 0, 0, 0.15);
   border: 1px solid rgba(0, 0, 0, 0.5);
@@ -129,7 +129,7 @@ export const AbilitiesWrapperDesktop = styled.div`
   justify-content: space-around;
 
   @media all and (min-width: 1400px) {
-    bottom: 120px;
+    bottom: 140px;
   }
 `;
 AbilitiesWrapperDesktop.displayName = 'AbilitiesWrapperDesktop';
@@ -151,6 +151,13 @@ export const ActionsLabelWrapper = styled.div`
   letter-spacing: 0.2rem;
   color: rgba(255, 255, 180, 0.6);
   text-transform: uppercase;
+
+  @media all and (min-width: 1200px) {
+    bottom: 65px;
+  }
+  @media all and (min-width: 1400px) {
+    bottom: 85px;
+  }
 `;
 ActionsLabelWrapper.displayName = 'ActionsLabelWrapper';
 
@@ -331,6 +338,28 @@ export const CardsActions = styled.div`
       background: green;
     `}
 
+  ${({ reOrder }) =>
+    reOrder &&
+    css`
+      transform: none;
+      bottom: 160px;
+      left: 80px;
+      background: linear-gradient(
+        60deg,
+        rgba(0, 0, 0, 0.5),
+        rgba(51, 204, 51, 0.5),
+        rgba(0, 0, 0, 0.5),
+        rgba(51, 204, 51, 0.5),
+        rgba(0, 0, 0, 0.5),
+        rgba(51, 204, 51, 0.5),
+        rgba(0, 0, 0, 0.5)
+      );
+    `}
+
+  @media all and (max-height: 600px) {
+    bottom: 100px;
+  }
+
   @media all and (min-width: 360px) {
     bottom: 100px;
     left: 10px;
@@ -345,14 +374,49 @@ export const CardsActions = styled.div`
         left: unset;
         right: 100px;
       `}
+
+    ${({ reOrder }) =>
+      reOrder &&
+      css`
+        transform: none;
+        bottom: 200px;
+        left: 100px;
+      `}
   }
 
   @media all and (min-width: 410px) {
     bottom: 100px;
+    ${({ reOrder }) =>
+      reOrder &&
+      css`
+        transform: none;
+        bottom: 210px;
+        left: 120px;
+      `}
   }
 
   @media all and (min-height: 800px) {
     bottom: 200px;
+  }
+
+  @media all and (min-width: 410px) and (min-height: 800px) {
+    bottom: 150px;
+    left: 20px;
+
+    ${({ drop }) =>
+      drop &&
+      css`
+        left: unset;
+        right: 30%;
+      `}
+
+    ${({ reOrder }) =>
+      reOrder &&
+      css`
+        transform: none;
+        bottom: 110px;
+        left: 120px;
+      `}
   }
 
   @media all and (min-width: 701px) {
@@ -366,6 +430,11 @@ export const CardsActions = styled.div`
         left: unset;
         right: 15%;
       `}
+    ${({ reOrder }) =>
+      reOrder &&
+      css`
+        bottom: 170px;
+      `}
   }
 
   @media (min-width: 1024px) and (min-height: 701px) {
@@ -378,6 +447,11 @@ export const CardsActions = styled.div`
         left: unset;
         right: 15%;
       `}
+    ${({ reOrder }) =>
+      reOrder &&
+      css`
+        bottom: 120px;
+      `}
   }
 
   @media (min-width: 1024px) and (min-height: 1300px) {
@@ -389,6 +463,11 @@ export const CardsActions = styled.div`
       css`
         left: unset;
         right: 15%;
+      `}
+    ${({ reOrder }) =>
+      reOrder &&
+      css`
+        bottom: 320px;
       `}
   }
 
@@ -414,6 +493,12 @@ export const CardsActions = styled.div`
         left: unset;
         right: 27%;
       `}
+
+    ${({ reOrder }) =>
+      reOrder &&
+      css`
+        bottom: 220px;
+      `}
   }
 
   @media (min-width: 1300px) and (min-height: 1024px) {
@@ -425,6 +510,11 @@ export const CardsActions = styled.div`
       css`
         left: unset;
         right: 25%;
+      `}
+    ${({ reOrder }) =>
+      reOrder &&
+      css`
+        bottom: 200px;
       `}
   }
 `;
@@ -1183,26 +1273,6 @@ export const ModalSign = styled.div`
 `;
 ModalSign.displayName = 'ModalSign';
 
-export const ModalSignExitButton = styled.img`
-  label: ModalSignExitButton;
-  z-index: 10;
-  position: absolute;
-  bottom: 100px;
-  left: 50%;
-  transform: translate(-50%, 0);
-  width: 80px;
-  cursor: pointer;
-  box-shadow: 0 0 6px 0 white;
-  animation-name: ${Appear};
-  animation-duration: 10s;
-  animation-iteration-count: 1;
-  animation-fill-mode: forwards;
-
-  @media all and (min-width: 1200px) {
-  }
-`;
-ModalSignExitButton.displayName = 'ModalSignExitButton';
-
 export const ModalSignText = styled.p`
   label: ModalSignText;
   position: absolute;
@@ -1404,7 +1474,11 @@ NextButton.displayName = 'NextButton';
 
 export const NoiseIcon = styled.img`
   label: NoiseIcon;
-  width: 45px;
+  width: 35px;
+
+  @media all and (min-width: 1400px) {
+    width: 45px;
+  }
 `;
 NoiseIcon.displayName = 'NoiseIcon';
 

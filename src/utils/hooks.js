@@ -1,6 +1,7 @@
 import { useState, useDebugValue, useEffect } from 'react';
-import { GENERAL } from '../constants';
 import { checkIfHasAnyActionLeft } from './actions';
+import { logger } from './logger';
+import { GENERAL, LOG_TYPE_EXTENDED, TURNS_HOOK_UPDATED } from '../constants';
 
 export const useStateWithLabel = (initialValue, displayName) => {
   const [value, setValue] = useState(initialValue);
@@ -132,13 +133,11 @@ export const useTurnsCounter = (
 
   useEffect(() => {
     if (character) {
-      console.log('$$$ HOOK', character, {
-        gen: `${numOfActions} => ${generalActions}`,
-        mov: `${movements} => ${extraMovementActions}`,
-        att: `${attacks} => ${extraAttackActions}`,
-        sea: `${searches} => ${searchActions}`,
-        bon: `${numOfBonusActions} => ${bonusActions}`
-      });
+      logger(
+        LOG_TYPE_EXTENDED,
+        TURNS_HOOK_UPDATED,
+        `${character}, { gen: ${numOfActions} => ${generalActions}, mov: ${movements} => ${extraMovementActions}, att: ${attacks} => ${extraAttackActions}, sea: ${searches} => ${searchActions}, bon: ${numOfBonusActions} => ${bonusActions} }`
+      );
     }
   }, [
     generalActions,

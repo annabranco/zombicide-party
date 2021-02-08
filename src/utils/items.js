@@ -24,17 +24,22 @@ export const checkIfCharacterCanOpenDoors = currentItems => {
 
 export const getItemPhoto = (item, slot) => {
   const photoName = item.replace(' ', '');
+
   if (Object.keys(SPECIALS_CARDS).find(name => photoName === name)) {
     return SPECIALS_CARDS[photoName].img;
   }
-  if (Object.keys(ALL_WEAPONS).find(name => photoName === name)) {
+  if (
+    Object.keys(ALL_WEAPONS).find(
+      name => photoName === name && ALL_WEAPONS[name].altImage
+    )
+  ) {
     if (slot === IN_RESERVE) {
       return ALL_WEAPONS[photoName].altImage;
     }
     return ALL_WEAPONS[photoName].img;
   }
-  if (Object.keys(ALL_ITEMS).find(name => photoName === name)) {
-    return ALL_ITEMS[photoName].img;
+  if (Object.keys(ALL_CARDS).find(name => photoName === name)) {
+    return ALL_CARDS[photoName].img;
   }
   return null;
 };

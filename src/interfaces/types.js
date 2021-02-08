@@ -1,13 +1,4 @@
-import {
-  oneOf,
-  func,
-  string,
-  number,
-  bool,
-  shape,
-  arrayOf,
-  oneOfType
-} from 'prop-types';
+import { func, string, number, shape, arrayOf } from 'prop-types';
 
 export const CharacterType = shape({
   abilities: arrayOf(string),
@@ -20,6 +11,13 @@ export const CharacterType = shape({
   player: string,
   selector: string,
   voice: string
+});
+
+export const errorTextsPropType = shape({
+  errorLine1: string.isRequired,
+  errorLine2: string.isRequired,
+  notifyMe: string.isRequired,
+  title: string.isRequired
 });
 
 const ModalButtonType = shape({

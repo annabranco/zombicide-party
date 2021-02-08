@@ -1,7 +1,6 @@
 import React, { useEffect, useRef } from 'react';
-import { bool, func, number, string, oneOfType } from 'prop-types';
-import { useStateWithLabel } from '../../utils/hooks';
-import { checkIfItemCanBeCombined } from '../../utils/items';
+import { bool, func, number, oneOfType, string } from 'prop-types';
+import { checkIfItemCanBeCombined, useStateWithLabel } from '../../utils';
 import ActionButton from '../ActionButton';
 import { SOUNDS } from '../../assets/sounds';
 import {
@@ -17,12 +16,12 @@ import {
   WOUND,
   ATTACK_SURVIVOR
 } from '../../constants';
-import { Block, PlayImageButton, PlayIcon, PlayText, ItemIcon } from './styles';
 import {
   Action,
   ZombieActions,
   ZombieImageForMobile
 } from '../Sections/ZombiesSection/styles';
+import { Block, PlayImageButton, PlayIcon, PlayText, ItemIcon } from './styles';
 
 const SoundBlock = ({
   activateKillButtons,
@@ -66,6 +65,9 @@ const SoundBlock = ({
 
   const quickAttackDebounce = useRef();
   const sound = useRef();
+  const activateTimeout = useRef();
+  const attackButtonsTimeout = useRef();
+  const quickAttackDebounceTimeout = useRef();
 
   const randomNumber = max => Math.ceil(Math.random() * max);
   const filename =
@@ -117,7 +119,7 @@ const SoundBlock = ({
       !quickAttackDebounce.current
     ) {
       quickAttackDebounce.current = true;
-      setTimeout(() => {
+      quickAttackDebounceTimeout.current = setTimeout(() => {
         quickAttackDebounce.current = false;
       }, 1000);
       activateKillButtons();
@@ -148,12 +150,11 @@ const SoundBlock = ({
         spendAmmo();
       }
 
-      setTimeout(() => {
+      activateTimeout.current = setTimeout(() => {
         activate(false);
-      }, 500);
+      }, 4000);
 
-      setTimeout(() => {
-        activate(false);
+      attackButtonsTimeout.current = setTimeout(() => {
         toggleZombieAttackButtons(false);
       }, 4000);
     }
@@ -168,6 +169,14 @@ const SoundBlock = ({
       );
     }
   }, [filename, differentSounds]);
+
+  useEffect(() => {
+    return () => {
+      clearTimeout(activateTimeout.current);
+      clearTimeout(attackButtonsTimeout.current);
+      clearTimeout(quickAttackDebounceTimeout.current);
+    };
+  }, []);
 
   return (
     <Block

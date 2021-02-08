@@ -42,7 +42,7 @@ credits for the project.
 As stated before, all Zombicide marks, logos, characters and references are owned by Guillotine Games.
 Most of the images used here are custom made. Most of them were free images downloaded from the internet and edited and adapted by me for the gaming purposes.
 Most of the cards images were basicaly downloaded from the great page Zombicide Card Database, a free database where you can find most of the cards used in all Zombicide expansions.
-The sounds used on this app were mostly downloaded from free sources, remixed and edited in order to create the desired atmosphere for the Zombicide games. Some sounds were recorded since the beginning by me.
+The sounds used on this app were mostly downloaded from free sources (under Creative Commons Attribution license), remixed and edited in order to create the desired atmosphere for the Zombicide games. Some sounds were recorded since the beginning by me.
 
 If you think any of the material on this app is violating any copyright protection, please notify me as soon as possible so we can clarify it and if necesary remove the offending content.
 ### References and credits:
@@ -52,6 +52,14 @@ Zombicide Game: https://www.zombicide.com
 Virtual cards: https://patrickgalbraith.github.io/zombicide-card-database/?
 Base zombies sounds: https://www.fesliyanstudios.com/
 Base weapons soundS: http://soundbible.com/
+
+#### Songs
+All songs used here are under Creative Commons Attribution license.
+##### Intro
+"The Horror Show" short free version from PlayOnLoop.com
+##### Ending Game
+"Funeral Procession" by Twin Musicom (twinmusicom.org)
+"Video Game Soldiers" by Twin Musicom (twinmusicom.org)
 
 ## Final words
 

@@ -2,6 +2,7 @@ import styled from '@emotion/styled';
 import { css, keyframes } from '@emotion/core';
 import { Link } from 'react-router-dom';
 import { Appear, Shadow } from '../../styles';
+import { LOST, WON } from '../../constants';
 
 const ThunderFlash = keyframes`
   3% {
@@ -168,7 +169,18 @@ export const MenuScreen = styled.div`
   height: ${`${window.innerHeight}px`};
   width: 100%;
   background: #232222;
-  filter: ${({ type }) => type === 'main' && 'brightness(0.7) contrast(2)'};
+  filter: ${({ type }) => {
+    if (type === 'main') {
+      return 'brightness(0.7) contrast(2)';
+    }
+    if (type === WON) {
+      return 'brightness(0.9) contrast(1.5)  grayscale(0.5)';
+    }
+    if (type === LOST) {
+      return 'brightness(0.7) grayscale(0.6) contrast(2);';
+    }
+    return 'none';
+  }};
 
   ${({ img, position = 'center top' }) => css`
     background-image: ${`url(${img})`};
@@ -219,8 +231,17 @@ export const SelectionButton = styled.button`
 
   &: hover {
     color: yellow;
-    folter: brightness(1.8);
+    filter: brightness(1.8);
   }
+
+  ${({ disabled }) =>
+    disabled &&
+    css`
+      &: hover {
+        color: lightgray;
+        filter: none;
+      }
+    `}
 `;
 SelectionButton.displayName = 'SelectionButton';
 
@@ -232,7 +253,7 @@ StyledLink.displayName = 'Link';
 
 export const TestButton = styled(SelectionButton)`
   label: TestButton;
-  z-index: 5;
+  z-index: 15;
   font-size: 0.8rem;
   padding: 5px;
   background: white;
@@ -243,6 +264,10 @@ export const TestButton = styled(SelectionButton)`
   font-family: 'Grandstander', cursive;
   box-shadow: 0 1px 10px 0 rgba(0, 0, 0, 0.6),
     inset 1px 1px 3px rgba(255, 0, 0, 0.5);
+
+  &:hover {
+    color: green;
+  }
 
   @media all and (min-width: 768px) {
     width: 180px;

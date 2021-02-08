@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import Amy from '../assets/images/survivors/amy.png';
 import Ben from '../assets/images/survivors/ben.png';
 import Mary from '../assets/images/survivors/mary.png';
@@ -71,6 +72,7 @@ export const CHARACTERS_S1 = {
     abilities: [],
     abilitiesUsed: [],
     actions: [3, 0, 0, 0, 0],
+    actionsLeft: [3, 0, 0, 0, 0],
     bonusDices: { combat: 0, melee: 0, ranged: 0 },
     color: '#a015a3',
     experience: 0,
@@ -97,6 +99,7 @@ export const CHARACTERS_S1 = {
     abilities: [],
     abilitiesUsed: [],
     actions: [3, 0, 0, 0, 0],
+    actionsLeft: [3, 0, 0, 0, 0],
     bonusDices: { combat: 0, melee: 0, ranged: 0 },
     color: '#3566c6',
     experience: 0,
@@ -123,6 +126,7 @@ export const CHARACTERS_S1 = {
     abilities: [],
     abilitiesUsed: [],
     actions: [3, 0, 0, 0, 0],
+    actionsLeft: [3, 0, 0, 0, 0],
     bonusDices: { combat: 0, melee: 0, ranged: 0 },
     color: '#ba761d',
     experience: 0,
@@ -149,6 +153,7 @@ export const CHARACTERS_S1 = {
     abilities: [],
     abilitiesUsed: [],
     actions: [3, 0, 0, 0, 0],
+    actionsLeft: [3, 0, 0, 0, 0],
     bonusDices: { combat: 0, melee: 0, ranged: 0 },
     color: '#b52929',
     experience: 0,
@@ -175,6 +180,7 @@ export const CHARACTERS_S1 = {
     abilities: [],
     abilitiesUsed: [],
     actions: [3, 0, 0, 0, 0],
+    actionsLeft: [3, 0, 0, 0, 0],
     bonusDices: { combat: 0, melee: 0, ranged: 0 },
     color: '#565656',
     experience: 0,
@@ -200,6 +206,7 @@ export const CHARACTERS_S1 = {
     abilities: [],
     abilitiesUsed: [],
     actions: [3, 0, 0, 0, 0],
+    actionsLeft: [3, 0, 0, 0, 0],
     bonusDices: { combat: 0, melee: 0, ranged: 0 },
     color: '#339b35',
     experience: 0,
@@ -229,6 +236,7 @@ export const CHARACTERS_KOPINSKI = {
     abilities: [],
     abilitiesUsed: [],
     actions: [3, 0, 0, 0, 0],
+    actionsLeft: [3, 0, 0, 0, 0],
     bonusDices: { combat: 0, melee: 0, ranged: 0 },
     color: '#537c6f',
     experience: 0,
@@ -255,6 +263,7 @@ export const CHARACTERS_KOPINSKI = {
     abilities: [],
     abilitiesUsed: [],
     actions: [3, 0, 0, 0, 0],
+    actionsLeft: [3, 0, 0, 0, 0],
     bonusDices: { combat: 0, melee: 0, ranged: 0 },
     color: '#3e4c84',
     experience: 0,
@@ -278,31 +287,3 @@ export const CHARACTERS_KOPINSKI = {
     wounded: false
   }
 };
-
-// export const CHARACTERS_KOPINSKI = [BEN, MARY];
-// export const CHARACTERS_S1 = [AMY, DOUG, JOSH, NED, PHIL, WANDA];
-
-const ALL_CHARACTERS = Object.entries({
-  ...CHARACTERS_S1,
-  ...CHARACTERS_KOPINSKI
-}).sort((a, b) => {
-  const nameA = a[0].toUpperCase();
-  const nameB = b[0].toUpperCase();
-  if (nameA < nameB) {
-    return -1;
-  }
-  if (nameA > nameB) {
-    return 1;
-  }
-  // names must be equal
-  return 0;
-});
-
-export const CHARACTERS = ALL_CHARACTERS.reduce((result, char) => {
-  if (typeof result[0] === 'string') {
-    return [result[1], char[1]];
-  }
-  return [...result, char[1]];
-});
-
-console.log('$$$ CHARACTERS', CHARACTERS);

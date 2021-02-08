@@ -60,7 +60,6 @@ export const globalStyles = css`
     font: inherit;
     vertical-align: baseline;
   }
-
   article,
   aside,
   details,
@@ -76,9 +75,6 @@ export const globalStyles = css`
   section {
     display: block;
     box-sizing: border-box;
-  }
-  body {
-    line-height: 1;
   }
   ol,
   ul {
@@ -101,9 +97,12 @@ export const globalStyles = css`
   }
   #root {
     width: 100vw;
+    background: #232222;
   }
   body {
     background: #232222;
+    line-height: 1;
+    margin: 0;
   }
   h1,
   h2,

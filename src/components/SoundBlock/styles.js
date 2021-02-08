@@ -228,7 +228,7 @@ export const PlayIcon = styled.img`
   label: PlayIcon;
   max-height: 100%;
   max-width: 100%;
-  /* transition: transform ease 0.5s, filter 2s ease-out; */
+  width: 100%;
   transition: transform ease 0.5s;
 
   ${({ type, active }) => {
@@ -467,6 +467,7 @@ export const SelectorArea = styled.div`
   ${({ zombies }) =>
     zombies &&
     css`
+      align-items: center;
       height: calc(${`${window.innerHeight}px`} - 40px);
     `};
 
@@ -483,6 +484,13 @@ export const SelectorArea = styled.div`
 
   @media all and (min-width: 701px) {
     height: calc(${`${window.innerHeight}px`} - 110px);
+
+    ${({ zombies }) =>
+      zombies &&
+      css`
+        justify-items: center;
+        align-content: center;
+      `};
   }
 
   @media all and (min-width: 1200px) {

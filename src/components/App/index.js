@@ -1,15 +1,28 @@
 import React, { useEffect } from 'react';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import { Global } from '@emotion/core';
-import { useStateWithLabel } from '../../utils/hooks';
-import { LOCAL_STORAGE_KEY } from '../../constants';
+import { cloneDeep } from 'lodash';
+import { loadSavedGame, logger, useStateWithLabel } from '../../utils';
 import MainMenu from '../MainMenu';
 import NewGame from '../NewGame';
-
-import { globalStyles } from '../../styles';
 import MainScreen from '../MainScreen';
 import ControllerLayer from '../ControllerLayer';
-import { loadSavedGame } from '../../utils/characters';
+import ErrorBoundary from '../ErrorBoundary';
+import ErrorComponent from '../ErrorBoundary/ErrorComponent';
+import {
+  CLEAR_LS,
+  ERROR_TEXTS_404,
+  LOCAL_STORAGE_CONFIG_KEY,
+  LOCAL_STORAGE_KEY,
+  LOCAL_STORAGE_ROUNDS_KEY,
+  LOG_APP_INIT,
+  LOG_LOADED_GAME,
+  LOG_TYPE_CORE,
+  LOG_TYPE_INFO
+} from '../../constants';
+import { globalStyles } from '../../styles';
+import { AppContext } from '../../setup/rules';
+import { setupGame } from '../../setup/config';
 
 window.addEventListener('orientationchange', () => {
   window.location.reload();
@@ -22,54 +35,74 @@ const App = () => {
   );
   const [damageMode, toggleDamageMode] = useStateWithLabel(false, 'damageMode');
   const [loadedGame, loadGame] = useStateWithLabel(null, 'loadedGame');
+  const [context, updateContext] = useStateWithLabel({}, 'context');
 
   useEffect(() => {
     const game = loadSavedGame();
+    const rules = JSON.parse(localStorage.getItem(LOCAL_STORAGE_CONFIG_KEY));
+    logger(LOG_TYPE_CORE, LOG_APP_INIT);
+    if (rules) {
+      updateContext(setupGame(rules));
+    }
 
     if (game && game.length !== 0) {
       loadGame(game);
+      logger(LOG_TYPE_CORE, LOG_LOADED_GAME, cloneDeep(game));
     } else {
+      logger(LOG_TYPE_INFO, CLEAR_LS);
+      localStorage.removeItem(LOCAL_STORAGE_ROUNDS_KEY);
       localStorage.removeItem(LOCAL_STORAGE_KEY);
     }
-  }, [loadGame]);
+  }, [loadGame, updateContext]);
 
   return (
     <Router>
       <Global styles={globalStyles} />
-      <ControllerLayer />
-      <Switch>
-        <Route
-          exact
-          path="/"
-          render={() => (
-            <MainMenu
-              loadedGame={loadedGame}
-              setInitialCharacters={setInitialCharacters}
+      <ErrorBoundary>
+        <AppContext.Provider value={{ context, updateContext }}>
+          <ControllerLayer />
+          <Switch>
+            <Route
+              exact
+              path="/"
+              render={() => (
+                <MainMenu
+                  loadedGame={loadedGame}
+                  setInitialCharacters={setInitialCharacters}
+                />
+              )}
             />
-          )}
-        />
-        <Route
-          path="/new"
-          render={() => (
-            <NewGame
-              loadedGame={Boolean(loadedGame)}
-              setInitialCharacters={setInitialCharacters}
+            <Route
+              exact
+              path="/new"
+              render={() => (
+                <NewGame
+                  loadedGame={Boolean(loadedGame)}
+                  setInitialCharacters={setInitialCharacters}
+                />
+              )}
             />
-          )}
-        />
-        <Route
-          path="/play"
-          render={() => (
-            <MainScreen
-              damageMode={damageMode}
-              initialCharacters={initialCharacters}
-              loadGame={loadGame}
-              loadedGame={loadedGame}
-              toggleDamageMode={toggleDamageMode}
+            <Route
+              exact
+              path="/play"
+              render={() => (
+                <MainScreen
+                  damageMode={damageMode}
+                  initialCharacters={initialCharacters}
+                  loadGame={loadGame}
+                  loadedGame={loadedGame}
+                  toggleDamageMode={toggleDamageMode}
+                />
+              )}
             />
-          )}
-        />
-      </Switch>
+            <Route
+              render={() => (
+                <ErrorComponent texts={ERROR_TEXTS_404} notifyButtonLink="/" />
+              )}
+            />
+          </Switch>
+        </AppContext.Provider>
+      </ErrorBoundary>
     </Router>
   );
 };
