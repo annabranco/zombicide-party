@@ -1,4 +1,5 @@
 export const CANCEL = 'Cancel';
+export const CANT_DESELECT = 'Cannot be deselected';
 export const CONFIRM = 'confirm';
 export const DESKTOP = 'desktop';
 export const END = 'End';
@@ -23,6 +24,7 @@ export const LIVE_ANOTHER_DAY = "You've survived another day";
 export const LOCAL_STORAGE_KEY = 'ZombicideParty Saved Game';
 export const LOCAL_STORAGE_PLAYERS_KEY = 'ZombicideParty Players';
 export const LOCAL_STORAGE_ROUNDS_KEY = 'ZombicideParty Game Rounds';
+export const LOCAL_STORAGE_CONFIG_KEY = 'ZombicideParty Game Config';
 export const LOST = 'lost';
 export const MOBILE = 'mobile';
 export const NEXT = 'next';

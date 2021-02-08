@@ -59,7 +59,7 @@ const NewGame = ({
     new Map(),
     'charactersSelected'
   );
-  const [config, toggleConfig] = useStateWithLabel(true, 'config');
+  const [config, toggleConfig] = useStateWithLabel(!dynamic, 'config');
   const [newPlayer, setNewPlayer] = useStateWithLabel(null, 'newPlayer');
   const [playerWasSelected, selectPlayer] = useStateWithLabel(
     null,

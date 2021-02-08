@@ -67,13 +67,6 @@ export const Cover = styled.img`
   cursor: pointer;
   filter: sepia(1) contrast(2.5) brightness(0.5) opacity(0.5);
 
-  ${({ small }) =>
-    small &&
-    css`
-      width: 25%;
-      margin: 0 20px;
-    `};
-
   ${({ medium }) =>
     medium &&
     css`
