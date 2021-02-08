@@ -11,11 +11,12 @@ import FogImage from '../../assets/images/fog.png';
 
 const FogEffect = ({ inChar }) => {
   const CanvasElement = useRef();
+  const fogAnimationTimer = useRef();
 
   const canvasHeight = 200;
   const pCollection = [];
-  const puffs = 8;
-  const particlesPerPuff = 2000;
+  const puffs = 1;
+  const particlesPerPuff = 1000;
   const smokeImage = new Image();
   let pCount = 0;
 
@@ -103,18 +104,29 @@ const FogEffect = ({ inChar }) => {
   };
 
   useEffect(() => {
-    smokeImage.src = FogImage;
+    const startAnimation = () => {
+      smokeImage.src = FogImage;
 
-    for (let i1 = 0; i1 < puffs; i1++) {
-      const puffDelay = i1 * 300;
+      for (let i1 = 0; i1 < puffs; i1++) {
+        const puffDelay = i1 * 300;
 
-      for (let i2 = 0; i2 < particlesPerPuff; i2++) {
-        addNewParticle(i2 * 50 + puffDelay);
+        for (let i2 = 0; i2 < particlesPerPuff; i2++) {
+          addNewParticle(i2 * 50 + puffDelay);
+        }
       }
-    }
-    draw(new Date().getTime(), 3000);
+      draw(new Date().getTime(), 3000);
+    };
+
+    fogAnimationTimer.current = setInterval(() => {
+      startAnimation();
+    }, 60000);
+    startAnimation();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [inChar]);
+
+  useEffect(() => {
+    return () => clearInterval(fogAnimationTimer.current);
+  }, []);
 
   return <Fog ref={CanvasElement} height="200" width="800" inChar={inChar} />;
 };

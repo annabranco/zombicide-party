@@ -8,15 +8,15 @@ export const Fog = styled.canvas`
   width: 100vw;
   position: absolute;
   bottom: 0;
-  opacity: 0.55;
+  opacity: 0.75;
   filter: blur(10px);
 
   ${({ inChar }) =>
     inChar &&
     css`
       z-index: 2;
-      opacity: 0.4;
-      height: 250px;
+      opacity: 0.55;
+      height: 550px;
     `}
 `;
 Fog.displayName = 'Fog';

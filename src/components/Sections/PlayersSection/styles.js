@@ -114,7 +114,7 @@ export const AbilitiesWrapperDesktop = styled.div`
   z-index: 10;
   position: absolute;
   padding: 20px 0;
-  bottom: 100px;
+  bottom: 90px;
   right: 20px;
   background: rgba(0, 0, 0, 0.15);
   border: 1px solid rgba(0, 0, 0, 0.5);
@@ -1474,7 +1474,11 @@ NextButton.displayName = 'NextButton';
 
 export const NoiseIcon = styled.img`
   label: NoiseIcon;
-  width: 45px;
+  width: 35px;
+
+  @media all and (min-width: 1400px) {
+    width: 45px;
+  }
 `;
 NoiseIcon.displayName = 'NoiseIcon';
 

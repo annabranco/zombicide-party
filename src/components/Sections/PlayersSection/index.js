@@ -1735,7 +1735,7 @@ const PlayersSection = ({
                 <CharacterOverlayImage src={character.img} />
                 <CharacterOverlayImageShadow src={character.img} />
               </CharacterOverlay>
-              <FogEffect inChar={character.name} />
+              {/* <FogEffect inChar /> */}
               {/* ----- TOP BAR ----- */}
               {!damageMode &&
                 characters.length < context.characters.length &&
@@ -2573,6 +2573,7 @@ const PlayersSection = ({
           )}
         </>
       )}
+      <FogEffect inChar />
     </CharacterSheet>
   );
 };
