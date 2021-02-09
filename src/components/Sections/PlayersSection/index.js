@@ -2112,6 +2112,7 @@ const PlayersSection = ({
                     ...character.inHand,
                     ...character.inReserve
                   ]) &&
+                    !slot &&
                     (freeReorder || setupMode) && (
                       <CardsActions reOrder>
                         <CardsActionsText onClick={() => startTrade(REORDER)}>
