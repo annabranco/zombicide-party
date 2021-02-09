@@ -1,12 +1,14 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useContext, useEffect, useRef } from 'react';
 import { func, arrayOf } from 'prop-types';
 import appInfo from '../../../package.json';
-import { ZOMBIES_INTRO } from '../../setup/zombies';
+import { AppContext } from '../../setup/rules';
+import { ZOMBIES_S1 } from '../../setup/zombies';
 import { logger, useStateWithLabel } from '../../utils';
 import NightShiftIntro from './NighShift';
 import FogEffect from '../Fog';
 import { SOUNDS } from '../../assets/sounds';
 import BG from '../../assets/images/background/background2.jpg';
+import ZombieCop from '../../assets/images/zombies/ZombieCop.png';
 import Logo from '../../assets/images/logo.png';
 import {
   CLICK_SOUND_TEST,
@@ -39,10 +41,8 @@ const MainMenu = ({ loadedGame, setInitialCharacters }) => {
   const [testSound, toggleTestSound] = useStateWithLabel(false, 'testSound');
 
   const APP_VERSION = appInfo.version;
-  const zombieImage = useRef(
-    ZOMBIES_INTRO[Math.floor(Math.random() * ZOMBIES_INTRO.length)]
-  );
-  // const zombieImage = useRef(ZOMBIES_INTRO[5]);
+  const zombieImage = useRef();
+  const { context } = useContext(AppContext);
 
   useEffect(() => {
     const storm = new Audio(SOUNDS.intro);
@@ -66,14 +66,28 @@ const MainMenu = ({ loadedGame, setInitialCharacters }) => {
   }, [testSound]);
 
   useEffect(() => {
-    if (zombieImage.current) {
-      if (zombieImage.current.includes('ZombieCop')) {
-        toggleNightShift(true);
-        logger(LOG_TYPE_EXTENDED, INTRO_NS_LOADED);
+    const zombiesImages = [];
+    if (context.rules && context.rules.nightShift) {
+      zombieImage.current = ZombieCop;
+      toggleNightShift(true);
+      logger(LOG_TYPE_EXTENDED, INTRO_NS_LOADED);
+    } else {
+      if (context.zombies) {
+        Object.values(context.zombies).forEach(
+          zombie => zombie.intro && zombiesImages.push(zombie.intro)
+        );
+      } else {
+        Object.values(ZOMBIES_S1).forEach(
+          zombie => zombie.intro && zombiesImages.push(zombie.intro)
+        );
       }
+      zombieImage.current =
+        zombiesImages[Math.floor(Math.random() * zombiesImages.length)];
+
       logger(LOG_TYPE_EXTENDED, INTRO_IMG_LOADED, zombieImage.current);
     }
-  }, [zombieImage, toggleNightShift]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [context]);
 
   return (
     <MenuScreen img={BG} type="main">

@@ -708,15 +708,13 @@ const PlayersSection = ({
     ]);
     newItems[currentSlot] = name;
 
-    if (name === context.weapons.ExpandableBaton.name.replace(' ', '')) {
+    if (name === ALL_WEAPONS.ExpandableBaton.name.replace(' ', '')) {
       newItems.push(null);
     }
 
     if (
-      oldItems.includes(
-        context.weapons.ExpandableBaton.name.replace(' ', '')
-      ) &&
-      !newItems.includes(context.weapons.ExpandableBaton.name.replace(' ', ''))
+      oldItems.includes(ALL_WEAPONS.ExpandableBaton.name.replace(' ', '')) &&
+      !newItems.includes(ALL_WEAPONS.ExpandableBaton.name.replace(' ', ''))
     ) {
       newItems.splice(currentSlot, 1);
     }
@@ -934,7 +932,7 @@ const PlayersSection = ({
 
         if (firstSlot <= 2) {
           if (
-            finalItem === context.weapons.Molotov.name &&
+            finalItem === ALL_WEAPONS.Molotov.name &&
             character.abilities.includes(ABILITIES_S1.TWO_COCKTAILS.name)
           ) {
             updatedCharacter.inHand[firstSlot - 1] = finalItem;
@@ -942,7 +940,7 @@ const PlayersSection = ({
             updatedCharacter.inHand[firstSlot - 1] = '';
           }
         } else if (
-          finalItem === context.weapons.Molotov.name &&
+          finalItem === ALL_WEAPONS.Molotov.name &&
           character.abilities.includes(ABILITIES_S1.TWO_COCKTAILS.name)
         ) {
           updatedCharacter.inReserve[firstSlot - 3] = finalItem;
@@ -1091,24 +1089,24 @@ const PlayersSection = ({
     updateData(updChar);
   };
 
-  const onFindingItem = change => (item, currentSlot = slot - 1) => {
-    const findingSlot = change.name === 'changeInHand' ? slot - 1 : slot - 3;
+  const onFindingItem = slotType => (item, currentSlot = slot - 1) => {
+    const findingSlot = slotType === IN_HAND ? slot - 1 : slot - 3;
 
     if (
       character.abilities.includes(ABILITIES_S1.MATCHING_SET.name) &&
-      ALL_WEAPONS[item] &&
-      (ALL_WEAPONS[item].dual ||
+      context.weapons[item] &&
+      (context.weapons[item].dual ||
         (character.abilities.includes(ABILITIES_S1.GUNSLINGER.name) &&
-          ALL_WEAPONS[item].attack === RANGED &&
-          !ALL_WEAPONS[item].unique &&
-          !ALL_WEAPONS[item].cannotBeFound) ||
+          context.weapons[item].attack === RANGED &&
+          !context.weapons[item].unique &&
+          !context.weapons[item].cannotBeFound) ||
         (character.abilities.includes(ABILITIES_S1.SWORDMASTER.name) &&
-          ALL_WEAPONS[item].attack === MELEE &&
-          !ALL_WEAPONS[item].unique &&
-          !ALL_WEAPONS[item].cannotBeFound) ||
+          context.weapons[item].attack === MELEE &&
+          !context.weapons[item].unique &&
+          !context.weapons[item].cannotBeFound) ||
         (character.abilities.includes(ABILITIES_S1.AMBIDEXTROUS.name) &&
-          !ALL_WEAPONS[item].unique &&
-          !ALL_WEAPONS[item].cannotBeFound))
+          !context.weapons[item].unique &&
+          !context.weapons[item].cannotBeFound))
     ) {
       const updChar = cloneDeep(character);
 
@@ -1135,7 +1133,12 @@ const PlayersSection = ({
     }
     toggleFreeReorder(true);
     spendAction(SEARCH);
-    return change(item, findingSlot);
+
+    if (slotType === IN_HAND) {
+      changeInHand(item, findingSlot);
+    } else {
+      changeInReserve(item, findingSlot);
+    }
   };
 
   const onGiveOrders = () => {
@@ -2460,7 +2463,7 @@ const PlayersSection = ({
           {slot && slot <= 2 && (
             <ItemsSelectorModal
               device={device.current}
-              onSelect={onFindingItem(changeInHand)}
+              onSelect={onFindingItem(IN_HAND)}
               selectSlot={selectSlot}
               slotType={IN_HAND}
             />
@@ -2468,7 +2471,7 @@ const PlayersSection = ({
           {slot && slot >= 3 && (
             <ItemsSelectorModal
               device={device.current}
-              onSelect={onFindingItem(changeInReserve)}
+              onSelect={onFindingItem(IN_RESERVE)}
               selectSlot={selectSlot}
               slotType={IN_RESERVE}
             />

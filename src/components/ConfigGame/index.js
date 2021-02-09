@@ -3,7 +3,7 @@ import FormGroup from '@material-ui/core/FormGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import { func } from 'prop-types';
 import { EXPANSIONS, SETS } from '../../setup/sets';
-import { getMediaQuery, useStateWithLabel } from '../../utils';
+import { getMediaQuery, logger, useStateWithLabel } from '../../utils';
 import {
   ALL,
   CANT_DESELECT,
@@ -17,7 +17,9 @@ import {
   GAME_RULES_TITLE,
   GAME_SETS,
   LOCAL_STORAGE_CONFIG_KEY,
-  LOOKS_GREAT
+  LOOKS_GREAT,
+  LOG_TYPE_CORE,
+  UPDATE_CONFIG
 } from '../../constants';
 import {
   ModalButton,
@@ -56,6 +58,13 @@ const ConfigGame = ({ toggleConfig }) => {
   const confirmConfig = () => {
     const { characters, items, weapons, zombies } = setupGame(rules);
     localStorage.setItem(LOCAL_STORAGE_CONFIG_KEY, JSON.stringify(rules));
+    logger(LOG_TYPE_CORE, UPDATE_CONFIG, {
+      rules,
+      characters,
+      items,
+      weapons,
+      zombies
+    });
     toggleConfig(false);
     updateContext({ rules, characters, items, weapons, zombies });
   };

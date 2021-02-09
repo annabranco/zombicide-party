@@ -10,19 +10,18 @@ import Horde from '../assets/images/zombies/horde.jpg';
 import HordeSmall from '../assets/images/zombies/horde-small.jpg';
 import Dogz from '../assets/images/zombies/dogz.jpg';
 import DogzSmall from '../assets/images/zombies/dogz-small.jpg';
-
 import DogzIntro from '../assets/images/zombies/Dogz.png';
 import WalkerIntro from '../assets/images/zombies/Walker.png';
 import RunnerIntro from '../assets/images/zombies/Runner.png';
 import FattyIntro from '../assets/images/zombies/Fatty.png';
 import AbominationIntro from '../assets/images/zombies/Abomination.png';
-import NightShiftIntro from '../assets/images/zombies/ZombieCop.png';
 import { ZOMBIE } from '../constants';
 
 export const ZOMBIES_S1 = {
   Walker: {
     img: Walker,
     imgSmall: WalkerSmall,
+    intro: WalkerIntro,
     name: 'Walker',
     sounds: 9,
     type: ZOMBIE
@@ -30,6 +29,7 @@ export const ZOMBIES_S1 = {
   Runner: {
     img: Runner,
     imgSmall: RunnerSmall,
+    intro: RunnerIntro,
     name: 'Runner',
     sounds: 5,
     special: 'Instant kill',
@@ -38,6 +38,7 @@ export const ZOMBIES_S1 = {
   Fatty: {
     img: Fatty,
     imgSmall: FattySmall,
+    intro: FattyIntro,
     name: 'Fatty',
     sounds: 5,
     type: ZOMBIE
@@ -45,6 +46,7 @@ export const ZOMBIES_S1 = {
   Abomination: {
     img: Abomination,
     imgSmall: AbominationSmall,
+    intro: AbominationIntro,
     name: 'Abomination',
     sounds: 4,
     type: ZOMBIE
@@ -63,30 +65,10 @@ export const DOGZ = {
   Dogz: {
     img: Dogz,
     imgSmall: DogzSmall,
+    intro: DogzIntro,
     name: 'Dogz',
     sounds: 5,
     special: 'Instant kill',
     type: ZOMBIE
   }
 };
-
-export const ZOMBIES_INTRO = [
-  WalkerIntro,
-  RunnerIntro,
-  FattyIntro,
-  AbominationIntro,
-  DogzIntro,
-  NightShiftIntro
-];
-
-const selectedSets = [ZOMBIES_S1, DOGZ];
-
-export const setupZombies = sets => {
-  let allZombies = {};
-  sets.forEach(set => {
-    allZombies = { ...allZombies, ...set };
-  });
-  return allZombies;
-};
-
-export const ALL_ZOMBIES = setupZombies(selectedSets);

@@ -1,6 +1,5 @@
 import React, { useContext, useEffect, useRef } from 'react';
 import { bool, func } from 'prop-types';
-import { ALL_ZOMBIES } from '../../../setup/zombies';
 import { getMediaQuery, logger, useStateWithLabel } from '../../../utils';
 import SoundBlock from '../../SoundBlock';
 import {
@@ -80,22 +79,22 @@ const ZombiesSection = ({
         >
           {Object.keys(zombies).map(zombie => (
             <ZombieWrapper
-              key={ALL_ZOMBIES[zombie].name}
+              key={context.zombies[zombie].name}
               onMouseOut={() => highlight()}
               onMouseOver={() => highlight(zombie)}
             >
               <SoundBlock
-                differentSounds={ALL_ZOMBIES[zombie].sounds}
-                img={ALL_ZOMBIES[zombie].img}
+                differentSounds={context.zombies[zombie].sounds}
+                img={context.zombies[zombie].img}
                 isMobile={device.current === MOBILE}
                 isTablet={device.current === TABLET}
-                name={ALL_ZOMBIES[zombie].name}
+                name={context.zombies[zombie].name}
                 rows={
                   device.current === MOBILE
                     ? Object.keys(zombies).length / 3
                     : null
                 }
-                special={ALL_ZOMBIES[zombie].special}
+                special={context.zombies[zombie].special}
                 type={ACTIVATIONS}
                 zombieAttack={zombieAttack}
               />

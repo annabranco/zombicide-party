@@ -1,7 +1,12 @@
 import React, { useEffect, useRef } from 'react';
 import { bool, func, number, string, oneOfType } from 'prop-types';
 import { ALL_WEAPONS } from '../../../setup/weapons';
-import { getItemPhoto, getItemType, useStateWithLabel } from '../../../utils';
+import {
+  getItemPhoto,
+  getItemType,
+  logger,
+  useStateWithLabel
+} from '../../../utils';
 import SoundBlock from '../../SoundBlock';
 import ActionButton from '../../ActionButton';
 import ZombieFace from '../../../assets/images/zombieFace.png';
@@ -21,7 +26,9 @@ import {
   RELOAD_ACTION,
   SEARCH_ACTION,
   SPECIAL,
-  WEAPONS
+  WEAPONS,
+  LOG_TYPE_EXTENDED,
+  SLOT_SELECTED
 } from '../../../constants';
 import {
   ActionButtonIcon,
@@ -173,6 +180,11 @@ const ItemsArea = ({
 
   const onClickChange = () => {
     toggleActive(false);
+    logger(
+      LOG_TYPE_EXTENDED,
+      SLOT_SELECTED,
+      index + (itemsType === WEAPONS ? 1 : 3)
+    );
     selectSlot(index + (itemsType === WEAPONS ? 1 : 3));
   };
 
@@ -189,6 +201,7 @@ const ItemsArea = ({
         tradeItem({ item: NONE, slot, charTrading: charName });
       }
     } else if (canSearch || setupMode) {
+      logger(LOG_TYPE_EXTENDED, SLOT_SELECTED, slot);
       selectSlot(slot);
       if (!setupMode) {
         handleSearch();
