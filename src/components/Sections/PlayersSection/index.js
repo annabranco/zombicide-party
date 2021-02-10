@@ -891,25 +891,6 @@ const PlayersSection = ({
     setCanOpenDoor(openDoors);
   };
 
-  const handleSearch = () => {
-    // TOFIX
-    // if (
-    //   checkIfCharacterHasFlashlight([
-    //     ...character.inHand,
-    //     ...character.inReserve
-    //   ]) &&
-    //   canSearch &&
-    //   !character.abilitiesUsed.includes(ALL_ITEMS.Flashlight.name)
-    // ) {
-    //   const updatedCharacter = cloneDeep(character);
-    //   updatedCharacter.abilitiesUsed = [
-    //     ...updatedCharacter.abilitiesUsed,
-    //     ALL_ITEMS.Flashlight.name
-    //   ];
-    //   updateData(updatedCharacter);
-    // }
-  };
-
   const interactWithCar = enter => {
     const updatedCharacter = cloneDeep(character);
     if (enter) {
@@ -1800,7 +1781,7 @@ const PlayersSection = ({
                   {!damageMode && !setupMode && !slot && (
                     <>
                       <ActionsWrapper>
-                        {canMove && context.rules.exit && round >= 0 && (
+                        {canMove && context.rules.exit && round >= 3 && (
                           <ActionButton
                             actionType={LEAVE_GAME_ACTION}
                             callback={onLeaveGame}
@@ -2186,7 +2167,6 @@ const PlayersSection = ({
                             forcedKillButtons={forcedKillButtons}
                             gainCustomXp={gainCustomXp}
                             gainXp={gainXp}
-                            handleSearch={handleSearch}
                             index={index}
                             item={itemName}
                             key={`${itemName}-${index + 1}`}
@@ -2249,7 +2229,6 @@ const PlayersSection = ({
                             damageMode={damageMode}
                             device={device.current}
                             dropMode={dropMode}
-                            handleSearch={handleSearch}
                             index={index}
                             item={itemName}
                             key={`${itemName}-${index + 3}`}

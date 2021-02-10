@@ -65,7 +65,6 @@ const ItemsArea = ({
   forcedKillButtons,
   gainCustomXp,
   gainXp,
-  handleSearch,
   index,
   item,
   itemSelected,
@@ -203,9 +202,6 @@ const ItemsArea = ({
     } else if (canSearch || setupMode) {
       logger(LOG_TYPE_EXTENDED, SLOT_SELECTED, slot);
       selectSlot(slot);
-      if (!setupMode) {
-        handleSearch();
-      }
     }
   };
 
@@ -387,7 +383,6 @@ ItemsArea.propTypes = {
   forcedKillButtons: number,
   gainCustomXp: func,
   gainXp: func,
-  handleSearch: func,
   index: number.isRequired,
   item: string,
   itemSelected: bool,
@@ -426,11 +421,10 @@ ItemsArea.defaultProps = {
   dropMode: false,
   dualWeaponEffect: false,
   forcedKillButtons: null,
-  itemSelected: false,
   gainCustomXp: () => null,
   gainXp: () => null,
-  handleSearch: () => null,
   item: null,
+  itemSelected: false,
   makeNoise: () => null,
   numItems: null,
   onClickCombine: () => null,
