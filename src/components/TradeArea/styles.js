@@ -222,6 +222,7 @@ Face.displayName = 'Face';
 
 export const NavButtonsWrapper = styled.div`
   label: NavButtonsWrapper;
+  z-index: 15;
   position: absolute;
   bottom: -20px;
   left: 0;
