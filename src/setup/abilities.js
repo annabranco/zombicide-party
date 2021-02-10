@@ -52,7 +52,7 @@ const COMBAT_ACTION = {
   name: '+1 free Combat Action',
   description:
     'The Survivor has one free extra Combat Action. This Action may only be used for Melee or Ranged Combat.',
-  effect: ([gen, mov, att, sea, bon]) => [gen + 1, mov, att + 1, sea, bon]
+  effect: ([gen, mov, att, sea, bon]) => [gen, mov, att + 1, sea, bon]
 };
 const MOVE_ACTION = {
   name: '+1 free Move Action',
