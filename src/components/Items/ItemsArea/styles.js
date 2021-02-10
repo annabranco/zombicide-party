@@ -370,7 +370,7 @@ KillButtonIcon.displayName = 'KillButtonIcon';
 
 export const KillButtonsWrapper = styled.div`
   label: KillButtonsWrapper;
-  z-index: 10;
+  z-index: 20;
   position: absolute;
   top: 0;
   left: 0;
@@ -395,6 +395,10 @@ export const KillButtonsWrapper = styled.div`
     left: unset;
     height: auto;
     width: auto;
+  }
+
+  @media all and (min-width: 1200px) {
+    left: 15%;
   }
 `;
 KillButtonsWrapper.displayName = 'KillButtonsWrapper';
