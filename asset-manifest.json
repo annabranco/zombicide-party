@@ -1,13 +1,13 @@
 {
   "files": {
-    "main.js": "/zombicide-party/static/js/main.7c6bc851.chunk.js",
-    "main.js.map": "/zombicide-party/static/js/main.7c6bc851.chunk.js.map",
+    "main.js": "/zombicide-party/static/js/main.e9286194.chunk.js",
+    "main.js.map": "/zombicide-party/static/js/main.e9286194.chunk.js.map",
     "runtime-main.js": "/zombicide-party/static/js/runtime-main.09054635.js",
     "runtime-main.js.map": "/zombicide-party/static/js/runtime-main.09054635.js.map",
-    "static/js/2.5fe3787d.chunk.js": "/zombicide-party/static/js/2.5fe3787d.chunk.js",
-    "static/js/2.5fe3787d.chunk.js.map": "/zombicide-party/static/js/2.5fe3787d.chunk.js.map",
+    "static/js/2.071ce70d.chunk.js": "/zombicide-party/static/js/2.071ce70d.chunk.js",
+    "static/js/2.071ce70d.chunk.js.map": "/zombicide-party/static/js/2.071ce70d.chunk.js.map",
     "index.html": "/zombicide-party/index.html",
-    "static/js/2.5fe3787d.chunk.js.LICENSE.txt": "/zombicide-party/static/js/2.5fe3787d.chunk.js.LICENSE.txt",
+    "static/js/2.071ce70d.chunk.js.LICENSE.txt": "/zombicide-party/static/js/2.071ce70d.chunk.js.LICENSE.txt",
     "static/media/Abomination.7468aef7.png": "/zombicide-party/static/media/Abomination.7468aef7.png",
     "static/media/Abomination1.6ae71f09.mp3": "/zombicide-party/static/media/Abomination1.6ae71f09.mp3",
     "static/media/Abomination2.532b7333.mp3": "/zombicide-party/static/media/Abomination2.532b7333.mp3",
@@ -259,7 +259,7 @@
   },
   "entrypoints": [
     "static/js/runtime-main.09054635.js",
-    "static/js/2.5fe3787d.chunk.js",
-    "static/js/main.7c6bc851.chunk.js"
+    "static/js/2.071ce70d.chunk.js",
+    "static/js/main.e9286194.chunk.js"
   ]
 }
