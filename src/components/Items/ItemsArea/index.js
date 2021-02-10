@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from 'react';
-import { bool, func, number, string, oneOfType } from 'prop-types';
+import { bool, func, number, string, oneOfType, arrayOf } from 'prop-types';
 import { ALL_WEAPONS } from '../../../setup/weapons';
 import {
   getItemPhoto,
@@ -371,7 +371,7 @@ ItemsArea.propTypes = {
   callback: func,
   canAttack: bool,
   canBeDeflected: bool,
-  canCombine: bool,
+  canCombine: oneOfType([arrayOf(string), bool]),
   canSearch: bool,
   causeDamage: func,
   charCanDeflect: bool,
@@ -413,7 +413,7 @@ ItemsArea.defaultProps = {
   callback: () => null,
   canAttack: false,
   canBeDeflected: false,
-  canCombine: false,
+  canCombine: null,
   canSearch: false,
   causeDamage: null,
   charCanDeflect: false,

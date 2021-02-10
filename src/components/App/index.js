@@ -40,9 +40,13 @@ const App = () => {
   useEffect(() => {
     const game = loadSavedGame();
     const rules = JSON.parse(localStorage.getItem(LOCAL_STORAGE_CONFIG_KEY));
+
     logger(LOG_TYPE_CORE, LOG_APP_INIT);
+
     if (rules) {
-      updateContext(setupGame(rules));
+      const detailedRules = setupGame(rules);
+      window.gameRules = detailedRules;
+      updateContext(detailedRules);
     }
 
     if (game && game.length !== 0) {

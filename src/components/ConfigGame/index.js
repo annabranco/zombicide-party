@@ -56,17 +56,16 @@ const ConfigGame = ({ toggleConfig }) => {
   const { updateContext } = useContext(AppContext);
 
   const confirmConfig = () => {
-    const { characters, items, weapons, zombies } = setupGame(rules);
+    const detailedRules = setupGame(rules);
+
     localStorage.setItem(LOCAL_STORAGE_CONFIG_KEY, JSON.stringify(rules));
     logger(LOG_TYPE_CORE, UPDATE_CONFIG, {
       rules,
-      characters,
-      items,
-      weapons,
-      zombies
+      ...detailedRules
     });
     toggleConfig(false);
-    updateContext({ rules, characters, items, weapons, zombies });
+    window.gameRules = { rules, ...detailedRules };
+    updateContext({ rules, ...detailedRules });
   };
 
   const handleChange = event => {

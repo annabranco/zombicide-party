@@ -1,5 +1,7 @@
 import React, { useContext, useEffect } from 'react';
-import { func, string } from 'prop-types';
+import { bool, func, oneOfType, string } from 'prop-types';
+import { pickBy } from 'lodash';
+import { AppContext } from '../../../setup/rules';
 import { useStateWithLabel } from '../../../utils';
 import SelectionItem from '../ItemSelector';
 import { SelectorArea } from '../../SoundBlock/styles';
@@ -19,9 +21,14 @@ import {
   SelectorWrapper,
   SubSectionTitle
 } from './styles';
-import { AppContext } from '../../../setup/rules';
 
-const ItemsSelectorModal = ({ device, onSelect, selectSlot, slotType }) => {
+const ItemsSelectorModal = ({
+  device,
+  onSelect,
+  selectSlot,
+  setupMode,
+  slotType
+}) => {
   const [items, changeItems] = useStateWithLabel({}, ITEMS);
   const [itemsType, changeItemsType] = useStateWithLabel(ITEMS, 'itemsType');
 
@@ -51,13 +58,29 @@ const ItemsSelectorModal = ({ device, onSelect, selectSlot, slotType }) => {
 
   useEffect(() => {
     if (slotType === IN_HAND) {
-      changeItems(context.weapons);
+      if (!context.rules.findCombinedItems && !setupMode) {
+        const filteredWeapons = pickBy(
+          context.weapons,
+          attributes => !attributes.combined
+        );
+        changeItems(filteredWeapons);
+      } else {
+        changeItems(context.weapons);
+      }
       changeItemsType(WEAPONS);
     } else if (slotType === IN_RESERVE) {
       changeItems(context.items);
       changeItemsType(ITEMS);
     }
-  }, [changeItems, slotType, changeItemsType, context.weapons, context.items]);
+  }, [
+    changeItems,
+    slotType,
+    changeItemsType,
+    context.weapons,
+    context.items,
+    context.rules.findCombinedItems,
+    setupMode
+  ]);
 
   return (
     <>
@@ -96,6 +119,7 @@ ItemsSelectorModal.propTypes = {
   device: string.isRequired,
   onSelect: func.isRequired,
   selectSlot: func.isRequired,
+  setupMode: oneOfType([bool, string]).isRequired,
   slotType: string.isRequired
 };
 

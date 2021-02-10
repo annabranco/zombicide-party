@@ -998,9 +998,10 @@ export const MidScreenTag = styled(AttackInstructions)`
   label: MidScreenTag;
   z-index: 15;
   position: absolute;
-  top: 50%;
+  top: 35%;
   left: 50%;
   transform: translate(-50%, -50%);
+  height: 50px;
   background: none;
   font-size: 3rem;
   color: #cc9900;

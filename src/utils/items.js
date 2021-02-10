@@ -75,7 +75,7 @@ export const checkForNoiseOpeningDoor = item => {
 };
 
 export const checkIfCharacterHasFlashlight = items => {
-  if (items.find(name => name === 'Flashlight')) {
+  if (items.find(name => name === ALL_ITEMS.Flashlight.name)) {
     return true;
   }
   return false;

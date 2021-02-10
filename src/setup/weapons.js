@@ -111,7 +111,7 @@ export const WEAPONS_S1 = {
   },
   Molotov: {
     attack: SPECIAL,
-    cannotBeFound: true,
+    combined: true,
     dice: SPECIAL,
     img: Molotov,
     name: 'Molotov',
@@ -165,6 +165,7 @@ export const WEAPONS_S1 = {
   },
   SniperRifle: {
     attack: RANGED,
+    combined: true,
     dice: 1,
     img: SniperRifle,
     name: 'Sniper Rifle',

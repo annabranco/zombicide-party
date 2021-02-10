@@ -234,10 +234,6 @@ const PlayersSection = ({
     'actionsLabel'
   );
   const [canCombine, toggleCanCombine] = useStateWithLabel(false, 'canCombine');
-  const [canUseFlashlight, changeCanUseFlashlight] = useStateWithLabel(
-    false,
-    'canUseFlashlight'
-  );
   const [car, startCar] = useStateWithLabel(false, 'car');
   const [canOpenDoor, setCanOpenDoor] = useStateWithLabel(false, 'canOpenDoor');
   const [character, changeCharacter] = useStateWithLabel({}, 'character');
@@ -409,7 +405,6 @@ const PlayersSection = ({
     logger(LOG_TYPE_INFO, RESET_STATE);
     changeActionLabel('');
     toggleCanCombine(false);
-    changeCanUseFlashlight(false);
     startCar(false);
     setCanOpenDoor(false);
     setCombiningItem(null);
@@ -671,7 +666,6 @@ const PlayersSection = ({
     const newItems = [...updatedCharacter.inHand];
     newItems[currentSlot] = name;
     const openDoors = checkIfCharacterCanOpenDoors(newItems);
-    const hasFlashlight = checkIfCharacterHasFlashlight(newItems);
     const charCanCombineItems = checkIfCharCanCombineItems([
       ...newItems,
       ...updatedCharacter.inReserve
@@ -679,7 +673,6 @@ const PlayersSection = ({
 
     logger(LOG_TYPE_EXTENDED, CHANGE_IN_HAND, name, currentSlot);
     setCanOpenDoor(openDoors);
-    changeCanUseFlashlight(hasFlashlight);
     toggleCanCombine(charCanCombineItems);
     updatedCharacter.inHand = newItems;
 
@@ -701,7 +694,6 @@ const PlayersSection = ({
     const updatedCharacter = preUpdChar || cloneDeep(character);
     const oldItems = [...updatedCharacter.inReserve];
     const newItems = [...updatedCharacter.inReserve];
-    const hasFlashlight = checkIfCharacterHasFlashlight(newItems);
     const charCanCombineItems = checkIfCharCanCombineItems([
       ...newItems,
       ...updatedCharacter.inHand
@@ -720,7 +712,6 @@ const PlayersSection = ({
     }
 
     logger(LOG_TYPE_EXTENDED, CHANGE_IN_RESERVE, name, currentSlot);
-    changeCanUseFlashlight(hasFlashlight);
     toggleCanCombine(charCanCombineItems);
     updatedCharacter.inReserve = newItems;
 
@@ -890,7 +881,6 @@ const PlayersSection = ({
       ...updatedCharacter.inReserve
     ];
     const openDoors = checkIfCharacterCanOpenDoors(updatedCharacter.inHand);
-    const hasFlashlight = checkIfCharacterHasFlashlight(newItems);
     const charCanCombineItems = checkIfCharCanCombineItems(newItems);
 
     logger(LOG_TYPE_EXTENDED, TRADE, newItems);
@@ -899,15 +889,25 @@ const PlayersSection = ({
     changeCharacter(updatedCharacter);
     updateCharacters(updatedCharacters);
     setCanOpenDoor(openDoors);
-    changeCanUseFlashlight(hasFlashlight);
   };
 
   const handleSearch = () => {
-    if (canUseFlashlight && canSearch && !character.hasUsedFlashlight) {
-      const updatedCharacter = cloneDeep(character);
-      updatedCharacter.hasUsedFlashlight = true;
-      updateData(updatedCharacter);
-    }
+    // TOFIX
+    // if (
+    //   checkIfCharacterHasFlashlight([
+    //     ...character.inHand,
+    //     ...character.inReserve
+    //   ]) &&
+    //   canSearch &&
+    //   !character.abilitiesUsed.includes(ALL_ITEMS.Flashlight.name)
+    // ) {
+    //   const updatedCharacter = cloneDeep(character);
+    //   updatedCharacter.abilitiesUsed = [
+    //     ...updatedCharacter.abilitiesUsed,
+    //     ALL_ITEMS.Flashlight.name
+    //   ];
+    //   updateData(updatedCharacter);
+    // }
   };
 
   const interactWithCar = enter => {
@@ -1024,7 +1024,6 @@ const PlayersSection = ({
         updatedCharacters.forEach((char, index) => {
           const restingBonusActions = char.actionsLeft[4];
 
-          char.hasUsedFlashlight = false; // eslint-disable-line no-param-reassign
           char.abilitiesUsed = []; // eslint-disable-line no-param-reassign
           char.noise = 0; // eslint-disable-line no-param-reassign
 
@@ -1090,7 +1089,12 @@ const PlayersSection = ({
   };
 
   const onFindingItem = slotType => (item, currentSlot = slot - 1) => {
+    const updChar = cloneDeep(character);
     const findingSlot = slotType === IN_HAND ? slot - 1 : slot - 3;
+    const hasFlashlight = checkIfCharacterHasFlashlight([
+      ...character.inHand,
+      ...character.inReserve
+    ]);
 
     if (
       character.abilities.includes(ABILITIES_S1.MATCHING_SET.name) &&
@@ -1098,18 +1102,13 @@ const PlayersSection = ({
       (context.weapons[item].dual ||
         (character.abilities.includes(ABILITIES_S1.GUNSLINGER.name) &&
           context.weapons[item].attack === RANGED &&
-          !context.weapons[item].unique &&
-          !context.weapons[item].cannotBeFound) ||
+          !context.weapons[item].unique) ||
         (character.abilities.includes(ABILITIES_S1.SWORDMASTER.name) &&
           context.weapons[item].attack === MELEE &&
-          !context.weapons[item].unique &&
-          !context.weapons[item].cannotBeFound) ||
+          !context.weapons[item].unique) ||
         (character.abilities.includes(ABILITIES_S1.AMBIDEXTROUS.name) &&
-          !context.weapons[item].unique &&
-          !context.weapons[item].cannotBeFound))
+          !context.weapons[item].unique))
     ) {
-      const updChar = cloneDeep(character);
-
       if (currentSlot <= 2) {
         changeInHand(item, currentSlot);
         updChar.inHand[findingSlot] = item;
@@ -1131,14 +1130,29 @@ const PlayersSection = ({
         return null;
       }, 1000);
     }
-    toggleFreeReorder(true);
-    spendAction(SEARCH);
+
+    if (
+      !setupMode &&
+      (!hasFlashlight ||
+        (hasFlashlight &&
+          updChar.abilitiesUsed.includes(ALL_ITEMS.Flashlight.name)))
+    ) {
+      spendAction(SEARCH);
+    } else if (hasFlashlight) {
+      updChar.abilitiesUsed = [
+        ...updChar.abilitiesUsed,
+        ALL_ITEMS.Flashlight.name
+      ];
+      updateData(updChar);
+    }
 
     if (slotType === IN_HAND) {
-      changeInHand(item, findingSlot);
+      changeInHand(item, findingSlot, updChar);
     } else {
-      changeInReserve(item, findingSlot);
+      changeInReserve(item, findingSlot, updChar);
     }
+
+    toggleFreeReorder(true);
   };
 
   const onGiveOrders = () => {
@@ -1204,7 +1218,7 @@ const PlayersSection = ({
     }
 
     if (healedCharacter === character.name) {
-      // updChar.abilitiesUsed.push(HEAL_ACTION);
+      updChar.abilitiesUsed.push(HEAL_ACTION);
       updateData(updChar);
     } else {
       const updHealer = cloneDeep(character);
@@ -1212,6 +1226,7 @@ const PlayersSection = ({
       updateData(updChar, true);
       updateData(updHealer);
     }
+    toggleSomeoneIsWounded(characters.some(char => char.wounded));
   };
 
   const onLeaveGame = () => {
@@ -1221,12 +1236,10 @@ const PlayersSection = ({
     );
     updChar.hasLeft = true;
     updChar.actionsLeft = [0, 0, 0, 0, 0];
-    toggleZombiesArePlaying(true);
     updateCharSaved([...charsSaved, updChar]);
     updateData(updChar);
 
     logger(LOG_TYPE_INFO, LEFT_GAME, updChar.name);
-
     if (charsStillInArea.length > 0) {
       setTimeout(() => changeToAnotherPlayer(NEXT, updChar.name), 3000);
     } else {
@@ -1378,6 +1391,7 @@ const PlayersSection = ({
         woundedCharacter.wounded = KILLED;
         damage = KILL;
         someoneIsKilled = true;
+        changeCharacter(woundedCharacter);
         logger(LOG_TYPE_INFO, CHAR_KILLED, woundedCharacter, damageMode);
 
         if (
@@ -1394,14 +1408,6 @@ const PlayersSection = ({
           toggleStartedZombieAttack();
           updateData(woundedCharacter);
           loadGame();
-        } else {
-          setTimeout(
-            () =>
-              changeCharIndex(
-                charIndex + 1 >= remainingCharacters.length ? 0 : charIndex + 1
-              ),
-            5000
-          );
         }
       }
     } else if (characterCanResist) {
@@ -1446,6 +1452,7 @@ const PlayersSection = ({
       someoneIsKilled = true;
       woundedCharacter.wounded = KILLED;
       damage = KILL;
+      changeCharacter(woundedCharacter);
       logger(LOG_TYPE_INFO, CHAR_KILLED, woundedCharacter, damageMode);
 
       if (firstPlayer.includes(woundedCharacter.name)) {
@@ -1481,17 +1488,21 @@ const PlayersSection = ({
     sound.currentTime = 0;
     sound.play();
 
-    updateData(woundedCharacter);
-
-    if (
-      woundedCharacter.wounded === KILLED &&
-      remainingCharacters.length === 0
-    ) {
-      return null;
+    if (woundedCharacter.wounded === KILLED) {
+      if (remainingCharacters.length === 0) {
+        return null;
+      }
+      setTimeout(
+        () => {
+          updateData(woundedCharacter);
+        },
+        someoneIsKilled ? 4000 : 2000
+      );
+    } else {
+      updateData(woundedCharacter);
     }
 
     setTimeout(() => changeToAnotherPlayer(NEXT), 5000);
-
     setTimeout(
       () => {
         toggleStartedZombieAttack();
@@ -1500,6 +1511,7 @@ const PlayersSection = ({
       },
       someoneIsKilled ? 4000 : 2000
     );
+
     return null;
   };
   /* --- */
@@ -1587,10 +1599,6 @@ const PlayersSection = ({
         const charInHand = [...nextChar.inHand];
         const charinReserve = [...nextChar.inReserve];
         const openDoors = checkIfCharacterCanOpenDoors(charInHand);
-        const hasFlashlight = checkIfCharacterHasFlashlight([
-          ...charInHand,
-          ...charinReserve
-        ]);
         const charCanCombineItems = checkIfCharCanCombineItems([
           ...charInHand,
           ...charinReserve
@@ -1608,7 +1616,6 @@ const PlayersSection = ({
         changeCharacter(nextChar);
         checkIfCharHasDualEffect(charInHand);
         setCanOpenDoor(openDoors);
-        changeCanUseFlashlight(hasFlashlight);
         toggleCanCombine(charCanCombineItems);
         toggleHasKilledZombie();
         changeActionLabel('');
@@ -1793,7 +1800,7 @@ const PlayersSection = ({
                   {!damageMode && !setupMode && !slot && (
                     <>
                       <ActionsWrapper>
-                        {canMove && context.rules.exit && round >= 3 && (
+                        {canMove && context.rules.exit && round >= 0 && (
                           <ActionButton
                             actionType={LEAVE_GAME_ACTION}
                             callback={onLeaveGame}
@@ -1945,7 +1952,7 @@ const PlayersSection = ({
                               manyButtons={character.location === CAR}
                             />
                           )}
-                        {canMove && context.rules.car && (
+                        {canMove && context.rules.cars && (
                           <ActionButton
                             actionType={
                               character.location === CAR
@@ -2100,6 +2107,7 @@ const PlayersSection = ({
                 <>
                   {!slot &&
                     !dropMode &&
+                    characters.length > 1 &&
                     character.actionsLeft &&
                     checkIfHasAnyActionLeft(character.actionsLeft) && (
                       <CardsActions>
@@ -2466,6 +2474,7 @@ const PlayersSection = ({
               device={device.current}
               onSelect={onFindingItem(IN_HAND)}
               selectSlot={selectSlot}
+              setupMode={setupMode}
               slotType={IN_HAND}
             />
           )}
@@ -2474,6 +2483,7 @@ const PlayersSection = ({
               device={device.current}
               onSelect={onFindingItem(IN_RESERVE)}
               selectSlot={selectSlot}
+              setupMode={setupMode}
               slotType={IN_RESERVE}
             />
           )}
