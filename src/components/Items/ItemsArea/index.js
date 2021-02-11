@@ -28,7 +28,8 @@ import {
   SPECIAL,
   WEAPONS,
   LOG_TYPE_EXTENDED,
-  SLOT_SELECTED
+  SLOT_SELECTED,
+  BURNEM_ALL
 } from '../../../constants';
 import {
   ActionButtonIcon,
@@ -98,7 +99,7 @@ const ItemsArea = ({
   const activateKillButtons = () => {
     spendSingleUseWeapon(index, item);
     if (ALL_WEAPONS[item].dice === SPECIAL) {
-      gainCustomXp(index);
+      gainCustomXp(BURNEM_ALL);
     } else {
       const totalDices = calculateTotalDices();
       const currentPool = killButtons.length;

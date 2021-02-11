@@ -51,6 +51,7 @@ export const SEARCH_ZOMBIE = 'search zombie body';
 export const SEARCH_ZOMBIE_ACTION = 'search-zombie';
 export const SELECT = 'select';
 export const STOP_SOUND = 'Stop Sound';
+export const TAKE_THAT = 'TAKE THAT!';
 export const TEST_SOUND = 'Test Sound';
 export const TRADE = 'trade';
 export const UPGRADE_WEAPON = 'upgrade weapon';

@@ -144,6 +144,7 @@ import {
   START_NEXT_ROUND,
   START_ZOMBIE_ROUND,
   TAKE_DAMAGE,
+  TAKE_THAT,
   TRADE,
   TURN_FINISHED,
   UPDATE_DATA,
@@ -151,7 +152,6 @@ import {
   WIN_GAME,
   WON,
   WOUNDED,
-  XP,
   XP_GAIN,
   XP_GAIN_SELECT,
   ZOMBIES_ROUND
@@ -765,8 +765,8 @@ const PlayersSection = ({
     }
   };
 
-  const gainCustomXp = () => {
-    toggleActionsModal(XP);
+  const gainCustomXp = xp => {
+    toggleActionsModal(xp);
   };
 
   const gainXp = (xp = 1) => {
@@ -1962,28 +1962,29 @@ const PlayersSection = ({
                             }
                           />
                         )}
-                        {canMove &&
-                          context.rules.car &&
-                          character.location === CAR && (
-                            <>
-                              <ActionButton
-                                actionType={CAR_MOVE_ACTION}
-                                callback={() => spendAction(MOVE)}
-                                changeActionLabel={changeActionLabel}
-                                isMobile={device.current === MOBILE}
-                                label={MOVE_CAR}
-                                manyButtons={character.location === CAR}
-                              />
-                              <ActionButton
-                                actionType={CAR_ATTACK_ACTION}
-                                callback={() => spendAction(MOVE)}
-                                changeActionLabel={changeActionLabel}
-                                isMobile={device.current === MOBILE}
-                                label={RUN_OVER}
-                                manyButtons={character.location === CAR}
-                              />
-                            </>
-                          )}
+                        {canMove && character.location === CAR && (
+                          <>
+                            <ActionButton
+                              actionType={CAR_MOVE_ACTION}
+                              callback={() => spendAction(MOVE)}
+                              changeActionLabel={changeActionLabel}
+                              isMobile={device.current === MOBILE}
+                              label={MOVE_CAR}
+                              manyButtons={character.location === CAR}
+                            />
+                            <ActionButton
+                              actionType={CAR_ATTACK_ACTION}
+                              callback={() => {
+                                spendAction(MOVE);
+                                gainCustomXp(TAKE_THAT);
+                              }}
+                              changeActionLabel={changeActionLabel}
+                              isMobile={device.current === MOBILE}
+                              label={RUN_OVER}
+                              manyButtons={character.location === CAR}
+                            />
+                          </>
+                        )}
 
                         {canMove && character.location !== CAR && (
                           <ActionButton
@@ -2484,7 +2485,8 @@ const PlayersSection = ({
           )}
 
           {/* --- Select custom XP --- */}
-          {displayActionsModal === XP && (
+          {(displayActionsModal === BURNEM_ALL ||
+            displayActionsModal === TAKE_THAT) && (
             <ActionsModal
               toggleVisibility={toggleActionsModal}
               visible={displayActionsModal}
@@ -2495,7 +2497,7 @@ const PlayersSection = ({
                 type: 'slider',
                 buttons: [
                   {
-                    text: BURNEM_ALL,
+                    text: displayActionsModal,
                     type: 'confirm'
                   }
                 ]
