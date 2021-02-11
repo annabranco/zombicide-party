@@ -76,6 +76,7 @@ const NewGame = ({
     logger(LOG_TYPE_INFO, CLEAR_LS);
     localStorage.removeItem(LOCAL_STORAGE_ROUNDS_KEY);
     localStorage.removeItem(LOCAL_STORAGE_KEY);
+    window.debuggerLog = [];
     const newgameCharacters = [];
     charactersSelected.forEach((player, name) => {
       newgameCharacters.push(characters.find(char => char.name === name));

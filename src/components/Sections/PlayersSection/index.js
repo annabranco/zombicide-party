@@ -238,6 +238,7 @@ const PlayersSection = ({
   const [canOpenDoor, setCanOpenDoor] = useStateWithLabel(false, 'canOpenDoor');
   const [character, changeCharacter] = useStateWithLabel({}, 'character');
   const [characters, updateCharacters] = useStateWithLabel([], 'characters');
+  const [charBackup, backupChar] = useStateWithLabel([], 'characters');
   const [charIndex, changeCharIndex] = useStateWithLabel(0, 'charIndex');
   const [charsSaved, updateCharSaved] = useStateWithLabel([], 'charsSaved');
   const [
@@ -759,7 +760,8 @@ const PlayersSection = ({
     if (context.weapons[weaponName].useOnce) {
       const updatedCharacter = cloneDeep(character);
       updatedCharacter.inHand[weaponSlot] = '';
-      changeCharacter(updatedCharacter);
+      backupChar(updatedCharacter);
+      updateData(updatedCharacter);
     }
   };
 
@@ -1530,7 +1532,12 @@ const PlayersSection = ({
 
   useEffect(() => {
     if (character.name) {
-      const updatedCharacter = cloneDeep(character);
+      const updatedCharacter = charBackup
+        ? cloneDeep(charBackup)
+        : cloneDeep(character);
+      if (charBackup) {
+        backupChar();
+      }
       updatedCharacter.actionsLeft = [
         generalActions,
         extraMovementActions,
