@@ -10,6 +10,7 @@ export const CLICK_END_TURN = 'Clicked end turn';
 export const CLICK_NEW_GAME = 'Clicked NEW GAME';
 export const CLICK_SOUND_TEST = 'Clicked sound test';
 export const COMBINE_ITEM = 'Combining items';
+export const DUAL_EFECT = 'Dual Effect active';
 export const END_GAME_SCREEN = 'Displaying end game screen';
 export const END_ZOMBIE_ROUND = 'Ended Zombies round';
 export const ERROR = 'A problem has ocurred';

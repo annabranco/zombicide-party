@@ -57,6 +57,7 @@ const App = () => {
       localStorage.removeItem(LOCAL_STORAGE_ROUNDS_KEY);
       localStorage.removeItem(LOCAL_STORAGE_KEY);
     }
+    window.gameDebug = 'extended';
   }, [loadGame, updateContext]);
 
   return (

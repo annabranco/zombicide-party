@@ -67,6 +67,7 @@ import {
   DEFLECTED_ONE,
   DESKTOP,
   DROP,
+  DUAL_EFECT,
   EDIT_CHARACTERS,
   END_CHAR_TURN,
   END_TURN_ACTION,
@@ -238,7 +239,7 @@ const PlayersSection = ({
   const [canOpenDoor, setCanOpenDoor] = useStateWithLabel(false, 'canOpenDoor');
   const [character, changeCharacter] = useStateWithLabel({}, 'character');
   const [characters, updateCharacters] = useStateWithLabel([], 'characters');
-  const [charBackup, backupChar] = useStateWithLabel([], 'characters');
+  const [charBackup, backupChar] = useStateWithLabel(null, 'charBackup');
   const [charIndex, changeCharIndex] = useStateWithLabel(0, 'charIndex');
   const [charsSaved, updateCharSaved] = useStateWithLabel([], 'charsSaved');
   const [
@@ -617,20 +618,18 @@ const PlayersSection = ({
 
   const checkIfCharHasDualEffect = weapons => {
     if (
-      (weapons[0] === weapons[1] &&
-        context.weapons[weapons[0]] &&
-        context.weapons[weapons[0]].dual) ||
-      (character.abilities &&
-        character.abilities.includes(ABILITIES_S1.AMBIDEXTROUS.name)) ||
-      (character.abilities &&
-        character.abilities.includes(ABILITIES_S1.SWORDMASTER.name) &&
-        context.weapons[weapons[0]] &&
-        context.weapons[weapons[0]].attack === MELEE) ||
-      (character.abilities &&
-        character.abilities.includes(ABILITIES_S1.GUNSLINGER.name) &&
-        context.weapons[weapons[0]] &&
-        context.weapons[weapons[0]].attack === RANGED)
+      weapons[0] === weapons[1] &&
+      ((context.weapons[weapons[0]] && context.weapons[weapons[0]].dual) ||
+        (character.abilities &&
+          character.abilities.includes(ABILITIES_S1.AMBIDEXTROUS.name)) ||
+        (character.abilities &&
+          character.abilities.includes(ABILITIES_S1.SWORDMASTER.name) &&
+          context.weapons[weapons[0]].attack === MELEE) ||
+        (character.abilities &&
+          character.abilities.includes(ABILITIES_S1.GUNSLINGER.name) &&
+          context.weapons[weapons[0]].attack === RANGED))
     ) {
+      logger(LOG_TYPE_EXTENDED, DUAL_EFECT, weapons);
       activateDualWeaponEffect(true);
     } else {
       activateDualWeaponEffect();
@@ -678,7 +677,6 @@ const PlayersSection = ({
     updatedCharacter.inHand = newItems;
 
     checkIfCharHasDualEffect(newItems);
-
     if (
       dropMode &&
       checkIfAllSlotsAreEmpty(updatedCharacter.inHand) &&
@@ -1602,7 +1600,8 @@ const PlayersSection = ({
 
         toggleSomeoneIsWounded(characters.some(char => char.wounded));
         changeCharacter(nextChar);
-        checkIfCharHasDualEffect(charInHand);
+
+        checkIfCharHasDualEffect([...nextChar.inHand]);
         setCanOpenDoor(openDoors);
         toggleCanCombine(charCanCombineItems);
         toggleHasKilledZombie();
@@ -1718,6 +1717,7 @@ const PlayersSection = ({
             <TradeArea
               character={character}
               characters={characters}
+              checkIfCharHasDualEffect={checkIfCharHasDualEffect}
               confirmTrade={confirmTrade}
               device={device.current}
               reorder={trade === REORDER}

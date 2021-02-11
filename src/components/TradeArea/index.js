@@ -32,6 +32,7 @@ import { AppContext } from '../../setup/rules';
 const TradeArea = ({
   character,
   characters,
+  checkIfCharHasDualEffect,
   confirmTrade,
   device,
   reorder,
@@ -111,8 +112,11 @@ const TradeArea = ({
         if (selectedItem1.item === NONE && item === NONE) {
           return null;
         }
+
         if (selectedItem1.charTrading === charTrading) {
+          // Reorder own items
           if (updChar.name === charTrading) {
+            // Active player reordering
             const oldReserve = [...updChar.inReserve];
             updChar[typeItem1][index1] = item === NONE ? null : item;
             updChar[typeItem2][index2] =
@@ -141,9 +145,10 @@ const TradeArea = ({
             ) {
               updChar.inReserve.push(null);
             }
-
+            checkIfCharHasDualEffect(updChar.inHand);
             updateCharacter(updChar);
           } else {
+            // Trading partner reordering
             const oldReserve = [...updPartn.inReserve];
 
             updPartn[typeItem1][index1] = item === NONE ? null : item;
@@ -178,7 +183,9 @@ const TradeArea = ({
         } else if (selectedItem1.item === WOUNDED || item === WOUNDED) {
           // do nothing
         } else if (tradePartner) {
+          // Trade
           if (selectedItem1.charTrading === updChar.name) {
+            // Active character starts trade
             const oldCharReserve = [...updChar.inReserve];
             const oldPartnReserve = [...updPartn.inReserve];
 
@@ -237,6 +244,7 @@ const TradeArea = ({
             updateCharacter(updChar);
             updatePartner(updPartn);
           } else {
+            // Partner starts trade
             const oldCharReserve = [...updChar.inReserve];
             const oldPartnReserve = [...updPartn.inReserve];
 
@@ -280,6 +288,7 @@ const TradeArea = ({
             updateCharacter(updChar);
             updatePartner(updPartn);
           }
+          checkIfCharHasDualEffect(updChar.inHand);
         }
         selectItem1();
         establishTrade(true);
@@ -295,6 +304,7 @@ const TradeArea = ({
     if (charName === updatedCharacter.name) {
       const charDropping = cloneDeep(updatedCharacter);
       charDropping[type][index] = null;
+      checkIfCharHasDualEffect(charDropping.inHand);
       updateCharacter(charDropping);
     } else if (charName === tradePartner.name) {
       const charDropping = cloneDeep(tradePartner);
@@ -485,6 +495,7 @@ const TradeArea = ({
 TradeArea.propTypes = {
   character: CharacterType.isRequired,
   characters: arrayOf(CharacterType).isRequired,
+  checkIfCharHasDualEffect: func.isRequired,
   confirmTrade: func.isRequired,
   device: string.isRequired,
   reorder: bool.isRequired,
