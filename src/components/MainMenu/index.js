@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useRef } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { func, arrayOf } from 'prop-types';
 import appInfo from '../../../package.json';
 import { AppContext } from '../../setup/rules';
@@ -39,9 +39,9 @@ import {
 const MainMenu = ({ loadedGame, setInitialCharacters }) => {
   const [nightShift, toggleNightShift] = useStateWithLabel(false, 'nightShift');
   const [testSound, toggleTestSound] = useStateWithLabel(false, 'testSound');
+  const [zombieImage, changeZombieImage] = useState();
 
   const APP_VERSION = appInfo.version;
-  const zombieImage = useRef();
   const { context } = useContext(AppContext);
 
   useEffect(() => {
@@ -68,7 +68,7 @@ const MainMenu = ({ loadedGame, setInitialCharacters }) => {
   useEffect(() => {
     const zombiesImages = [];
     if (context.rules && context.rules.nightShift) {
-      zombieImage.current = ZombieCop;
+      changeZombieImage(ZombieCop);
       toggleNightShift(true);
       logger(LOG_TYPE_EXTENDED, INTRO_NS_LOADED);
     } else {
@@ -81,10 +81,11 @@ const MainMenu = ({ loadedGame, setInitialCharacters }) => {
           zombie => zombie.intro && zombiesImages.push(zombie.intro)
         );
       }
-      zombieImage.current =
-        zombiesImages[Math.floor(Math.random() * zombiesImages.length)];
+      changeZombieImage(
+        zombiesImages[Math.floor(Math.random() * zombiesImages.length)]
+      );
 
-      logger(LOG_TYPE_EXTENDED, INTRO_IMG_LOADED, zombieImage.current);
+      logger(LOG_TYPE_EXTENDED, INTRO_IMG_LOADED, zombieImage);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [context]);
@@ -98,8 +99,8 @@ const MainMenu = ({ loadedGame, setInitialCharacters }) => {
         <ZombicideLogo src={Logo} />
         <MainTitle>PARTY</MainTitle>
       </LogoArea>
-      <ZombieImage nightShift={nightShift} src={zombieImage.current} />
-      <ZombieImageShadow nightShift={nightShift} src={zombieImage.current} />
+      <ZombieImage nightShift={nightShift} src={zombieImage} />
+      <ZombieImageShadow nightShift={nightShift} src={zombieImage} />
       <ButtonsArea delay>
         <StyledLink to="/new">
           <SelectionButton>{NEW_GAME}</SelectionButton>

@@ -60,7 +60,7 @@ const ThunderFlash = keyframes`
 
 export const ButtonsArea = styled.div`
   label: ButtonsArea;
-  z-index: 12;
+  z-index: 20;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -83,6 +83,7 @@ ButtonsArea.displayName = 'ButtonsArea';
 
 export const LogoArea = styled.div`
   label: LogoArea;
+  z-index: 13;
   position: absolute;
   top: 0;
   display: flex;
@@ -169,6 +170,8 @@ export const MenuScreen = styled.div`
   height: ${`${window.innerHeight}px`};
   width: 100%;
   background: #232222;
+  overflow: hidden;
+
   filter: ${({ type }) => {
     if (type === 'main') {
       return 'brightness(0.7) contrast(2)';
@@ -231,7 +234,7 @@ export const SelectionButton = styled.button`
 
   &: hover {
     color: yellow;
-    filter: brightness(1.8);
+    filter: brightness(1.2);
   }
 
   ${({ disabled }) =>
@@ -327,7 +330,7 @@ ZombicideLogo.displayName = 'ZombicideLogo';
 
 export const ZombieImage = styled.img`
   label: ZombieImage;
-  z-index: 11;
+  z-index: 15;
   position: absolute;
   top: 10%;
   width: 300px;
@@ -372,8 +375,9 @@ export const ZombieImage = styled.img`
     width: 600px;
   }
 
-  @media all and (min-width: 1500px) {
-    top: 60px;
+  @media all and (min-width: 1400px) {
+    top: unset;
+    bottom: 10%;
     width: 500px;
   }
 `;
@@ -498,8 +502,8 @@ export const ZombieImageShadow = styled(ZombieImage)`
       nightShift &&
       css`
         top: unset;
-        bottom: -100px;
-        width: 540px;
+        bottom: -60px;
+        width: 640px;
         margin: 0 0 0 14px;
       `}
   }
