@@ -41,6 +41,7 @@ import FirstPlayer from '../../../assets/images/firstPlayer.jpg';
 import Noise from '../../../assets/images/noise.png';
 import ZombieFace from '../../../assets/images/zombieFace.png';
 import {
+  ACHIEVE_OBJECTIVES,
   ADD_CHARACTER,
   ADD_NEW_CHAR,
   ADVANCE_LEVEL,
@@ -63,6 +64,7 @@ import {
   CLICK_EDIT,
   CLICK_END_TURN,
   COMBINE_ITEM,
+  DEFEAT,
   DEFLECTED,
   DEFLECTED_ONE,
   DESKTOP,
@@ -72,6 +74,8 @@ import {
   END_CHAR_TURN,
   END_TURN_ACTION,
   ENTER_CAR,
+  ESCAPED_ALL,
+  ESCAPED_REMAINING,
   EXIT_CAR,
   EXPLODE,
   EXPLOSION_ACTION,
@@ -98,6 +102,7 @@ import {
   KILL,
   KILLED,
   KILLED_EM_ALL,
+  KILLED_REMAINING,
   LEARNED_NEW_ABILITY,
   LEAVE_GAME,
   LEAVE_GAME_ACTION,
@@ -111,7 +116,6 @@ import {
   LOG_TYPE_CORE,
   LOG_TYPE_EXTENDED,
   LOG_TYPE_INFO,
-  LOST,
   MAKE_LOUD_NOISE,
   MAKE_NOISE_ACTION,
   MELEE,
@@ -119,8 +123,8 @@ import {
   MOVE,
   MOVE_ACTION,
   MOVE_CAR,
-  NEXT,
   NEW_ITEMS,
+  NEXT,
   NOISY,
   NONE,
   NO_GAME_LOADED,
@@ -152,8 +156,8 @@ import {
   TURN_FINISHED,
   UPDATE_DATA,
   UPGRADE_WEAPON,
+  VICTORY,
   WIN_GAME,
-  WON,
   WOUNDED,
   XP_GAIN,
   XP_GAIN_SELECT,
@@ -292,6 +296,7 @@ const PlayersSection = ({
     false,
     'hasKilledZombie'
   );
+  const [killedChars, updateKilledChars] = useStateWithLabel([], 'killedChars');
   const [newChar, addNewChar] = useStateWithLabel(false, 'newChar');
   const [resistedAttack, toggleResistedAttack] = useStateWithLabel(
     false,
@@ -1074,6 +1079,19 @@ const PlayersSection = ({
     gainXp(5);
   };
 
+  const onClickWin = () => {
+    logger(LOG_TYPE_CORE, GAME_OVER, ACHIEVE_OBJECTIVES);
+    toggleZombiesArePlaying();
+    toggleStartedZombieAttack();
+    loadGame();
+    logger(LOG_TYPE_INFO, CLEAR_LS);
+    localStorage.removeItem(LOCAL_STORAGE_KEY);
+    toggleGameOver({
+      type: VICTORY,
+      details: ACHIEVE_OBJECTIVES
+    });
+  };
+
   const onExplode = () => {
     const updChar = cloneDeep(character);
     updChar.noise += 3;
@@ -1234,8 +1252,12 @@ const PlayersSection = ({
     logger(LOG_TYPE_INFO, LEFT_GAME, updChar.name);
     if (charsStillInArea.length > 0) {
       setTimeout(() => changeToAnotherPlayer(NEXT, updChar.name), 3000);
+    } else if (killedChars.length > 0) {
+      logger(LOG_TYPE_CORE, GAME_OVER, ESCAPED_REMAINING);
+      toggleGameOver({ type: VICTORY, details: ESCAPED_REMAINING });
     } else {
-      setTimeout(() => toggleDisplayEndGameScreen(WON), 3000);
+      logger(LOG_TYPE_CORE, GAME_OVER, ESCAPED_ALL);
+      toggleGameOver({ type: VICTORY, details: ESCAPED_ALL });
     }
   };
 
@@ -1383,6 +1405,7 @@ const PlayersSection = ({
         woundedCharacter.wounded = KILLED;
         damage = KILL;
         someoneIsKilled = true;
+        updateKilledChars([...killedChars, woundedCharacter.name]);
         changeCharacter(woundedCharacter);
         logger(LOG_TYPE_INFO, CHAR_KILLED, woundedCharacter, damageMode);
 
@@ -1394,13 +1417,20 @@ const PlayersSection = ({
         }
 
         if (remainingCharacters.length === 0) {
-          logger(LOG_TYPE_CORE, KILLED_EM_ALL);
-          toggleGameOver(KILLED_EM_ALL);
+          if (charsSaved.length > 0) {
+            logger(LOG_TYPE_CORE, GAME_OVER, KILLED_REMAINING);
+            toggleGameOver({ type: VICTORY, details: KILLED_REMAINING });
+          } else {
+            logger(LOG_TYPE_CORE, GAME_OVER, KILLED_EM_ALL);
+            toggleGameOver({ type: DEFEAT, details: KILLED_EM_ALL });
+          }
           toggleZombiesArePlaying();
           toggleStartedZombieAttack();
           updateData(woundedCharacter);
           loadGame();
         }
+        logger(LOG_TYPE_INFO, CLEAR_LS);
+        localStorage.removeItem(LOCAL_STORAGE_KEY);
       }
     } else if (characterCanResist) {
       toggleResistedAttack(RESISTED);
@@ -1440,8 +1470,8 @@ const PlayersSection = ({
       remainingCharacters = characters.filter(
         char => char.name !== woundedCharacter.name
       );
-
       someoneIsKilled = true;
+      updateKilledChars([...killedChars, woundedCharacter.name]);
       woundedCharacter.wounded = KILLED;
       damage = KILL;
       changeCharacter(woundedCharacter);
@@ -1458,12 +1488,20 @@ const PlayersSection = ({
       }
 
       if (remainingCharacters.length === 0) {
-        logger(LOG_TYPE_CORE, KILLED_EM_ALL);
-        toggleGameOver(KILLED_EM_ALL);
+        if (charsSaved.length > 0) {
+          logger(LOG_TYPE_CORE, GAME_OVER, KILLED_REMAINING);
+          toggleGameOver({ type: VICTORY, details: KILLED_REMAINING });
+        } else {
+          logger(LOG_TYPE_CORE, GAME_OVER, KILLED_EM_ALL);
+          toggleGameOver({ type: DEFEAT, details: KILLED_EM_ALL });
+        }
         toggleZombiesArePlaying();
-        logger(LOG_TYPE_INFO, CLEAR_LS);
-        localStorage.removeItem(LOCAL_STORAGE_KEY);
+        toggleStartedZombieAttack();
+        updateData(woundedCharacter);
+        loadGame();
       }
+      logger(LOG_TYPE_INFO, CLEAR_LS);
+      localStorage.removeItem(LOCAL_STORAGE_KEY);
     } else if (selectedSlot <= 2) {
       woundedCharacter.wounded = true;
       woundedCharacter.inHand[selectedSlot - 1] = WOUNDED;
@@ -1503,7 +1541,6 @@ const PlayersSection = ({
       },
       someoneIsKilled ? 4000 : 2000
     );
-
     return null;
   };
   /* --- */
@@ -1653,9 +1690,9 @@ const PlayersSection = ({
 
   useEffect(() => {
     if (gameOver) {
-      logger(LOG_TYPE_INFO, GAME_OVER, LOST);
+      logger(LOG_TYPE_INFO, GAME_OVER, gameOver.type, gameOver.details);
       setTimeout(() => {
-        toggleDisplayEndGameScreen(LOST);
+        toggleDisplayEndGameScreen(gameOver.type);
       }, 5000);
     }
   }, [gameOver, toggleDisplayEndGameScreen]);
@@ -1822,7 +1859,7 @@ const PlayersSection = ({
                           round >= 5 && (
                             <ActionButton
                               actionType={WIN_GAME}
-                              callback={() => toggleDisplayEndGameScreen(WON)}
+                              callback={onClickWin}
                               changeActionLabel={changeActionLabel}
                               isMobile={device.current === MOBILE}
                               label={WIN_GAME}
@@ -2095,7 +2132,7 @@ const PlayersSection = ({
                 <>
                   <ModalSign killed>
                     {gameOver ? (
-                      <ModalSignText>{gameOver}</ModalSignText>
+                      <ModalSignText>{gameOver.details}</ModalSignText>
                     ) : (
                       <ModalSignText>{`${character.name} ${HAS_BEEN_KILLED}`}</ModalSignText>
                     )}
@@ -2287,7 +2324,8 @@ const PlayersSection = ({
               {(setupMode || roundEnded) &&
                 !slot &&
                 !damageMode &&
-                !zombiesArePlaying && (
+                !zombiesArePlaying &&
+                !gameOver && (
                   <MainButton
                     noOverlay
                     onClick={onClickMainButton}
@@ -2577,6 +2615,7 @@ const PlayersSection = ({
           {displayEndGameScreen && (
             <EndGame
               characters={charsSaved.length > 0 ? charsSaved : characters}
+              details={gameOver.details}
               loadGame={loadGame}
               round={round}
               time={time}

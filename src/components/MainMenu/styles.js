@@ -2,7 +2,7 @@ import styled from '@emotion/styled';
 import { css, keyframes } from '@emotion/core';
 import { Link } from 'react-router-dom';
 import { Appear, Shadow } from '../../styles';
-import { LOST, WON } from '../../constants';
+import { DEFEAT, VICTORY } from '../../constants';
 
 const ThunderFlash = keyframes`
   3% {
@@ -176,10 +176,10 @@ export const MenuScreen = styled.div`
     if (type === 'main') {
       return 'brightness(0.7) contrast(2)';
     }
-    if (type === WON) {
+    if (type === VICTORY) {
       return 'brightness(0.9) contrast(1.5)  grayscale(0.5)';
     }
-    if (type === LOST) {
+    if (type === DEFEAT) {
       return 'brightness(0.7) grayscale(0.6) contrast(2);';
     }
     return 'none';

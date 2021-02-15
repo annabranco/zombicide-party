@@ -40,35 +40,41 @@ export const GAME_RULES = [
     selected: true
   },
   {
+    label: 'All characters must live',
+    name: 'noDeathesAllowed',
+    order: 7,
+    selected: false
+  },
+  {
     label: 'Allow finding combined items',
     name: 'findCombinedItems',
-    order: 7,
+    order: 8,
     selected: false
   },
   {
     label: 'Use time counter',
     name: 'timer',
-    order: 8,
+    order: 9,
     selected: true
   },
   {
     label: 'Enable explosion sound button',
     name: 'explosion',
-    order: 9,
+    order: 10,
     selected: false
   },
   {
     disabled: true,
     label: 'Allow Zombivors',
     name: 'zombivors',
-    order: 10,
+    order: 11,
     selected: false
   },
   {
     disabled: true,
     label: 'Abomination kills with 1 hit',
     name: 'abominationInstantKill',
-    order: 11,
+    order: 12,
     selected: false
   }
 ];

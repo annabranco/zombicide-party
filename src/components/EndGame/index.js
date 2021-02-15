@@ -9,18 +9,25 @@ import YouLose from '../../assets/sounds/music/FuneralProcession.mp3';
 import YouWin from '../../assets/sounds/music/VideoGameSoldiers.mp3';
 import Exit from '../../assets/images/exit.png';
 import {
+  ACHIEVE_OBJECTIVES,
   CLEAR_LS,
+  DEFEAT,
   END_GAME_SCREEN,
+  ESCAPED_ALL,
+  ESCAPED_REMAINING,
   GAME_DURATION,
   GAME_OVER,
   KILLED,
+  KILLED_EM_ALL,
+  KILLED_REMAINING,
+  LIVED_TO_TELL,
   LIVE_ANOTHER_DAY,
   LOCAL_STORAGE_KEY,
   LOCAL_STORAGE_ROUNDS_KEY,
   LOG_TYPE_INFO,
-  LOST,
   MOBILE,
-  WON
+  THEY_DID_IT,
+  VICTORY
 } from '../../constants';
 import { CharacterType } from '../../interfaces/types';
 import {
@@ -33,9 +40,24 @@ import {
   GameInfo
 } from './styles';
 
-const EndGame = ({ characters, loadGame, round, time, type }) => {
+const EndGame = ({ characters, details, loadGame, round, time, type }) => {
   const ambience = useRef();
   const history = useHistory();
+
+  const getGameOverText = () => {
+    switch (details) {
+      case KILLED_REMAINING:
+      case ESCAPED_REMAINING:
+        return LIVED_TO_TELL;
+      case ESCAPED_ALL:
+        return LIVE_ANOTHER_DAY;
+      case ACHIEVE_OBJECTIVES:
+        return THEY_DID_IT;
+      case KILLED_EM_ALL:
+      default:
+        return GAME_OVER;
+    }
+  };
 
   const exitGame = () => {
     loadGame();
@@ -46,7 +68,7 @@ const EndGame = ({ characters, loadGame, round, time, type }) => {
   };
 
   useEffect(() => {
-    if (type === LOST) {
+    if (type === DEFEAT) {
       ambience.current = new Audio(YouLose);
     } else {
       ambience.current = new Audio(YouWin);
@@ -66,8 +88,8 @@ const EndGame = ({ characters, loadGame, round, time, type }) => {
       <FogEffect inChar />
 
       <EndGameText type={type}>
-        {type === LOST ? GAME_OVER : LIVE_ANOTHER_DAY}
-        {type === LOST && (
+        {getGameOverText()}
+        {type === DEFEAT && (
           <Blood>
             {[...Array(10).keys()].map(drop => (
               <BloodDrop key={`bloodDrop${drop}`} />
@@ -75,7 +97,7 @@ const EndGame = ({ characters, loadGame, round, time, type }) => {
           </Blood>
         )}
       </EndGameText>
-      {type === WON && (
+      {type === VICTORY && (
         <EndingCharacters>
           {characters
             .filter(char => char.wounded !== KILLED)
@@ -89,7 +111,7 @@ const EndGame = ({ characters, loadGame, round, time, type }) => {
         </EndingCharacters>
       )}
       <ExitButton
-        delay={type === WON && characters.length}
+        delay={type === VICTORY && characters.length}
         onClick={exitGame}
         src={Exit}
         type={type}
@@ -101,6 +123,7 @@ const EndGame = ({ characters, loadGame, round, time, type }) => {
 
 EndGame.propTypes = {
   characters: arrayOf(CharacterType),
+  details: string.isRequired,
   loadGame: func.isRequired,
   round: number.isRequired,
   time: string.isRequired,
