@@ -8,6 +8,7 @@ import Crowbar from './weapons/Crowbar.mp3';
 import DesertEagle from './weapons/DesertEagle.mp3';
 import DoubleBarrel from './weapons/DoubleBarrel.mp3';
 import EvilTwins from './weapons/EvilTwins.mp3';
+import EntryShotgun from './weapons/EntryShotgun.mp3';
 import FireAxe from './weapons/FireAxe.mp3';
 import Flashbang from './weapons/Flashbang.mp3';
 import Handgun from './weapons/Handgun.mp3';
@@ -71,6 +72,7 @@ import MoveTactical from './actions/move-tactical.mp3';
 import OpenDoorBatteringRam from './actions/open-door-BatteringRam.mp3';
 import OpenDoorChainsaw from './actions/open-door-Chainsaw.mp3';
 import OpenDoorCrowbar from './actions/open-door-Crowbar.mp3';
+import OpenDoorEntryShotgun from './actions/open-door-EntryShotgun.mp3';
 import OpenDoorFireAxe from './actions/open-door-FireAxe.mp3';
 import Reload from './actions/reload.mp3';
 import Search0 from './actions/search0.mp3';
@@ -153,6 +155,7 @@ export const SOUNDS = {
   Crowbar,
   DesertEagle,
   DoubleBarrel,
+  EntryShotgun,
   EvilTwins,
   FireAxe,
   Flashbang,
@@ -217,6 +220,7 @@ export const SOUNDS = {
   'open-door-Chainsaw': OpenDoorChainsaw,
   'open-door-Crowbar': OpenDoorCrowbar,
   'open-door-FireAxe': OpenDoorFireAxe,
+  'open-door-EntryShotgun': OpenDoorEntryShotgun,
   reload: Reload,
   search0: Search0,
   search1: Search1,
