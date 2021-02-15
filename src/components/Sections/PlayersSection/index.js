@@ -620,15 +620,15 @@ const PlayersSection = ({
   };
 
   const checkIfRoundHasFinished = () => {
-    if (!roundEnded) {
-      if (
-        characters.length > 0 &&
-        characters.every(char => !checkIfHasAnyActionLeft(char.actionsLeft))
-      ) {
-        logger(LOG_TYPE_EXTENDED, PLAYERS_ROUND_FINISHED);
-        endRound(true);
-        toggleZombiesShouldAct(true);
-      }
+    if (
+      characters.length > 0 &&
+      characters.every(char => !checkIfHasAnyActionLeft(char.actionsLeft))
+    ) {
+      logger(LOG_TYPE_EXTENDED, PLAYERS_ROUND_FINISHED);
+      endRound(true);
+      toggleZombiesShouldAct(true);
+    } else {
+      endRound(false);
     }
   };
 
@@ -664,8 +664,12 @@ const PlayersSection = ({
     }
 
     if (type === NEXT) {
-      nextPlayerIndex =
-        charIndex + 1 >= remainingCharacters.length ? 0 : charIndex + 1;
+      if (remainingCharacters[charIndex].name !== character.name) {
+        nextPlayerIndex = charIndex;
+      } else {
+        nextPlayerIndex =
+          charIndex + 1 >= remainingCharacters.length ? 0 : charIndex + 1;
+      }
     } else if (type === PREVIOUS) {
       nextPlayerIndex =
         charIndex - 1 < 0 ? remainingCharacters.length - 1 : charIndex - 1;
@@ -1014,63 +1018,62 @@ const PlayersSection = ({
       toggleZombiesShouldAct();
     } else {
       const updatedCharacters = cloneDeep(characters);
-      if (roundEnded) {
-        let nextFirstPlayer;
+      // if (roundEnded) {
+      let nextFirstPlayer;
 
-        logger(LOG_TYPE_EXTENDED, START_NEXT_ROUND);
-        updatedCharacters.forEach((char, index) => {
-          const restingBonusActions = char.actionsLeft[4];
+      logger(LOG_TYPE_EXTENDED, START_NEXT_ROUND);
+      updatedCharacters.forEach((char, index) => {
+        const restingBonusActions = char.actionsLeft[4];
 
-          char.abilitiesUsed = []; // eslint-disable-line no-param-reassign
-          char.noise = 0; // eslint-disable-line no-param-reassign
+        char.abilitiesUsed = []; // eslint-disable-line no-param-reassign
+        char.noise = 0; // eslint-disable-line no-param-reassign
 
-          if (
-            restingBonusActions &&
-            !checkIfHasAnyActionLeft(char.actionsLeft)
-          ) {
-            char.actionsLeft = [...char.actions]; // eslint-disable-line no-param-reassign
-            char.actionsLeft.splice(4, 1, restingBonusActions); // eslint-disable-line no-param-reassign
-          } else {
-            char.actionsLeft = [...char.actions]; // eslint-disable-line no-param-reassign
-          }
-
-          if (char.name === firstPlayer) {
-            if (index + 1 === characters.length) {
-              nextFirstPlayer = 0;
-            } else {
-              nextFirstPlayer = index + 1;
-            }
-          }
-        });
-        if (!nextFirstPlayer && nextFirstPlayer !== 0) {
-          const nextPlayerName = firstPlayer.replace('next-', '');
-          nextFirstPlayer = updatedCharacters.findIndex(
-            char => char.name === nextPlayerName
-          );
-        }
-
-        changeFirstPlayer(updatedCharacters[nextFirstPlayer].name);
-        updateCharacters(updatedCharacters);
-        nextGameRound();
-        toggleHasKilledZombie();
-        if (charIndex === nextFirstPlayer) {
-          changeCharacter(updatedCharacters[nextFirstPlayer]);
+        if (restingBonusActions && !checkIfHasAnyActionLeft(char.actionsLeft)) {
+          char.actionsLeft = [...char.actions]; // eslint-disable-line no-param-reassign
+          char.actionsLeft.splice(4, 1, restingBonusActions); // eslint-disable-line no-param-reassign
         } else {
-          changeCharIndex(nextFirstPlayer);
+          char.actionsLeft = [...char.actions]; // eslint-disable-line no-param-reassign
         }
-      } else {
-        const currentCharacter = cloneDeep(character);
 
-        updatedCharacters.forEach((char, index) => {
-          char.actionsLeft = []; // eslint-disable-line no-param-reassign
-        });
-        currentCharacter.actionsLeft = [];
-
-        updateCharacters(updatedCharacters);
-        changeCharIndex(charIndex);
-        changeCharacter(currentCharacter);
+        if (char.name === firstPlayer) {
+          if (index + 1 >= updatedCharacters.length) {
+            nextFirstPlayer = 0;
+          } else {
+            nextFirstPlayer = index + 1;
+          }
+        }
+      });
+      if (!nextFirstPlayer && nextFirstPlayer !== 0) {
+        const nextPlayerName = firstPlayer.replace('next-', '');
+        nextFirstPlayer = updatedCharacters.findIndex(
+          char => char.name === nextPlayerName
+        );
       }
-      endRound(false);
+
+      if (updatedCharacters.length > 1) {
+        changeFirstPlayer(updatedCharacters[nextFirstPlayer].name);
+      }
+      updateCharacters(updatedCharacters);
+      nextGameRound();
+      toggleHasKilledZombie();
+      if (charIndex === nextFirstPlayer) {
+        changeCharacter(updatedCharacters[nextFirstPlayer]);
+      } else {
+        changeCharIndex(nextFirstPlayer);
+      }
+      // }
+      // else {
+      //   const currentCharacter = cloneDeep(character);
+
+      //   updatedCharacters.forEach((char, index) => {
+      //     char.actionsLeft = []; // eslint-disable-line no-param-reassign
+      //   });
+      //   currentCharacter.actionsLeft = [];
+
+      //   updateCharacters(updatedCharacters);
+      //   changeCharIndex(charIndex);
+      //   changeCharacter(currentCharacter);
+      // }
     }
   };
 
@@ -1245,6 +1248,17 @@ const PlayersSection = ({
     updateData(updChar);
 
     logger(LOG_TYPE_INFO, LEFT_GAME, updChar.name);
+
+    if (firstPlayer.includes(updChar.name)) {
+      changeFirstPlayer(
+        `next-${
+          charsStillInArea[
+            charIndex + 1 >= charsStillInArea.length ? 0 : charIndex + 1
+          ].name
+        }`
+      );
+    }
+
     if (charsStillInArea.length > 0) {
       setTimeout(() => changeToAnotherPlayer(NEXT, updChar.name), 3000);
     } else if (killedChars.length > 0) {
@@ -1405,12 +1419,16 @@ const PlayersSection = ({
         changeCharacter(woundedCharacter);
         logger(LOG_TYPE_INFO, CHAR_KILLED, woundedCharacter, damageMode);
 
-        if (
-          remainingCharacters.length > 1 &&
-          firstPlayer.includes(woundedCharacter.name)
-        ) {
-          changeFirstPlayer(`next-${characters[charIndex + 1].name}`);
+        if (firstPlayer.includes(woundedCharacter.name)) {
+          changeFirstPlayer(
+            `next-${
+              remainingCharacters[
+                charIndex + 1 >= remainingCharacters.length ? 0 : charIndex + 1
+              ].name
+            }`
+          );
         }
+
         if (context.rules.noDeathesAllowed) {
           logger(LOG_TYPE_CORE, KILLED_SOMEONE);
           endGame = true;
@@ -1480,7 +1498,7 @@ const PlayersSection = ({
       if (firstPlayer.includes(woundedCharacter.name)) {
         changeFirstPlayer(
           `next-${
-            characters[
+            remainingCharacters[
               charIndex + 1 >= remainingCharacters.length ? 0 : charIndex + 1
             ].name
           }`
@@ -2249,6 +2267,11 @@ const PlayersSection = ({
                             makeNoise={makeNoise}
                             onClickCombine={onClickCombine}
                             onClickDrop={changeInHand}
+                            round={round}
+                            secondarySound={
+                              context.weapons[itemName] &&
+                              context.weapons[itemName].secondarySound
+                            }
                             selectSlot={selectSlot}
                             setupMode={setupMode}
                             slotType={IN_HAND}
