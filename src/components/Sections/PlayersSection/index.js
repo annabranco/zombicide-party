@@ -120,6 +120,7 @@ import {
   MOVE_ACTION,
   MOVE_CAR,
   NEXT,
+  NEW_ITEMS,
   NOISY,
   NONE,
   NO_GAME_LOADED,
@@ -884,7 +885,7 @@ const PlayersSection = ({
     const openDoors = checkIfCharacterCanOpenDoors(updatedCharacter.inHand);
     const charCanCombineItems = checkIfCharCanCombineItems(newItems);
 
-    logger(LOG_TYPE_EXTENDED, TRADE, newItems);
+    logger(LOG_TYPE_EXTENDED, NEW_ITEMS, newItems);
     toggleFreeReorder(false);
     toggleCanCombine(charCanCombineItems);
     changeCharacter(updatedCharacter);
@@ -1723,6 +1724,7 @@ const PlayersSection = ({
               confirmTrade={confirmTrade}
               device={device.current}
               reorder={trade === REORDER}
+              setupMode={setupMode}
               spendAction={spendAction}
               startTrade={startTrade}
             />
@@ -1968,7 +1970,7 @@ const PlayersSection = ({
                           <>
                             <ActionButton
                               actionType={CAR_MOVE_ACTION}
-                              callback={() => spendAction(MOVE)}
+                              callback={() => spendAction(MOVE_CAR)}
                               changeActionLabel={changeActionLabel}
                               isMobile={device.current === MOBILE}
                               label={MOVE_CAR}
@@ -1977,7 +1979,7 @@ const PlayersSection = ({
                             <ActionButton
                               actionType={CAR_ATTACK_ACTION}
                               callback={() => {
-                                spendAction(MOVE);
+                                spendAction(RUN_OVER);
                                 gainCustomXp(TAKE_THAT);
                               }}
                               changeActionLabel={changeActionLabel}
@@ -2003,7 +2005,7 @@ const PlayersSection = ({
                         {canOpenDoor && generalActions && (
                           <ActionButton
                             actionType={OPEN_DOOR_ACTION}
-                            callback={spendAction}
+                            callback={() => spendAction(OPEN_DOOR)}
                             changeActionLabel={changeActionLabel}
                             isMobile={device.current === MOBILE}
                             label={
@@ -2132,7 +2134,6 @@ const PlayersSection = ({
                               ...character.inReserve
                             ])}
                             bonusDices={character.bonusDices}
-                            callback={spendAction}
                             canAttack={canAttack}
                             canBeDeflected={
                               (character.abilities.includes(
@@ -2208,7 +2209,6 @@ const PlayersSection = ({
                               ...character.inHand,
                               ...character.inReserve
                             ])}
-                            callback={spendAction}
                             canBeDeflected={
                               character.abilities.includes(
                                 ABILITIES_S1.ALL_YOUVE_GOT.name

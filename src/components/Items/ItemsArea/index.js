@@ -47,7 +47,6 @@ const ItemsArea = ({
   activateDualEffect,
   allSlotsAreEmpty,
   bonusDices,
-  callback,
   canAttack,
   canBeDeflected,
   canCombine,
@@ -266,7 +265,7 @@ const ItemsArea = ({
         {item ? (
           <SoundBlock
             activateKillButtons={activateKillButtons}
-            callback={callback}
+            callback={spendAction}
             canAttack={canAttack}
             canBeDeflected={canBeDeflected}
             canCombine={canCombine && canCombine.includes(item)}
@@ -365,7 +364,6 @@ ItemsArea.propTypes = {
   activateDualEffect: func,
   allSlotsAreEmpty: bool,
   bonusDices: BonusDicesType,
-  callback: func,
   canAttack: bool,
   canBeDeflected: bool,
   canCombine: oneOfType([arrayOf(string), bool]),
@@ -406,7 +404,6 @@ ItemsArea.defaultProps = {
   activateDualEffect: () => null,
   allSlotsAreEmpty: false,
   bonusDices: null,
-  callback: () => null,
   canAttack: false,
   canBeDeflected: false,
   canCombine: null,

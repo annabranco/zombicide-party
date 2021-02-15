@@ -1,16 +1,20 @@
 import React, { useContext, useEffect, useRef } from 'react';
 import { cloneDeep } from 'lodash';
-import { arrayOf, bool, func, string } from 'prop-types';
+import { arrayOf, bool, func, oneOfType, string } from 'prop-types';
 import { ALL_WEAPONS } from '../../setup/weapons';
-import { getCharacterColor, useStateWithLabel } from '../../utils';
+import { getCharacterColor, logger, useStateWithLabel } from '../../utils';
 import ItemsArea from '../Items/ItemsArea';
 import {
   IN_HAND,
   IN_RESERVE,
+  LOG_REORDER,
+  LOG_TYPE_EXTENDED,
+  LOG_TRADE,
   NONE,
   SELECT_TRADE_PARTNER,
   TRADING_WITH,
-  WOUNDED
+  WOUNDED,
+  TRADE
 } from '../../constants';
 import { CharacterType } from '../../interfaces/types';
 import { ArrowSign, CharItems } from '../Sections/PlayersSection/styles';
@@ -36,6 +40,7 @@ const TradeArea = ({
   confirmTrade,
   device,
   reorder,
+  setupMode,
   spendAction,
   startTrade
 }) => {
@@ -86,7 +91,9 @@ const TradeArea = ({
     confirmTrade(updatedCharacter, updCharsAfterTrade);
     startTrade(false);
     establishTrade(false);
-    spendAction();
+    if (!reorder && !setupMode) {
+      spendAction(TRADE);
+    }
   };
 
   const onTrade = ({ item, slot, charTrading }) => {
@@ -114,7 +121,7 @@ const TradeArea = ({
         }
 
         if (selectedItem1.charTrading === charTrading) {
-          // Reorder own items
+          // Reordering own items
           if (updChar.name === charTrading) {
             // Active player reordering
             const oldReserve = [...updChar.inReserve];
@@ -147,6 +154,12 @@ const TradeArea = ({
             }
             checkIfCharHasDualEffect(updChar.inHand);
             updateCharacter(updChar);
+            logger(
+              LOG_TYPE_EXTENDED,
+              LOG_REORDER,
+              updChar.name,
+              `[hand: ${updatedCharacter.inHand.toString()}, reserve: ${updatedCharacter.inReserve.toString()}] => [hand: ${updChar.inHand.toString()}, reserve: ${updChar.inReserve.toString()}]`
+            );
           } else {
             // Trading partner reordering
             const oldReserve = [...updPartn.inReserve];
@@ -179,6 +192,12 @@ const TradeArea = ({
               updPartn.inReserve.push(null);
             }
             updatePartner(updPartn);
+            logger(
+              LOG_TYPE_EXTENDED,
+              LOG_REORDER,
+              updPartn.name,
+              `[hand: ${tradePartner.inHand.toString()}, reserve: ${tradePartner.inReserve.toString()}] => [hand: ${updPartn.inHand.toString()}, reserve: ${updPartn.inReserve.toString()}]`
+            );
           }
         } else if (selectedItem1.item === WOUNDED || item === WOUNDED) {
           // do nothing
@@ -240,7 +259,11 @@ const TradeArea = ({
             ) {
               updPartn.inReserve.push(null);
             }
-
+            logger(
+              LOG_TYPE_EXTENDED,
+              LOG_TRADE,
+              `[${updChar.name}] ${selectedItem1.item} <=> ${item} [${updPartn.name}]`
+            );
             updateCharacter(updChar);
             updatePartner(updPartn);
           } else {
@@ -285,9 +308,15 @@ const TradeArea = ({
             ) {
               updPartn.inReserve.push(null);
             }
+            logger(
+              LOG_TYPE_EXTENDED,
+              LOG_TRADE,
+              `[${updPartn.name}] ${selectedItem1.item} <=> ${item} [${updChar.name}]`
+            );
             updateCharacter(updChar);
             updatePartner(updPartn);
           }
+
           checkIfCharHasDualEffect(updChar.inHand);
         }
         selectItem1();
@@ -499,6 +528,7 @@ TradeArea.propTypes = {
   confirmTrade: func.isRequired,
   device: string.isRequired,
   reorder: bool.isRequired,
+  setupMode: oneOfType([bool, string]).isRequired,
   spendAction: func.isRequired,
   startTrade: func.isRequired
 };
