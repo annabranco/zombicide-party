@@ -142,6 +142,7 @@ import {
   SEARCH_ZOMBIE_ACTION,
   SELECT,
   SELECT_DAMAGE,
+  SET_BLUE_LEVEL,
   START,
   START_NEXT_ROUND,
   START_ZOMBIE_ROUND,
@@ -443,102 +444,109 @@ const PlayersSection = ({
   const advancingLevel = (xp, char) => {
     let updatedChar = cloneDeep(char);
 
-    logger(LOG_TYPE_EXTENDED, ADVANCE_LEVEL, char.name, xp);
     switch (true) {
-      case xp > orangeThreatThresold:
+      case xp > orangeThreatThresold: // Going red
         if (char.abilities.length === 3) {
           toggleActionsModal('red');
-        } else if (char.abilities.length !== 4) {
-          updatedChar.abilities = [];
-          updatedChar.actions = [3, 0, 0, 0, 0];
-          updatedChar = handlePromotionEffects(updatedChar, 'blue', [
-            3,
-            0,
-            0,
-            0,
-            0
-          ]);
+        } else if (char.abilities.length === 2) {
+          toggleActionsModal('orange');
+        } else if (char.abilities.length === 1) {
           updatedChar = handlePromotionEffects(
             updatedChar,
             'yellow',
             updatedChar.actionsLeft
           );
           toggleActionsModal('orange');
+        } else {
+          return updatedChar;
         }
+        logger(LOG_TYPE_EXTENDED, ADVANCE_LEVEL, char.name, xp);
         abilitiesRef.current = updatedChar.abilities.toString();
         break;
 
-      case xp > yellowThreatThresold:
+      case xp > yellowThreatThresold: // Going orange
         if (char.abilities.length === 2) {
+          toggleActionsModal('orange');
+        } else if (char.abilities.length === 1) {
+          updatedChar = handlePromotionEffects(
+            updatedChar,
+            'yellow',
+            updatedChar.actionsLeft
+          );
           toggleActionsModal('orange');
         } else if (char.abilities.length !== 3) {
           updatedChar.abilities = [];
           updatedChar.actions = [3, 0, 0, 0, 0];
+          updatedChar.actionsLeft = [3, 0, 0, 0, 0];
           updatedChar.bonusDices = { combat: 0, melee: 0, ranged: 0 };
-          updatedChar = handlePromotionEffects(updatedChar, 'blue', [
-            3,
-            0,
-            0,
-            0,
-            0
-          ]);
+          updatedChar = handlePromotionEffects(
+            updatedChar,
+            'blue',
+            updatedChar.actionsLeft
+          );
           updatedChar = handlePromotionEffects(
             updatedChar,
             'yellow',
             updatedChar.actionsLeft
           );
           toggleActionsModal('orange');
+        } else {
+          return updatedChar;
         }
+        logger(LOG_TYPE_EXTENDED, ADVANCE_LEVEL, char.name, xp);
         abilitiesRef.current = updatedChar.abilities.toString();
         break;
 
-      case xp > blueThreatThresold:
-        if (updatedChar.abilities.length === 1) {
+      case xp > blueThreatThresold: // Going yellow
+        if (updatedChar.abilities.length <= 1) {
           updatedChar = handlePromotionEffects(updatedChar, 'yellow', [
             generalActions,
             extraMovementActions,
             extraAttackActions,
             searchActions
           ]);
-        } else if (updatedChar.abilities.length !== 2) {
+        } else if (char.abilities.length !== 2) {
           updatedChar.abilities = [];
           updatedChar.actions = [3, 0, 0, 0, 0];
+          updatedChar.actionsLeft = [3, 0, 0, 0, 0];
           updatedChar.bonusDices = { combat: 0, melee: 0, ranged: 0 };
-          updatedChar = handlePromotionEffects(updatedChar, 'blue', [
-            3,
-            0,
-            0,
-            0,
-            0
-          ]);
+          updatedChar = handlePromotionEffects(
+            updatedChar,
+            'blue',
+            updatedChar.actionsLeft
+          );
           updatedChar = handlePromotionEffects(
             updatedChar,
             'yellow',
             updatedChar.actionsLeft
           );
+        } else {
+          return updatedChar;
         }
+        logger(LOG_TYPE_EXTENDED, ADVANCE_LEVEL, char.name, xp);
         abilitiesRef.current = updatedChar.abilities.toString();
         break;
 
       default:
+        // Initial blue
         if (updatedChar.abilities.length === 0) {
           updatedChar = handlePromotionEffects(
             char,
             'blue',
             (char.actionsLeft && [...char.actionsLeft]) || [...char.actions]
           );
-        } else if (updatedChar.abilities.length !== 1) {
+        } else {
           updatedChar.abilities = [];
           updatedChar.actions = [3, 0, 0, 0, 0];
+          updatedChar.actionsLeft = [3, 0, 0, 0, 0];
           updatedChar.bonusDices = { combat: 0, melee: 0, ranged: 0 };
-          updatedChar = handlePromotionEffects(updatedChar, 'blue', [
-            3,
-            0,
-            0,
-            0,
-            0
-          ]);
+          updatedChar = handlePromotionEffects(
+            updatedChar,
+            'blue',
+            updatedChar.actionsLeft
+          );
         }
+        logger(LOG_TYPE_EXTENDED, SET_BLUE_LEVEL, char.name, xp);
         abilitiesRef.current = updatedChar.abilities.toString();
         break;
     }

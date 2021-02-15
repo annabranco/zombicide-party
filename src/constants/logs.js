@@ -35,6 +35,7 @@ export const PLAYERS_ROUND_FINISHED = 'Players round finished';
 export const PLAYER_NAMES = 'Player names';
 export const RESET_STATE = 'Resetting to initial state';
 export const SAVE_TO_LS = 'Saving to LS';
+export const SET_BLUE_LEVEL = 'Setting blue level';
 export const SLOT_SELECTED = 'Slot selected';
 export const START_GAME = 'Started new game';
 export const START_ZOMBIE_ROUND = 'Started Zombies round';
