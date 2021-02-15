@@ -9,6 +9,7 @@ import DesertEagle from './weapons/DesertEagle.mp3';
 import DoubleBarrel from './weapons/DoubleBarrel.mp3';
 import EvilTwins from './weapons/EvilTwins.mp3';
 import EntryShotgun from './weapons/EntryShotgun.mp3';
+import ExpandableBaton from './weapons/ExpandableBaton.mp3';
 import FireAxe from './weapons/FireAxe.mp3';
 import Flashbang from './weapons/Flashbang.mp3';
 import Handgun from './weapons/Handgun.mp3';
@@ -157,6 +158,7 @@ export const SOUNDS = {
   DoubleBarrel,
   EntryShotgun,
   EvilTwins,
+  ExpandableBaton,
   FireAxe,
   Flashbang,
   Handgun,
