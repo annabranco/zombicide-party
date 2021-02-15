@@ -20,6 +20,7 @@ const MainScreen = ({
   initialCharacters,
   loadGame,
   loadedGame,
+  stopIntro,
   toggleDamageMode
 }) => {
   const [rounds, updateRounds] = useStateWithLabel([], 'round');
@@ -106,6 +107,7 @@ const MainScreen = ({
         nextGameRound={nextGameRound}
         round={rounds.length}
         setZombiesRound={() => changeActiveSide(ZOMBIES)}
+        stopIntro={stopIntro}
         time={formatedGameTime.current}
         toggleDamageMode={toggleDamageMode}
         toggleZombiesArePlaying={toggleZombiesArePlaying}
@@ -132,6 +134,7 @@ MainScreen.propTypes = {
   initialCharacters: arrayOf(CharacterType),
   loadGame: func.isRequired,
   loadedGame: arrayOf(CharacterType),
+  stopIntro: func.isRequired,
   toggleDamageMode: func.isRequired
 };
 

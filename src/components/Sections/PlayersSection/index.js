@@ -218,6 +218,7 @@ const PlayersSection = ({
   nextGameRound,
   round,
   setZombiesRound,
+  stopIntro,
   time,
   toggleDamageMode,
   toggleZombiesArePlaying,
@@ -987,6 +988,7 @@ const PlayersSection = ({
     if (setupMode === INITIAL) {
       changeCharIndex(0);
       nextGameRound();
+      stopIntro();
     }
     if (setupMode) {
       toggleSetupMode(false);
@@ -1929,7 +1931,7 @@ const PlayersSection = ({
                           )}
 
                         {!finishedTurn &&
-                          context.rules.objective &&
+                          context.rules.objectives &&
                           generalActions && (
                             <ActionButton
                               actionType={OBJECTIVE_ACTION}
@@ -2588,6 +2590,7 @@ PlayersSection.propTypes = {
   nextGameRound: func.isRequired,
   round: number.isRequired,
   setZombiesRound: func.isRequired,
+  stopIntro: func.isRequired,
   time: string.isRequired,
   toggleDamageMode: func.isRequired,
   toggleZombiesArePlaying: func.isRequired,
