@@ -277,6 +277,7 @@ export const WEAPONS_NIGHT_SHIFT = {
     img: ColtPython,
     name: 'Colt Python',
     noise: true,
+    secondarySound: true,
     type: WEAPONS
   },
   DesertEagle: {

@@ -72,6 +72,8 @@ const ItemsArea = ({
   numItems,
   onClickCombine,
   onClickDrop,
+  round,
+  secondarySound,
   selectSlot,
   setupMode,
   slotType,
@@ -281,6 +283,8 @@ const ItemsArea = ({
             needsToBeReloaded={checkIfReloadIsNeeded()}
             onClickCard={setupMode ? onClickEmptyCard : onClickCard}
             onClickCombine={onClickCombine}
+            round={round}
+            secondarySound={secondarySound}
             setupMode={setupMode}
             slot={getSlotNumber(index)}
             slotType={slotType}
@@ -389,6 +393,8 @@ ItemsArea.propTypes = {
   numItems: number,
   onClickCombine: func,
   onClickDrop: func.isRequired,
+  round: number,
+  secondarySound: bool,
   selectSlot: func,
   setupMode: oneOfType([string, bool]),
   slotType: string.isRequired,
@@ -426,6 +432,8 @@ ItemsArea.defaultProps = {
   makeNoise: () => null,
   numItems: null,
   onClickCombine: () => null,
+  round: null,
+  secondarySound: false,
   selectSlot: () => null,
   setupMode: null,
   spendAction: () => null,

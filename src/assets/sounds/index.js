@@ -4,6 +4,7 @@ import BaseballBat from './weapons/BaseballBat.mp3';
 import BatteringRam from './weapons/BatteringRam.mp3';
 import Chainsaw from './weapons/Chainsaw.mp3';
 import ColtPython from './weapons/ColtPython.mp3';
+import ColtPythonAlt from './weapons/ColtPythonAlt.mp3';
 import Crowbar from './weapons/Crowbar.mp3';
 import DesertEagle from './weapons/DesertEagle.mp3';
 import DoubleBarrel from './weapons/DoubleBarrel.mp3';
@@ -153,6 +154,7 @@ export const SOUNDS = {
   BatteringRam,
   Chainsaw,
   ColtPython,
+  ColtPythonAlt,
   Crowbar,
   DesertEagle,
   DoubleBarrel,
