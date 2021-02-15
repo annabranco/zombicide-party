@@ -103,6 +103,7 @@ import {
   KILLED,
   KILLED_EM_ALL,
   KILLED_REMAINING,
+  KILLED_SOMEONE,
   LEARNED_NEW_ABILITY,
   LEAVE_GAME,
   LEAVE_GAME_ACTION,
@@ -886,7 +887,7 @@ const PlayersSection = ({
   /* ------- ACTION BUTTONS METHODS ------- */
 
   const cancelZombieAttack = () => {
-    setZombiesRound();
+    setZombiesRound(true);
     toggleDamageMode(false);
   };
 
@@ -989,7 +990,7 @@ const PlayersSection = ({
   };
 
   const onClickExtraActivation = () => {
-    setZombiesRound();
+    setZombiesRound(true);
     toggleZombiesArePlaying(true);
   };
 
@@ -1008,8 +1009,7 @@ const PlayersSection = ({
       toggleSetupMode(false);
     } else if (zombiesShouldAct) {
       logger(LOG_TYPE_EXTENDED, START_ZOMBIE_ROUND);
-
-      setZombiesRound();
+      setZombiesRound(true);
       toggleZombiesArePlaying(true);
       toggleZombiesShouldAct();
     } else {
@@ -1070,7 +1070,7 @@ const PlayersSection = ({
         changeCharIndex(charIndex);
         changeCharacter(currentCharacter);
       }
-      endRound();
+      endRound(false);
     }
   };
 
@@ -1080,12 +1080,7 @@ const PlayersSection = ({
   };
 
   const onClickWin = () => {
-    logger(LOG_TYPE_CORE, GAME_OVER, ACHIEVE_OBJECTIVES);
-    toggleZombiesArePlaying();
-    toggleStartedZombieAttack();
-    loadGame();
-    logger(LOG_TYPE_INFO, CLEAR_LS);
-    localStorage.removeItem(LOCAL_STORAGE_KEY);
+    logger(LOG_TYPE_CORE, ACHIEVE_OBJECTIVES);
     toggleGameOver({
       type: VICTORY,
       details: ACHIEVE_OBJECTIVES
@@ -1253,10 +1248,10 @@ const PlayersSection = ({
     if (charsStillInArea.length > 0) {
       setTimeout(() => changeToAnotherPlayer(NEXT, updChar.name), 3000);
     } else if (killedChars.length > 0) {
-      logger(LOG_TYPE_CORE, GAME_OVER, ESCAPED_REMAINING);
+      logger(LOG_TYPE_CORE, ESCAPED_REMAINING);
       toggleGameOver({ type: VICTORY, details: ESCAPED_REMAINING });
     } else {
-      logger(LOG_TYPE_CORE, GAME_OVER, ESCAPED_ALL);
+      logger(LOG_TYPE_CORE, ESCAPED_ALL);
       toggleGameOver({ type: VICTORY, details: ESCAPED_ALL });
     }
   };
@@ -1351,6 +1346,7 @@ const PlayersSection = ({
     );
     let damage = HIT;
     let someoneIsKilled = false;
+    let endGame = false;
 
     toggleStartedZombieAttack(true);
 
@@ -1415,22 +1411,26 @@ const PlayersSection = ({
         ) {
           changeFirstPlayer(`next-${characters[charIndex + 1].name}`);
         }
-
+        if (context.rules.noDeathesAllowed) {
+          logger(LOG_TYPE_CORE, KILLED_SOMEONE);
+          endGame = true;
+          setTimeout(() => {
+            toggleGameOver({
+              type: DEFEAT,
+              details: KILLED_SOMEONE
+            });
+          }, 4000);
+        }
         if (remainingCharacters.length === 0) {
           if (charsSaved.length > 0) {
-            logger(LOG_TYPE_CORE, GAME_OVER, KILLED_REMAINING);
+            logger(LOG_TYPE_CORE, KILLED_REMAINING);
             toggleGameOver({ type: VICTORY, details: KILLED_REMAINING });
           } else {
-            logger(LOG_TYPE_CORE, GAME_OVER, KILLED_EM_ALL);
+            logger(LOG_TYPE_CORE, KILLED_EM_ALL);
             toggleGameOver({ type: DEFEAT, details: KILLED_EM_ALL });
           }
-          toggleZombiesArePlaying();
-          toggleStartedZombieAttack();
-          updateData(woundedCharacter);
-          loadGame();
+          endGame = true;
         }
-        logger(LOG_TYPE_INFO, CLEAR_LS);
-        localStorage.removeItem(LOCAL_STORAGE_KEY);
       }
     } else if (characterCanResist) {
       toggleResistedAttack(RESISTED);
@@ -1487,21 +1487,26 @@ const PlayersSection = ({
         );
       }
 
+      if (context.rules.noDeathesAllowed) {
+        logger(LOG_TYPE_CORE, KILLED_SOMEONE);
+        endGame = true;
+        setTimeout(() => {
+          toggleGameOver({
+            type: DEFEAT,
+            details: KILLED_SOMEONE
+          });
+        }, 4000);
+      }
       if (remainingCharacters.length === 0) {
         if (charsSaved.length > 0) {
-          logger(LOG_TYPE_CORE, GAME_OVER, KILLED_REMAINING);
+          logger(LOG_TYPE_CORE, KILLED_REMAINING);
           toggleGameOver({ type: VICTORY, details: KILLED_REMAINING });
         } else {
-          logger(LOG_TYPE_CORE, GAME_OVER, KILLED_EM_ALL);
+          logger(LOG_TYPE_CORE, KILLED_EM_ALL);
           toggleGameOver({ type: DEFEAT, details: KILLED_EM_ALL });
         }
-        toggleZombiesArePlaying();
-        toggleStartedZombieAttack();
-        updateData(woundedCharacter);
-        loadGame();
+        endGame = true;
       }
-      logger(LOG_TYPE_INFO, CLEAR_LS);
-      localStorage.removeItem(LOCAL_STORAGE_KEY);
     } else if (selectedSlot <= 2) {
       woundedCharacter.wounded = true;
       woundedCharacter.inHand[selectedSlot - 1] = WOUNDED;
@@ -1519,14 +1524,14 @@ const PlayersSection = ({
     sound.play();
 
     if (woundedCharacter.wounded === KILLED) {
-      if (remainingCharacters.length === 0) {
+      if (remainingCharacters.length === 0 || endGame) {
         return null;
       }
       setTimeout(
         () => {
           updateData(woundedCharacter);
         },
-        someoneIsKilled ? 4000 : 2000
+        someoneIsKilled ? 5000 : 2000
       );
     } else {
       updateData(woundedCharacter);
@@ -1537,9 +1542,9 @@ const PlayersSection = ({
       () => {
         toggleStartedZombieAttack();
         toggleDamageMode(false);
-        setZombiesRound();
+        setZombiesRound(true);
       },
-      someoneIsKilled ? 4000 : 2000
+      someoneIsKilled ? 5000 : 2000
     );
     return null;
   };
@@ -1691,11 +1696,26 @@ const PlayersSection = ({
   useEffect(() => {
     if (gameOver) {
       logger(LOG_TYPE_INFO, GAME_OVER, gameOver.type, gameOver.details);
+      toggleZombiesArePlaying(false);
+      toggleStartedZombieAttack(false);
+      setZombiesRound(false);
+      loadGame();
+      updateCharacters([]);
+      logger(LOG_TYPE_INFO, CLEAR_LS);
+      localStorage.removeItem(LOCAL_STORAGE_KEY);
       setTimeout(() => {
         toggleDisplayEndGameScreen(gameOver.type);
       }, 5000);
     }
-  }, [gameOver, toggleDisplayEndGameScreen]);
+  }, [
+    gameOver,
+    loadGame,
+    setZombiesRound,
+    toggleDisplayEndGameScreen,
+    toggleStartedZombieAttack,
+    toggleZombiesArePlaying,
+    updateCharacters
+  ]);
 
   /* --- */
 

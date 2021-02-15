@@ -40,7 +40,7 @@ export const GAME_RULES = [
     selected: true
   },
   {
-    label: 'All characters must live',
+    label: 'All characters have to live',
     name: 'noDeathesAllowed',
     order: 7,
     selected: false

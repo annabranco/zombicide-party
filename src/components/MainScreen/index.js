@@ -106,7 +106,9 @@ const MainScreen = ({
         loadedGame={loadedGame}
         nextGameRound={nextGameRound}
         round={rounds.length}
-        setZombiesRound={() => changeActiveSide(ZOMBIES)}
+        setZombiesRound={zombies =>
+          zombies ? changeActiveSide(ZOMBIES) : changeActiveSide(PLAYERS)
+        }
         stopIntro={stopIntro}
         time={formatedGameTime.current}
         toggleDamageMode={toggleDamageMode}
