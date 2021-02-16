@@ -26,7 +26,8 @@ You can also activate Night Shift Campaign Expansion. This is a custom campaign 
 ## How to use it
 
 You can just open the page <https://annabranco.github.io/zombicide-party/>. on any desktop computer, tablet or mobile devices and enjoy the experience. Note that the desktop version is the most recommended version to play it. If you are an experienced user or developer, you may clone this repo and run it with `yarn start`.
-Note: even though you run it locally, you still need internet access to see part of the content.
+*Note*: even though you run it locally, you still need internet access to see part of the content.
+*Note2*: even though you may run it from any device, I really recommend to use it on a desktop to enjoy the full experience.
 
 ## Future developments
 
@@ -34,7 +35,7 @@ It is planned for future developments to add more expansions and maybe 2nd Editi
 A server mnode is also planned, where players may have a server running and each player control its character by their own devices.
 Any suggestions for future developments and enhancements are mostly welcome. Make sure to open an issue giving your suggestions and I could work on that. Just know that I develop all of this by myself on my free time and I receive absolutely nothing to do that, so please be kind and patient.
 
-## Bugs and problems
+## Bugs and issues
 
 Have you found any bugs?? Please notify me on my issues page and I'll try to fix it as soon as possible. And thank you very much!
 
@@ -54,8 +55,9 @@ If you think any of the material on this app is violating any copyright protecti
 - Guillotine Games: <https://www.guillotine.com>
 - Zombicide Game: <https://www.zombicide.com>
 - Virtual cards: <https://patrickgalbraith.github.io/zombicide-card-database/>
-- Base zombies sounds: <https://www.fesliyanstudios.com/>
-- Base weapons soundS: <http://soundbible.com/>
+- Sounds: <https://www.fesliyanstudios.com/>
+- Sounds: <http://soundbible.com/>
+- Sounds: <https://www.101soundboards.com/>
 - Music: <https://freemusicarchive.org/>, <http://www.twinmusicom.org/> & <https://www.playonloop.com/>
 
 #### Songs
@@ -64,14 +66,14 @@ All songs used here are under Creative Commons Attribution license.
 
 ##### Intro
 
-"The Horror Show" short free version from PlayOnLoop.com
+- "**The Horror Show**" short free version from PlayOnLoop.com
 
 ##### Ending Game
 
-"Lost Souls" by Portrayal (freemusicarchive.org) <https://freemusicarchive.org/music/Portrayal>
-"Grindstone" by Hearse Pileup (freemusicarchive.org) <https://freemusicarchive.org/music/Hearse_Pileup>
-"A Flash in the Pan" by Twin Musicom (twinmusicom.org)
-"Funeral Procession" by Twin Musicom (twinmusicom.org)
+- "**Lost Souls**" by *Portrayal* (freemusicarchive) <https://freemusicarchive.org/music/Portrayal>
+- "**Grindston**e" by *Hearse Pileup* (freemusicarchive) <https://freemusicarchive.org/music/Hearse_Pileup>
+- "**A Flash in the Pan**" by *Twin Musicom* (twinmusicom.org)
+- "**Funeral Procession**" by *Twin Musicom* (twinmusicom.org)
 
 ## Final words
 
