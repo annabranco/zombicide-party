@@ -5,8 +5,11 @@ import { getMediaQuery, logger } from '../../utils';
 import FogEffect from '../Fog';
 import BG from '../../assets/images/background/background2.jpg';
 import { MenuScreen } from '../MainMenu/styles';
-import YouLose from '../../assets/sounds/music/FuneralProcession.mp3';
-import YouWin from '../../assets/sounds/music/VideoGameSoldiers.mp3';
+import Defeat from '../../assets/sounds/music/FuneralProcession.mp3';
+import PartialVictory from '../../assets/sounds/music/FlashInThePan.mp3';
+import Victory from '../../assets/sounds/music/HearsePileup-Grindstone.mp3';
+import VictoryAlternative from '../../assets/sounds/music/Portrayal-LostSouls.mp3';
+
 import Exit from '../../assets/images/exit.png';
 import {
   ACHIEVE_OBJECTIVES,
@@ -69,9 +72,13 @@ const EndGame = ({ characters, details, loadGame, round, time, type }) => {
 
   useEffect(() => {
     if (type === DEFEAT) {
-      ambience.current = new Audio(YouLose);
-    } else {
-      ambience.current = new Audio(YouWin);
+      ambience.current = new Audio(Defeat);
+    } else if (type === VICTORY && details === ESCAPED_ALL) {
+      ambience.current = new Audio(Victory);
+    } else if (type === VICTORY && details === ACHIEVE_OBJECTIVES) {
+      ambience.current = new Audio(VictoryAlternative);
+    } else if (type === VICTORY) {
+      ambience.current = new Audio(PartialVictory);
     }
     ambience.current.currentTime = 0;
     ambience.current.volume = 0.4;
@@ -81,7 +88,7 @@ const EndGame = ({ characters, details, loadGame, round, time, type }) => {
       ambience.current.pause();
       ambience.current = null;
     };
-  }, [type]);
+  }, [type, details]);
 
   return (
     <MenuScreen img={BG} dynamic type={type}>

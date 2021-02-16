@@ -1,8 +1,8 @@
-# Zombicide Party (prerelease v0.11.0) _by Anna Branco_
+# Zombicide Party (prerelease version) _by Anna Branco_
 
 <https://annabranco.github.io/zombicide-party/>
 
-_What party is a party without people shouting, shots being fired, police sirens ringing, motolovs exploding and... yeah, of course... lots zombies grows?
+_What party is a party without people shouting, shots being fired, police sirens ringing, motolovs exploding and... yeah, of course... lots zombies growls?
 This app brings you all of this and much more to make your Zombicide parties rock and shine like never before._
 
 ## DISCLAIMER
@@ -56,7 +56,7 @@ If you think any of the material on this app is violating any copyright protecti
 - Virtual cards: <https://patrickgalbraith.github.io/zombicide-card-database/>
 - Base zombies sounds: <https://www.fesliyanstudios.com/>
 - Base weapons soundS: <http://soundbible.com/>
-- Music: <http://www.twinmusicom.org/> & <https://www.playonloop.com/>
+- Music: <https://freemusicarchive.org/>, <http://www.twinmusicom.org/> & <https://www.playonloop.com/>
 
 #### Songs
 
@@ -68,8 +68,10 @@ All songs used here are under Creative Commons Attribution license.
 
 ##### Ending Game
 
+"Lost Souls" by Portrayal (freemusicarchive.org) <https://freemusicarchive.org/music/Portrayal>
+"Grindstone" by Hearse Pileup (freemusicarchive.org) <https://freemusicarchive.org/music/Hearse_Pileup>
+"A Flash in the Pan" by Twin Musicom (twinmusicom.org)
 "Funeral Procession" by Twin Musicom (twinmusicom.org)
-"Video Game Soldiers" by Twin Musicom (twinmusicom.org)
 
 ## Final words
 
