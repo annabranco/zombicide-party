@@ -338,7 +338,8 @@ export const WEAPONS_NIGHT_SHIFT = {
     img: SmokeGrenade,
     name: 'Smoke Grenade',
     noise: false,
-    type: WEAPONS
+    type: WEAPONS,
+    useOnce: true
   },
   TaserGun: {
     attack: RANGED,

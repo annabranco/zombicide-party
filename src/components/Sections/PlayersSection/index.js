@@ -374,48 +374,50 @@ const PlayersSection = ({
 
   /* ------- CORE METHODS ------- */
   const updateData = (charWithChangedData = character, background = false) => {
-    const charOnGlobalList = characters.find(
-      char => char.name === charWithChangedData.name
-    );
-
-    if (!isEqual(charWithChangedData, character) && !background) {
-      changeCharacter(charWithChangedData);
-    }
-
-    if (!isEqual(charWithChangedData, charOnGlobalList)) {
-      const updatedCharacters = cloneDeep(characters);
-      const changedCharIndex = updatedCharacters.findIndex(
+    if (charWithChangedData && characters) {
+      const charOnGlobalList = characters.find(
         char => char.name === charWithChangedData.name
       );
 
-      logger(LOG_TYPE_EXTENDED, UPDATE_DATA);
+      if (!isEqual(charWithChangedData, character) && !background) {
+        changeCharacter(charWithChangedData);
+      }
 
-      if (charWithChangedData.wounded === KILLED) {
-        const charactersLeft = updatedCharacters.filter(
-          char => char.name !== charWithChangedData.name
+      if (!isEqual(charWithChangedData, charOnGlobalList)) {
+        const updatedCharacters = cloneDeep(characters);
+        const changedCharIndex = updatedCharacters.findIndex(
+          char => char.name === charWithChangedData.name
         );
-        updateCharacters(charactersLeft);
-        if (charactersLeft.length === 0) {
-          logger(LOG_TYPE_INFO, CLEAR_LS);
-          localStorage.removeItem(LOCAL_STORAGE_KEY);
-          return null;
+
+        logger(LOG_TYPE_EXTENDED, UPDATE_DATA);
+
+        if (charWithChangedData.wounded === KILLED) {
+          const charactersLeft = updatedCharacters.filter(
+            char => char.name !== charWithChangedData.name
+          );
+          updateCharacters(charactersLeft);
+          if (charactersLeft.length === 0) {
+            logger(LOG_TYPE_INFO, CLEAR_LS);
+            localStorage.removeItem(LOCAL_STORAGE_KEY);
+            return null;
+          }
+        } else {
+          updatedCharacters[changedCharIndex] = charWithChangedData;
+          updateCharacters(updatedCharacters);
         }
-      } else {
-        updatedCharacters[changedCharIndex] = charWithChangedData;
-        updateCharacters(updatedCharacters);
-      }
 
-      if (freeReorder === NEXT) {
-        toggleFreeReorder(false);
-      } else if (freeReorder) {
-        toggleFreeReorder(NEXT);
-      }
+        if (freeReorder === NEXT) {
+          toggleFreeReorder(false);
+        } else if (freeReorder) {
+          toggleFreeReorder(NEXT);
+        }
 
-      logger(LOG_TYPE_EXTENDED, SAVE_TO_LS, updatedCharacters);
-      localStorage.setItem(
-        LOCAL_STORAGE_KEY,
-        JSON.stringify(updatedCharacters)
-      );
+        logger(LOG_TYPE_EXTENDED, SAVE_TO_LS, updatedCharacters);
+        localStorage.setItem(
+          LOCAL_STORAGE_KEY,
+          JSON.stringify(updatedCharacters)
+        );
+      }
     }
     return null;
   };
@@ -550,6 +552,8 @@ const PlayersSection = ({
             'blue',
             (char.actionsLeft && [...char.actionsLeft]) || [...char.actions]
           );
+        } else if (updatedChar.abilities.length === 1) {
+          return null;
         } else {
           updatedChar.abilities = [];
           updatedChar.actions = [3, 0, 0, 0, 0];
@@ -1481,11 +1485,7 @@ const PlayersSection = ({
     } else if (characterCanBlock) {
       toggleResistedAttack(BLOCKED);
       logger(LOG_TYPE_EXTENDED, BLOCKED);
-      woundedCharacter.abilitiesUsed.push(
-        BLOCKED,
-        woundedCharacter,
-        damageMode
-      );
+      woundedCharacter.abilitiesUsed.push(BLOCKED);
       setTimeout(() => {
         toggleResistedAttack(false);
       }, 2000);
@@ -1660,7 +1660,11 @@ const PlayersSection = ({
         checkIfHasAnyActionLeft(char.actionsLeft || [3])
       );
       if (charsStillToAct.length > 0) {
-        setTimeout(() => changeToAnotherPlayer(NEXT), 2000);
+        setTimeout(() => {
+          if (!checkIfHasAnyActionLeft(character.actionsLeft)) {
+            changeToAnotherPlayer(NEXT);
+          }
+        }, 4000);
       } else {
         endRound(true);
         toggleZombiesShouldAct(true);
@@ -1925,7 +1929,7 @@ const PlayersSection = ({
                               isMobile={device.current === MOBILE}
                               label={LEAVE_GAME}
                               manyButtons={character.location === CAR}
-                              type={character.voice}
+                              type={character.name}
                               type2={
                                 character.location === CAR
                                   ? CAR_MOVE_ACTION
