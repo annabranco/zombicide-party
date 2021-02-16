@@ -15,7 +15,7 @@ export const checkIfCharacterCanOpenDoors = currentItems => {
     if (item) {
       const itemName = item.replace(' ', '');
       if (ALL_WEAPONS[itemName] && ALL_WEAPONS[itemName].canOpenDoor) {
-        openDoor = ALL_WEAPONS[itemName].name;
+        openDoor = ALL_WEAPONS[itemName].name.replace(' ', '');
       }
     }
   });

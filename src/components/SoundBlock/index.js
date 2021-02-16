@@ -45,7 +45,9 @@ const SoundBlock = ({
   noAudio,
   onClickCard,
   onClickCombine,
+  round,
   rows,
+  secondarySound,
   setupMode,
   slot,
   slotType,
@@ -57,17 +59,22 @@ const SoundBlock = ({
   wounded,
   zombieAttack
 }) => {
-  const [isActive, activate] = useStateWithLabel(false, 'isActive');
   const [
     displayZombieAttackButtonsForMobile,
     toggleZombieAttackButtons
   ] = useStateWithLabel(false, 'displayZombieAttackButtonsForMobile');
+  const [isActive, activate] = useStateWithLabel(false, 'isActive');
+  const [useAlternativeSound, toggleAlternativeSound] = useStateWithLabel(
+    false,
+    'useAlternativeSound'
+  );
 
-  const quickAttackDebounce = useRef();
-  const sound = useRef();
   const activateTimeout = useRef();
   const attackButtonsTimeout = useRef();
+  const currentRound = useRef();
+  const quickAttackDebounce = useRef();
   const quickAttackDebounceTimeout = useRef();
+  const sound = useRef();
 
   const randomNumber = max => Math.ceil(Math.random() * max);
   const filename =
@@ -126,6 +133,10 @@ const SoundBlock = ({
       callback(ATTACK);
     }
 
+    if (filename && type === WEAPONS && canAttack && useAlternativeSound) {
+      sound.current = new Audio(SOUNDS[`${filename}Alt`]);
+    }
+
     if (filename && ((type === WEAPONS && canAttack) || type !== WEAPONS)) {
       if (type === ACTIVATIONS) {
         sound.current = new Audio(
@@ -150,6 +161,10 @@ const SoundBlock = ({
         spendAmmo();
       }
 
+      if (secondarySound && !useAlternativeSound) {
+        toggleAlternativeSound(true);
+      }
+
       activateTimeout.current = setTimeout(() => {
         activate(false);
       }, 4000);
@@ -159,16 +174,17 @@ const SoundBlock = ({
       }, 4000);
     }
   };
-
   useEffect(() => {
-    if (!sound.current) {
+    if (!sound.current || currentRound.current !== round) {
       sound.current = new Audio(
         SOUNDS[
           `${filename}${differentSounds ? randomNumber(differentSounds) : ''}`
         ]
       );
+      currentRound.current = round;
+      toggleAlternativeSound(false);
     }
-  }, [filename, differentSounds]);
+  }, [filename, differentSounds, round, toggleAlternativeSound]);
 
   useEffect(() => {
     return () => {
@@ -254,7 +270,9 @@ SoundBlock.propTypes = {
   noAudio: bool,
   onClickCard: func,
   onClickCombine: func,
+  round: number,
   rows: number,
+  secondarySound: bool,
   setupMode: oneOfType([string, bool]),
   slot: number,
   slotType: string,
@@ -288,6 +306,8 @@ SoundBlock.defaultProps = {
   onClickCard: () => null,
   onClickCombine: null,
   rows: null,
+  round: null,
+  secondarySound: false,
   setupMode: null,
   slot: null,
   slotType: null,

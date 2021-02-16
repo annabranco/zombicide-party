@@ -1,7 +1,7 @@
 import styled from '@emotion/styled';
 import { css, keyframes } from '@emotion/core';
 import { Appear } from '../../styles';
-import { WON } from '../../constants';
+import { VICTORY } from '../../constants';
 
 /**
  *  Blood Dripping effect adapted by the original from Betsy
@@ -30,7 +30,7 @@ export const Blood = styled.div`
   top: 0;
   left: 50%;
   transform: translate(-50%, 0%);
-  width: 50%;
+  width: 40%;
   height: 10px;
 `;
 Blood.displayName = 'Blood';
@@ -64,7 +64,7 @@ export const BloodDrop = styled.div`
 
   &:nth-of-type(1) {
     position: absolute;
-    left: 20px;
+    left: 59%;
     top: 0px;
     animation-delay: 1s;
     animation-iteration-count: infinite;
@@ -72,7 +72,7 @@ export const BloodDrop = styled.div`
   }
   &:nth-of-type(2) {
     position: absolute;
-    left: 53px;
+    left: 18%;
     top: 0px;
     animation-delay: 3s;
     animation-iteration-count: infinite;
@@ -80,7 +80,7 @@ export const BloodDrop = styled.div`
   }
   &:nth-of-type(3) {
     position: absolute;
-    left: 80px;
+    left: 26%;
     top: 0px;
     animation-delay: 4s;
     animation-iteration-count: infinite;
@@ -88,7 +88,7 @@ export const BloodDrop = styled.div`
   }
   &:nth-of-type(4) {
     position: absolute;
-    left: 15px;
+    left: 1%;
     top: 0px;
     animation-delay: 5.5s;
     animation-iteration-count: infinite;
@@ -96,7 +96,7 @@ export const BloodDrop = styled.div`
   }
   &:nth-of-type(5) {
     position: absolute;
-    left: 130px;
+    left: 41%;
     top: 0px;
     animation-delay: 4.5s;
     animation-iteration-count: infinite;
@@ -104,7 +104,7 @@ export const BloodDrop = styled.div`
   }
   &:nth-of-type(6) {
     position: absolute;
-    left: 172px;
+    left: 9%;
     top: 0px;
     animation-delay: 3.2s;
     animation-iteration-count: infinite;
@@ -112,7 +112,7 @@ export const BloodDrop = styled.div`
   }
   &:nth-of-type(7) {
     position: absolute;
-    left: 222px;
+    left: 62%;
     top: 0px;
     animation-delay: 4.8s;
     animation-iteration-count: infinite;
@@ -120,7 +120,7 @@ export const BloodDrop = styled.div`
   }
   &:nth-of-type(8) {
     position: absolute;
-    left: 245px;
+    left: 78%;
     top: 0px;
     animation-delay: 2s;
     animation-iteration-count: infinite;
@@ -128,7 +128,7 @@ export const BloodDrop = styled.div`
   }
   &:nth-of-type(9) {
     position: absolute;
-    left: 280px;
+    left: 91%;
     top: 0px;
     animation-delay: 1s;
     animation-iteration-count: infinite;
@@ -136,7 +136,7 @@ export const BloodDrop = styled.div`
   }
   &:nth-of-type(10) {
     position: absolute;
-    left: 300px;
+    left: 98%;
     top: 65px;
     animation-delay: 2.2s;
     animation-iteration-count: infinite;
@@ -230,7 +230,7 @@ export const EndGameText = styled.div`
   filter: brightness(2);
 
   ${({ type }) =>
-    type === WON &&
+    type === VICTORY &&
     css`
       top: 55%;
     `}
@@ -256,7 +256,7 @@ export const ExitButton = styled.img`
   animation-fill-mode: forwards;
 
   ${({ type }) =>
-    type === WON &&
+    type === VICTORY &&
     css`
       bottom: 10px;
     `}

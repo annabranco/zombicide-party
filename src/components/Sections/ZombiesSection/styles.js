@@ -93,15 +93,19 @@ export const CancelAttackButton = styled(SelectionButton)`
   line-height: 0.5;
   text-transform: uppercase;
   padding: 0;
-
   background: lightgray;
+
   &:hover {
-    color: yellow;
+    color: crimson;
   }
 
   @media all and (min-width: 701px) {
     width: 90px;
     padding: 0;
+
+    &:hover {
+      color: crimson;
+    }
   }
 `;
 CancelAttackButton.displayName = 'CancelAttackButton';
@@ -118,7 +122,7 @@ export const ConfirmAttackButton = styled(CancelAttackButton)`
   font-family: 'Grandstander', cursive;
 
   &:hover {
-    color: yellow;
+    color: crimson;
   }
 `;
 CancelAttackButton.displayName = 'CancelAttackButton';

@@ -4,10 +4,13 @@ import BaseballBat from './weapons/BaseballBat.mp3';
 import BatteringRam from './weapons/BatteringRam.mp3';
 import Chainsaw from './weapons/Chainsaw.mp3';
 import ColtPython from './weapons/ColtPython.mp3';
+import ColtPythonAlt from './weapons/ColtPythonAlt.mp3';
 import Crowbar from './weapons/Crowbar.mp3';
 import DesertEagle from './weapons/DesertEagle.mp3';
 import DoubleBarrel from './weapons/DoubleBarrel.mp3';
 import EvilTwins from './weapons/EvilTwins.mp3';
+import EntryShotgun from './weapons/EntryShotgun.mp3';
+import ExpandableBaton from './weapons/ExpandableBaton.mp3';
 import FireAxe from './weapons/FireAxe.mp3';
 import Flashbang from './weapons/Flashbang.mp3';
 import Handgun from './weapons/Handgun.mp3';
@@ -55,8 +58,14 @@ import GiveOrdersRadioMale from './actions/give-orders-radio-male.mp3';
 import Heal1 from './actions/heal1.mp3';
 import Heal2 from './actions/heal2.mp3';
 import Heal3 from './actions/heal3.mp3';
-import LeaveGameFemale from './actions/leave-game-female.mp3';
-import LeaveGameMale from './actions/leave-game-male.mp3';
+import LeaveGameAmy from './actions/exit-Amy.mp3';
+import LeaveGameBen from './actions/exit-Ben.mp3';
+import LeaveGameDoug from './actions/exit-Doug.mp3';
+import LeaveGameJosh from './actions/exit-Josh.mp3';
+import LeaveGameMary from './actions/exit-Mary.mp3';
+import LeaveGameNed from './actions/exit-Ned.mp3';
+import LeaveGamePhil from './actions/exit-Phil.mp3';
+import LeaveGameWanda from './actions/exit-Wanda.mp3';
 import Lock from './actions/lock.mp3';
 import MakeNoise from './actions/make-noise.mp3';
 import MoveConfident from './actions/move-confident.mp3';
@@ -71,6 +80,7 @@ import MoveTactical from './actions/move-tactical.mp3';
 import OpenDoorBatteringRam from './actions/open-door-BatteringRam.mp3';
 import OpenDoorChainsaw from './actions/open-door-Chainsaw.mp3';
 import OpenDoorCrowbar from './actions/open-door-Crowbar.mp3';
+import OpenDoorEntryShotgun from './actions/open-door-EntryShotgun.mp3';
 import OpenDoorFireAxe from './actions/open-door-FireAxe.mp3';
 import Reload from './actions/reload.mp3';
 import Search0 from './actions/search0.mp3';
@@ -150,10 +160,13 @@ export const SOUNDS = {
   BatteringRam,
   Chainsaw,
   ColtPython,
+  ColtPythonAlt,
   Crowbar,
   DesertEagle,
   DoubleBarrel,
+  EntryShotgun,
   EvilTwins,
+  ExpandableBaton,
   FireAxe,
   Flashbang,
   Handgun,
@@ -181,6 +194,14 @@ export const SOUNDS = {
   'cured-female': CuredFemale,
   'cured-male': CuredMale,
   explosion: Explosion,
+  'leave-game-Amy': LeaveGameAmy,
+  'leave-game-Ben': LeaveGameBen,
+  'leave-game-Doug': LeaveGameDoug,
+  'leave-game-Josh': LeaveGameJosh,
+  'leave-game-Mary': LeaveGameMary,
+  'leave-game-Ned': LeaveGameNed,
+  'leave-game-Phil': LeaveGamePhil,
+  'leave-game-Wanda': LeaveGameWanda,
   'found-female1': FoundFemale1,
   'found-female2': FoundFemale2,
   'found-female3': FoundFemale3,
@@ -200,8 +221,6 @@ export const SOUNDS = {
   hea1l: Heal1,
   heal2: Heal2,
   heal3: Heal3,
-  'leave-game-female': LeaveGameFemale,
-  'leave-game-male': LeaveGameMale,
   lock: Lock,
   'make-noise': MakeNoise,
   'move-confident': MoveConfident,
@@ -217,6 +236,7 @@ export const SOUNDS = {
   'open-door-Chainsaw': OpenDoorChainsaw,
   'open-door-Crowbar': OpenDoorCrowbar,
   'open-door-FireAxe': OpenDoorFireAxe,
+  'open-door-EntryShotgun': OpenDoorEntryShotgun,
   reload: Reload,
   search0: Search0,
   search1: Search1,

@@ -88,7 +88,11 @@ const ActionButton = ({
         sound.current.currentTime = 0;
         sound2.current.currentTime = 0;
         sound.current.play();
-        setTimeout(() => sound2.current.play(), 700);
+        sound2.current.play();
+        setTimeout(() => {
+          sound2.current.currentTime = 0;
+          sound2.current.play();
+        }, 1500);
       } else if (sound.current) {
         sound.current.currentTime = 0;
         sound.current.play();

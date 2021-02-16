@@ -326,6 +326,15 @@ export const ItemWrapper = styled.div`
         margin: 50px -30px 0;
       `}
   }
+
+  @media all and (min-width: 1600px) and (min-height: 900px) {
+    margin: 50px 40px 0;
+    ${({ numItems }) =>
+      numItems > 3 &&
+      css`
+        margin: 50px 20px 0;
+      `}
+  }
 `;
 ItemWrapper.displayName = 'ItemWrapper';
 
