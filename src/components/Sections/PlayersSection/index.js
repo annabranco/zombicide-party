@@ -245,6 +245,10 @@ const PlayersSection = ({
   const [canCombine, toggleCanCombine] = useStateWithLabel(false, 'canCombine');
   const [car, startCar] = useStateWithLabel(false, 'car');
   const [canOpenDoor, setCanOpenDoor] = useStateWithLabel(false, 'canOpenDoor');
+  const [changedCharManually, toggleChangedCharManually] = useStateWithLabel(
+    false,
+    'changedCharManually'
+  );
   const [character, changeCharacter] = useStateWithLabel({}, 'character');
   const [characters, updateCharacters] = useStateWithLabel([], 'characters');
   const [charBackup, backupChar] = useStateWithLabel(null, 'charBackup');
@@ -982,11 +986,13 @@ const PlayersSection = ({
         checkIfHasAnyActionLeft(char.actionsLeft || [3])
     );
 
+    toggleChangedCharManually(true);
+    setTimeout(() => toggleChangedCharManually(false), 2000);
     logger(LOG_TYPE_EXTENDED, CLICK_END_TURN);
     updatedCharacter.actionsLeft = [0, 0, 0, 0, 0];
     updateData(updatedCharacter);
     if (charsStillToAct.length > 0) {
-      setTimeout(() => changeToAnotherPlayer(NEXT), 800);
+      setTimeout(() => changeToAnotherPlayer(NEXT), 1200);
     } else {
       endRound(true);
       toggleZombiesShouldAct(true);
@@ -1629,6 +1635,21 @@ const PlayersSection = ({
     searchActions,
     bonusActions
   ]);
+
+  useEffect(() => {
+    if (finishedTurn && !changedCharManually) {
+      const charsStillToAct = characters.filter(char =>
+        checkIfHasAnyActionLeft(char.actionsLeft || [3])
+      );
+      if (charsStillToAct.length > 0) {
+        setTimeout(() => changeToAnotherPlayer(NEXT), 2000);
+      } else {
+        endRound(true);
+        toggleZombiesShouldAct(true);
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [finishedTurn]);
 
   useEffect(() => {
     const actionsArray = generateActionsCountArray(character.actionsLeft);
@@ -2399,7 +2420,14 @@ const PlayersSection = ({
                             currentChar={character.name === char.name}
                             damageMode={damageMode}
                             key={`charNav-${char.name}`}
-                            onClick={() => changeCharIndex(char.index)}
+                            onClick={() => {
+                              toggleChangedCharManually(true);
+                              setTimeout(
+                                () => toggleChangedCharManually(false),
+                                2000
+                              );
+                              changeCharIndex(char.index);
+                            }}
                             played={charIfCharHasPlayed(char.name)}
                             src={char.face}
                             wounded={characters.some(
@@ -2421,7 +2449,14 @@ const PlayersSection = ({
                   <>
                     <PreviousButton
                       damageMode={damageMode}
-                      onClick={() => changeToAnotherPlayer(PREVIOUS)}
+                      onClick={() => {
+                        toggleChangedCharManually(true);
+                        setTimeout(
+                          () => toggleChangedCharManually(false),
+                          2000
+                        );
+                        changeToAnotherPlayer(PREVIOUS);
+                      }}
                       type="button"
                     >
                       <ArrowSign className="fas fa-caret-left" />
@@ -2431,7 +2466,13 @@ const PlayersSection = ({
                       numOfChars={
                         device.current === DESKTOP && characters.length
                       }
-                      onClick={() => changeToAnotherPlayer(NEXT)}
+                      onClick={() => {
+                        setTimeout(
+                          () => toggleChangedCharManually(false),
+                          2000
+                        );
+                        changeToAnotherPlayer(NEXT);
+                      }}
                       type="button"
                     >
                       <ArrowSign className="fas fa-caret-right" />
