@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useRef } from 'react';
 import { useHistory } from 'react-router-dom';
 import { cloneDeep, isEqual } from 'lodash';
 import { arrayOf, bool, func, number, oneOfType, string } from 'prop-types';
-import { ABILITIES_S1 } from '../../../setup/abilities';
+import { ABILITIES_S1, ALL_ABILITIES } from '../../../setup/abilities';
 import {
   blueThreatThresold,
   calculateXpBar,
@@ -45,6 +45,8 @@ import {
   ADD_CHARACTER,
   ADD_NEW_CHAR,
   ADVANCE_LEVEL,
+  BLITZ_ACTION,
+  BLITZ_LABEL,
   BLOCKED,
   BLOCKED_ONE,
   BONUS_ACTION,
@@ -96,6 +98,8 @@ import {
   HEAL_CHOOSE,
   HEAL_WOUND,
   HIT,
+  HIT_N_RUN,
+  HIT_N_RUN_ACTION,
   INITIAL,
   IN_HAND,
   IN_RESERVE,
@@ -1325,6 +1329,11 @@ const PlayersSection = ({
     updChar.actionsLeft = newActionsLeft;
     updateData(updChar);
     selectSlot(emptySlot);
+    toggleHasKilledZombie(false);
+  };
+
+  const onUsePostKillSkill = () => {
+    toggleHasKilledZombie(false);
   };
 
   const setNewChar = updatedCharacters => {
@@ -1925,16 +1934,29 @@ const PlayersSection = ({
                             />
                           )}
 
-                          {!!generalActions &&
-                            context.rules.winGame &&
-                            round >= 5 && (
+                          {context.rules.winGame && round >= 5 && (
+                            <ActionButton
+                              actionType={WIN_GAME}
+                              callback={onClickWin}
+                              changeActionLabel={changeActionLabel}
+                              isMobile={device.current === MOBILE}
+                              label={WIN_GAME}
+                              manyButtons={character.location === CAR}
+                            />
+                          )}
+
+                          {hasKilledZombie &&
+                            character.abilities.includes(
+                              ALL_ABILITIES.BLITZ.name
+                            ) && (
                               <ActionButton
-                                actionType={WIN_GAME}
-                                callback={onClickWin}
+                                actionType={BLITZ_ACTION}
+                                callback={onUsePostKillSkill}
                                 changeActionLabel={changeActionLabel}
                                 isMobile={device.current === MOBILE}
-                                label={WIN_GAME}
+                                label={BLITZ_LABEL}
                                 manyButtons={context.rules.cars}
+                                type={character.movement}
                               />
                             )}
 
@@ -1948,8 +1970,23 @@ const PlayersSection = ({
                               manyButtons={context.rules.cars}
                             />
                           )}
+                          {hasKilledZombie &&
+                            character.abilities.includes(
+                              ALL_ABILITIES.HIT_N_RUN.name
+                            ) && (
+                              <ActionButton
+                                actionType={HIT_N_RUN_ACTION}
+                                callback={onUsePostKillSkill}
+                                changeActionLabel={changeActionLabel}
+                                isMobile={device.current === MOBILE}
+                                label={HIT_N_RUN}
+                                manyButtons={context.rules.cars}
+                                type={character.movement}
+                              />
+                            )}
 
                           {!!generalActions &&
+                            canSearch &&
                             character.abilities.includes(
                               ABILITIES_S1.HOLD_YOUR_NOSE.name
                             ) &&
@@ -2049,6 +2086,17 @@ const PlayersSection = ({
                               />
                             )}
 
+                          {!!generalActions && context.rules.explosion && (
+                            <ActionButton
+                              actionType={EXPLOSION_ACTION}
+                              callback={onExplode}
+                              changeActionLabel={changeActionLabel}
+                              isMobile={device.current === MOBILE}
+                              label={EXPLODE}
+                              manyButtons={character.location === CAR}
+                            />
+                          )}
+
                           {!finishedTurn &&
                             context.rules.objectives &&
                             !!generalActions && (
@@ -2114,7 +2162,7 @@ const PlayersSection = ({
                           {canMove && character.location !== CAR && (
                             <ActionButton
                               actionType={MOVE_ACTION}
-                              callback={() => spendAction(MOVE)}
+                              // callback={() => spendAction(MOVE)}
                               changeActionLabel={changeActionLabel}
                               isMobile={device.current === MOBILE}
                               label={MOVE}
@@ -2559,8 +2607,16 @@ const PlayersSection = ({
                           character.abilities[0] ===
                             character.promotions.blue.name
                         }
+                        textLength={character.promotions.blue.name.length}
                       >
-                        <LevelIndicator level={0} />
+                        <LevelIndicator
+                          active={
+                            character.abilities &&
+                            character.abilities[0] ===
+                              character.promotions.blue.name
+                          }
+                          level={0}
+                        />
                         {character.promotions.blue.name}
                       </PromoWrapper>
                     </AbilitiesInnerSeparator>
@@ -2571,8 +2627,16 @@ const PlayersSection = ({
                           character.abilities[1] ===
                             character.promotions.yellow.name
                         }
+                        textLength={character.promotions.yellow.name.length}
                       >
-                        <LevelIndicator level={1} />
+                        <LevelIndicator
+                          active={
+                            character.abilities &&
+                            character.abilities[1] ===
+                              character.promotions.yellow.name
+                          }
+                          level={1}
+                        />
                         {character.promotions.yellow.name}
                       </PromoWrapper>
                     </AbilitiesInnerSeparator>
@@ -2584,8 +2648,15 @@ const PlayersSection = ({
                             character.abilities[2] === promo.name
                           }
                           key={`promo-orange-${promo.name.replace(' ', '-')}`}
+                          textLength={promo.name.length}
                         >
-                          <LevelIndicator level={2} />
+                          <LevelIndicator
+                            active={
+                              character.abilities &&
+                              character.abilities[2] === promo.name
+                            }
+                            level={2}
+                          />
                           {promo.name}
                         </PromoWrapper>
                       ))}
@@ -2598,8 +2669,15 @@ const PlayersSection = ({
                             character.abilities[3] === promo.name
                           }
                           key={`promo-orange-${promo.name.replace(' ', '-')}`}
+                          textLength={promo.name.length}
                         >
-                          <LevelIndicator level={3} />
+                          <LevelIndicator
+                            active={
+                              character.abilities &&
+                              character.abilities[3] === promo.name
+                            }
+                            level={3}
+                          />
                           {promo.name}
                         </PromoWrapper>
                       ))}

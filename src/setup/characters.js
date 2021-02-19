@@ -24,10 +24,12 @@ import SelectorWanda from '../assets/images/selectors/selector-wanda.png';
 import SelectorJosh from '../assets/images/selectors/selector-josh.png';
 import SelectorDoug from '../assets/images/selectors/selector-doug.png';
 import { FEMALE, MALE } from '../constants';
-import { ABILITIES_S1, ABILITIES_S2, ABILITIES_MALL } from './abilities';
+import { ALL_ABILITIES } from './abilities';
 
 const {
   ACTION,
+  ACTION_RANGED,
+  BLITZ,
   DAMAGEMELEE,
   DAMAGE_RANGED,
   DICE_ROLL_COMBAT,
@@ -37,6 +39,7 @@ const {
   DIE_MELEE,
   DIE_RANGED,
   COMBAT_ACTION,
+  HIT_N_RUN,
   MOVE_ACTION,
   SEARCH_ACTION,
   MAX_RANGE,
@@ -57,15 +60,16 @@ const {
   MATCHING_SET,
   MEDIC,
   NINJA,
+  REAPER_COMBAT,
+  REAPER_MELEE,
+  REAPER_RANGED,
   SLIPPERY,
   SNIPER,
   STARTS_WITH,
   SWORDMASTER,
   TOUGH,
   TRICK_SHOT
-} = ABILITIES_S1;
-const { REAPER_RANGED, BLITZ } = ABILITIES_S2;
-const { ACTION_RANGED } = ABILITIES_MALL;
+} = ALL_ABILITIES;
 
 export const CHARACTERS_S1 = {
   Amy: {
@@ -277,7 +281,7 @@ export const CHARACTERS_KOPINSKI = {
     noise: 0,
     player: null,
     promotions: {
-      blue: REAPER_RANGED,
+      blue: HIT_N_RUN,
       yellow: ACTION,
       orange: [ACTION_RANGED, BLITZ],
       red: [DICE_ROLL_COMBAT, DIE_COMBAT, MOVE_ACTION]

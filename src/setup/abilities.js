@@ -230,7 +230,7 @@ export const ABILITIES_S1 = {
 };
 
 const ACTION_RANGED = {
-  name: '1 free Ranged Action ',
+  name: '+1 free Ranged Action ',
   description:
     'The Survivor has one extra, free Ranged Combat Action. This Action can only be used for Ranged Combat.'
 };
@@ -239,6 +239,11 @@ export const ABILITIES_MALL = {
   ACTION_RANGED
 };
 
+const BLITZ = {
+  name: 'Blitz',
+  description:
+    'Each time your Survivor kills the last Zombie of a Zone, he gets 1 free Move Action to use immediately'
+};
 const REAPER_COMBAT = {
   name: 'Reaper: Combat',
   description:
@@ -257,20 +262,27 @@ const REAPER_RANGED = {
     'Use this Skill when assigning hits while resolving a Ranged Action. One of these hits can freely kill an additional identical Zombie in the same Zone. Only a single additional Zombie can be killed per Action when using this Skill.',
   effect: ({ combat, melee, ranged }) => ({ combat, melee, ranged: ranged + 1 })
 };
-const BLITZ = {
-  name: 'Blitz',
-  description:
-    'Each time your Survivor kills the last Zombie of a Zone, he gets 1 free Move Action to use immediately'
-};
 
 export const ABILITIES_S2 = {
+  BLITZ,
   REAPER_COMBAT,
   REAPER_MELEE,
-  REAPER_RANGED,
-  BLITZ
+  REAPER_RANGED
+};
+
+const HIT_N_RUN = {
+  name: 'Hit & Run',
+  description:
+    'The Survivor can use this Skill for free, just after he resolved Melee or Ranged Combat Action resulting in at least a Zombie kill (or a rival Survivor kill). He can then resolve a free Move Action. The Survivor does not spend extra Actions to perform this free Move Action if Zombies are standing in his Zone.'
+};
+
+export const ABILITIES_S3 = {
+  HIT_N_RUN
 };
 
 export const ALL_ABILITIES = {
   ...ABILITIES_S1,
-  ...ABILITIES_S2
+  ...ABILITIES_MALL,
+  ...ABILITIES_S2,
+  ...ABILITIES_S3
 };

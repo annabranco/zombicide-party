@@ -1238,6 +1238,12 @@ export const LevelIndicator = styled.div`
     }
   }};
 
+  ${({ active }) =>
+    !active &&
+    css`
+      opacity: 0.3;
+    `}
+
   @media all and (min-width: 1200px) {
     margin: 0 10px 0 0;
     transform: translate(0, -2px);
@@ -1684,6 +1690,12 @@ export const PromoWrapper = styled.div`
   font-weight: 300;
   letter-spacing: 0.1rem;
   font-size: 0.9rem;
+
+  ${({ textLength }) =>
+    textLength > 15 &&
+    css`
+      letter-spacing: 0.01rem;
+    `}
 
   ${({ active }) =>
     active &&
