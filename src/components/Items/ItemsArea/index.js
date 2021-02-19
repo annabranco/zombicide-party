@@ -43,7 +43,6 @@ import {
 } from './styles';
 
 const ItemsArea = ({
-  actionsLeft,
   activateDualEffect,
   allSlotsAreEmpty,
   bonusDice,
@@ -254,6 +253,8 @@ const ItemsArea = ({
     return () => {
       clearTimeout(killButtonsTimer.current);
       clearTimeout(dualTimer.current);
+      toggleFiredDual();
+      changeKillButtons([]);
     };
   }, [changeKillButtons, charName, item, toggleFiredDual]);
 
@@ -276,6 +277,7 @@ const ItemsArea = ({
             canBeDeflected={canBeDeflected}
             canCombine={canCombine && canCombine.includes(item)}
             charCanDeflect={charCanDeflect}
+            charName={charName}
             combineItemSelected={combineItemSelected}
             combinePair={combinePair}
             damageMode={damageMode}
@@ -369,7 +371,6 @@ const ItemsArea = ({
 };
 
 ItemsArea.propTypes = {
-  actionsLeft: number,
   activateDualEffect: func,
   allSlotsAreEmpty: bool,
   bonusDice: BonusDiceType,
@@ -411,7 +412,6 @@ ItemsArea.propTypes = {
 };
 
 ItemsArea.defaultProps = {
-  actionsLeft: null,
   activateDualEffect: () => null,
   allSlotsAreEmpty: false,
   bonusDice: null,

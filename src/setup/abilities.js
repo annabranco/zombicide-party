@@ -52,7 +52,13 @@ const COMBAT_ACTION = {
   name: '+1 free Combat Action',
   description:
     'The Survivor has one free extra Combat Action. This Action may only be used for Melee or Ranged Combat.',
-  effect: ([gen, mov, att, sea, bon]) => [gen, mov, att + 1, sea, bon]
+  effect: ([gen, mov, att, sea, bon]) => [
+    gen,
+    mov,
+    [att[0] + 1, att[1], att[2]],
+    sea,
+    bon
+  ]
 };
 const MOVE_ACTION = {
   name: '+1 free Move Action',
@@ -229,13 +235,34 @@ export const ABILITIES_S1 = {
   TRICK_SHOT
 };
 
+const ACTION_MELEE = {
+  name: '+1 free Melee Action ',
+  description:
+    'The Survivor has one extra free Melee Combat Action. This Action may only be used for Melee Combat.',
+  effect: ([gen, mov, att, sea, bon]) => [
+    gen,
+    mov,
+    [att[0], att[1] + 1, att[2]],
+    sea,
+    bon
+  ]
+};
+
 const ACTION_RANGED = {
   name: '+1 free Ranged Action ',
   description:
-    'The Survivor has one extra, free Ranged Combat Action. This Action can only be used for Ranged Combat.'
+    'The Survivor has one extra, free Ranged Combat Action. This Action can only be used for Ranged Combat.',
+  effect: ([gen, mov, att, sea, bon]) => [
+    gen,
+    mov,
+    [att[0], att[1], att[2] + 1],
+    sea,
+    bon
+  ]
 };
 
 export const ABILITIES_MALL = {
+  ACTION_MELEE,
   ACTION_RANGED
 };
 

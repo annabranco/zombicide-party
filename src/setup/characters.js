@@ -28,6 +28,7 @@ import { ALL_ABILITIES } from './abilities';
 
 const {
   ACTION,
+  ACTION_MELEE,
   ACTION_RANGED,
   BLITZ,
   DAMAGEMELEE,
@@ -75,8 +76,8 @@ export const CHARACTERS_S1 = {
   Amy: {
     abilities: [],
     abilitiesUsed: [],
-    actions: [3, 0, 0, 0, 0],
-    actionsLeft: [3, 0, 0, 0, 0],
+    actions: [3, 0, [0, 0, 0], 0, 0],
+    actionsLeft: [3, 0, [0, 0, 0], 0, 0],
     bonusDice: { combat: 0, melee: 0, ranged: 0 },
     color: '#a015a3',
     experience: 0,
@@ -102,8 +103,8 @@ export const CHARACTERS_S1 = {
   Doug: {
     abilities: [],
     abilitiesUsed: [],
-    actions: [3, 0, 0, 0, 0],
-    actionsLeft: [3, 0, 0, 0, 0],
+    actions: [3, 0, [0, 0, 0], 0, 0],
+    actionsLeft: [3, 0, [0, 0, 0], 0, 0],
     bonusDice: { combat: 0, melee: 0, ranged: 0 },
     color: '#3566c6',
     experience: 0,
@@ -129,8 +130,8 @@ export const CHARACTERS_S1 = {
   Josh: {
     abilities: [],
     abilitiesUsed: [],
-    actions: [3, 0, 0, 0, 0],
-    actionsLeft: [3, 0, 0, 0, 0],
+    actions: [3, 0, [0, 0, 0], 0, 0],
+    actionsLeft: [3, 0, [0, 0, 0], 0, 0],
     bonusDice: { combat: 0, melee: 0, ranged: 0 },
     color: '#ba761d',
     experience: 0,
@@ -156,8 +157,8 @@ export const CHARACTERS_S1 = {
   Ned: {
     abilities: [],
     abilitiesUsed: [],
-    actions: [3, 0, 0, 0, 0],
-    actionsLeft: [3, 0, 0, 0, 0],
+    actions: [3, 0, [0, 0, 0], 0, 0],
+    actionsLeft: [3, 0, [0, 0, 0], 0, 0],
     bonusDice: { combat: 0, melee: 0, ranged: 0 },
     color: '#b52929',
     experience: 0,
@@ -183,8 +184,8 @@ export const CHARACTERS_S1 = {
   Phil: {
     abilities: [],
     abilitiesUsed: [],
-    actions: [3, 0, 0, 0, 0],
-    actionsLeft: [3, 0, 0, 0, 0],
+    actions: [3, 0, [0, 0, 0], 0, 0],
+    actionsLeft: [3, 0, [0, 0, 0], 0, 0],
     bonusDice: { combat: 0, melee: 0, ranged: 0 },
     color: '#565656',
     experience: 0,
@@ -209,8 +210,8 @@ export const CHARACTERS_S1 = {
   Wanda: {
     abilities: [],
     abilitiesUsed: [],
-    actions: [3, 0, 0, 0, 0],
-    actionsLeft: [3, 0, 0, 0, 0],
+    actions: [3, 0, [0, 0, 0], 0, 0],
+    actionsLeft: [3, 0, [0, 0, 0], 0, 0],
     bonusDice: { combat: 0, melee: 0, ranged: 0 },
     color: '#339b35',
     experience: 0,
@@ -239,8 +240,8 @@ export const CHARACTERS_KOPINSKI = {
   Ben: {
     abilities: [],
     abilitiesUsed: [],
-    actions: [3, 0, 0, 0, 0],
-    actionsLeft: [3, 0, 0, 0, 0],
+    actions: [3, 0, [0, 0, 0], 0, 0],
+    actionsLeft: [3, 0, [0, 0, 0], 0, 0],
     bonusDice: { combat: 0, melee: 0, ranged: 0 },
     color: '#537c6f',
     experience: 0,
@@ -254,7 +255,7 @@ export const CHARACTERS_KOPINSKI = {
     noise: 0,
     player: null,
     promotions: {
-      blue: BLITZ,
+      blue: ACTION_RANGED,
       yellow: ACTION,
       orange: [DICE_ROLL_RANGED, DIE_MELEE],
       red: [COMBAT_ACTION, MOVE_ACTION, SLIPPERY]
@@ -266,8 +267,8 @@ export const CHARACTERS_KOPINSKI = {
   Mary: {
     abilities: [],
     abilitiesUsed: [],
-    actions: [3, 0, 0, 0, 0],
-    actionsLeft: [3, 0, 0, 0, 0],
+    actions: [3, 0, [0, 0, 0], 0, 0],
+    actionsLeft: [3, 0, [0, 0, 0], 0, 0],
     bonusDice: { combat: 0, melee: 0, ranged: 0 },
     color: '#3e4c84',
     experience: 0,
@@ -281,8 +282,8 @@ export const CHARACTERS_KOPINSKI = {
     noise: 0,
     player: null,
     promotions: {
-      blue: HIT_N_RUN,
-      yellow: ACTION,
+      blue: REAPER_RANGED,
+      yellow: ACTION_MELEE,
       orange: [ACTION_RANGED, BLITZ],
       red: [DICE_ROLL_COMBAT, DIE_COMBAT, MOVE_ACTION]
     },

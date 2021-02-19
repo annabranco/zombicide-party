@@ -24,7 +24,8 @@ import {
   orangeThreatThresold,
   useStateWithLabel,
   useTurnsCounter,
-  yellowThreatThresold
+  yellowThreatThresold,
+  totalActions
 } from '../../../utils';
 import ActionsModal from '../../ActionsModal';
 import { SOUNDS } from '../../../assets/sounds';
@@ -84,6 +85,8 @@ import {
   FINISH_SETUP,
   FIRST_PLAYER_TOKEN,
   FREE_ATTACK,
+  FREE_ATTACK_MELEE,
+  FREE_ATTACK_RANGED,
   FREE_MOVE,
   FREE_SEARCH,
   GAIN_XP,
@@ -495,8 +498,8 @@ const PlayersSection = ({
           toggleActionsModal('orange');
         } else if (char.abilities.length !== 3) {
           updatedChar.abilities = [];
-          updatedChar.actions = [3, 0, 0, 0, 0];
-          updatedChar.actionsLeft = [3, 0, 0, 0, 0];
+          updatedChar.actions = [3, 0, [0, 0, 0], 0, 0];
+          updatedChar.actionsLeft = [3, 0, [0, 0, 0], 0, 0];
           updatedChar.bonusDice = { combat: 0, melee: 0, ranged: 0 };
           updatedChar = handlePromotionEffects(
             updatedChar,
@@ -526,8 +529,8 @@ const PlayersSection = ({
           ]);
         } else if (char.abilities.length !== 2) {
           updatedChar.abilities = [];
-          updatedChar.actions = [3, 0, 0, 0, 0];
-          updatedChar.actionsLeft = [3, 0, 0, 0, 0];
+          updatedChar.actions = [3, 0, [0, 0, 0], 0, 0];
+          updatedChar.actionsLeft = [3, 0, [0, 0, 0], 0, 0];
           updatedChar.bonusDice = { combat: 0, melee: 0, ranged: 0 };
           updatedChar = handlePromotionEffects(
             updatedChar,
@@ -558,8 +561,8 @@ const PlayersSection = ({
           return null;
         } else {
           updatedChar.abilities = [];
-          updatedChar.actions = [3, 0, 0, 0, 0];
-          updatedChar.actionsLeft = [3, 0, 0, 0, 0];
+          updatedChar.actions = [3, 0, [0, 0, 0], 0, 0];
+          updatedChar.actionsLeft = [3, 0, [0, 0, 0], 0, 0];
           updatedChar.bonusDice = { combat: 0, melee: 0, ranged: 0 };
           updatedChar = handlePromotionEffects(
             updatedChar,
@@ -627,7 +630,7 @@ const PlayersSection = ({
     characters.forEach(char => {
       if (char.name === name) {
         hasPlayed = !checkIfHasAnyActionLeft(
-          char.actionsLeft || [3, 0, 0, 0, 0]
+          char.actionsLeft || [3, 0, [0, 0, 0], 0, 0]
         );
       }
     });
@@ -768,7 +771,9 @@ const PlayersSection = ({
     const actions = {
       gen: (actionsLeft && actionsLeft[0]) || generalActions,
       mov: (actionsLeft && actionsLeft[1]) || extraMovementActions,
-      att: (actionsLeft && actionsLeft[2]) || extraAttackActions,
+      att: (actionsLeft && actionsLeft[2][0]) || extraAttackActions[0],
+      mAtt: (actionsLeft && actionsLeft[2][1]) || extraAttackActions[1],
+      rAtt: (actionsLeft && actionsLeft[2][2]) || extraAttackActions[2],
       sea: (actionsLeft && actionsLeft[3]) || searchActions,
       bon: (actionsLeft && actionsLeft[4]) || bonusActions
     };
@@ -781,6 +786,12 @@ const PlayersSection = ({
     }
     for (let i = 1; i <= actions.att; i++) {
       count.push(FREE_ATTACK);
+    }
+    for (let i = 1; i <= actions.mAtt; i++) {
+      count.push(FREE_ATTACK_MELEE);
+    }
+    for (let i = 1; i <= actions.rAtt; i++) {
+      count.push(FREE_ATTACK_RANGED);
     }
     for (let i = 1; i <= actions.sea; i++) {
       count.push(FREE_SEARCH);
@@ -821,7 +832,11 @@ const PlayersSection = ({
 
     toggleHasKilledZombie(true);
     updatedCharacter.experience = newXp;
-    updateData(updatedCharacter);
+
+    updateXpCounter(
+      calculateXpBar(updatedCharacter.experience, highestXp.xp, device.current)
+    );
+    updateData(advancingLevel(updatedCharacter.experience, updatedCharacter));
   };
 
   const getMainButtonText = () => {
@@ -871,6 +886,8 @@ const PlayersSection = ({
   const setCustomXp = (newXp, prevXp, nextXp) => {
     const updatedCharacter = cloneDeep(character);
     let updatedXp = newXp;
+    let updHighestXp = highestXp.xp;
+
     if (newXp === '...') {
       if (prevXp === 19 && nextXp === 43) {
         updatedXp = 20;
@@ -890,18 +907,23 @@ const PlayersSection = ({
 
     if (updatedXp > highestXp.xp || highestXp.name === character.name) {
       updateHighestXp({ name: character.name, xp: updatedXp });
+      updHighestXp = updatedXp;
     }
 
     logger(LOG_TYPE_EXTENDED, GAIN_XP, `xp: ${prevXp} newXp: ${updatedXp}`);
 
     toggleHasKilledZombie(true);
-    updateData(updatedCharacter);
+
+    updateXpCounter(
+      calculateXpBar(updatedCharacter.experience, updHighestXp, device.current)
+    );
+    updateData(advancingLevel(updatedCharacter.experience, updatedCharacter));
   };
 
   const setNoise = (noise = 1) => {
     const updatedCharacter = cloneDeep(character);
     updatedCharacter.noise += noise;
-    updateData(updatedCharacter);
+    // updateData(updatedCharacter); TOFIX
   };
 
   /* --- */
@@ -1003,7 +1025,7 @@ const PlayersSection = ({
     toggleChangedCharManually(true);
     setTimeout(() => toggleChangedCharManually(false), 2000);
     logger(LOG_TYPE_EXTENDED, CLICK_END_TURN);
-    updatedCharacter.actionsLeft = [0, 0, 0, 0, 0];
+    updatedCharacter.actionsLeft = [0, 0, [0, 0, 0], 0, 0];
     updateData(updatedCharacter);
     if (charsStillToAct.length > 0) {
       setTimeout(() => changeToAnotherPlayer(NEXT), 1200);
@@ -1253,7 +1275,7 @@ const PlayersSection = ({
       char => char.name !== character.name && !char.hasLeft
     );
     updChar.hasLeft = true;
-    updChar.actionsLeft = [0, 0, 0, 0, 0];
+    updChar.actionsLeft = [0, 0, [0, 0, 0], 0, 0];
     updateCharSaved([...charsSaved, updChar]);
     updateData(updChar);
 
@@ -1624,6 +1646,8 @@ const PlayersSection = ({
       const updatedCharacter = charBackup
         ? cloneDeep(charBackup)
         : cloneDeep(character);
+      const actionsArray = generateActionsCountArray();
+
       if (charBackup) {
         backupChar();
       }
@@ -1634,10 +1658,25 @@ const PlayersSection = ({
         searchActions,
         bonusActions
       ];
+
+      // updatedCharacter.actionsLeft.forEach((action, index) => {
+      //   // Avoid clash of data loop due to async update of actions
+      //   if (
+      //     index === 2 &&
+      //     totalActions(action) > totalActions(updatedCharacter.actions[2])
+      //   ) {
+      //     updatedCharacter.actions[2] = [...action];
+      //   }
+      //   if (action > updatedCharacter.actions[index]) {
+      //     updatedCharacter.actions[index] = action;
+      //   }
+      // });
+
       changeCharacter(updatedCharacter);
-      const actionsArray = generateActionsCountArray();
       if (!isEqual(actionsArray, actionsCount)) {
-        updateActionsCount(actionsArray);
+        updateActionsCount(
+          generateActionsCountArray(updatedCharacter.actionsLeft)
+        );
         updateData(updatedCharacter);
       }
     }
@@ -1645,7 +1684,9 @@ const PlayersSection = ({
   }, [
     generalActions,
     extraMovementActions,
-    extraAttackActions,
+    extraAttackActions[0],
+    extraAttackActions[1],
+    extraAttackActions[2],
     searchActions,
     bonusActions
   ]);
@@ -1710,7 +1751,9 @@ const PlayersSection = ({
 
         toggleSomeoneIsWounded(characters.some(char => char.wounded));
         changeCharacter(nextChar);
-
+        updateXpCounter(
+          calculateXpBar(nextChar.experience, highestXp.xp, device.current)
+        );
         checkIfCharHasDualEffect([...nextChar.inHand]);
         setCanOpenDoor(openDoors);
         toggleCanCombine(charCanCombineItems);
@@ -1721,22 +1764,6 @@ const PlayersSection = ({
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [charIndex, characters]);
-
-  useEffect(() => {
-    if (character.experience >= 0) {
-      const charClone = cloneDeep(character);
-      const newXpBar = calculateXpBar(
-        charClone.experience,
-        highestXp.xp,
-        device.current
-      );
-      const updatedChar = advancingLevel(charClone.experience, charClone);
-
-      updateXpCounter(newXpBar);
-      updateData(updatedChar);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [character.experience, updateXpCounter]);
 
   useEffect(() => {
     if (zombiesArePlaying && extraActivation) {
@@ -2340,6 +2367,7 @@ const PlayersSection = ({
                                   inHandItem === ALL_ITEMS.PoliceRiotShield.name
                               )
                             }
+                            charName={character.name}
                             charVoice={character.voice}
                             damageMode={damageMode}
                             device={device.current}

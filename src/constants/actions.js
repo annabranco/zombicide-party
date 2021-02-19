@@ -1,6 +1,8 @@
 export const ACTIVATE = 'activate';
 export const ADD_CHARACTER = 'Add new character';
 export const ATTACK = 'attack';
+export const ATTACK_MELEE = 'melee attack';
+export const ATTACK_RANGED = 'range attack';
 export const ATTACK_SURVIVOR = 'attack survivor!';
 export const BLITZ_ACTION = 'blitz';
 export const BLITZ_LABEL = 'Keep moving (Blitz)';

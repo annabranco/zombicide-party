@@ -1380,9 +1380,11 @@ export const MovementIcon = styled.div`
   background: ${({ color }) => color};
   color: ${({ type }) => (typeof type === 'number' ? 'white' : 'black')};
   font-weight: 700;
-  line-height: 1.1;
-  font-size: 0.7rem;
-  font-family: 'Cairo', sans-serif;
+  line-height: 1.3;
+  letter-spacing: 0.001rem;
+  font-size: 0.8rem;
+  font-family: 'Grandstander', cursive;
+  text-transform: uppercase;
 
   &:not(:first-of-type) {
     margin-left: 15px;

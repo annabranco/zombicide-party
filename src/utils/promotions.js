@@ -3,6 +3,8 @@ import { ALL_ABILITIES } from '../setup/abilities';
 
 const {
   ACTION,
+  ACTION_MELEE,
+  ACTION_RANGED,
   MOVE_ACTION,
   SEARCH_ACTION,
   COMBAT_ACTION,
@@ -25,7 +27,9 @@ export const handlePromotionEffects = (char, level, actionsLeft, index) => {
       (updatedChar.promotions.blue.name === ACTION.name ||
         updatedChar.promotions.blue.name === MOVE_ACTION.name ||
         updatedChar.promotions.blue.name === SEARCH_ACTION.name ||
-        updatedChar.promotions.blue.name === COMBAT_ACTION.name) &&
+        updatedChar.promotions.blue.name === COMBAT_ACTION.name ||
+        updatedChar.promotions.blue.name === ACTION_MELEE.name ||
+        updatedChar.promotions.blue.name === ACTION_RANGED.name) &&
       updatedChar.promotions.blue.effect
     ) {
       updatedChar.actions = updatedChar.promotions.blue.effect(
@@ -63,7 +67,9 @@ export const handlePromotionEffects = (char, level, actionsLeft, index) => {
       (updatedChar.promotions.yellow.name === ACTION.name ||
         updatedChar.promotions.yellow.name === MOVE_ACTION.name ||
         updatedChar.promotions.yellow.name === SEARCH_ACTION.name ||
-        updatedChar.promotions.blue.name === COMBAT_ACTION.name) &&
+        updatedChar.promotions.yellow.name === COMBAT_ACTION.name ||
+        updatedChar.promotions.yellow.name === ACTION_MELEE.name ||
+        updatedChar.promotions.yellow.name === ACTION_RANGED.name) &&
       updatedChar.promotions.yellow.effect
     ) {
       updatedChar.actions = updatedChar.promotions.yellow.effect(
@@ -95,7 +101,9 @@ export const handlePromotionEffects = (char, level, actionsLeft, index) => {
       (updatedChar.promotions.orange[index].name === ACTION.name ||
         updatedChar.promotions.orange[index].name === MOVE_ACTION.name ||
         updatedChar.promotions.orange[index].name === SEARCH_ACTION.name ||
-        updatedChar.promotions.orange[index].name === COMBAT_ACTION.name) &&
+        updatedChar.promotions.orange[index].name === COMBAT_ACTION.name ||
+        updatedChar.promotions.orange[index].name === ACTION_MELEE.name ||
+        updatedChar.promotions.orange[index].name === ACTION_RANGED.name) &&
       updatedChar.promotions.orange[index].effect
     ) {
       updatedChar.actions = updatedChar.promotions.orange[index].effect(
@@ -127,7 +135,9 @@ export const handlePromotionEffects = (char, level, actionsLeft, index) => {
       (updatedChar.promotions.red[index].name === ACTION.name ||
         updatedChar.promotions.red[index].name === MOVE_ACTION.name ||
         updatedChar.promotions.red[index].name === SEARCH_ACTION.name ||
-        updatedChar.promotions.red[index].name === COMBAT_ACTION.name) &&
+        updatedChar.promotions.red[index].name === COMBAT_ACTION.name ||
+        updatedChar.promotions.red[index].name === ACTION_MELEE.name ||
+        updatedChar.promotions.red[index].name === ACTION_RANGED.name) &&
       updatedChar.promotions.red[index].effect
     ) {
       updatedChar.actions = updatedChar.promotions.red[index].effect(
