@@ -16,7 +16,7 @@ const FogEffect = ({ inChar }) => {
   const canvasHeight = 200;
   const pCollection = [];
   const puffs = 1;
-  const particlesPerPuff = 1000;
+  const particlesPerPuff = 500;
   const smokeImage = new Image();
   let pCount = 0;
 
