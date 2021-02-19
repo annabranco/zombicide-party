@@ -558,7 +558,7 @@ const PlayersSection = ({
             (char.actionsLeft && [...char.actionsLeft]) || [...char.actions]
           );
         } else if (updatedChar.abilities.length === 1) {
-          return null;
+          return updatedChar;
         } else {
           updatedChar.abilities = [];
           updatedChar.actions = [3, 0, [0, 0, 0], 0, 0];
@@ -923,7 +923,7 @@ const PlayersSection = ({
   const setNoise = (noise = 1) => {
     const updatedCharacter = cloneDeep(character);
     updatedCharacter.noise += noise;
-    // updateData(updatedCharacter); TOFIX
+    updateData(updatedCharacter);
   };
 
   /* --- */
@@ -2189,7 +2189,7 @@ const PlayersSection = ({
                           {canMove && character.location !== CAR && (
                             <ActionButton
                               actionType={MOVE_ACTION}
-                              // callback={() => spendAction(MOVE)}
+                              callback={() => spendAction(MOVE)}
                               changeActionLabel={changeActionLabel}
                               isMobile={device.current === MOBILE}
                               label={MOVE}

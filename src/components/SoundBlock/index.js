@@ -183,6 +183,7 @@ const SoundBlock = ({
       }, 4000);
     }
   };
+
   useEffect(() => {
     if (!sound.current || currentRound.current !== round) {
       sound.current = new Audio(
