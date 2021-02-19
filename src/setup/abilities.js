@@ -239,10 +239,23 @@ export const ABILITIES_MALL = {
   ACTION_RANGED
 };
 
+const REAPER_COMBAT = {
+  name: 'Reaper: Combat',
+  description:
+    'Use this Skill when assigning hits while resolving a Combat Action. One of these hits can freely kill an additional identical Zombie in the same Zone. Only a single additional Zombie can be killed per Action when using this Skill..',
+  effect: ({ combat, melee, ranged }) => ({ combat: combat + 1, melee, ranged })
+};
+const REAPER_MELEE = {
+  name: 'Reaper: Melee',
+  description:
+    'Use this Skill when assigning hits while resolving a Ranged Action. One of these hits can freely kill an additional identical Zombie in the same Zone. Only a single additional Zombie can be killed per Action when using this Skill.',
+  effect: ({ combat, melee, ranged }) => ({ combat, melee: melee + 1, ranged })
+};
 const REAPER_RANGED = {
   name: 'Reaper: Ranged',
   description:
-    'Use this Skill when assigning hits while resolving a Ranged Action. One of these hits can freely kill an additional identical Zombie in the same Zone. Only a single additional Zombie can be killed per Action when using this Skill.'
+    'Use this Skill when assigning hits while resolving a Ranged Action. One of these hits can freely kill an additional identical Zombie in the same Zone. Only a single additional Zombie can be killed per Action when using this Skill.',
+  effect: ({ combat, melee, ranged }) => ({ combat, melee, ranged: ranged + 1 })
 };
 const BLITZ = {
   name: 'Blitz',
@@ -251,6 +264,8 @@ const BLITZ = {
 };
 
 export const ABILITIES_S2 = {
+  REAPER_COMBAT,
+  REAPER_MELEE,
   REAPER_RANGED,
   BLITZ
 };

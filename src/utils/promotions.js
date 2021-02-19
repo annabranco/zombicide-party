@@ -1,5 +1,5 @@
 import { cloneDeep } from 'lodash';
-import { ABILITIES_S1 } from '../setup/abilities';
+import { ALL_ABILITIES } from '../setup/abilities';
 
 const {
   ACTION,
@@ -10,8 +10,11 @@ const {
   DIE_MELEE,
   DIE_RANGED,
   STARTS_WITH,
-  HOARD
-} = ABILITIES_S1;
+  HOARD,
+  REAPER_COMBAT,
+  REAPER_MELEE,
+  REAPER_RANGED
+} = ALL_ABILITIES;
 
 export const handlePromotionEffects = (char, level, actionsLeft, index) => {
   const updatedChar = cloneDeep(char);
@@ -34,11 +37,14 @@ export const handlePromotionEffects = (char, level, actionsLeft, index) => {
     } else if (
       (updatedChar.promotions.blue.name === DIE_COMBAT.name ||
         updatedChar.promotions.blue.name === DIE_MELEE.name ||
-        updatedChar.promotions.blue.name === DIE_RANGED.name) &&
+        updatedChar.promotions.blue.name === DIE_RANGED.name ||
+        updatedChar.promotions.blue.name === REAPER_COMBAT.name ||
+        updatedChar.promotions.blue.name === REAPER_MELEE.name ||
+        updatedChar.promotions.blue.name === REAPER_RANGED.name) &&
       updatedChar.promotions.blue.effect
     ) {
-      updatedChar.bonusDices = updatedChar.promotions.red[index].effect(
-        updatedChar.bonusDices
+      updatedChar.bonusDice = updatedChar.promotions.blue.effect(
+        updatedChar.bonusDice
       );
     } else if (
       updatedChar.promotions.blue.name.includes(
@@ -69,13 +75,16 @@ export const handlePromotionEffects = (char, level, actionsLeft, index) => {
     } else if (
       (updatedChar.promotions.yellow.name === DIE_COMBAT.name ||
         updatedChar.promotions.yellow.name === DIE_MELEE.name ||
-        updatedChar.promotions.yellow.name === DIE_RANGED.name) &&
+        updatedChar.promotions.yellow.name === DIE_RANGED.name ||
+        updatedChar.promotions.yellow.name === REAPER_COMBAT.name ||
+        updatedChar.promotions.yellow.name === REAPER_MELEE.name ||
+        updatedChar.promotions.yellow.name === REAPER_RANGED.name) &&
       updatedChar.promotions.yellow.effect
     ) {
-      updatedChar.bonusDices = updatedChar.promotions.yellow.effect(
-        updatedChar.bonusDices
+      updatedChar.bonusDice = updatedChar.promotions.yellow.effect(
+        updatedChar.bonusDice
       );
-    } else if (updatedChar.promotions.blue.name.includes(HOARD.name)) {
+    } else if (updatedChar.promotions.yellow.name.includes(HOARD.name)) {
       updatedChar.inReserve = updatedChar.promotions.yellow.effect(
         updatedChar.inReserve
       );
@@ -98,13 +107,16 @@ export const handlePromotionEffects = (char, level, actionsLeft, index) => {
     } else if (
       (updatedChar.promotions.orange[index].name === DIE_COMBAT.name ||
         updatedChar.promotions.orange[index].name === DIE_MELEE.name ||
-        updatedChar.promotions.orange[index].name === DIE_RANGED.name) &&
+        updatedChar.promotions.orange[index].name === DIE_RANGED.name ||
+        updatedChar.promotions.orange[index].name === REAPER_COMBAT.name ||
+        updatedChar.promotions.orange[index].name === REAPER_MELEE.name ||
+        updatedChar.promotions.orange[index].name === REAPER_RANGED.name) &&
       updatedChar.promotions.orange[index].effect
     ) {
-      updatedChar.bonusDices = updatedChar.promotions.orange[index].effect(
-        updatedChar.bonusDices
+      updatedChar.bonusDice = updatedChar.promotions.orange[index].effect(
+        updatedChar.bonusDice
       );
-    } else if (updatedChar.promotions.blue.name.includes(HOARD.name)) {
+    } else if (updatedChar.promotions.orange[index].name.includes(HOARD.name)) {
       updatedChar.inReserve = updatedChar.promotions.orange[index].effect(
         updatedChar.inReserve
       );
@@ -127,13 +139,16 @@ export const handlePromotionEffects = (char, level, actionsLeft, index) => {
     } else if (
       (updatedChar.promotions.red[index].name === DIE_COMBAT.name ||
         updatedChar.promotions.red[index].name === DIE_MELEE.name ||
-        updatedChar.promotions.red[index].name === DIE_RANGED.name) &&
+        updatedChar.promotions.red[index].name === DIE_RANGED.name ||
+        updatedChar.promotions.red[index].name === REAPER_COMBAT.name ||
+        updatedChar.promotions.red[index].name === REAPER_MELEE.name ||
+        updatedChar.promotions.red[index].name === REAPER_RANGED.name) &&
       updatedChar.promotions.red[index].effect
     ) {
-      updatedChar.bonusDices = updatedChar.promotions.red[index].effect(
-        updatedChar.bonusDices
+      updatedChar.bonusDice = updatedChar.promotions.red[index].effect(
+        updatedChar.bonusDice
       );
-    } else if (updatedChar.promotions.blue.name.includes(HOARD.name)) {
+    } else if (updatedChar.promotions.red[index].name.includes(HOARD.name)) {
       updatedChar.inReserve = updatedChar.promotions.red[index].effect(
         updatedChar.inReserve
       );
