@@ -493,7 +493,7 @@ const PlayersSection = ({
           updatedChar.abilities = [];
           updatedChar.actions = [3, 0, 0, 0, 0];
           updatedChar.actionsLeft = [3, 0, 0, 0, 0];
-          updatedChar.bonusDices = { combat: 0, melee: 0, ranged: 0 };
+          updatedChar.bonusDice = { combat: 0, melee: 0, ranged: 0 };
           updatedChar = handlePromotionEffects(
             updatedChar,
             'blue',
@@ -524,7 +524,7 @@ const PlayersSection = ({
           updatedChar.abilities = [];
           updatedChar.actions = [3, 0, 0, 0, 0];
           updatedChar.actionsLeft = [3, 0, 0, 0, 0];
-          updatedChar.bonusDices = { combat: 0, melee: 0, ranged: 0 };
+          updatedChar.bonusDice = { combat: 0, melee: 0, ranged: 0 };
           updatedChar = handlePromotionEffects(
             updatedChar,
             'blue',
@@ -556,7 +556,7 @@ const PlayersSection = ({
           updatedChar.abilities = [];
           updatedChar.actions = [3, 0, 0, 0, 0];
           updatedChar.actionsLeft = [3, 0, 0, 0, 0];
-          updatedChar.bonusDices = { combat: 0, melee: 0, ranged: 0 };
+          updatedChar.bonusDice = { combat: 0, melee: 0, ranged: 0 };
           updatedChar = handlePromotionEffects(
             updatedChar,
             'blue',
@@ -2259,7 +2259,7 @@ const PlayersSection = ({
                               ...character.inHand,
                               ...character.inReserve
                             ])}
-                            bonusDices={character.bonusDices}
+                            bonusDice={character.bonusDice}
                             canAttack={canAttack}
                             canBeDeflected={
                               (character.abilities.includes(

@@ -10,7 +10,7 @@ import {
 import SoundBlock from '../../SoundBlock';
 import ActionButton from '../../ActionButton';
 import ZombieFace from '../../../assets/images/zombieFace.png';
-import { BonusDicesType } from '../../../interfaces/types';
+import { BonusDiceType } from '../../../interfaces/types';
 import { AppButton } from '../../Sections/PlayersSection/styles';
 import {
   DROP,
@@ -46,7 +46,7 @@ const ItemsArea = ({
   actionsLeft,
   activateDualEffect,
   allSlotsAreEmpty,
-  bonusDices,
+  bonusDice,
   canAttack,
   canBeDeflected,
   canCombine,
@@ -102,16 +102,16 @@ const ItemsArea = ({
     if (ALL_WEAPONS[item].dice === SPECIAL) {
       gainCustomXp(BURNEM_ALL);
     } else {
-      const totalDices = calculateTotalDices();
+      const totalDice = calculateTotalDice();
       const currentPool = killButtons.length;
-      const newArray = [...Array(totalDices).keys()].map(
+      const newArray = [...Array(totalDice).keys()].map(
         value => value + currentPool
       );
 
       toggleFiredDual(true);
 
       if (dualWeaponEffect) {
-        activateDualEffect(totalDices);
+        activateDualEffect(totalDice);
       }
 
       clearTimeout(killButtonsTimer.current);
@@ -126,20 +126,20 @@ const ItemsArea = ({
     }
   };
 
-  const calculateTotalDices = () => {
-    const { combat, melee, ranged } = bonusDices;
-    let totalDices;
+  const calculateTotalDice = () => {
+    const { combat, melee, ranged } = bonusDice;
+    let totalDice;
 
-    totalDices = dice + combat;
+    totalDice = dice + combat;
 
     if (ALL_WEAPONS[item].attack === MELEE) {
-      totalDices += melee;
+      totalDice += melee;
     } else if (ALL_WEAPONS[item].attack === RANGED) {
-      totalDices += ranged;
+      totalDice += ranged;
     } else if (ALL_WEAPONS[item].attack === MELEE_RANGED) {
-      totalDices = totalDices + ranged + melee;
+      totalDice = totalDice + ranged + melee;
     }
-    return totalDices;
+    return totalDice;
   };
   const checkIfReloadIsNeeded = () =>
     ALL_WEAPONS[item] && ALL_WEAPONS[item].needsReloading;
@@ -247,11 +247,15 @@ const ItemsArea = ({
   }, [forcedKillButtons]);
 
   useEffect(() => {
+    clearTimeout(killButtonsTimer.current);
+    clearTimeout(dualTimer.current);
+    toggleFiredDual();
+    changeKillButtons([]);
     return () => {
       clearTimeout(killButtonsTimer.current);
       clearTimeout(dualTimer.current);
     };
-  }, []);
+  }, [changeKillButtons, charName, item, toggleFiredDual]);
 
   return (
     <ItemWrapper
@@ -368,7 +372,7 @@ ItemsArea.propTypes = {
   actionsLeft: number,
   activateDualEffect: func,
   allSlotsAreEmpty: bool,
-  bonusDices: BonusDicesType,
+  bonusDice: BonusDiceType,
   canAttack: bool,
   canBeDeflected: bool,
   canCombine: oneOfType([arrayOf(string), bool]),
@@ -410,7 +414,7 @@ ItemsArea.defaultProps = {
   actionsLeft: null,
   activateDualEffect: () => null,
   allSlotsAreEmpty: false,
-  bonusDices: null,
+  bonusDice: null,
   canAttack: false,
   canBeDeflected: false,
   canCombine: null,
