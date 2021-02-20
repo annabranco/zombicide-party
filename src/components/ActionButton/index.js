@@ -88,7 +88,11 @@ const ActionButton = ({
         sound.current.currentTime = 0;
         sound2.current.currentTime = 0;
         sound.current.play();
-        setTimeout(() => sound2.current.play(), 700);
+        sound2.current.play();
+        setTimeout(() => {
+          sound2.current.currentTime = 0;
+          sound2.current.play();
+        }, 1500);
       } else if (sound.current) {
         sound.current.currentTime = 0;
         sound.current.play();
@@ -159,6 +163,8 @@ const ActionButton = ({
         setIconType('fas fa-sign-out-alt');
         sound.current = new Audio(SOUNDS[`${actionType}-${type}`]);
         sound2.current = new Audio(SOUNDS[type2]);
+        console.log('$$$ sound.current', sound.current);
+        console.log('$$$ ${actionType}-${type}', `${actionType}-${type}`);
         break;
 
       case LOCK_ACTION:

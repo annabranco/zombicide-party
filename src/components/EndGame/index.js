@@ -5,22 +5,32 @@ import { getMediaQuery, logger } from '../../utils';
 import FogEffect from '../Fog';
 import BG from '../../assets/images/background/background2.jpg';
 import { MenuScreen } from '../MainMenu/styles';
-import YouLose from '../../assets/sounds/music/FuneralProcession.mp3';
-import YouWin from '../../assets/sounds/music/VideoGameSoldiers.mp3';
+import Defeat from '../../assets/sounds/music/FuneralProcession.mp3';
+import PartialVictory from '../../assets/sounds/music/FlashInThePan.mp3';
+import Victory from '../../assets/sounds/music/HearsePileup-Grindstone.mp3';
+import VictoryAlternative from '../../assets/sounds/music/Portrayal-LostSouls.mp3';
+
 import Exit from '../../assets/images/exit.png';
 import {
+  ACHIEVE_OBJECTIVES,
   CLEAR_LS,
+  DEFEAT,
   END_GAME_SCREEN,
+  ESCAPED_ALL,
+  ESCAPED_REMAINING,
   GAME_DURATION,
   GAME_OVER,
   KILLED,
+  KILLED_EM_ALL,
+  KILLED_REMAINING,
+  LIVED_TO_TELL,
   LIVE_ANOTHER_DAY,
   LOCAL_STORAGE_KEY,
   LOCAL_STORAGE_ROUNDS_KEY,
   LOG_TYPE_INFO,
-  LOST,
   MOBILE,
-  WON
+  THEY_DID_IT,
+  VICTORY
 } from '../../constants';
 import { CharacterType } from '../../interfaces/types';
 import {
@@ -33,9 +43,24 @@ import {
   GameInfo
 } from './styles';
 
-const EndGame = ({ characters, loadGame, round, time, type }) => {
+const EndGame = ({ characters, details, loadGame, round, time, type }) => {
   const ambience = useRef();
   const history = useHistory();
+
+  const getGameOverText = () => {
+    switch (details) {
+      case KILLED_REMAINING:
+      case ESCAPED_REMAINING:
+        return LIVED_TO_TELL;
+      case ESCAPED_ALL:
+        return LIVE_ANOTHER_DAY;
+      case ACHIEVE_OBJECTIVES:
+        return THEY_DID_IT;
+      case KILLED_EM_ALL:
+      default:
+        return GAME_OVER;
+    }
+  };
 
   const exitGame = () => {
     loadGame();
@@ -46,10 +71,14 @@ const EndGame = ({ characters, loadGame, round, time, type }) => {
   };
 
   useEffect(() => {
-    if (type === LOST) {
-      ambience.current = new Audio(YouLose);
-    } else {
-      ambience.current = new Audio(YouWin);
+    if (type === DEFEAT) {
+      ambience.current = new Audio(Defeat);
+    } else if (type === VICTORY && details === ESCAPED_ALL) {
+      ambience.current = new Audio(Victory);
+    } else if (type === VICTORY && details === ACHIEVE_OBJECTIVES) {
+      ambience.current = new Audio(VictoryAlternative);
+    } else if (type === VICTORY) {
+      ambience.current = new Audio(PartialVictory);
     }
     ambience.current.currentTime = 0;
     ambience.current.volume = 0.4;
@@ -59,15 +88,15 @@ const EndGame = ({ characters, loadGame, round, time, type }) => {
       ambience.current.pause();
       ambience.current = null;
     };
-  }, [type]);
+  }, [type, details]);
 
   return (
     <MenuScreen img={BG} dynamic type={type}>
       <FogEffect inChar />
 
       <EndGameText type={type}>
-        {type === LOST ? GAME_OVER : LIVE_ANOTHER_DAY}
-        {type === LOST && (
+        {getGameOverText()}
+        {type === DEFEAT && (
           <Blood>
             {[...Array(10).keys()].map(drop => (
               <BloodDrop key={`bloodDrop${drop}`} />
@@ -75,7 +104,7 @@ const EndGame = ({ characters, loadGame, round, time, type }) => {
           </Blood>
         )}
       </EndGameText>
-      {type === WON && (
+      {type === VICTORY && (
         <EndingCharacters>
           {characters
             .filter(char => char.wounded !== KILLED)
@@ -89,7 +118,7 @@ const EndGame = ({ characters, loadGame, round, time, type }) => {
         </EndingCharacters>
       )}
       <ExitButton
-        delay={type === WON && characters.length}
+        delay={type === VICTORY && characters.length}
         onClick={exitGame}
         src={Exit}
         type={type}
@@ -101,6 +130,7 @@ const EndGame = ({ characters, loadGame, round, time, type }) => {
 
 EndGame.propTypes = {
   characters: arrayOf(CharacterType),
+  details: string.isRequired,
   loadGame: func.isRequired,
   round: number.isRequired,
   time: string.isRequired,

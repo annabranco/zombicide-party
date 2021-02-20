@@ -61,7 +61,7 @@ export const ConfigSection = styled.div`
 
     &:last-of-type {
       width: 200%;
-      padding: 10px;
+      padding: 50px 10px 40px;
     }
   }
 `;

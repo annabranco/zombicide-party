@@ -7,6 +7,7 @@ import ColtPython from '../assets/images/weapons/colt-python.jpg';
 import Crowbar from '../assets/images/weapons/crowbar.jpg';
 import DesertEagle from '../assets/images/weapons/desert-eagle.jpg';
 import DoubleBarrel from '../assets/images/weapons/double-barreled-shotgun.jpg';
+import EntryShotgun from '../assets/images/weapons/entry-shotgun.jpg';
 import EvilTwins from '../assets/images/weapons/evil-twins.jpg';
 import ExpandableBaton from '../assets/images/weapons/expandable-baton.jpg';
 import ExpandableBatonClosed from '../assets/images/weapons/expandable-baton-closed.jpg';
@@ -276,6 +277,7 @@ export const WEAPONS_NIGHT_SHIFT = {
     img: ColtPython,
     name: 'Colt Python',
     noise: true,
+    secondarySound: true,
     type: WEAPONS
   },
   DesertEagle: {
@@ -283,6 +285,16 @@ export const WEAPONS_NIGHT_SHIFT = {
     dice: 1,
     img: DesertEagle,
     name: 'Desert Eagle',
+    noise: true,
+    type: WEAPONS
+  },
+  EntryShotgun: {
+    canOpenDoor: NOISY,
+    attack: RANGED,
+    dice: 2,
+    img: EntryShotgun,
+    name: 'Entry Shotgun',
+    needsReloading: true,
     noise: true,
     type: WEAPONS
   },
@@ -326,7 +338,8 @@ export const WEAPONS_NIGHT_SHIFT = {
     img: SmokeGrenade,
     name: 'Smoke Grenade',
     noise: false,
-    type: WEAPONS
+    type: WEAPONS,
+    useOnce: true
   },
   TaserGun: {
     attack: RANGED,

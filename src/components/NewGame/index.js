@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useRef } from 'react';
+import React, { useContext, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { arrayOf, bool, func } from 'prop-types';
 import { cloneDeep } from 'lodash';
@@ -9,7 +9,6 @@ import {
   useStateWithLabel
 } from '../../utils';
 import SetupModal from '../SetupModal';
-import Intro from '../../assets/sounds/music/TheHorrorShowShort.mp3';
 import BG from '../../assets/images/background/background.jpg';
 import {
   CLICK_NEW_GAME,
@@ -44,6 +43,7 @@ const NewGame = ({
   currentChars,
   dynamic,
   loadedGame,
+  playIntro,
   setInitialCharacters,
   setNewChar
 }) => {
@@ -63,7 +63,6 @@ const NewGame = ({
     'playerWasSelected'
   );
 
-  const intro = useRef(new Audio(Intro));
   const { context } = useContext(AppContext);
 
   const addPlayer = newPlayerSelected => {
@@ -76,6 +75,7 @@ const NewGame = ({
     logger(LOG_TYPE_INFO, CLEAR_LS);
     localStorage.removeItem(LOCAL_STORAGE_ROUNDS_KEY);
     localStorage.removeItem(LOCAL_STORAGE_KEY);
+    window.debuggerLog = [];
     const newgameCharacters = [];
     charactersSelected.forEach((player, name) => {
       newgameCharacters.push(characters.find(char => char.name === name));
@@ -144,24 +144,6 @@ const NewGame = ({
     });
   };
 
-  const playIntro = () => {
-    intro.current.currentTime = 0;
-    intro.current.volume = 0.4;
-    intro.current.loop = true;
-    intro.current.play();
-  };
-
-  const stopIntro = () => {
-    const fadeInterval = setInterval(() => {
-      if (intro.current.volume < 0.1) {
-        clearInterval(fadeInterval);
-        intro.current.pause();
-      } else if (intro.current.volume > 0) {
-        intro.current.volume -= 0.05;
-      }
-    }, 500);
-  };
-
   useEffect(() => {
     if (context.characters) {
       setCharacters(context.characters);
@@ -182,7 +164,6 @@ const NewGame = ({
 
   useEffect(() => {
     logger(LOG_TYPE_EXTENDED, CLICK_NEW_GAME);
-    return () => stopIntro();
   }, []);
 
   return (
@@ -250,6 +231,7 @@ NewGame.propTypes = {
   currentChars: arrayOf(CharacterType),
   dynamic: bool,
   loadedGame: bool,
+  playIntro: func,
   setInitialCharacters: func,
   setNewChar: func
 };
@@ -258,6 +240,7 @@ NewGame.defaultProps = {
   currentChars: null,
   dynamic: false,
   loadedGame: null,
+  playIntro: () => null,
   setInitialCharacters: () => null,
   setNewChar: () => null
 };

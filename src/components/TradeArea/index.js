@@ -1,16 +1,20 @@
 import React, { useContext, useEffect, useRef } from 'react';
 import { cloneDeep } from 'lodash';
-import { arrayOf, bool, func, string } from 'prop-types';
+import { arrayOf, bool, func, oneOfType, string } from 'prop-types';
 import { ALL_WEAPONS } from '../../setup/weapons';
-import { getCharacterColor, useStateWithLabel } from '../../utils';
+import { getCharacterColor, logger, useStateWithLabel } from '../../utils';
 import ItemsArea from '../Items/ItemsArea';
 import {
   IN_HAND,
   IN_RESERVE,
+  LOG_REORDER,
+  LOG_TYPE_EXTENDED,
+  LOG_TRADE,
   NONE,
   SELECT_TRADE_PARTNER,
   TRADING_WITH,
-  WOUNDED
+  WOUNDED,
+  TRADE
 } from '../../constants';
 import { CharacterType } from '../../interfaces/types';
 import { ArrowSign, CharItems } from '../Sections/PlayersSection/styles';
@@ -32,9 +36,11 @@ import { AppContext } from '../../setup/rules';
 const TradeArea = ({
   character,
   characters,
+  checkIfCharHasDualEffect,
   confirmTrade,
   device,
   reorder,
+  setupMode,
   spendAction,
   startTrade
 }) => {
@@ -85,7 +91,9 @@ const TradeArea = ({
     confirmTrade(updatedCharacter, updCharsAfterTrade);
     startTrade(false);
     establishTrade(false);
-    spendAction();
+    if (!reorder && !setupMode) {
+      spendAction(TRADE);
+    }
   };
 
   const onTrade = ({ item, slot, charTrading }) => {
@@ -111,8 +119,11 @@ const TradeArea = ({
         if (selectedItem1.item === NONE && item === NONE) {
           return null;
         }
+
         if (selectedItem1.charTrading === charTrading) {
+          // Reordering own items
           if (updChar.name === charTrading) {
+            // Active player reordering
             const oldReserve = [...updChar.inReserve];
             updChar[typeItem1][index1] = item === NONE ? null : item;
             updChar[typeItem2][index2] =
@@ -141,9 +152,16 @@ const TradeArea = ({
             ) {
               updChar.inReserve.push(null);
             }
-
+            checkIfCharHasDualEffect(updChar.inHand);
             updateCharacter(updChar);
+            logger(
+              LOG_TYPE_EXTENDED,
+              LOG_REORDER,
+              updChar.name,
+              `[hand: ${updatedCharacter.inHand.toString()}, reserve: ${updatedCharacter.inReserve.toString()}] => [hand: ${updChar.inHand.toString()}, reserve: ${updChar.inReserve.toString()}]`
+            );
           } else {
+            // Trading partner reordering
             const oldReserve = [...updPartn.inReserve];
 
             updPartn[typeItem1][index1] = item === NONE ? null : item;
@@ -174,11 +192,19 @@ const TradeArea = ({
               updPartn.inReserve.push(null);
             }
             updatePartner(updPartn);
+            logger(
+              LOG_TYPE_EXTENDED,
+              LOG_REORDER,
+              updPartn.name,
+              `[hand: ${tradePartner.inHand.toString()}, reserve: ${tradePartner.inReserve.toString()}] => [hand: ${updPartn.inHand.toString()}, reserve: ${updPartn.inReserve.toString()}]`
+            );
           }
         } else if (selectedItem1.item === WOUNDED || item === WOUNDED) {
           // do nothing
         } else if (tradePartner) {
+          // Trade
           if (selectedItem1.charTrading === updChar.name) {
+            // Active character starts trade
             const oldCharReserve = [...updChar.inReserve];
             const oldPartnReserve = [...updPartn.inReserve];
 
@@ -233,10 +259,15 @@ const TradeArea = ({
             ) {
               updPartn.inReserve.push(null);
             }
-
+            logger(
+              LOG_TYPE_EXTENDED,
+              LOG_TRADE,
+              `[${updChar.name}] ${selectedItem1.item} <=> ${item} [${updPartn.name}]`
+            );
             updateCharacter(updChar);
             updatePartner(updPartn);
           } else {
+            // Partner starts trade
             const oldCharReserve = [...updChar.inReserve];
             const oldPartnReserve = [...updPartn.inReserve];
 
@@ -277,9 +308,16 @@ const TradeArea = ({
             ) {
               updPartn.inReserve.push(null);
             }
+            logger(
+              LOG_TYPE_EXTENDED,
+              LOG_TRADE,
+              `[${updPartn.name}] ${selectedItem1.item} <=> ${item} [${updChar.name}]`
+            );
             updateCharacter(updChar);
             updatePartner(updPartn);
           }
+
+          checkIfCharHasDualEffect(updChar.inHand);
         }
         selectItem1();
         establishTrade(true);
@@ -295,6 +333,7 @@ const TradeArea = ({
     if (charName === updatedCharacter.name) {
       const charDropping = cloneDeep(updatedCharacter);
       charDropping[type][index] = null;
+      checkIfCharHasDualEffect(charDropping.inHand);
       updateCharacter(charDropping);
     } else if (charName === tradePartner.name) {
       const charDropping = cloneDeep(tradePartner);
@@ -485,9 +524,11 @@ const TradeArea = ({
 TradeArea.propTypes = {
   character: CharacterType.isRequired,
   characters: arrayOf(CharacterType).isRequired,
+  checkIfCharHasDualEffect: func.isRequired,
   confirmTrade: func.isRequired,
   device: string.isRequired,
   reorder: bool.isRequired,
+  setupMode: oneOfType([bool, string]).isRequired,
   spendAction: func.isRequired,
   startTrade: func.isRequired
 };

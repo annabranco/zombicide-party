@@ -356,8 +356,14 @@ export const CardsActions = styled.div`
       );
     `}
 
-  @media all and (max-height: 600px) {
-    bottom: 100px;
+  @media all and (max-height: 500px) {
+    bottom: 60px;
+
+    ${({ reOrder }) =>
+      reOrder &&
+      css`
+        bottom: 165px;
+      `}
   }
 
   @media all and (min-width: 360px) {
@@ -481,10 +487,33 @@ export const CardsActions = styled.div`
         left: unset;
         right: 25%;
       `}
+
+    ${({ reOrder }) =>
+      reOrder &&
+      css`
+        bottom: 140px;
+      `}
   }
 
   @media all and (min-width: 1400px) {
-    bottom: 270px;
+    bottom: 25%;
+    left: 25%;
+
+    ${({ drop }) =>
+      drop &&
+      css`
+        left: unset;
+        right: 25%;
+      `}
+
+    ${({ reOrder }) =>
+      reOrder &&
+      css`
+        bottom: 20%;
+      `}
+  }
+
+  @media all and (min-width: 1600px) {
     left: 27%;
 
     ${({ drop }) =>
@@ -493,11 +522,14 @@ export const CardsActions = styled.div`
         left: unset;
         right: 27%;
       `}
+  }
 
+  @media all and (min-width: 1600px) and (min-height: 900px) {
+    bottom: 40%;
     ${({ reOrder }) =>
       reOrder &&
       css`
-        bottom: 220px;
+        bottom: 35%;
       `}
   }
 
@@ -859,12 +891,46 @@ export const CharItems = styled.div`
   }
 
   @media all and (min-width: 1400px) {
-    top: 170px;
+    top: 25%;
     ${({ trade }) =>
       trade &&
       css`
         top: 250px;
         right: 10px;
+      `}
+
+    ${({ numItems }) =>
+      numItems > 3 &&
+      css`
+        justify-content: flex-end;
+        margin-right: 50px;
+      `}
+  }
+
+  @media all and (min-width: 1600px) {
+    top: 30%;
+    ${({ trade }) =>
+      trade &&
+      css`
+        top: 250px;
+        right: 10px;
+      `}
+
+    ${({ numItems }) =>
+      numItems > 3 &&
+      css`
+        justify-content: flex-end;
+        margin-right: 50px;
+      `}
+  }
+
+  @media all and (min-width: 1600px) and (min-height: 900px) {
+    top: 35%;
+
+    ${({ slotType }) =>
+      slotType === IN_RESERVE &&
+      css`
+        margin-top: -180px;
       `}
 
     ${({ numItems }) =>
@@ -1477,7 +1543,7 @@ export const NoiseIcon = styled.img`
   label: NoiseIcon;
   width: 35px;
 
-  @media all and (min-width: 1400px) {
+  @media all and (min-width: 1600px) {
     width: 45px;
   }
 `;
@@ -1512,6 +1578,10 @@ export const NoiseWrapper = styled.div`
   }
 
   @media all and (min-width: 1400px) {
+    top: 175px;
+  }
+
+  @media all and (min-width: 1600px) {
     top: 180px;
   }
 `;

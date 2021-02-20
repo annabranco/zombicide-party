@@ -41,6 +41,7 @@ import FirstPlayer from '../../../assets/images/firstPlayer.jpg';
 import Noise from '../../../assets/images/noise.png';
 import ZombieFace from '../../../assets/images/zombieFace.png';
 import {
+  ACHIEVE_OBJECTIVES,
   ADD_CHARACTER,
   ADD_NEW_CHAR,
   ADVANCE_LEVEL,
@@ -63,14 +64,18 @@ import {
   CLICK_EDIT,
   CLICK_END_TURN,
   COMBINE_ITEM,
+  DEFEAT,
   DEFLECTED,
   DEFLECTED_ONE,
   DESKTOP,
   DROP,
+  DUAL_EFECT,
   EDIT_CHARACTERS,
   END_CHAR_TURN,
   END_TURN_ACTION,
   ENTER_CAR,
+  ESCAPED_ALL,
+  ESCAPED_REMAINING,
   EXIT_CAR,
   EXPLODE,
   EXPLOSION_ACTION,
@@ -97,6 +102,8 @@ import {
   KILL,
   KILLED,
   KILLED_EM_ALL,
+  KILLED_REMAINING,
+  KILLED_SOMEONE,
   LEARNED_NEW_ABILITY,
   LEAVE_GAME,
   LEAVE_GAME_ACTION,
@@ -110,7 +117,6 @@ import {
   LOG_TYPE_CORE,
   LOG_TYPE_EXTENDED,
   LOG_TYPE_INFO,
-  LOST,
   MAKE_LOUD_NOISE,
   MAKE_NOISE_ACTION,
   MELEE,
@@ -118,6 +124,7 @@ import {
   MOVE,
   MOVE_ACTION,
   MOVE_CAR,
+  NEW_ITEMS,
   NEXT,
   NOISY,
   NONE,
@@ -140,18 +147,19 @@ import {
   SEARCH_ZOMBIE_ACTION,
   SELECT,
   SELECT_DAMAGE,
+  SET_BLUE_LEVEL,
   START,
   START_NEXT_ROUND,
   START_ZOMBIE_ROUND,
   TAKE_DAMAGE,
+  TAKE_THAT,
   TRADE,
   TURN_FINISHED,
   UPDATE_DATA,
   UPGRADE_WEAPON,
+  VICTORY,
   WIN_GAME,
-  WON,
   WOUNDED,
-  XP,
   XP_GAIN,
   XP_GAIN_SELECT,
   ZOMBIES_ROUND
@@ -217,6 +225,7 @@ const PlayersSection = ({
   nextGameRound,
   round,
   setZombiesRound,
+  stopIntro,
   time,
   toggleDamageMode,
   toggleZombiesArePlaying,
@@ -236,8 +245,13 @@ const PlayersSection = ({
   const [canCombine, toggleCanCombine] = useStateWithLabel(false, 'canCombine');
   const [car, startCar] = useStateWithLabel(false, 'car');
   const [canOpenDoor, setCanOpenDoor] = useStateWithLabel(false, 'canOpenDoor');
+  const [changedCharManually, toggleChangedCharManually] = useStateWithLabel(
+    false,
+    'changedCharManually'
+  );
   const [character, changeCharacter] = useStateWithLabel({}, 'character');
   const [characters, updateCharacters] = useStateWithLabel([], 'characters');
+  const [charBackup, backupChar] = useStateWithLabel(null, 'charBackup');
   const [charIndex, changeCharIndex] = useStateWithLabel(0, 'charIndex');
   const [charsSaved, updateCharSaved] = useStateWithLabel([], 'charsSaved');
   const [
@@ -287,7 +301,12 @@ const PlayersSection = ({
     false,
     'hasKilledZombie'
   );
+  const [killedChars, updateKilledChars] = useStateWithLabel([], 'killedChars');
   const [newChar, addNewChar] = useStateWithLabel(false, 'newChar');
+  const [objectivesAchieved, toggleObjectivesAchieved] = useStateWithLabel(
+    false,
+    'objectivesAchieved'
+  );
   const [resistedAttack, toggleResistedAttack] = useStateWithLabel(
     false,
     'resistedAttack'
@@ -355,48 +374,50 @@ const PlayersSection = ({
 
   /* ------- CORE METHODS ------- */
   const updateData = (charWithChangedData = character, background = false) => {
-    const charOnGlobalList = characters.find(
-      char => char.name === charWithChangedData.name
-    );
-
-    if (!isEqual(charWithChangedData, character) && !background) {
-      changeCharacter(charWithChangedData);
-    }
-
-    if (!isEqual(charWithChangedData, charOnGlobalList)) {
-      const updatedCharacters = cloneDeep(characters);
-      const changedCharIndex = updatedCharacters.findIndex(
+    if (charWithChangedData && characters) {
+      const charOnGlobalList = characters.find(
         char => char.name === charWithChangedData.name
       );
 
-      logger(LOG_TYPE_EXTENDED, UPDATE_DATA);
+      if (!isEqual(charWithChangedData, character) && !background) {
+        changeCharacter(charWithChangedData);
+      }
 
-      if (charWithChangedData.wounded === KILLED) {
-        const charactersLeft = updatedCharacters.filter(
-          char => char.name !== charWithChangedData.name
+      if (!isEqual(charWithChangedData, charOnGlobalList)) {
+        const updatedCharacters = cloneDeep(characters);
+        const changedCharIndex = updatedCharacters.findIndex(
+          char => char.name === charWithChangedData.name
         );
-        updateCharacters(charactersLeft);
-        if (charactersLeft.length === 0) {
-          logger(LOG_TYPE_INFO, CLEAR_LS);
-          localStorage.removeItem(LOCAL_STORAGE_KEY);
-          return null;
+
+        logger(LOG_TYPE_EXTENDED, UPDATE_DATA);
+
+        if (charWithChangedData.wounded === KILLED) {
+          const charactersLeft = updatedCharacters.filter(
+            char => char.name !== charWithChangedData.name
+          );
+          updateCharacters(charactersLeft);
+          if (charactersLeft.length === 0) {
+            logger(LOG_TYPE_INFO, CLEAR_LS);
+            localStorage.removeItem(LOCAL_STORAGE_KEY);
+            return null;
+          }
+        } else {
+          updatedCharacters[changedCharIndex] = charWithChangedData;
+          updateCharacters(updatedCharacters);
         }
-      } else {
-        updatedCharacters[changedCharIndex] = charWithChangedData;
-        updateCharacters(updatedCharacters);
-      }
 
-      if (freeReorder === NEXT) {
-        toggleFreeReorder(false);
-      } else if (freeReorder) {
-        toggleFreeReorder(NEXT);
-      }
+        if (freeReorder === NEXT) {
+          toggleFreeReorder(false);
+        } else if (freeReorder) {
+          toggleFreeReorder(NEXT);
+        }
 
-      logger(LOG_TYPE_EXTENDED, SAVE_TO_LS, updatedCharacters);
-      localStorage.setItem(
-        LOCAL_STORAGE_KEY,
-        JSON.stringify(updatedCharacters)
-      );
+        logger(LOG_TYPE_EXTENDED, SAVE_TO_LS, updatedCharacters);
+        localStorage.setItem(
+          LOCAL_STORAGE_KEY,
+          JSON.stringify(updatedCharacters)
+        );
+      }
     }
     return null;
   };
@@ -425,6 +446,7 @@ const PlayersSection = ({
     changeTopActionLabel('');
     toggleZombiesShouldAct(false);
     toggleDamageMode(false);
+    toggleObjectivesAchieved(false);
   };
   /* --- */
 
@@ -439,102 +461,111 @@ const PlayersSection = ({
   const advancingLevel = (xp, char) => {
     let updatedChar = cloneDeep(char);
 
-    logger(LOG_TYPE_EXTENDED, ADVANCE_LEVEL, char.name, xp);
     switch (true) {
-      case xp > orangeThreatThresold:
+      case xp > orangeThreatThresold: // Going red
         if (char.abilities.length === 3) {
           toggleActionsModal('red');
-        } else if (char.abilities.length !== 4) {
-          updatedChar.abilities = [];
-          updatedChar.actions = [3, 0, 0, 0, 0];
-          updatedChar = handlePromotionEffects(updatedChar, 'blue', [
-            3,
-            0,
-            0,
-            0,
-            0
-          ]);
+        } else if (char.abilities.length === 2) {
+          toggleActionsModal('orange');
+        } else if (char.abilities.length === 1) {
           updatedChar = handlePromotionEffects(
             updatedChar,
             'yellow',
             updatedChar.actionsLeft
           );
           toggleActionsModal('orange');
+        } else {
+          return updatedChar;
         }
+        logger(LOG_TYPE_EXTENDED, ADVANCE_LEVEL, char.name, xp);
         abilitiesRef.current = updatedChar.abilities.toString();
         break;
 
-      case xp > yellowThreatThresold:
+      case xp > yellowThreatThresold: // Going orange
         if (char.abilities.length === 2) {
+          toggleActionsModal('orange');
+        } else if (char.abilities.length === 1) {
+          updatedChar = handlePromotionEffects(
+            updatedChar,
+            'yellow',
+            updatedChar.actionsLeft
+          );
           toggleActionsModal('orange');
         } else if (char.abilities.length !== 3) {
           updatedChar.abilities = [];
           updatedChar.actions = [3, 0, 0, 0, 0];
+          updatedChar.actionsLeft = [3, 0, 0, 0, 0];
           updatedChar.bonusDices = { combat: 0, melee: 0, ranged: 0 };
-          updatedChar = handlePromotionEffects(updatedChar, 'blue', [
-            3,
-            0,
-            0,
-            0,
-            0
-          ]);
+          updatedChar = handlePromotionEffects(
+            updatedChar,
+            'blue',
+            updatedChar.actionsLeft
+          );
           updatedChar = handlePromotionEffects(
             updatedChar,
             'yellow',
             updatedChar.actionsLeft
           );
           toggleActionsModal('orange');
+        } else {
+          return updatedChar;
         }
+        logger(LOG_TYPE_EXTENDED, ADVANCE_LEVEL, char.name, xp);
         abilitiesRef.current = updatedChar.abilities.toString();
         break;
 
-      case xp > blueThreatThresold:
-        if (updatedChar.abilities.length === 1) {
+      case xp > blueThreatThresold: // Going yellow
+        if (updatedChar.abilities.length <= 1) {
           updatedChar = handlePromotionEffects(updatedChar, 'yellow', [
             generalActions,
             extraMovementActions,
             extraAttackActions,
             searchActions
           ]);
-        } else if (updatedChar.abilities.length !== 2) {
+        } else if (char.abilities.length !== 2) {
           updatedChar.abilities = [];
           updatedChar.actions = [3, 0, 0, 0, 0];
+          updatedChar.actionsLeft = [3, 0, 0, 0, 0];
           updatedChar.bonusDices = { combat: 0, melee: 0, ranged: 0 };
-          updatedChar = handlePromotionEffects(updatedChar, 'blue', [
-            3,
-            0,
-            0,
-            0,
-            0
-          ]);
+          updatedChar = handlePromotionEffects(
+            updatedChar,
+            'blue',
+            updatedChar.actionsLeft
+          );
           updatedChar = handlePromotionEffects(
             updatedChar,
             'yellow',
             updatedChar.actionsLeft
           );
+        } else {
+          return updatedChar;
         }
+        logger(LOG_TYPE_EXTENDED, ADVANCE_LEVEL, char.name, xp);
         abilitiesRef.current = updatedChar.abilities.toString();
         break;
 
       default:
+        // Initial blue
         if (updatedChar.abilities.length === 0) {
           updatedChar = handlePromotionEffects(
             char,
             'blue',
             (char.actionsLeft && [...char.actionsLeft]) || [...char.actions]
           );
-        } else if (updatedChar.abilities.length !== 1) {
+        } else if (updatedChar.abilities.length === 1) {
+          return null;
+        } else {
           updatedChar.abilities = [];
           updatedChar.actions = [3, 0, 0, 0, 0];
+          updatedChar.actionsLeft = [3, 0, 0, 0, 0];
           updatedChar.bonusDices = { combat: 0, melee: 0, ranged: 0 };
-          updatedChar = handlePromotionEffects(updatedChar, 'blue', [
-            3,
-            0,
-            0,
-            0,
-            0
-          ]);
+          updatedChar = handlePromotionEffects(
+            updatedChar,
+            'blue',
+            updatedChar.actionsLeft
+          );
         }
+        logger(LOG_TYPE_EXTENDED, SET_BLUE_LEVEL, char.name, xp);
         abilitiesRef.current = updatedChar.abilities.toString();
         break;
     }
@@ -602,34 +633,32 @@ const PlayersSection = ({
   };
 
   const checkIfRoundHasFinished = () => {
-    if (!roundEnded) {
-      if (
-        characters.length > 0 &&
-        characters.every(char => !checkIfHasAnyActionLeft(char.actionsLeft))
-      ) {
-        logger(LOG_TYPE_EXTENDED, PLAYERS_ROUND_FINISHED);
-        endRound(true);
-        toggleZombiesShouldAct(true);
-      }
+    if (
+      characters.length > 0 &&
+      characters.every(char => !checkIfHasAnyActionLeft(char.actionsLeft))
+    ) {
+      logger(LOG_TYPE_EXTENDED, PLAYERS_ROUND_FINISHED);
+      endRound(true);
+      toggleZombiesShouldAct(true);
+    } else {
+      endRound(false);
     }
   };
 
   const checkIfCharHasDualEffect = weapons => {
     if (
-      (weapons[0] === weapons[1] &&
-        context.weapons[weapons[0]] &&
-        context.weapons[weapons[0]].dual) ||
-      (character.abilities &&
-        character.abilities.includes(ABILITIES_S1.AMBIDEXTROUS.name)) ||
-      (character.abilities &&
-        character.abilities.includes(ABILITIES_S1.SWORDMASTER.name) &&
-        context.weapons[weapons[0]] &&
-        context.weapons[weapons[0]].attack === MELEE) ||
-      (character.abilities &&
-        character.abilities.includes(ABILITIES_S1.GUNSLINGER.name) &&
-        context.weapons[weapons[0]] &&
-        context.weapons[weapons[0]].attack === RANGED)
+      weapons[0] === weapons[1] &&
+      ((context.weapons[weapons[0]] && context.weapons[weapons[0]].dual) ||
+        (character.abilities &&
+          character.abilities.includes(ABILITIES_S1.AMBIDEXTROUS.name)) ||
+        (character.abilities &&
+          character.abilities.includes(ABILITIES_S1.SWORDMASTER.name) &&
+          context.weapons[weapons[0]].attack === MELEE) ||
+        (character.abilities &&
+          character.abilities.includes(ABILITIES_S1.GUNSLINGER.name) &&
+          context.weapons[weapons[0]].attack === RANGED))
     ) {
+      logger(LOG_TYPE_EXTENDED, DUAL_EFECT, weapons);
       activateDualWeaponEffect(true);
     } else {
       activateDualWeaponEffect();
@@ -648,8 +677,15 @@ const PlayersSection = ({
     }
 
     if (type === NEXT) {
-      nextPlayerIndex =
-        charIndex + 1 >= remainingCharacters.length ? 0 : charIndex + 1;
+      if (
+        remainingCharacters[charIndex] &&
+        remainingCharacters[charIndex].name !== character.name
+      ) {
+        nextPlayerIndex = charIndex;
+      } else {
+        nextPlayerIndex =
+          charIndex + 1 >= remainingCharacters.length ? 0 : charIndex + 1;
+      }
     } else if (type === PREVIOUS) {
       nextPlayerIndex =
         charIndex - 1 < 0 ? remainingCharacters.length - 1 : charIndex - 1;
@@ -677,7 +713,6 @@ const PlayersSection = ({
     updatedCharacter.inHand = newItems;
 
     checkIfCharHasDualEffect(newItems);
-
     if (
       dropMode &&
       checkIfAllSlotsAreEmpty(updatedCharacter.inHand) &&
@@ -759,12 +794,13 @@ const PlayersSection = ({
     if (context.weapons[weaponName].useOnce) {
       const updatedCharacter = cloneDeep(character);
       updatedCharacter.inHand[weaponSlot] = '';
-      changeCharacter(updatedCharacter);
+      backupChar(updatedCharacter);
+      updateData(updatedCharacter);
     }
   };
 
-  const gainCustomXp = () => {
-    toggleActionsModal(XP);
+  const gainCustomXp = xp => {
+    toggleActionsModal(xp);
   };
 
   const gainXp = (xp = 1) => {
@@ -871,7 +907,7 @@ const PlayersSection = ({
   /* ------- ACTION BUTTONS METHODS ------- */
 
   const cancelZombieAttack = () => {
-    setZombiesRound();
+    setZombiesRound(true);
     toggleDamageMode(false);
   };
 
@@ -883,7 +919,7 @@ const PlayersSection = ({
     const openDoors = checkIfCharacterCanOpenDoors(updatedCharacter.inHand);
     const charCanCombineItems = checkIfCharCanCombineItems(newItems);
 
-    logger(LOG_TYPE_EXTENDED, TRADE, newItems);
+    logger(LOG_TYPE_EXTENDED, NEW_ITEMS, newItems);
     toggleFreeReorder(false);
     toggleCanCombine(charCanCombineItems);
     changeCharacter(updatedCharacter);
@@ -962,11 +998,13 @@ const PlayersSection = ({
         checkIfHasAnyActionLeft(char.actionsLeft || [3])
     );
 
+    toggleChangedCharManually(true);
+    setTimeout(() => toggleChangedCharManually(false), 2000);
     logger(LOG_TYPE_EXTENDED, CLICK_END_TURN);
     updatedCharacter.actionsLeft = [0, 0, 0, 0, 0];
     updateData(updatedCharacter);
     if (charsStillToAct.length > 0) {
-      setTimeout(() => changeToAnotherPlayer(NEXT), 800);
+      setTimeout(() => changeToAnotherPlayer(NEXT), 1200);
     } else {
       endRound(true);
       toggleZombiesShouldAct(true);
@@ -974,7 +1012,7 @@ const PlayersSection = ({
   };
 
   const onClickExtraActivation = () => {
-    setZombiesRound();
+    setZombiesRound(true);
     toggleZombiesArePlaying(true);
   };
 
@@ -987,80 +1025,88 @@ const PlayersSection = ({
     if (setupMode === INITIAL) {
       changeCharIndex(0);
       nextGameRound();
+      stopIntro();
     }
     if (setupMode) {
       toggleSetupMode(false);
     } else if (zombiesShouldAct) {
       logger(LOG_TYPE_EXTENDED, START_ZOMBIE_ROUND);
-
-      setZombiesRound();
+      setZombiesRound(true);
       toggleZombiesArePlaying(true);
       toggleZombiesShouldAct();
     } else {
       const updatedCharacters = cloneDeep(characters);
-      if (roundEnded) {
-        let nextFirstPlayer;
+      // if (roundEnded) {
+      let nextFirstPlayer;
 
-        logger(LOG_TYPE_EXTENDED, START_NEXT_ROUND);
-        updatedCharacters.forEach((char, index) => {
-          const restingBonusActions = char.actionsLeft[4];
+      logger(LOG_TYPE_EXTENDED, START_NEXT_ROUND);
+      updatedCharacters.forEach((char, index) => {
+        const restingBonusActions = char.actionsLeft[4];
 
-          char.abilitiesUsed = []; // eslint-disable-line no-param-reassign
-          char.noise = 0; // eslint-disable-line no-param-reassign
+        char.abilitiesUsed = []; // eslint-disable-line no-param-reassign
+        char.noise = 0; // eslint-disable-line no-param-reassign
 
-          if (
-            restingBonusActions &&
-            !checkIfHasAnyActionLeft(char.actionsLeft)
-          ) {
-            char.actionsLeft = [...char.actions]; // eslint-disable-line no-param-reassign
-            char.actionsLeft.splice(4, 1, restingBonusActions); // eslint-disable-line no-param-reassign
-          } else {
-            char.actionsLeft = [...char.actions]; // eslint-disable-line no-param-reassign
-          }
-
-          if (char.name === firstPlayer) {
-            if (index + 1 === characters.length) {
-              nextFirstPlayer = 0;
-            } else {
-              nextFirstPlayer = index + 1;
-            }
-          }
-        });
-        if (!nextFirstPlayer && nextFirstPlayer !== 0) {
-          const nextPlayerName = firstPlayer.replace('next-', '');
-          nextFirstPlayer = updatedCharacters.findIndex(
-            char => char.name === nextPlayerName
-          );
-        }
-
-        changeFirstPlayer(updatedCharacters[nextFirstPlayer].name);
-        updateCharacters(updatedCharacters);
-        nextGameRound();
-        toggleHasKilledZombie();
-        if (charIndex === nextFirstPlayer) {
-          changeCharacter(updatedCharacters[nextFirstPlayer]);
+        if (restingBonusActions && !checkIfHasAnyActionLeft(char.actionsLeft)) {
+          char.actionsLeft = [...char.actions]; // eslint-disable-line no-param-reassign
+          char.actionsLeft.splice(4, 1, restingBonusActions); // eslint-disable-line no-param-reassign
         } else {
-          changeCharIndex(nextFirstPlayer);
+          char.actionsLeft = [...char.actions]; // eslint-disable-line no-param-reassign
         }
-      } else {
-        const currentCharacter = cloneDeep(character);
 
-        updatedCharacters.forEach((char, index) => {
-          char.actionsLeft = []; // eslint-disable-line no-param-reassign
-        });
-        currentCharacter.actionsLeft = [];
-
-        updateCharacters(updatedCharacters);
-        changeCharIndex(charIndex);
-        changeCharacter(currentCharacter);
+        if (char.name === firstPlayer) {
+          if (index + 1 >= updatedCharacters.length) {
+            nextFirstPlayer = 0;
+          } else {
+            nextFirstPlayer = index + 1;
+          }
+        }
+      });
+      if (!nextFirstPlayer && nextFirstPlayer !== 0) {
+        const nextPlayerName = firstPlayer.replace('next-', '');
+        nextFirstPlayer = updatedCharacters.findIndex(
+          char => char.name === nextPlayerName
+        );
       }
-      endRound();
+
+      if (updatedCharacters.length > 1) {
+        changeFirstPlayer(updatedCharacters[nextFirstPlayer].name);
+      }
+      updateCharacters(updatedCharacters);
+      nextGameRound();
+      toggleHasKilledZombie();
+      if (charIndex === nextFirstPlayer) {
+        changeCharacter(updatedCharacters[nextFirstPlayer]);
+      } else {
+        changeCharIndex(nextFirstPlayer);
+      }
+      // }
+      // else {
+      //   const currentCharacter = cloneDeep(character);
+
+      //   updatedCharacters.forEach((char, index) => {
+      //     char.actionsLeft = []; // eslint-disable-line no-param-reassign
+      //   });
+      //   currentCharacter.actionsLeft = [];
+
+      //   updateCharacters(updatedCharacters);
+      //   changeCharIndex(charIndex);
+      //   changeCharacter(currentCharacter);
+      // }
     }
   };
 
   const onClickObjective = () => {
     spendAction(GET_OBJECTIVE);
     gainXp(5);
+  };
+
+  const onClickWin = () => {
+    logger(LOG_TYPE_CORE, ACHIEVE_OBJECTIVES);
+    toggleObjectivesAchieved(ACHIEVE_OBJECTIVES);
+    toggleGameOver({
+      type: VICTORY,
+      details: ACHIEVE_OBJECTIVES
+    });
   };
 
   const onExplode = () => {
@@ -1213,7 +1259,7 @@ const PlayersSection = ({
   const onLeaveGame = () => {
     const updChar = cloneDeep(character);
     const charsStillInArea = characters.filter(
-      char => char.name !== character.name
+      char => char.name !== character.name && !char.hasLeft
     );
     updChar.hasLeft = true;
     updChar.actionsLeft = [0, 0, 0, 0, 0];
@@ -1221,10 +1267,24 @@ const PlayersSection = ({
     updateData(updChar);
 
     logger(LOG_TYPE_INFO, LEFT_GAME, updChar.name);
+
     if (charsStillInArea.length > 0) {
+      if (firstPlayer.includes(updChar.name)) {
+        changeFirstPlayer(
+          `next-${
+            charsStillInArea[
+              charIndex + 1 >= charsStillInArea.length ? 0 : charIndex + 1
+            ].name
+          }`
+        );
+      }
       setTimeout(() => changeToAnotherPlayer(NEXT, updChar.name), 3000);
+    } else if (killedChars.length > 0) {
+      logger(LOG_TYPE_CORE, ESCAPED_REMAINING);
+      toggleGameOver({ type: VICTORY, details: ESCAPED_REMAINING });
     } else {
-      setTimeout(() => toggleDisplayEndGameScreen(WON), 3000);
+      logger(LOG_TYPE_CORE, ESCAPED_ALL);
+      toggleGameOver({ type: VICTORY, details: ESCAPED_ALL });
     }
   };
 
@@ -1318,6 +1378,7 @@ const PlayersSection = ({
     );
     let damage = HIT;
     let someoneIsKilled = false;
+    let endGame = false;
 
     toggleStartedZombieAttack(true);
 
@@ -1372,23 +1433,42 @@ const PlayersSection = ({
         woundedCharacter.wounded = KILLED;
         damage = KILL;
         someoneIsKilled = true;
+        updateKilledChars([...killedChars, woundedCharacter.name]);
         changeCharacter(woundedCharacter);
-        logger(LOG_TYPE_INFO, CHAR_KILLED, woundedCharacter, damageMode);
+        logger(LOG_TYPE_INFO, CHAR_KILLED, woundedCharacter.name, damageMode);
 
         if (
-          remainingCharacters.length > 1 &&
+          remainingCharacters.length >= 1 &&
           firstPlayer.includes(woundedCharacter.name)
         ) {
-          changeFirstPlayer(`next-${characters[charIndex + 1].name}`);
+          changeFirstPlayer(
+            `next-${
+              remainingCharacters[
+                charIndex + 1 >= remainingCharacters.length ? 0 : charIndex + 1
+              ].name
+            }`
+          );
         }
 
+        if (context.rules.noDeathesAllowed) {
+          logger(LOG_TYPE_CORE, KILLED_SOMEONE);
+          endGame = true;
+          setTimeout(() => {
+            toggleGameOver({
+              type: DEFEAT,
+              details: KILLED_SOMEONE
+            });
+          }, 4000);
+        }
         if (remainingCharacters.length === 0) {
-          logger(LOG_TYPE_CORE, KILLED_EM_ALL);
-          toggleGameOver(KILLED_EM_ALL);
-          toggleZombiesArePlaying();
-          toggleStartedZombieAttack();
-          updateData(woundedCharacter);
-          loadGame();
+          if (charsSaved.length > 0) {
+            logger(LOG_TYPE_CORE, KILLED_REMAINING);
+            toggleGameOver({ type: VICTORY, details: KILLED_REMAINING });
+          } else {
+            logger(LOG_TYPE_CORE, KILLED_EM_ALL);
+            toggleGameOver({ type: DEFEAT, details: KILLED_EM_ALL });
+          }
+          endGame = true;
         }
       }
     } else if (characterCanResist) {
@@ -1405,11 +1485,7 @@ const PlayersSection = ({
     } else if (characterCanBlock) {
       toggleResistedAttack(BLOCKED);
       logger(LOG_TYPE_EXTENDED, BLOCKED);
-      woundedCharacter.abilitiesUsed.push(
-        BLOCKED,
-        woundedCharacter,
-        damageMode
-      );
+      woundedCharacter.abilitiesUsed.push(BLOCKED);
       setTimeout(() => {
         toggleResistedAttack(false);
       }, 2000);
@@ -1429,29 +1505,45 @@ const PlayersSection = ({
       remainingCharacters = characters.filter(
         char => char.name !== woundedCharacter.name
       );
-
       someoneIsKilled = true;
+      updateKilledChars([...killedChars, woundedCharacter.name]);
       woundedCharacter.wounded = KILLED;
       damage = KILL;
       changeCharacter(woundedCharacter);
-      logger(LOG_TYPE_INFO, CHAR_KILLED, woundedCharacter, damageMode);
+      logger(LOG_TYPE_INFO, CHAR_KILLED, woundedCharacter.name, damageMode);
 
-      if (firstPlayer.includes(woundedCharacter.name)) {
+      if (
+        remainingCharacters.length >= 1 &&
+        firstPlayer.includes(woundedCharacter.name)
+      ) {
         changeFirstPlayer(
           `next-${
-            characters[
+            remainingCharacters[
               charIndex + 1 >= remainingCharacters.length ? 0 : charIndex + 1
             ].name
           }`
         );
       }
 
+      if (context.rules.noDeathesAllowed) {
+        logger(LOG_TYPE_CORE, KILLED_SOMEONE);
+        endGame = true;
+        setTimeout(() => {
+          toggleGameOver({
+            type: DEFEAT,
+            details: KILLED_SOMEONE
+          });
+        }, 4000);
+      }
       if (remainingCharacters.length === 0) {
-        logger(LOG_TYPE_CORE, KILLED_EM_ALL);
-        toggleGameOver(KILLED_EM_ALL);
-        toggleZombiesArePlaying();
-        logger(LOG_TYPE_INFO, CLEAR_LS);
-        localStorage.removeItem(LOCAL_STORAGE_KEY);
+        if (charsSaved.length > 0) {
+          logger(LOG_TYPE_CORE, KILLED_REMAINING);
+          toggleGameOver({ type: VICTORY, details: KILLED_REMAINING });
+        } else {
+          logger(LOG_TYPE_CORE, KILLED_EM_ALL);
+          toggleGameOver({ type: DEFEAT, details: KILLED_EM_ALL });
+        }
+        endGame = true;
       }
     } else if (selectedSlot <= 2) {
       woundedCharacter.wounded = true;
@@ -1470,29 +1562,32 @@ const PlayersSection = ({
     sound.play();
 
     if (woundedCharacter.wounded === KILLED) {
-      if (remainingCharacters.length === 0) {
+      if (remainingCharacters.length === 0 || endGame) {
         return null;
       }
       setTimeout(
         () => {
           updateData(woundedCharacter);
         },
-        someoneIsKilled ? 4000 : 2000
+        someoneIsKilled ? 5000 : 2000
       );
     } else {
       updateData(woundedCharacter);
     }
 
-    setTimeout(() => changeToAnotherPlayer(NEXT), 5000);
+    setTimeout(
+      () =>
+        changeToAnotherPlayer(NEXT, someoneIsKilled && woundedCharacter.name),
+      5000
+    );
     setTimeout(
       () => {
         toggleStartedZombieAttack();
         toggleDamageMode(false);
-        setZombiesRound();
+        setZombiesRound(true);
       },
-      someoneIsKilled ? 4000 : 2000
+      someoneIsKilled ? 5000 : 2000
     );
-
     return null;
   };
   /* --- */
@@ -1530,7 +1625,12 @@ const PlayersSection = ({
 
   useEffect(() => {
     if (character.name) {
-      const updatedCharacter = cloneDeep(character);
+      const updatedCharacter = charBackup
+        ? cloneDeep(charBackup)
+        : cloneDeep(character);
+      if (charBackup) {
+        backupChar();
+      }
       updatedCharacter.actionsLeft = [
         generalActions,
         extraMovementActions,
@@ -1553,6 +1653,25 @@ const PlayersSection = ({
     searchActions,
     bonusActions
   ]);
+
+  useEffect(() => {
+    if (finishedTurn && !changedCharManually) {
+      const charsStillToAct = characters.filter(char =>
+        checkIfHasAnyActionLeft(char.actionsLeft || [3])
+      );
+      if (charsStillToAct.length > 0) {
+        setTimeout(() => {
+          if (!checkIfHasAnyActionLeft(character.actionsLeft)) {
+            changeToAnotherPlayer(NEXT);
+          }
+        }, 4000);
+      } else {
+        endRound(true);
+        toggleZombiesShouldAct(true);
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [finishedTurn]);
 
   useEffect(() => {
     const actionsArray = generateActionsCountArray(character.actionsLeft);
@@ -1595,7 +1714,8 @@ const PlayersSection = ({
 
         toggleSomeoneIsWounded(characters.some(char => char.wounded));
         changeCharacter(nextChar);
-        checkIfCharHasDualEffect(charInHand);
+
+        checkIfCharHasDualEffect([...nextChar.inHand]);
         setCanOpenDoor(openDoors);
         toggleCanCombine(charCanCombineItems);
         toggleHasKilledZombie();
@@ -1636,12 +1756,26 @@ const PlayersSection = ({
 
   useEffect(() => {
     if (gameOver) {
-      logger(LOG_TYPE_INFO, GAME_OVER, LOST);
+      logger(LOG_TYPE_INFO, GAME_OVER, gameOver.type, gameOver.details);
+      toggleZombiesArePlaying(false);
+      toggleStartedZombieAttack(false);
+      setZombiesRound(false);
+      loadGame();
+      logger(LOG_TYPE_INFO, CLEAR_LS);
+      localStorage.removeItem(LOCAL_STORAGE_KEY);
       setTimeout(() => {
-        toggleDisplayEndGameScreen(LOST);
+        toggleDisplayEndGameScreen(gameOver.type);
       }, 5000);
     }
-  }, [gameOver, toggleDisplayEndGameScreen]);
+  }, [
+    gameOver,
+    loadGame,
+    setZombiesRound,
+    toggleDisplayEndGameScreen,
+    toggleStartedZombieAttack,
+    toggleZombiesArePlaying,
+    updateCharacters
+  ]);
 
   /* --- */
 
@@ -1650,7 +1784,7 @@ const PlayersSection = ({
       {character.name && (
         <>
           {/* ----- XP BAR ----- */}
-          {!trade && character.wounded !== KILLED && (
+          {!trade && character.wounded !== KILLED && !objectivesAchieved && (
             <IndicatorsWrapper header>
               {xpCounter &&
                 xpCounter.map((level, index) => (
@@ -1692,7 +1826,7 @@ const PlayersSection = ({
           )}
 
           {/* ----- MOVEMENTS BAR ----- */}
-          {!trade && character.wounded !== KILLED && (
+          {!trade && character.wounded !== KILLED && !objectivesAchieved && (
             <IndicatorsWrapper>
               {actionsCount.map((action, index) => (
                 <MovementIcon
@@ -1711,9 +1845,11 @@ const PlayersSection = ({
             <TradeArea
               character={character}
               characters={characters}
+              checkIfCharHasDualEffect={checkIfCharHasDualEffect}
               confirmTrade={confirmTrade}
               device={device.current}
               reorder={trade === REORDER}
+              setupMode={setupMode}
               spendAction={spendAction}
               startTrade={startTrade}
             />
@@ -1729,6 +1865,7 @@ const PlayersSection = ({
               {/* <FogEffect inChar /> */}
               {/* ----- TOP BAR ----- */}
               {!damageMode &&
+                !objectivesAchieved &&
                 characters.length < context.characters.length &&
                 ((context.rules.editInGame &&
                   setupMode &&
@@ -1744,6 +1881,7 @@ const PlayersSection = ({
                   </AdmButton>
                 )}
               {!damageMode &&
+                !objectivesAchieved &&
                 !setupMode &&
                 !roundEnded &&
                 context.rules.editInGame &&
@@ -1776,192 +1914,197 @@ const PlayersSection = ({
               )}
 
               {/* ----- ACTION BUTTONS ----- */}
-              {character.wounded !== KILLED && !dropMode && (
-                <>
-                  {!damageMode && !setupMode && !slot && (
-                    <>
-                      <ActionsWrapper>
-                        {canMove && context.rules.exit && round >= 3 && (
-                          <ActionButton
-                            actionType={LEAVE_GAME_ACTION}
-                            callback={onLeaveGame}
-                            changeActionLabel={changeActionLabel}
-                            isMobile={device.current === MOBILE}
-                            label={LEAVE_GAME}
-                            manyButtons={character.location === CAR}
-                            type={character.voice}
-                            type2={
-                              character.location === CAR
-                                ? CAR_MOVE_ACTION
-                                : `move-${character.movement}`
-                            }
-                          />
-                        )}
-
-                        {!!generalActions &&
-                          context.rules.winGame &&
-                          round >= 5 && (
+              {character.wounded !== KILLED &&
+                !dropMode &&
+                !objectivesAchieved && (
+                  <>
+                    {!damageMode && !setupMode && !slot && (
+                      <>
+                        <ActionsWrapper>
+                          {canMove && context.rules.exit && round >= 3 && (
                             <ActionButton
-                              actionType={WIN_GAME}
-                              callback={() => toggleDisplayEndGameScreen(WON)}
+                              actionType={LEAVE_GAME_ACTION}
+                              callback={onLeaveGame}
                               changeActionLabel={changeActionLabel}
                               isMobile={device.current === MOBILE}
-                              label={WIN_GAME}
+                              label={LEAVE_GAME}
                               manyButtons={character.location === CAR}
-                            />
-                          )}
-
-                        {!!generalActions && context.rules.explosion && (
-                          <ActionButton
-                            actionType={EXPLOSION_ACTION}
-                            callback={onExplode}
-                            changeActionLabel={changeActionLabel}
-                            isMobile={device.current === MOBILE}
-                            label={EXPLODE}
-                            manyButtons={character.location === CAR}
-                          />
-                        )}
-
-                        {!!generalActions &&
-                          character.abilities.includes(
-                            ABILITIES_S1.HOLD_YOUR_NOSE.name
-                          ) &&
-                          hasKilledZombie && (
-                            <ActionButton
-                              actionType={SEARCH_ZOMBIE_ACTION}
-                              callback={onSearchZombie}
-                              changeActionLabel={changeActionLabel}
-                              disabled={!canSearch}
-                              isMobile={device.current === MOBILE}
-                              label={SEARCH_ZOMBIE}
-                              manyButtons={character.location === CAR}
-                              type={character.voice}
-                            />
-                          )}
-
-                        {!!generalActions &&
-                          character.abilities.includes(
-                            ABILITIES_S1.BORN_LEADER.name
-                          ) && (
-                            <ActionButton
-                              actionType={GIVE_ORDERS_ACTION}
-                              callback={onGiveOrders}
-                              changeActionLabel={changeActionLabel}
-                              disabled={character.abilitiesUsed.includes(
-                                GIVE_ORDERS_ACTION
-                              )}
-                              isMobile={device.current === MOBILE}
-                              label={GIVE_ORDERS}
-                              manyButtons={character.location === CAR}
-                              type={character.voice}
+                              type={character.name}
                               type2={
-                                [
-                                  ...character.inHand,
-                                  ...character.inReserve
-                                ].some(
-                                  item =>
-                                    item === ALL_ITEMS.HandheldTransceiver.name
-                                ) && 'radio'
+                                character.location === CAR
+                                  ? CAR_MOVE_ACTION
+                                  : `move-${character.movement}`
                               }
                             />
                           )}
 
-                        {!!generalActions &&
-                          character.abilities.includes(
-                            ABILITIES_S1.LOUD.name
-                          ) && (
+                          {!!generalActions &&
+                            context.rules.winGame &&
+                            round >= 5 && (
+                              <ActionButton
+                                actionType={WIN_GAME}
+                                callback={onClickWin}
+                                changeActionLabel={changeActionLabel}
+                                isMobile={device.current === MOBILE}
+                                label={WIN_GAME}
+                                manyButtons={character.location === CAR}
+                              />
+                            )}
+
+                          {!!generalActions && context.rules.explosion && (
                             <ActionButton
-                              actionType={MAKE_NOISE_ACTION}
-                              callback={onMakeLoudNoise}
+                              actionType={EXPLOSION_ACTION}
+                              callback={onExplode}
                               changeActionLabel={changeActionLabel}
-                              disabled={character.abilitiesUsed.includes(
-                                MAKE_NOISE_ACTION
-                              )}
                               isMobile={device.current === MOBILE}
-                              label={MAKE_LOUD_NOISE}
+                              label={EXPLODE}
                               manyButtons={character.location === CAR}
                             />
                           )}
 
-                        {!!generalActions &&
-                          character.abilities.includes(
-                            ABILITIES_S1.LOCK_IT_DOWN.name
-                          ) && (
-                            <ActionButton
-                              actionType={LOCK_ACTION}
-                              callback={() => spendAction(LOCK_ACTION)}
-                              changeActionLabel={changeActionLabel}
-                              isMobile={device.current === MOBILE}
-                              label={LOCK_DOOR}
-                              manyButtons={character.location === CAR}
-                            />
-                          )}
+                          {!!generalActions &&
+                            character.abilities.includes(
+                              ABILITIES_S1.HOLD_YOUR_NOSE.name
+                            ) &&
+                            hasKilledZombie && (
+                              <ActionButton
+                                actionType={SEARCH_ZOMBIE_ACTION}
+                                callback={onSearchZombie}
+                                changeActionLabel={changeActionLabel}
+                                disabled={!canSearch}
+                                isMobile={device.current === MOBILE}
+                                label={SEARCH_ZOMBIE}
+                                manyButtons={character.location === CAR}
+                                type={character.voice}
+                              />
+                            )}
 
-                        {!!generalActions &&
-                          character.abilities.includes(
-                            ABILITIES_S1.MEDIC.name
-                          ) && (
+                          {!!generalActions &&
+                            character.abilities.includes(
+                              ABILITIES_S1.BORN_LEADER.name
+                            ) && (
+                              <ActionButton
+                                actionType={GIVE_ORDERS_ACTION}
+                                callback={onGiveOrders}
+                                changeActionLabel={changeActionLabel}
+                                disabled={character.abilitiesUsed.includes(
+                                  GIVE_ORDERS_ACTION
+                                )}
+                                isMobile={device.current === MOBILE}
+                                label={GIVE_ORDERS}
+                                manyButtons={character.location === CAR}
+                                type={character.voice}
+                                type2={
+                                  [
+                                    ...character.inHand,
+                                    ...character.inReserve
+                                  ].some(
+                                    item =>
+                                      item ===
+                                      ALL_ITEMS.HandheldTransceiver.name
+                                  ) && 'radio'
+                                }
+                              />
+                            )}
+
+                          {!!generalActions &&
+                            character.abilities.includes(
+                              ABILITIES_S1.LOUD.name
+                            ) && (
+                              <ActionButton
+                                actionType={MAKE_NOISE_ACTION}
+                                callback={onMakeLoudNoise}
+                                changeActionLabel={changeActionLabel}
+                                disabled={character.abilitiesUsed.includes(
+                                  MAKE_NOISE_ACTION
+                                )}
+                                isMobile={device.current === MOBILE}
+                                label={MAKE_LOUD_NOISE}
+                                manyButtons={character.location === CAR}
+                              />
+                            )}
+
+                          {!!generalActions &&
+                            character.abilities.includes(
+                              ABILITIES_S1.LOCK_IT_DOWN.name
+                            ) && (
+                              <ActionButton
+                                actionType={LOCK_ACTION}
+                                callback={() => spendAction(LOCK_ACTION)}
+                                changeActionLabel={changeActionLabel}
+                                isMobile={device.current === MOBILE}
+                                label={LOCK_DOOR}
+                                manyButtons={character.location === CAR}
+                              />
+                            )}
+
+                          {!!generalActions &&
+                            character.abilities.includes(
+                              ABILITIES_S1.MEDIC.name
+                            ) && (
+                              <ActionButton
+                                actionType={HEAL_ACTION}
+                                callback={
+                                  someoneIsWounded
+                                    ? () => {
+                                        toggleActionsModal(HEAL_ACTION);
+                                      }
+                                    : () => null
+                                }
+                                changeActionLabel={changeActionLabel}
+                                disabled={
+                                  !someoneIsWounded ||
+                                  character.abilitiesUsed.includes(HEAL_ACTION)
+                                }
+                                isMobile={device.current === MOBILE}
+                                label={HEAL}
+                                manyButtons={character.location === CAR}
+                              />
+                            )}
+
+                          {!finishedTurn &&
+                            context.rules.objectives &&
+                            generalActions && (
+                              <ActionButton
+                                actionType={OBJECTIVE_ACTION}
+                                callback={onClickObjective}
+                                changeActionLabel={changeActionLabel}
+                                isMobile={device.current === MOBILE}
+                                label={GET_OBJECTIVE}
+                                manyButtons={character.location === CAR}
+                              />
+                            )}
+                          {canMove && context.rules.cars && (
                             <ActionButton
-                              actionType={HEAL_ACTION}
-                              callback={
-                                someoneIsWounded
-                                  ? () => {
-                                      toggleActionsModal(HEAL_ACTION);
-                                    }
-                                  : () => null
+                              actionType={
+                                character.location === CAR
+                                  ? CAR_EXIT_ACTION
+                                  : CAR_ENTER_ACTION
                               }
+                              callback={() => spendAction(MOVE)}
+                              car={car}
                               changeActionLabel={changeActionLabel}
-                              disabled={
-                                !someoneIsWounded ||
-                                character.abilitiesUsed.includes(HEAL_ACTION)
+                              interactWithCar={interactWithCar}
+                              isMobile={device.current === MOBILE}
+                              label={
+                                character.location === CAR
+                                  ? EXIT_CAR
+                                  : ENTER_CAR
                               }
-                              isMobile={device.current === MOBILE}
-                              label={HEAL}
                               manyButtons={character.location === CAR}
+                              startCar={startCar}
+                              type={
+                                character.location !== CAR && !car
+                                  ? START
+                                  : null
+                              }
                             />
                           )}
-
-                        {!finishedTurn &&
-                          context.rules.objective &&
-                          generalActions && (
-                            <ActionButton
-                              actionType={OBJECTIVE_ACTION}
-                              callback={onClickObjective}
-                              changeActionLabel={changeActionLabel}
-                              isMobile={device.current === MOBILE}
-                              label={GET_OBJECTIVE}
-                              manyButtons={character.location === CAR}
-                            />
-                          )}
-                        {canMove && context.rules.cars && (
-                          <ActionButton
-                            actionType={
-                              character.location === CAR
-                                ? CAR_EXIT_ACTION
-                                : CAR_ENTER_ACTION
-                            }
-                            callback={() => spendAction(MOVE)}
-                            car={car}
-                            changeActionLabel={changeActionLabel}
-                            interactWithCar={interactWithCar}
-                            isMobile={device.current === MOBILE}
-                            label={
-                              character.location === CAR ? EXIT_CAR : ENTER_CAR
-                            }
-                            manyButtons={character.location === CAR}
-                            startCar={startCar}
-                            type={
-                              character.location !== CAR && !car ? START : null
-                            }
-                          />
-                        )}
-                        {canMove &&
-                          context.rules.car &&
-                          character.location === CAR && (
+                          {canMove && character.location === CAR && (
                             <>
                               <ActionButton
                                 actionType={CAR_MOVE_ACTION}
-                                callback={() => spendAction(MOVE)}
+                                callback={() => spendAction(MOVE_CAR)}
                                 changeActionLabel={changeActionLabel}
                                 isMobile={device.current === MOBILE}
                                 label={MOVE_CAR}
@@ -1969,7 +2112,10 @@ const PlayersSection = ({
                               />
                               <ActionButton
                                 actionType={CAR_ATTACK_ACTION}
-                                callback={() => spendAction(MOVE)}
+                                callback={() => {
+                                  spendAction(RUN_OVER);
+                                  gainCustomXp(TAKE_THAT);
+                                }}
                                 changeActionLabel={changeActionLabel}
                                 isMobile={device.current === MOBILE}
                                 label={RUN_OVER}
@@ -1978,77 +2124,81 @@ const PlayersSection = ({
                             </>
                           )}
 
-                        {canMove && character.location !== CAR && (
-                          <ActionButton
-                            actionType={MOVE_ACTION}
-                            callback={() => spendAction(MOVE)}
-                            changeActionLabel={changeActionLabel}
-                            isMobile={device.current === MOBILE}
-                            label={MOVE}
-                            manyButtons={character.location === CAR}
-                            type={character.movement}
-                          />
-                        )}
+                          {canMove && character.location !== CAR && (
+                            <ActionButton
+                              actionType={MOVE_ACTION}
+                              callback={() => spendAction(MOVE)}
+                              changeActionLabel={changeActionLabel}
+                              isMobile={device.current === MOBILE}
+                              label={MOVE}
+                              manyButtons={character.location === CAR}
+                              type={character.movement}
+                            />
+                          )}
 
-                        {canOpenDoor && generalActions && (
-                          <ActionButton
-                            actionType={OPEN_DOOR_ACTION}
-                            callback={spendAction}
-                            changeActionLabel={changeActionLabel}
-                            isMobile={device.current === MOBILE}
-                            label={
-                              context.weapons[canOpenDoor] &&
-                              context.weapons[canOpenDoor].canOpenDoor === NOISY
-                                ? BREAK_DOOR
-                                : OPEN_DOOR
-                            }
-                            manyButtons={character.location === CAR}
-                            setNoise={
-                              character.abilities.includes(
-                                ABILITIES_S1.NINJA.name
-                              )
-                                ? () => null
-                                : setNoise
-                            }
-                            toggleExtraActivation={toggleExtraActivation}
-                            type={canOpenDoor}
-                          />
+                          {canOpenDoor && generalActions && (
+                            <ActionButton
+                              actionType={OPEN_DOOR_ACTION}
+                              callback={() => spendAction(OPEN_DOOR)}
+                              changeActionLabel={changeActionLabel}
+                              isMobile={device.current === MOBILE}
+                              label={
+                                context.weapons[canOpenDoor] &&
+                                context.weapons[canOpenDoor].canOpenDoor ===
+                                  NOISY
+                                  ? BREAK_DOOR
+                                  : OPEN_DOOR
+                              }
+                              manyButtons={character.location === CAR}
+                              setNoise={
+                                character.abilities.includes(
+                                  ABILITIES_S1.NINJA.name
+                                )
+                                  ? () => null
+                                  : setNoise
+                              }
+                              toggleExtraActivation={toggleExtraActivation}
+                              type={canOpenDoor}
+                            />
+                          )}
+                          {!finishedTurn && (
+                            <ActionButton
+                              actionType={END_TURN_ACTION}
+                              callback={onClickEndTurn}
+                              changeActionLabel={changeActionLabel}
+                              isMobile={device.current === MOBILE}
+                              label={END_CHAR_TURN(character.name)}
+                              manyButtons={
+                                device.current === MOBILE &&
+                                character.location === CAR
+                              }
+                            />
+                          )}
+                        </ActionsWrapper>
+                        {!finishedTurn && device.current === DESKTOP && (
+                          <ActionsLabelWrapper>
+                            {actionsLabel}
+                          </ActionsLabelWrapper>
                         )}
-                        {!finishedTurn && (
-                          <ActionButton
-                            actionType={END_TURN_ACTION}
-                            callback={onClickEndTurn}
-                            changeActionLabel={changeActionLabel}
-                            isMobile={device.current === MOBILE}
-                            label={END_CHAR_TURN(character.name)}
-                            manyButtons={
-                              device.current === MOBILE &&
-                              character.location === CAR
-                            }
-                          />
-                        )}
-                      </ActionsWrapper>
-                      {!finishedTurn && device.current === DESKTOP && (
-                        <ActionsLabelWrapper>
-                          {actionsLabel}
-                        </ActionsLabelWrapper>
-                      )}
-                    </>
-                  )}
-                </>
-              )}
+                      </>
+                    )}
+                  </>
+                )}
 
               {/* ----- INDICATORS ON CHAR SHEET ----- */}
-              {character.wounded !== KILLED && !setupMode && !damageMode && (
-                <NoiseWrapper>
-                  {Array.from(
-                    { length: character.noise },
-                    (_, index) => index
-                  ).map(key => (
-                    <NoiseIcon key={key} src={Noise} />
-                  ))}
-                </NoiseWrapper>
-              )}
+              {character.wounded !== KILLED &&
+                !setupMode &&
+                !damageMode &&
+                !objectivesAchieved && (
+                  <NoiseWrapper>
+                    {Array.from(
+                      { length: character.noise },
+                      (_, index) => index
+                    ).map(key => (
+                      <NoiseIcon key={key} src={Noise} />
+                    ))}
+                  </NoiseWrapper>
+                )}
               {character.wounded && (
                 <WoundedWrapper>
                   <WoundedSign src={Blood} />
@@ -2058,6 +2208,10 @@ const PlayersSection = ({
                 <MidScreenTag>{`${character.name}${
                   character.hasLeft ? LEFT_AREA : TURN_FINISHED
                 }`}</MidScreenTag>
+              )}
+
+              {objectivesAchieved && (
+                <MidScreenTag>{objectivesAchieved}</MidScreenTag>
               )}
 
               {resistedAttack && <MidScreenTag>{resistedAttack}</MidScreenTag>}
@@ -2075,7 +2229,7 @@ const PlayersSection = ({
                 <>
                   <ModalSign killed>
                     {gameOver ? (
-                      <ModalSignText>{gameOver}</ModalSignText>
+                      <ModalSignText>{gameOver.details}</ModalSignText>
                     ) : (
                       <ModalSignText>{`${character.name} ${HAS_BEEN_KILLED}`}</ModalSignText>
                     )}
@@ -2084,7 +2238,7 @@ const PlayersSection = ({
               )}
 
               {/* ----- ITEMS AREA ----- */}
-              {character.wounded !== KILLED && (
+              {character.wounded !== KILLED && !objectivesAchieved && (
                 <>
                   {!slot &&
                     !dropMode &&
@@ -2122,7 +2276,6 @@ const PlayersSection = ({
                               ...character.inReserve
                             ])}
                             bonusDices={character.bonusDices}
-                            callback={spendAction}
                             canAttack={canAttack}
                             canBeDeflected={
                               (character.abilities.includes(
@@ -2173,6 +2326,11 @@ const PlayersSection = ({
                             makeNoise={makeNoise}
                             onClickCombine={onClickCombine}
                             onClickDrop={changeInHand}
+                            round={round}
+                            secondarySound={
+                              context.weapons[itemName] &&
+                              context.weapons[itemName].secondarySound
+                            }
                             selectSlot={selectSlot}
                             setupMode={setupMode}
                             slotType={IN_HAND}
@@ -2198,7 +2356,6 @@ const PlayersSection = ({
                               ...character.inHand,
                               ...character.inReserve
                             ])}
-                            callback={spendAction}
                             canBeDeflected={
                               character.abilities.includes(
                                 ABILITIES_S1.ALL_YOUVE_GOT.name
@@ -2250,6 +2407,7 @@ const PlayersSection = ({
                   </CharItems>
                   {!slot &&
                     !damageMode &&
+                    !objectivesAchieved &&
                     !checkIfCharHasNoItems([
                       ...character.inHand,
                       ...character.inReserve
@@ -2269,7 +2427,9 @@ const PlayersSection = ({
               {(setupMode || roundEnded) &&
                 !slot &&
                 !damageMode &&
-                !zombiesArePlaying && (
+                !zombiesArePlaying &&
+                !gameOver &&
+                !objectivesAchieved && (
                   <MainButton
                     noOverlay
                     onClick={onClickMainButton}
@@ -2283,6 +2443,7 @@ const PlayersSection = ({
 
               {device.current === DESKTOP &&
                 !slot &&
+                !objectivesAchieved &&
                 characters.length > 0 &&
                 !startedZombieAttack && (
                   <NavIconsWrapper>
@@ -2300,7 +2461,14 @@ const PlayersSection = ({
                             currentChar={character.name === char.name}
                             damageMode={damageMode}
                             key={`charNav-${char.name}`}
-                            onClick={() => changeCharIndex(char.index)}
+                            onClick={() => {
+                              toggleChangedCharManually(true);
+                              setTimeout(
+                                () => toggleChangedCharManually(false),
+                                2000
+                              );
+                              changeCharIndex(char.index);
+                            }}
                             played={charIfCharHasPlayed(char.name)}
                             src={char.face}
                             wounded={characters.some(
@@ -2316,13 +2484,21 @@ const PlayersSection = ({
                 )}
 
               {((device.current !== MOBILE &&
+                !objectivesAchieved &&
                 (characters.length > 1 || prevCharIndex.current === null)) ||
                 (device.current === MOBILE && !dropMode)) &&
                 !startedZombieAttack && (
                   <>
                     <PreviousButton
                       damageMode={damageMode}
-                      onClick={() => changeToAnotherPlayer(PREVIOUS)}
+                      onClick={() => {
+                        toggleChangedCharManually(true);
+                        setTimeout(
+                          () => toggleChangedCharManually(false),
+                          2000
+                        );
+                        changeToAnotherPlayer(PREVIOUS);
+                      }}
                       type="button"
                     >
                       <ArrowSign className="fas fa-caret-left" />
@@ -2332,7 +2508,13 @@ const PlayersSection = ({
                       numOfChars={
                         device.current === DESKTOP && characters.length
                       }
-                      onClick={() => changeToAnotherPlayer(NEXT)}
+                      onClick={() => {
+                        setTimeout(
+                          () => toggleChangedCharManually(false),
+                          2000
+                        );
+                        changeToAnotherPlayer(NEXT);
+                      }}
                       type="button"
                     >
                       <ArrowSign className="fas fa-caret-right" />
@@ -2362,7 +2544,7 @@ const PlayersSection = ({
               )}
 
               {/* ----- ABILITIES DISPLAY ----- */}
-              {character.wounded !== KILLED && (
+              {character.wounded !== KILLED && !objectivesAchieved && (
                 <AbilitiesWrapper
                   number={character.abilities && character.abilities.length}
                 >
@@ -2386,7 +2568,8 @@ const PlayersSection = ({
                 character.abilities &&
                 character.promotions &&
                 character.wounded !== KILLED &&
-                device.current === DESKTOP && (
+                device.current === DESKTOP &&
+                !objectivesAchieved && (
                   <AbilitiesWrapperDesktop>
                     <AbilitiesInnerSeparator>
                       <PromoWrapper
@@ -2477,7 +2660,8 @@ const PlayersSection = ({
           )}
 
           {/* --- Select custom XP --- */}
-          {displayActionsModal === XP && (
+          {(displayActionsModal === BURNEM_ALL ||
+            displayActionsModal === TAKE_THAT) && (
             <ActionsModal
               toggleVisibility={toggleActionsModal}
               visible={displayActionsModal}
@@ -2488,7 +2672,7 @@ const PlayersSection = ({
                 type: 'slider',
                 buttons: [
                   {
-                    text: BURNEM_ALL,
+                    text: displayActionsModal,
                     type: 'confirm'
                   }
                 ]
@@ -2558,6 +2742,7 @@ const PlayersSection = ({
           {displayEndGameScreen && (
             <EndGame
               characters={charsSaved.length > 0 ? charsSaved : characters}
+              details={gameOver.details}
               loadGame={loadGame}
               round={round}
               time={time}
@@ -2579,6 +2764,7 @@ PlayersSection.propTypes = {
   nextGameRound: func.isRequired,
   round: number.isRequired,
   setZombiesRound: func.isRequired,
+  stopIntro: func.isRequired,
   time: string.isRequired,
   toggleDamageMode: func.isRequired,
   toggleZombiesArePlaying: func.isRequired,

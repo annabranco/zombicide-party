@@ -28,7 +28,8 @@ import {
   SPECIAL,
   WEAPONS,
   LOG_TYPE_EXTENDED,
-  SLOT_SELECTED
+  SLOT_SELECTED,
+  BURNEM_ALL
 } from '../../../constants';
 import {
   ActionButtonIcon,
@@ -46,7 +47,6 @@ const ItemsArea = ({
   activateDualEffect,
   allSlotsAreEmpty,
   bonusDices,
-  callback,
   canAttack,
   canBeDeflected,
   canCombine,
@@ -72,6 +72,8 @@ const ItemsArea = ({
   numItems,
   onClickCombine,
   onClickDrop,
+  round,
+  secondarySound,
   selectSlot,
   setupMode,
   slotType,
@@ -98,7 +100,7 @@ const ItemsArea = ({
   const activateKillButtons = () => {
     spendSingleUseWeapon(index, item);
     if (ALL_WEAPONS[item].dice === SPECIAL) {
-      gainCustomXp(index);
+      gainCustomXp(BURNEM_ALL);
     } else {
       const totalDices = calculateTotalDices();
       const currentPool = killButtons.length;
@@ -265,7 +267,7 @@ const ItemsArea = ({
         {item ? (
           <SoundBlock
             activateKillButtons={activateKillButtons}
-            callback={callback}
+            callback={spendAction}
             canAttack={canAttack}
             canBeDeflected={canBeDeflected}
             canCombine={canCombine && canCombine.includes(item)}
@@ -281,6 +283,8 @@ const ItemsArea = ({
             needsToBeReloaded={checkIfReloadIsNeeded()}
             onClickCard={setupMode ? onClickEmptyCard : onClickCard}
             onClickCombine={onClickCombine}
+            round={round}
+            secondarySound={secondarySound}
             setupMode={setupMode}
             slot={getSlotNumber(index)}
             slotType={slotType}
@@ -364,7 +368,6 @@ ItemsArea.propTypes = {
   activateDualEffect: func,
   allSlotsAreEmpty: bool,
   bonusDices: BonusDicesType,
-  callback: func,
   canAttack: bool,
   canBeDeflected: bool,
   canCombine: oneOfType([arrayOf(string), bool]),
@@ -390,6 +393,8 @@ ItemsArea.propTypes = {
   numItems: number,
   onClickCombine: func,
   onClickDrop: func.isRequired,
+  round: number,
+  secondarySound: bool,
   selectSlot: func,
   setupMode: oneOfType([string, bool]),
   slotType: string.isRequired,
@@ -405,7 +410,6 @@ ItemsArea.defaultProps = {
   activateDualEffect: () => null,
   allSlotsAreEmpty: false,
   bonusDices: null,
-  callback: () => null,
   canAttack: false,
   canBeDeflected: false,
   canCombine: null,
@@ -428,6 +432,8 @@ ItemsArea.defaultProps = {
   makeNoise: () => null,
   numItems: null,
   onClickCombine: () => null,
+  round: null,
+  secondarySound: false,
   selectSlot: () => null,
   setupMode: null,
   spendAction: () => null,
