@@ -1,13 +1,13 @@
 {
   "files": {
-    "main.js": "/zombicide-party/static/js/main.cee68a90.chunk.js",
-    "main.js.map": "/zombicide-party/static/js/main.cee68a90.chunk.js.map",
+    "main.js": "/zombicide-party/static/js/main.0bf12164.chunk.js",
+    "main.js.map": "/zombicide-party/static/js/main.0bf12164.chunk.js.map",
     "runtime-main.js": "/zombicide-party/static/js/runtime-main.09054635.js",
     "runtime-main.js.map": "/zombicide-party/static/js/runtime-main.09054635.js.map",
-    "static/js/2.411ee779.chunk.js": "/zombicide-party/static/js/2.411ee779.chunk.js",
-    "static/js/2.411ee779.chunk.js.map": "/zombicide-party/static/js/2.411ee779.chunk.js.map",
+    "static/js/2.b85e2933.chunk.js": "/zombicide-party/static/js/2.b85e2933.chunk.js",
+    "static/js/2.b85e2933.chunk.js.map": "/zombicide-party/static/js/2.b85e2933.chunk.js.map",
     "index.html": "/zombicide-party/index.html",
-    "static/js/2.411ee779.chunk.js.LICENSE.txt": "/zombicide-party/static/js/2.411ee779.chunk.js.LICENSE.txt",
+    "static/js/2.b85e2933.chunk.js.LICENSE.txt": "/zombicide-party/static/js/2.b85e2933.chunk.js.LICENSE.txt",
     "static/media/Abomination.7468aef7.png": "/zombicide-party/static/media/Abomination.7468aef7.png",
     "static/media/Abomination1.6ae71f09.mp3": "/zombicide-party/static/media/Abomination1.6ae71f09.mp3",
     "static/media/Abomination2.532b7333.mp3": "/zombicide-party/static/media/Abomination2.532b7333.mp3",
@@ -200,14 +200,14 @@
     "static/media/melee-icon.22dbf3d2.png": "/zombicide-party/static/media/melee-icon.22dbf3d2.png",
     "static/media/molotov.1cd63930.jpg": "/zombicide-party/static/media/molotov.1cd63930.jpg",
     "static/media/move-confident.13d1fde6.mp3": "/zombicide-party/static/media/move-confident.13d1fde6.mp3",
-    "static/media/move-furtive.3412fd46.mp3": "/zombicide-party/static/media/move-furtive.3412fd46.mp3",
-    "static/media/move-heavy.0d2cd6f6.mp3": "/zombicide-party/static/media/move-heavy.0d2cd6f6.mp3",
-    "static/media/move-normal.7bca07dd.mp3": "/zombicide-party/static/media/move-normal.7bca07dd.mp3",
-    "static/media/move-quick.fe3e1bde.mp3": "/zombicide-party/static/media/move-quick.fe3e1bde.mp3",
-    "static/media/move-rolling.b35b52ed.mp3": "/zombicide-party/static/media/move-rolling.b35b52ed.mp3",
-    "static/media/move-skating.bcf0f497.mp3": "/zombicide-party/static/media/move-skating.bcf0f497.mp3",
-    "static/media/move-slow.6609ab36.mp3": "/zombicide-party/static/media/move-slow.6609ab36.mp3",
-    "static/media/move-tactical.77b85000.mp3": "/zombicide-party/static/media/move-tactical.77b85000.mp3",
+    "static/media/move-furtive.16267d50.mp3": "/zombicide-party/static/media/move-furtive.16267d50.mp3",
+    "static/media/move-heavy.0cb8096e.mp3": "/zombicide-party/static/media/move-heavy.0cb8096e.mp3",
+    "static/media/move-normal.0d6c400b.mp3": "/zombicide-party/static/media/move-normal.0d6c400b.mp3",
+    "static/media/move-quick.49b8ea26.mp3": "/zombicide-party/static/media/move-quick.49b8ea26.mp3",
+    "static/media/move-rolling.c3c5367c.mp3": "/zombicide-party/static/media/move-rolling.c3c5367c.mp3",
+    "static/media/move-skating.331cf2d9.mp3": "/zombicide-party/static/media/move-skating.331cf2d9.mp3",
+    "static/media/move-slow.9509786b.mp3": "/zombicide-party/static/media/move-slow.9509786b.mp3",
+    "static/media/move-tactical.f3e2e7bd.mp3": "/zombicide-party/static/media/move-tactical.f3e2e7bd.mp3",
     "static/media/mp5.15f7314f.jpg": "/zombicide-party/static/media/mp5.15f7314f.jpg",
     "static/media/ned-face.daaf79af.png": "/zombicide-party/static/media/ned-face.daaf79af.png",
     "static/media/ned.d7e4876c.png": "/zombicide-party/static/media/ned.d7e4876c.png",
@@ -273,7 +273,7 @@
   },
   "entrypoints": [
     "static/js/runtime-main.09054635.js",
-    "static/js/2.411ee779.chunk.js",
-    "static/js/main.cee68a90.chunk.js"
+    "static/js/2.b85e2933.chunk.js",
+    "static/js/main.0bf12164.chunk.js"
   ]
 }
