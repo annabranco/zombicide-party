@@ -171,6 +171,7 @@ export const WEAPONS_S1 = {
     img: SniperRifle,
     name: 'Sniper Rifle',
     noise: true,
+    sound: 'Rifle',
     type: WEAPONS
   },
   SubMG: {

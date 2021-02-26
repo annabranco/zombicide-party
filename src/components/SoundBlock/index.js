@@ -52,6 +52,7 @@ const SoundBlock = ({
   slot,
   slotType,
   special,
+  specificSound,
   spendAmmo,
   trade,
   type,
@@ -82,9 +83,7 @@ const SoundBlock = ({
     slotType !== IN_RESERVE &&
     type !== ITEMS &&
     type !== WOUND &&
-    name === 'Sniper Rifle'
-      ? 'Rifle'
-      : name.replace(' ', '');
+    (specificSound || name.replace(' ', ''));
 
   const getImage = () => {
     if (((trade && isMobile) || isMobile) && type !== ACTIVATIONS) {
@@ -277,6 +276,7 @@ SoundBlock.propTypes = {
   slot: number,
   slotType: string,
   special: string,
+  specificSound: string,
   spendAmmo: func,
   trade: bool,
   type: string.isRequired,
@@ -312,6 +312,7 @@ SoundBlock.defaultProps = {
   slot: null,
   slotType: null,
   special: null,
+  specificSound: null,
   spendAmmo: () => null,
   trade: false,
   unloaded: false,

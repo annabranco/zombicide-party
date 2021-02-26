@@ -288,6 +288,7 @@ const ItemsArea = ({
             setupMode={setupMode}
             slot={getSlotNumber(index)}
             slotType={slotType}
+            specificSound={ALL_WEAPONS[item].sound}
             spendAmmo={spendAmmo}
             trade={trade}
             type={itemsType}
