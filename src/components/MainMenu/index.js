@@ -3,7 +3,7 @@ import { func, arrayOf } from 'prop-types';
 import appInfo from '../../../package.json';
 import { AppContext } from '../../setup/rules';
 import { ZOMBIES_S1 } from '../../setup/zombies';
-import { logger, useStateWithLabel } from '../../utils';
+import { getMediaQuery, logger, useStateWithLabel } from '../../utils';
 import NightShiftIntro from './NighShift';
 import FogEffect from '../Fog';
 import { SOUNDS } from '../../assets/sounds';
@@ -13,6 +13,7 @@ import Logo from '../../assets/images/logo.png';
 import {
   CLICK_SOUND_TEST,
   CONTINUE,
+  DESKTOP,
   INTRO_IMG_LOADED,
   INTRO_NS_LOADED,
   LOG_TYPE_EXTENDED,
@@ -115,9 +116,11 @@ const MainMenu = ({ loadedGame, setInitialCharacters }) => {
         )}
       </ButtonsArea>
 
-      <TestButton onClick={() => toggleTestSound(!testSound)}>
-        {testSound ? STOP_SOUND : TEST_SOUND}
-      </TestButton>
+      {getMediaQuery() === DESKTOP && (
+        <TestButton onClick={() => toggleTestSound(!testSound)}>
+          {testSound ? STOP_SOUND : TEST_SOUND}
+        </TestButton>
+      )}
       <Version>{APP_VERSION}</Version>
     </MenuScreen>
   );

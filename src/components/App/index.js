@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect } from 'react';
 import { HashRouter, Switch, Route } from 'react-router-dom';
 import { Global } from '@emotion/core';
 import { cloneDeep } from 'lodash';
@@ -9,8 +9,6 @@ import MainScreen from '../MainScreen';
 import ControllerLayer from '../ControllerLayer';
 import ErrorBoundary from '../ErrorBoundary';
 import ErrorComponent from '../ErrorBoundary/ErrorComponent';
-import Intro from '../../assets/sounds/music/TheHorrorShowShort.mp3';
-import IntroEnd from '../../assets/sounds/intro/ding.mp3';
 import {
   CLEAR_LS,
   ERROR_TEXTS_404,
@@ -39,32 +37,6 @@ const App = () => {
   const [loadedGame, loadGame] = useStateWithLabel(null, 'loadedGame');
   const [context, updateContext] = useStateWithLabel({}, 'context');
 
-  const intro = useRef(new Audio(Intro));
-  const introEnd = useRef(new Audio(IntroEnd));
-
-  const playIntro = () => {
-    intro.current.currentTime = 0;
-    intro.current.volume = 0.4;
-    intro.current.loop = true;
-    intro.current.play();
-  };
-
-  const stopIntro = () => {
-    const fadeInterval = setInterval(() => {
-      if (intro.current.volume < 0.1) {
-        clearInterval(fadeInterval);
-        intro.current.pause();
-      } else if (intro.current.volume > 0) {
-        intro.current.volume -= 0.05;
-      }
-    }, 500);
-    setTimeout(() => {
-      introEnd.current.currentTime = 0;
-      introEnd.current.volume = 0.2;
-      introEnd.current.play();
-    }, 3500);
-  };
-
   useEffect(() => {
     const game = loadSavedGame();
     const rules = JSON.parse(localStorage.getItem(LOCAL_STORAGE_CONFIG_KEY));
@@ -86,7 +58,6 @@ const App = () => {
       localStorage.removeItem(LOCAL_STORAGE_KEY);
     }
     window.gameDebug = 'extended';
-    return () => stopIntro();
   }, [loadGame, updateContext]);
 
   return (
@@ -112,7 +83,6 @@ const App = () => {
               render={() => (
                 <NewGame
                   loadedGame={Boolean(loadedGame)}
-                  playIntro={playIntro}
                   setInitialCharacters={setInitialCharacters}
                 />
               )}
@@ -126,7 +96,6 @@ const App = () => {
                   initialCharacters={initialCharacters}
                   loadGame={loadGame}
                   loadedGame={loadedGame}
-                  stopIntro={stopIntro}
                   toggleDamageMode={toggleDamageMode}
                 />
               )}

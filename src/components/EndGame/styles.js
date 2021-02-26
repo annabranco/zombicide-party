@@ -152,7 +152,7 @@ export const EndingCharacterImage = styled.img`
   animation-fill-mode: forwards;
   opacity: 0;
   animation-name: ${ComeIn};
-  margin: 0 -45px;
+  margin: 0 -7px;
   max-width: 300px;
 
   ${({ number }) =>
@@ -190,6 +190,10 @@ export const EndingCharacterImage = styled.img`
   &:nth-of-type(10) {
     animation-delay: 21s;
   }
+
+  @media all and (min-width: 701px) {
+    margin: 0 -45px;
+  }
 `;
 EndingCharacterImage.displayName = 'EndingCharacterImage';
 
@@ -197,13 +201,17 @@ export const EndingCharacters = styled.div`
   label: EndingCharacters;
   z-index: 14;
   position: absolute;
-  top: 50%;
+  top: 10%;
   transform: translate(0, -50%);
   width: 90%;
   display: flex;
   flex-direction: row;
   align-items: center;
   justify-content: center;
+
+  @media all and (min-width: 701px) {
+    top: 50%;
+  }
 `;
 EndingCharacters.displayName = 'EndingCharacters';
 
