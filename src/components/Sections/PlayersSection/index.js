@@ -1925,7 +1925,7 @@ const PlayersSection = ({
                               changeActionLabel={changeActionLabel}
                               isMobile={device.current === MOBILE}
                               label={LEAVE_GAME}
-                              manyButtons={character.location === CAR}
+                              manyButtons={context.rules.cars}
                               type={character.name}
                               type2={
                                 character.location === CAR
@@ -1944,7 +1944,7 @@ const PlayersSection = ({
                                 changeActionLabel={changeActionLabel}
                                 isMobile={device.current === MOBILE}
                                 label={WIN_GAME}
-                                manyButtons={character.location === CAR}
+                                manyButtons={context.rules.cars}
                               />
                             )}
 
@@ -1955,7 +1955,7 @@ const PlayersSection = ({
                               changeActionLabel={changeActionLabel}
                               isMobile={device.current === MOBILE}
                               label={EXPLODE}
-                              manyButtons={character.location === CAR}
+                              manyButtons={context.rules.cars}
                             />
                           )}
 
@@ -1971,7 +1971,7 @@ const PlayersSection = ({
                                 disabled={!canSearch}
                                 isMobile={device.current === MOBILE}
                                 label={SEARCH_ZOMBIE}
-                                manyButtons={character.location === CAR}
+                                manyButtons={context.rules.cars}
                                 type={character.voice}
                               />
                             )}
@@ -1989,7 +1989,7 @@ const PlayersSection = ({
                                 )}
                                 isMobile={device.current === MOBILE}
                                 label={GIVE_ORDERS}
-                                manyButtons={character.location === CAR}
+                                manyButtons={context.rules.cars}
                                 type={character.voice}
                                 type2={
                                   [
@@ -2017,7 +2017,7 @@ const PlayersSection = ({
                                 )}
                                 isMobile={device.current === MOBILE}
                                 label={MAKE_LOUD_NOISE}
-                                manyButtons={character.location === CAR}
+                                manyButtons={context.rules.cars}
                               />
                             )}
 
@@ -2031,7 +2031,7 @@ const PlayersSection = ({
                                 changeActionLabel={changeActionLabel}
                                 isMobile={device.current === MOBILE}
                                 label={LOCK_DOOR}
-                                manyButtons={character.location === CAR}
+                                manyButtons={context.rules.cars}
                               />
                             )}
 
@@ -2055,20 +2055,20 @@ const PlayersSection = ({
                                 }
                                 isMobile={device.current === MOBILE}
                                 label={HEAL}
-                                manyButtons={character.location === CAR}
+                                manyButtons={context.rules.cars}
                               />
                             )}
 
                           {!finishedTurn &&
                             context.rules.objectives &&
-                            generalActions && (
+                            !!generalActions && (
                               <ActionButton
                                 actionType={OBJECTIVE_ACTION}
                                 callback={onClickObjective}
                                 changeActionLabel={changeActionLabel}
                                 isMobile={device.current === MOBILE}
                                 label={GET_OBJECTIVE}
-                                manyButtons={character.location === CAR}
+                                manyButtons={context.rules.cars}
                               />
                             )}
                           {canMove && context.rules.cars && (
@@ -2088,7 +2088,7 @@ const PlayersSection = ({
                                   ? EXIT_CAR
                                   : ENTER_CAR
                               }
-                              manyButtons={character.location === CAR}
+                              manyButtons={context.rules.cars}
                               startCar={startCar}
                               type={
                                 character.location !== CAR && !car
@@ -2105,7 +2105,7 @@ const PlayersSection = ({
                                 changeActionLabel={changeActionLabel}
                                 isMobile={device.current === MOBILE}
                                 label={MOVE_CAR}
-                                manyButtons={character.location === CAR}
+                                manyButtons={context.rules.cars}
                               />
                               <ActionButton
                                 actionType={CAR_ATTACK_ACTION}
@@ -2116,7 +2116,7 @@ const PlayersSection = ({
                                 changeActionLabel={changeActionLabel}
                                 isMobile={device.current === MOBILE}
                                 label={RUN_OVER}
-                                manyButtons={character.location === CAR}
+                                manyButtons={context.rules.cars}
                               />
                             </>
                           )}
@@ -2128,12 +2128,12 @@ const PlayersSection = ({
                               changeActionLabel={changeActionLabel}
                               isMobile={device.current === MOBILE}
                               label={MOVE}
-                              manyButtons={character.location === CAR}
+                              manyButtons={context.rules.cars}
                               type={character.movement}
                             />
                           )}
 
-                          {canOpenDoor && generalActions && (
+                          {canOpenDoor && !!generalActions && (
                             <ActionButton
                               actionType={OPEN_DOOR_ACTION}
                               callback={() => spendAction(OPEN_DOOR)}
@@ -2146,7 +2146,7 @@ const PlayersSection = ({
                                   ? BREAK_DOOR
                                   : OPEN_DOOR
                               }
-                              manyButtons={character.location === CAR}
+                              manyButtons={context.rules.cars}
                               setNoise={
                                 character.abilities.includes(
                                   ABILITIES_S1.NINJA.name
@@ -2165,10 +2165,7 @@ const PlayersSection = ({
                               changeActionLabel={changeActionLabel}
                               isMobile={device.current === MOBILE}
                               label={END_CHAR_TURN(character.name)}
-                              manyButtons={
-                                device.current === MOBILE &&
-                                character.location === CAR
-                              }
+                              manyButtons={context.rules.cars}
                             />
                           )}
                         </ActionsWrapper>

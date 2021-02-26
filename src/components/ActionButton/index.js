@@ -263,6 +263,10 @@ const ActionButton = ({
             changeActionLabel(`${disabled ? CANNOT_BE_USED : label}`)
           }
           manyButtons={isMobile && manyButtons}
+          special={
+            (isMobile && actionType === EXPLOSION_ACTION) ||
+            actionType === END_TURN_ACTION
+          }
           type={type}
         />
       )}

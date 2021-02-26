@@ -7,6 +7,7 @@ import {
   CAR_MOVE_ACTION,
   COMBINE_ACTION,
   END_TURN_ACTION,
+  EXPLOSION_ACTION,
   GIVE_ORDERS_ACTION,
   LEAVE_GAME_ACTION,
   MOVE_ACTION,
@@ -206,6 +207,25 @@ export const ActionIcon = styled.i`
       }
     `}
 
+  ${({ special, actionType, manyButtons }) => {
+    if (special) {
+      if (actionType === EXPLOSION_ACTION) {
+        return css`
+          position: absolute;
+          left: 0;
+          opacity: 0.65;
+        `;
+      }
+      if (actionType === END_TURN_ACTION && manyButtons) {
+        return css`
+          position: absolute;
+          right: 15vw;
+          line-height: 1.3;
+        `;
+      }
+    }
+    return null;
+  }}
 
   @media (min-width: 1024px) and (min-height: 1300px) {
     height: 60px;
