@@ -168,8 +168,7 @@ import { CharacterType } from '../../../interfaces/types';
 import {
   AttackBurronsWrapper,
   AttackInstructions,
-  CancelAttackButton,
-  ConfirmAttackButton
+  CancelAttackButton
 } from '../ZombiesSection/styles';
 import {
   Abilities,
@@ -225,7 +224,6 @@ const PlayersSection = ({
   nextGameRound,
   round,
   setZombiesRound,
-  stopIntro,
   time,
   toggleDamageMode,
   toggleZombiesArePlaying,
@@ -1025,7 +1023,6 @@ const PlayersSection = ({
     if (setupMode === INITIAL) {
       changeCharIndex(0);
       nextGameRound();
-      stopIntro();
     }
     if (setupMode) {
       toggleSetupMode(false);
@@ -1079,25 +1076,15 @@ const PlayersSection = ({
       } else {
         changeCharIndex(nextFirstPlayer);
       }
-      // }
-      // else {
-      //   const currentCharacter = cloneDeep(character);
-
-      //   updatedCharacters.forEach((char, index) => {
-      //     char.actionsLeft = []; // eslint-disable-line no-param-reassign
-      //   });
-      //   currentCharacter.actionsLeft = [];
-
-      //   updateCharacters(updatedCharacters);
-      //   changeCharIndex(charIndex);
-      //   changeCharacter(currentCharacter);
-      // }
     }
   };
 
   const onClickObjective = () => {
-    spendAction(GET_OBJECTIVE);
     gainXp(5);
+    setTimeout(() => {
+      // I don't like this, but that's the easiest wat to update state here
+      spendAction(GET_OBJECTIVE);
+    }, 500);
   };
 
   const onClickWin = () => {
@@ -1928,7 +1915,7 @@ const PlayersSection = ({
                               changeActionLabel={changeActionLabel}
                               isMobile={device.current === MOBILE}
                               label={LEAVE_GAME}
-                              manyButtons={character.location === CAR}
+                              manyButtons={context.rules.cars}
                               type={character.name}
                               type2={
                                 character.location === CAR
@@ -1947,7 +1934,7 @@ const PlayersSection = ({
                                 changeActionLabel={changeActionLabel}
                                 isMobile={device.current === MOBILE}
                                 label={WIN_GAME}
-                                manyButtons={character.location === CAR}
+                                manyButtons={context.rules.cars}
                               />
                             )}
 
@@ -1958,7 +1945,7 @@ const PlayersSection = ({
                               changeActionLabel={changeActionLabel}
                               isMobile={device.current === MOBILE}
                               label={EXPLODE}
-                              manyButtons={character.location === CAR}
+                              manyButtons={context.rules.cars}
                             />
                           )}
 
@@ -1974,7 +1961,7 @@ const PlayersSection = ({
                                 disabled={!canSearch}
                                 isMobile={device.current === MOBILE}
                                 label={SEARCH_ZOMBIE}
-                                manyButtons={character.location === CAR}
+                                manyButtons={context.rules.cars}
                                 type={character.voice}
                               />
                             )}
@@ -1992,7 +1979,7 @@ const PlayersSection = ({
                                 )}
                                 isMobile={device.current === MOBILE}
                                 label={GIVE_ORDERS}
-                                manyButtons={character.location === CAR}
+                                manyButtons={context.rules.cars}
                                 type={character.voice}
                                 type2={
                                   [
@@ -2020,7 +2007,7 @@ const PlayersSection = ({
                                 )}
                                 isMobile={device.current === MOBILE}
                                 label={MAKE_LOUD_NOISE}
-                                manyButtons={character.location === CAR}
+                                manyButtons={context.rules.cars}
                               />
                             )}
 
@@ -2034,7 +2021,7 @@ const PlayersSection = ({
                                 changeActionLabel={changeActionLabel}
                                 isMobile={device.current === MOBILE}
                                 label={LOCK_DOOR}
-                                manyButtons={character.location === CAR}
+                                manyButtons={context.rules.cars}
                               />
                             )}
 
@@ -2058,20 +2045,20 @@ const PlayersSection = ({
                                 }
                                 isMobile={device.current === MOBILE}
                                 label={HEAL}
-                                manyButtons={character.location === CAR}
+                                manyButtons={context.rules.cars}
                               />
                             )}
 
                           {!finishedTurn &&
                             context.rules.objectives &&
-                            generalActions && (
+                            !!generalActions && (
                               <ActionButton
                                 actionType={OBJECTIVE_ACTION}
                                 callback={onClickObjective}
                                 changeActionLabel={changeActionLabel}
                                 isMobile={device.current === MOBILE}
                                 label={GET_OBJECTIVE}
-                                manyButtons={character.location === CAR}
+                                manyButtons={context.rules.cars}
                               />
                             )}
                           {canMove && context.rules.cars && (
@@ -2091,7 +2078,7 @@ const PlayersSection = ({
                                   ? EXIT_CAR
                                   : ENTER_CAR
                               }
-                              manyButtons={character.location === CAR}
+                              manyButtons={context.rules.cars}
                               startCar={startCar}
                               type={
                                 character.location !== CAR && !car
@@ -2108,7 +2095,7 @@ const PlayersSection = ({
                                 changeActionLabel={changeActionLabel}
                                 isMobile={device.current === MOBILE}
                                 label={MOVE_CAR}
-                                manyButtons={character.location === CAR}
+                                manyButtons={context.rules.cars}
                               />
                               <ActionButton
                                 actionType={CAR_ATTACK_ACTION}
@@ -2119,7 +2106,7 @@ const PlayersSection = ({
                                 changeActionLabel={changeActionLabel}
                                 isMobile={device.current === MOBILE}
                                 label={RUN_OVER}
-                                manyButtons={character.location === CAR}
+                                manyButtons={context.rules.cars}
                               />
                             </>
                           )}
@@ -2131,12 +2118,12 @@ const PlayersSection = ({
                               changeActionLabel={changeActionLabel}
                               isMobile={device.current === MOBILE}
                               label={MOVE}
-                              manyButtons={character.location === CAR}
+                              manyButtons={context.rules.cars}
                               type={character.movement}
                             />
                           )}
 
-                          {canOpenDoor && generalActions && (
+                          {canOpenDoor && !!generalActions && (
                             <ActionButton
                               actionType={OPEN_DOOR_ACTION}
                               callback={() => spendAction(OPEN_DOOR)}
@@ -2149,7 +2136,7 @@ const PlayersSection = ({
                                   ? BREAK_DOOR
                                   : OPEN_DOOR
                               }
-                              manyButtons={character.location === CAR}
+                              manyButtons={context.rules.cars}
                               setNoise={
                                 character.abilities.includes(
                                   ABILITIES_S1.NINJA.name
@@ -2168,10 +2155,7 @@ const PlayersSection = ({
                               changeActionLabel={changeActionLabel}
                               isMobile={device.current === MOBILE}
                               label={END_CHAR_TURN(character.name)}
-                              manyButtons={
-                                device.current === MOBILE &&
-                                character.location === CAR
-                              }
+                              manyButtons={context.rules.cars}
                             />
                           )}
                         </ActionsWrapper>
@@ -2529,16 +2513,13 @@ const PlayersSection = ({
 
               {damageMode && zombiesArePlaying && !startedZombieAttack && (
                 <>
-                  <AttackInstructions>{SELECT_DAMAGE}</AttackInstructions>
+                  {device.current === DESKTOP && (
+                    <AttackInstructions>{SELECT_DAMAGE}</AttackInstructions>
+                  )}
                   <AttackBurronsWrapper>
                     <CancelAttackButton onClick={cancelZombieAttack}>
                       {CANCEL}
                     </CancelAttackButton>
-                    {device.current === MOBILE && (
-                      <ConfirmAttackButton onClick={() => null}>
-                        {OK}
-                      </ConfirmAttackButton>
-                    )}
                   </AttackBurronsWrapper>
                 </>
               )}
@@ -2764,7 +2745,6 @@ PlayersSection.propTypes = {
   nextGameRound: func.isRequired,
   round: number.isRequired,
   setZombiesRound: func.isRequired,
-  stopIntro: func.isRequired,
   time: string.isRequired,
   toggleDamageMode: func.isRequired,
   toggleZombiesArePlaying: func.isRequired,

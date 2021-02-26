@@ -163,8 +163,6 @@ const ActionButton = ({
         setIconType('fas fa-sign-out-alt');
         sound.current = new Audio(SOUNDS[`${actionType}-${type}`]);
         sound2.current = new Audio(SOUNDS[type2]);
-        console.log('$$$ sound.current', sound.current);
-        console.log('$$$ ${actionType}-${type}', `${actionType}-${type}`);
         break;
 
       case LOCK_ACTION:
@@ -265,6 +263,10 @@ const ActionButton = ({
             changeActionLabel(`${disabled ? CANNOT_BE_USED : label}`)
           }
           manyButtons={isMobile && manyButtons}
+          special={
+            (isMobile && actionType === EXPLOSION_ACTION) ||
+            actionType === END_TURN_ACTION
+          }
           type={type}
         />
       )}

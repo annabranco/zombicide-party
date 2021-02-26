@@ -35,9 +35,9 @@ export const useTurnsCounter = (
     sea = searchActions,
     bon = bonusActions
   } = {}) => {
-    if (act === 0 && searchActions === 0) {
-      setSearchActions(searchActions - 1);
-    }
+    // if (act === 0 && searchActions === 0) {
+    //   setSearchActions(searchActions - 1);
+    // }
     if (!act && !mov && !att && sea <= 0 && !bon) {
       changeMessage(`${character} used all actions.`);
       setSearchActions(searchActions - 1);

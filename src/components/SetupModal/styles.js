@@ -388,6 +388,18 @@ export const PlayerNew = styled.div`
 `;
 PlayerNew.displayName = 'PlayerNew';
 
+export const PlayerNewConfirmName = styled(PlayerNew)`
+  label: PlayerNewConfirmName;
+  margin-left: 20px;
+  text-align: center;
+  background: green;
+  font-size: 1.3rem;
+  font-weight: 600;
+  line-height: 1.5;
+  display: inline;
+`;
+PlayerNewConfirmName.displayName = 'PlayerNewConfirmName';
+
 export const PlayerNewInput = styled.input`
   label: PlayerNewInput;
   height: 30px;
@@ -400,8 +412,18 @@ export const PlayerNewInput = styled.input`
   line-height: 1.1;
   color: black;
   text-transform: uppercase;
+  display: inline;
 `;
-PlayerNew.displayName = 'PlayerNew';
+PlayerNewInput.displayName = 'PlayerNewInput';
+
+export const PlayerNewInputWrapper = styled.div`
+  label: PlayerNewInputWrapper;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+`;
+PlayerNewInputWrapper.displayName = 'PlayerNewInputWrapper';
 
 export const PlayerOrderTag = styled.div`
   label: PlayerOrderTag;
@@ -464,8 +486,9 @@ export const PlayersArea = styled.div`
   align-items: center;
   justify-content: center;
   margin: 50px auto;
-  height: 40px;
-  width: auto;
+  height: auto;
+  max-width: 100%;
+  flex-wrap: wrap;
   text-transform: uppercase;
 `;
 PlayersArea.displayName = 'PlayersArea';
