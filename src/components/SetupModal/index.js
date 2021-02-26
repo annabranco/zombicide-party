@@ -25,7 +25,9 @@ import {
   Player,
   PlayerActionButtonsArea,
   PlayerNew,
+  PlayerNewConfirmName,
   PlayerNewInput,
+  PlayerNewInputWrapper,
   PlayerOrderTag,
   PlayerRemove,
   PlayerRemoveToggle,
@@ -42,6 +44,11 @@ const SetupModal = ({
   type
 }) => {
   const [message, setMessage] = useStateWithLabel({ buttons: [] }, 'message');
+  const [newPlayerName, updateNewPlayerName] = useStateWithLabel(
+    '',
+    'newPlayerName'
+  );
+
   const [players, updatePlayers] = useStateWithLabel(
     new Set(['Anya', 'Cris']),
     'players'
@@ -125,26 +132,29 @@ const SetupModal = ({
     setActivePlayers(playersSet);
   };
 
-  const onClickEnter = event => {
-    if (event.key === 'Enter') {
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const onConfirmPlayerName = event => {
+    if (event.key === 'Enter' || !event.key) {
+      // !event.key if it is fired from mouse click
       const playersSet = new Set(players);
       const activePlayerSet = new Set(activePlayers);
-      const newPlayer = event.target.value;
+      const newPlayer = newPlayerName;
+
       if (newPlayer) {
         playersSet.add(newPlayer);
         activePlayerSet.add(newPlayer);
         updatePlayers(playersSet);
         setActivePlayers(activePlayerSet);
-        document.removeEventListener('keydown', onClickEnter);
+        document.removeEventListener('keydown', onConfirmPlayerName);
       }
       toggleInput(false);
+      updateNewPlayerName('');
     }
   };
 
   const onAddPlayer = () => {
     toggleRemovePlayer(false);
     toggleInput(true);
-    document.addEventListener('keydown', onClickEnter);
   };
 
   const onClickRemovePlayer = event => {
@@ -167,6 +177,12 @@ const SetupModal = ({
       onSelectPlayer(event);
     }
   };
+
+  useEffect(() => {
+    document.removeEventListener('keydown', onConfirmPlayerName);
+    document.addEventListener('keydown', onConfirmPlayerName);
+  }, [newPlayerName, onConfirmPlayerName]);
+
   return (
     <ModalWindow
       inFront={message.title === WARNING}
@@ -204,7 +220,18 @@ const SetupModal = ({
             )}
           </PlayersArea>
           {showInput ? (
-            <PlayerNewInput type="text" placeholder="name" autoFocus />
+            <PlayerNewInputWrapper>
+              <PlayerNewInput
+                autoFocus
+                defaultValue={newPlayerName}
+                placeholder="name"
+                type="text"
+                onChange={event => updateNewPlayerName(event.target.value)}
+              />
+              <PlayerNewConfirmName onClick={onConfirmPlayerName}>
+                ✓
+              </PlayerNewConfirmName>
+            </PlayerNewInputWrapper>
           ) : (
             <PlayerActionButtonsArea>
               <PlayerNew onClick={onAddPlayer}>+</PlayerNew>
