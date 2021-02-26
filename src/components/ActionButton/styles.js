@@ -127,20 +127,21 @@ export const ActionIcon = styled.i`
         display: none;
         background: none;
         position: absolute;
-        top: 80px;
+        top: 5vh;
         left: 50%;
         transform: translate(-50%, 0);
         width: auto;
         padding: 0;
         line-height: 0.9;
         border: none;
-        font-size: 7rem;
+        font-size: 5rem;
         color: rgba(255, 255, 255, 0.85);
         -webkit-text-stroke: 1px black;
         border: 0;
         box-shadow: none;
       `;
     }
+
     return null;
   }}
 
