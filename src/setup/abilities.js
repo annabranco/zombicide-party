@@ -67,7 +67,7 @@ const MOVE_ACTION = {
   effect: ([gen, mov, att, sea, bon]) => [gen, mov + 1, att, sea, bon]
 };
 const SEARCH_ACTION = {
-  name: '+1 free Search Action ',
+  name: '+1 free Search Action',
   description:
     'The Survivor has one free extra Search Action. This Action may only be used to Search and the Survivor can still only Search once per turn.',
   effect: ([gen, mov, att, sea, bon]) => [gen, mov, att, sea + 1, bon]
@@ -191,7 +191,7 @@ const TOUGH = {
     'The Survivor ignores the first Attack he receives from a single Zombie every Zombies’ Phase'
 };
 const TRICK_SHOT = {
-  name: 'Trick shot ',
+  name: 'Trick shot',
   description:
     'When the Survivor is equipped with Dual Ranged weapons, he can aim at targets in different Zones with each weapon in the same Action.'
 };
@@ -236,7 +236,7 @@ export const ABILITIES_S1 = {
 };
 
 const ACTION_MELEE = {
-  name: '+1 free Melee Action ',
+  name: '+1 free Melee Action',
   description:
     'The Survivor has one extra free Melee Combat Action. This Action may only be used for Melee Combat.',
   effect: ([gen, mov, att, sea, bon]) => [
@@ -249,7 +249,7 @@ const ACTION_MELEE = {
 };
 
 const ACTION_RANGED = {
-  name: '+1 free Ranged Action ',
+  name: '+1 free Ranged Action',
   description:
     'The Survivor has one extra, free Ranged Combat Action. This Action can only be used for Ranged Combat.',
   effect: ([gen, mov, att, sea, bon]) => [
@@ -261,15 +261,41 @@ const ACTION_RANGED = {
   ]
 };
 
+const SUPER_STRENGTH = {
+  name: 'Super strength',
+  description:
+    'Consider the Damage value of Melee weapons used by the Survivor to be 3.'
+};
+
+const WEBBING = {
+  name: 'Webbing',
+  description:
+    'All equipment in the Survivor’s inventory is considered equipped in hand.'
+};
+
+const ZOMBIE_LINK = {
+  name: 'Zombie link',
+  description:
+    'The Survivor plays an extra turn each time an extra activation card is drawn in the Zombie pile.'
+};
+
 export const ABILITIES_MALL = {
   ACTION_MELEE,
-  ACTION_RANGED
+  ACTION_RANGED,
+  SUPER_STRENGTH,
+  WEBBING,
+  ZOMBIE_LINK
 };
 
 const BLITZ = {
   name: 'Blitz',
   description:
     'Each time your Survivor kills the last Zombie of a Zone, he gets 1 free Move Action to use immediately'
+};
+const BLOODLUST_MELEE = {
+  name: 'Bloodlust: Melee',
+  description:
+    'Spend one Action with the Survivor: He moves up to two Zones to a Zone containing at least one Zombie (or rival Survivor). He then gains one free Melee Action'
 };
 const REAPER_COMBAT = {
   name: 'Reaper: Combat',
@@ -289,12 +315,24 @@ const REAPER_RANGED = {
     'Use this Skill when assigning hits while resolving a Ranged Action. One of these hits can freely kill an additional identical Zombie in the same Zone. Only a single additional Zombie can be killed per Action when using this Skill.',
   effect: ({ combat, melee, ranged }) => ({ combat, melee, ranged: ranged + 1 })
 };
-
+const TAUNT = {
+  name: 'Taunt',
+  description:
+    'The Survivor can use this Skill, for free, once during each of his Activations. Select a Zone your Survivor can see. All Zombies standing in the selected Zone immediately gain an extra Activation: They try to reach the taunting Survivor by any means available. Taunted Zombies ignore all other Survivors. They do not attack them and cross the Zone they stand in if needed to reach the taunting Survivor.'
+};
+const TACTICIAN = {
+  name: 'Tactician',
+  description:
+    'The Survivor’s turn can be resolved anytime during the Players’ Phase, before or after any other Survivor’s turn. If several teammates benefit from this Skill at the same time, the team’s players choose their activation order.'
+};
 export const ABILITIES_S2 = {
   BLITZ,
+  BLOODLUST_MELEE,
   REAPER_COMBAT,
   REAPER_MELEE,
-  REAPER_RANGED
+  REAPER_RANGED,
+  TAUNT,
+  TACTICIAN
 };
 
 const HIT_N_RUN = {
@@ -302,14 +340,28 @@ const HIT_N_RUN = {
   description:
     'The Survivor can use this Skill for free, just after he resolved Melee or Ranged Combat Action resulting in at least a Zombie kill (or a rival Survivor kill). He can then resolve a free Move Action. The Survivor does not spend extra Actions to perform this free Move Action if Zombies are standing in his Zone.'
 };
-
+const SEARCH_PLUS_ONE = {
+  name: 'Search: +1 card',
+  description: 'Draw an extra card when Searching with the Survivor.'
+};
 export const ABILITIES_S3 = {
-  HIT_N_RUN
+  HIT_N_RUN,
+  SEARCH_PLUS_ONE
+};
+
+const CANT_BE_THAT_UNLUCKY = {
+  name: "Can't be THAT unlucy",
+  description:
+    'Unlucky with dice results? Not anymore... Re-roll once any 1 on dice rolls.'
+};
+export const NIGHT_SHIFT = {
+  CANT_BE_THAT_UNLUCKY
 };
 
 export const ALL_ABILITIES = {
   ...ABILITIES_S1,
   ...ABILITIES_MALL,
   ...ABILITIES_S2,
-  ...ABILITIES_S3
+  ...ABILITIES_S3,
+  ...NIGHT_SHIFT
 };
