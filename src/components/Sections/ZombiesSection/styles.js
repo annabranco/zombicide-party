@@ -54,6 +54,11 @@ export const AttackBurronsWrapper = styled.div`
   z-index: 15;
   position: absolute;
   bottom: 25px;
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
 
   @media all and (min-width: 768px) {
     bottom: 40px;
@@ -85,7 +90,7 @@ AttackInstructions.displayName = 'AttackInstructions';
 
 export const CancelAttackButton = styled(SelectionButton)`
   label: CancelAttackButton;
-  margin: 0 20px 5px;
+  margin: 0 auto 5px;
   height: 30px;
   width: 90px;
   border-radius: 5px;
@@ -125,7 +130,7 @@ export const ConfirmAttackButton = styled(CancelAttackButton)`
     color: crimson;
   }
 `;
-CancelAttackButton.displayName = 'CancelAttackButton';
+ConfirmAttackButton.displayName = 'ConfirmAttackButton';
 
 export const NoSelectOverlay = styled.div`
   label: NoSelectOverlay;
@@ -190,6 +195,7 @@ ZombieActions.displayName = 'ZombieActions';
 export const ZombieImageForMobile = styled.div`
   label: ZombieImageForMobile;
   height: ${({ rows }) => `${window.innerHeight / rows - 30}px`};
+  max-height: 40vh;
   width: 100%;
   background-image: ${({ img }) => img && `url(${img})`};
   background-repeat: no-repeat;
@@ -278,13 +284,14 @@ export const ZombieWrapper = styled.h3`
   label: ZombieWrapper;
   position: relative;
   height: 100%;
+  max-height: 40vh;
 
   @media all and (min-width: 701px) {
     position: initial;
     width: 100px;
     margin: 0 10px;
+    max-height: none;
   }
-
   @media all and (min-width: 1200px) {
     margin: 0 30px;
     max-width: 140px;

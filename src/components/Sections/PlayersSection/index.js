@@ -168,8 +168,7 @@ import { CharacterType } from '../../../interfaces/types';
 import {
   AttackBurronsWrapper,
   AttackInstructions,
-  CancelAttackButton,
-  ConfirmAttackButton
+  CancelAttackButton
 } from '../ZombiesSection/styles';
 import {
   Abilities,
@@ -2527,16 +2526,13 @@ const PlayersSection = ({
 
               {damageMode && zombiesArePlaying && !startedZombieAttack && (
                 <>
-                  <AttackInstructions>{SELECT_DAMAGE}</AttackInstructions>
+                  {device.current === DESKTOP && (
+                    <AttackInstructions>{SELECT_DAMAGE}</AttackInstructions>
+                  )}
                   <AttackBurronsWrapper>
                     <CancelAttackButton onClick={cancelZombieAttack}>
                       {CANCEL}
                     </CancelAttackButton>
-                    {device.current === MOBILE && (
-                      <ConfirmAttackButton onClick={() => null}>
-                        {OK}
-                      </ConfirmAttackButton>
-                    )}
                   </AttackBurronsWrapper>
                 </>
               )}
