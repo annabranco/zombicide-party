@@ -464,8 +464,9 @@ export const PlayersArea = styled.div`
   align-items: center;
   justify-content: center;
   margin: 50px auto;
-  height: 40px;
-  width: auto;
+  height: auto;
+  max-width: 100%;
+  flex-wrap: wrap;
   text-transform: uppercase;
 `;
 PlayersArea.displayName = 'PlayersArea';
