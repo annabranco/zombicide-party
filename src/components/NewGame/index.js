@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from 'react';
+import React, { useContext, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { arrayOf, bool, func } from 'prop-types';
 import { cloneDeep } from 'lodash';
@@ -10,6 +10,8 @@ import {
 } from '../../utils';
 import SetupModal from '../SetupModal';
 import BG from '../../assets/images/background/background.jpg';
+import Intro from '../../assets/sounds/music/TheHorrorShowShort.mp3';
+import IntroEnd from '../../assets/sounds/intro/ding.mp3';
 import {
   CLICK_NEW_GAME,
   LOG_TYPE_CORE,
@@ -43,7 +45,6 @@ const NewGame = ({
   currentChars,
   dynamic,
   loadedGame,
-  playIntro,
   setInitialCharacters,
   setNewChar
 }) => {
@@ -64,6 +65,38 @@ const NewGame = ({
   );
 
   const { context } = useContext(AppContext);
+  const intro = useRef(new Audio(Intro));
+  const introEnd = useRef(new Audio(IntroEnd));
+
+  const playIntro = () => {
+    intro.current.currentTime = 0;
+    intro.current.volume = 0.4;
+    intro.current.loop = true;
+    intro.current.play();
+  };
+
+  const stopIntro = () => {
+    if (navigator.userAgent.match(/iPad|iPhone/i)) {
+      intro.current.pause();
+      introEnd.current.currentTime = 0;
+      introEnd.current.volume = 0.2;
+      introEnd.current.play();
+    } else {
+      const fadeInterval = setInterval(() => {
+        if (intro.current.volume < 0.1) {
+          clearInterval(fadeInterval);
+          intro.current.pause();
+        } else if (intro.current.volume > 0) {
+          intro.current.volume -= 0.05;
+        }
+      }, 500);
+      setTimeout(() => {
+        introEnd.current.currentTime = 0;
+        introEnd.current.volume = 0.2;
+        introEnd.current.play();
+      }, 3500);
+    }
+  };
 
   const addPlayer = newPlayerSelected => {
     setNewPlayer(newPlayerSelected);
@@ -82,7 +115,7 @@ const NewGame = ({
     });
     logger(LOG_TYPE_CORE, START_GAME, cloneDeep(newgameCharacters));
     logger(LOG_TYPE_INFO, PLAYER_NAMES, [...activePlayers].toString());
-
+    stopIntro();
     setInitialCharacters(newgameCharacters);
   };
   const onSelect = event => {
@@ -231,7 +264,6 @@ NewGame.propTypes = {
   currentChars: arrayOf(CharacterType),
   dynamic: bool,
   loadedGame: bool,
-  playIntro: func,
   setInitialCharacters: func,
   setNewChar: func
 };
@@ -240,7 +272,6 @@ NewGame.defaultProps = {
   currentChars: null,
   dynamic: false,
   loadedGame: null,
-  playIntro: () => null,
   setInitialCharacters: () => null,
   setNewChar: () => null
 };

@@ -225,7 +225,6 @@ const PlayersSection = ({
   nextGameRound,
   round,
   setZombiesRound,
-  stopIntro,
   time,
   toggleDamageMode,
   toggleZombiesArePlaying,
@@ -1025,7 +1024,6 @@ const PlayersSection = ({
     if (setupMode === INITIAL) {
       changeCharIndex(0);
       nextGameRound();
-      stopIntro();
     }
     if (setupMode) {
       toggleSetupMode(false);
@@ -2764,7 +2762,6 @@ PlayersSection.propTypes = {
   nextGameRound: func.isRequired,
   round: number.isRequired,
   setZombiesRound: func.isRequired,
-  stopIntro: func.isRequired,
   time: string.isRequired,
   toggleDamageMode: func.isRequired,
   toggleZombiesArePlaying: func.isRequired,
