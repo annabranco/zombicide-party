@@ -1076,25 +1076,15 @@ const PlayersSection = ({
       } else {
         changeCharIndex(nextFirstPlayer);
       }
-      // }
-      // else {
-      //   const currentCharacter = cloneDeep(character);
-
-      //   updatedCharacters.forEach((char, index) => {
-      //     char.actionsLeft = []; // eslint-disable-line no-param-reassign
-      //   });
-      //   currentCharacter.actionsLeft = [];
-
-      //   updateCharacters(updatedCharacters);
-      //   changeCharIndex(charIndex);
-      //   changeCharacter(currentCharacter);
-      // }
     }
   };
 
   const onClickObjective = () => {
-    spendAction(GET_OBJECTIVE);
     gainXp(5);
+    setTimeout(() => {
+      // I don't like this, but that's the easiest wat to update state here
+      spendAction(GET_OBJECTIVE);
+    }, 500);
   };
 
   const onClickWin = () => {
