@@ -7,22 +7,25 @@ import Phil from '../assets/images/survivors/phil.png';
 import Wanda from '../assets/images/survivors/wanda.png';
 import Josh from '../assets/images/survivors/josh.png';
 import Doug from '../assets/images/survivors/doug.png';
-import AmyFace from '../assets/images/survivors/amy-face.png';
-import BenFace from '../assets/images/survivors/ben-face.png';
-import MaryFace from '../assets/images/survivors/mary-face.png';
-import NedFace from '../assets/images/survivors/ned-face.png';
-import PhilFace from '../assets/images/survivors/phil-face.png';
-import WandaFace from '../assets/images/survivors/wanda-face.png';
-import JoshFace from '../assets/images/survivors/josh-face.png';
-import DougFace from '../assets/images/survivors/doug-face.png';
-import SelectorAmy from '../assets/images/selectors/selector-amy.png';
-import SelectorBen from '../assets/images/selectors/selector-ben.png';
-import SelectorMary from '../assets/images/selectors/selector-mary.png';
-import SelectorNed from '../assets/images/selectors/selector-ned.png';
-import SelectorPhil from '../assets/images/selectors/selector-phil.png';
-import SelectorWanda from '../assets/images/selectors/selector-wanda.png';
-import SelectorJosh from '../assets/images/selectors/selector-josh.png';
-import SelectorDoug from '../assets/images/selectors/selector-doug.png';
+
+import AmyFace from '../assets/images/survivors/faces/amy-face.png';
+import BenFace from '../assets/images/survivors/faces/ben-face.png';
+import MaryFace from '../assets/images/survivors/faces/mary-face.png';
+import NedFace from '../assets/images/survivors/faces/ned-face.png';
+import PhilFace from '../assets/images/survivors/faces/phil-face.png';
+import WandaFace from '../assets/images/survivors/faces/wanda-face.png';
+import JoshFace from '../assets/images/survivors/faces/josh-face.png';
+import DougFace from '../assets/images/survivors/faces/doug-face.png';
+
+import SelectorAmy from '../assets/images/survivors/selectors/selector-amy.png';
+import SelectorBen from '../assets/images/survivors/selectors/selector-ben.png';
+import SelectorMary from '../assets/images/survivors/selectors/selector-mary.png';
+import SelectorNed from '../assets/images/survivors/selectors/selector-ned.png';
+import SelectorPhil from '../assets/images/survivors/selectors/selector-phil.png';
+import SelectorWanda from '../assets/images/survivors/selectors/selector-wanda.png';
+import SelectorJosh from '../assets/images/survivors/selectors/selector-josh.png';
+import SelectorDoug from '../assets/images/survivors/selectors/selector-doug.png';
+
 import { FEMALE, MALE } from '../constants';
 import { ABILITIES_S1, ABILITIES_S2, ABILITIES_MALL } from './abilities';
 
