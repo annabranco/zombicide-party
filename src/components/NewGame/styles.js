@@ -58,6 +58,27 @@ export const CharacterArea = styled.div`
       return null;
     }}
   }
+
+  @media all and (min-width: 1600px) {
+    ${({ number }) => {
+      if (number >= 8) {
+        return css`
+          top: 200px;
+          display: grid;
+          grid-template-columns: repeat(10, 1fr);
+          grid-template-rows: repeat(auto-fill, 100px);
+        `;
+      }
+      if (number) {
+        return css`
+          display: grid;
+          width: 90%;
+          grid-template-columns: repeat(${number}, 1fr);
+        `;
+      }
+      return null;
+    }}
+  }
 `;
 CharacterArea.displayName = 'CharacterArea';
 
@@ -80,6 +101,10 @@ export const CharacterImage = styled.img`
     css`
       ${activeImage}
     `}
+
+@media all and (min-width: 1600px) {
+    margin: 0 -20px;
+  }
 `;
 CharacterImage.displayName = 'CharacterImage';
 
@@ -144,6 +169,14 @@ export const CharacterName = styled.h1`
         color: white;
         font-size: 2rem;
       `}
+  }
+
+  @media all and (min-width: 1600px) {
+    top: unset;
+    bottom: 0;
+    left: -40%;
+    font-size: 2.4rem;
+    color: rgba(255, 255, 255, 0.8);
   }
 `;
 CharacterName.displayName = 'CharacterName';
