@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useRef } from 'react';
 import { useHistory } from 'react-router-dom';
 import { cloneDeep, isEqual } from 'lodash';
 import { arrayOf, bool, func, number, oneOfType, string } from 'prop-types';
-import { ABILITIES_S1 } from '../../../setup/abilities';
+import { ABILITIES_S1, ALL_ABILITIES } from '../../../setup/abilities';
 import {
   blueThreatThresold,
   calculateXpBar,
@@ -24,7 +24,8 @@ import {
   orangeThreatThresold,
   useStateWithLabel,
   useTurnsCounter,
-  yellowThreatThresold
+  yellowThreatThresold,
+  totalActions
 } from '../../../utils';
 import ActionsModal from '../../ActionsModal';
 import { SOUNDS } from '../../../assets/sounds';
@@ -45,6 +46,8 @@ import {
   ADD_CHARACTER,
   ADD_NEW_CHAR,
   ADVANCE_LEVEL,
+  BLITZ_ACTION,
+  BLITZ_LABEL,
   BLOCKED,
   BLOCKED_ONE,
   BONUS_ACTION,
@@ -82,6 +85,8 @@ import {
   FINISH_SETUP,
   FIRST_PLAYER_TOKEN,
   FREE_ATTACK,
+  FREE_ATTACK_MELEE,
+  FREE_ATTACK_RANGED,
   FREE_MOVE,
   FREE_SEARCH,
   GAIN_XP,
@@ -96,6 +101,8 @@ import {
   HEAL_CHOOSE,
   HEAL_WOUND,
   HIT,
+  HIT_N_RUN,
+  HIT_N_RUN_ACTION,
   INITIAL,
   IN_HAND,
   IN_RESERVE,
@@ -491,9 +498,9 @@ const PlayersSection = ({
           toggleActionsModal('orange');
         } else if (char.abilities.length !== 3) {
           updatedChar.abilities = [];
-          updatedChar.actions = [3, 0, 0, 0, 0];
-          updatedChar.actionsLeft = [3, 0, 0, 0, 0];
-          updatedChar.bonusDices = { combat: 0, melee: 0, ranged: 0 };
+          updatedChar.actions = [3, 0, [0, 0, 0], 0, 0];
+          updatedChar.actionsLeft = [3, 0, [0, 0, 0], 0, 0];
+          updatedChar.bonusDice = { combat: 0, melee: 0, ranged: 0 };
           updatedChar = handlePromotionEffects(
             updatedChar,
             'blue',
@@ -522,9 +529,9 @@ const PlayersSection = ({
           ]);
         } else if (char.abilities.length !== 2) {
           updatedChar.abilities = [];
-          updatedChar.actions = [3, 0, 0, 0, 0];
-          updatedChar.actionsLeft = [3, 0, 0, 0, 0];
-          updatedChar.bonusDices = { combat: 0, melee: 0, ranged: 0 };
+          updatedChar.actions = [3, 0, [0, 0, 0], 0, 0];
+          updatedChar.actionsLeft = [3, 0, [0, 0, 0], 0, 0];
+          updatedChar.bonusDice = { combat: 0, melee: 0, ranged: 0 };
           updatedChar = handlePromotionEffects(
             updatedChar,
             'blue',
@@ -551,12 +558,12 @@ const PlayersSection = ({
             (char.actionsLeft && [...char.actionsLeft]) || [...char.actions]
           );
         } else if (updatedChar.abilities.length === 1) {
-          return null;
+          return updatedChar;
         } else {
           updatedChar.abilities = [];
-          updatedChar.actions = [3, 0, 0, 0, 0];
-          updatedChar.actionsLeft = [3, 0, 0, 0, 0];
-          updatedChar.bonusDices = { combat: 0, melee: 0, ranged: 0 };
+          updatedChar.actions = [3, 0, [0, 0, 0], 0, 0];
+          updatedChar.actionsLeft = [3, 0, [0, 0, 0], 0, 0];
+          updatedChar.bonusDice = { combat: 0, melee: 0, ranged: 0 };
           updatedChar = handlePromotionEffects(
             updatedChar,
             'blue',
@@ -623,7 +630,7 @@ const PlayersSection = ({
     characters.forEach(char => {
       if (char.name === name) {
         hasPlayed = !checkIfHasAnyActionLeft(
-          char.actionsLeft || [3, 0, 0, 0, 0]
+          char.actionsLeft || [3, 0, [0, 0, 0], 0, 0]
         );
       }
     });
@@ -764,7 +771,9 @@ const PlayersSection = ({
     const actions = {
       gen: (actionsLeft && actionsLeft[0]) || generalActions,
       mov: (actionsLeft && actionsLeft[1]) || extraMovementActions,
-      att: (actionsLeft && actionsLeft[2]) || extraAttackActions,
+      att: (actionsLeft && actionsLeft[2][0]) || extraAttackActions[0],
+      mAtt: (actionsLeft && actionsLeft[2][1]) || extraAttackActions[1],
+      rAtt: (actionsLeft && actionsLeft[2][2]) || extraAttackActions[2],
       sea: (actionsLeft && actionsLeft[3]) || searchActions,
       bon: (actionsLeft && actionsLeft[4]) || bonusActions
     };
@@ -777,6 +786,12 @@ const PlayersSection = ({
     }
     for (let i = 1; i <= actions.att; i++) {
       count.push(FREE_ATTACK);
+    }
+    for (let i = 1; i <= actions.mAtt; i++) {
+      count.push(FREE_ATTACK_MELEE);
+    }
+    for (let i = 1; i <= actions.rAtt; i++) {
+      count.push(FREE_ATTACK_RANGED);
     }
     for (let i = 1; i <= actions.sea; i++) {
       count.push(FREE_SEARCH);
@@ -817,7 +832,11 @@ const PlayersSection = ({
 
     toggleHasKilledZombie(true);
     updatedCharacter.experience = newXp;
-    updateData(updatedCharacter);
+
+    updateXpCounter(
+      calculateXpBar(updatedCharacter.experience, highestXp.xp, device.current)
+    );
+    updateData(advancingLevel(updatedCharacter.experience, updatedCharacter));
   };
 
   const getMainButtonText = () => {
@@ -867,6 +886,8 @@ const PlayersSection = ({
   const setCustomXp = (newXp, prevXp, nextXp) => {
     const updatedCharacter = cloneDeep(character);
     let updatedXp = newXp;
+    let updHighestXp = highestXp.xp;
+
     if (newXp === '...') {
       if (prevXp === 19 && nextXp === 43) {
         updatedXp = 20;
@@ -886,12 +907,17 @@ const PlayersSection = ({
 
     if (updatedXp > highestXp.xp || highestXp.name === character.name) {
       updateHighestXp({ name: character.name, xp: updatedXp });
+      updHighestXp = updatedXp;
     }
 
     logger(LOG_TYPE_EXTENDED, GAIN_XP, `xp: ${prevXp} newXp: ${updatedXp}`);
 
     toggleHasKilledZombie(true);
-    updateData(updatedCharacter);
+
+    updateXpCounter(
+      calculateXpBar(updatedCharacter.experience, updHighestXp, device.current)
+    );
+    updateData(advancingLevel(updatedCharacter.experience, updatedCharacter));
   };
 
   const setNoise = (noise = 1) => {
@@ -999,7 +1025,7 @@ const PlayersSection = ({
     toggleChangedCharManually(true);
     setTimeout(() => toggleChangedCharManually(false), 2000);
     logger(LOG_TYPE_EXTENDED, CLICK_END_TURN);
-    updatedCharacter.actionsLeft = [0, 0, 0, 0, 0];
+    updatedCharacter.actionsLeft = [0, 0, [0, 0, 0], 0, 0];
     updateData(updatedCharacter);
     if (charsStillToAct.length > 0) {
       setTimeout(() => changeToAnotherPlayer(NEXT), 1200);
@@ -1249,7 +1275,7 @@ const PlayersSection = ({
       char => char.name !== character.name && !char.hasLeft
     );
     updChar.hasLeft = true;
-    updChar.actionsLeft = [0, 0, 0, 0, 0];
+    updChar.actionsLeft = [0, 0, [0, 0, 0], 0, 0];
     updateCharSaved([...charsSaved, updChar]);
     updateData(updChar);
 
@@ -1325,6 +1351,11 @@ const PlayersSection = ({
     updChar.actionsLeft = newActionsLeft;
     updateData(updChar);
     selectSlot(emptySlot);
+    toggleHasKilledZombie(false);
+  };
+
+  const onUsePostKillSkill = () => {
+    toggleHasKilledZombie(false);
   };
 
   const setNewChar = updatedCharacters => {
@@ -1615,6 +1646,8 @@ const PlayersSection = ({
       const updatedCharacter = charBackup
         ? cloneDeep(charBackup)
         : cloneDeep(character);
+      const actionsArray = generateActionsCountArray();
+
       if (charBackup) {
         backupChar();
       }
@@ -1625,10 +1658,25 @@ const PlayersSection = ({
         searchActions,
         bonusActions
       ];
+
+      // updatedCharacter.actionsLeft.forEach((action, index) => {
+      //   // Avoid clash of data loop due to async update of actions
+      //   if (
+      //     index === 2 &&
+      //     totalActions(action) > totalActions(updatedCharacter.actions[2])
+      //   ) {
+      //     updatedCharacter.actions[2] = [...action];
+      //   }
+      //   if (action > updatedCharacter.actions[index]) {
+      //     updatedCharacter.actions[index] = action;
+      //   }
+      // });
+
       changeCharacter(updatedCharacter);
-      const actionsArray = generateActionsCountArray();
       if (!isEqual(actionsArray, actionsCount)) {
-        updateActionsCount(actionsArray);
+        updateActionsCount(
+          generateActionsCountArray(updatedCharacter.actionsLeft)
+        );
         updateData(updatedCharacter);
       }
     }
@@ -1636,7 +1684,9 @@ const PlayersSection = ({
   }, [
     generalActions,
     extraMovementActions,
-    extraAttackActions,
+    extraAttackActions[0],
+    extraAttackActions[1],
+    extraAttackActions[2],
     searchActions,
     bonusActions
   ]);
@@ -1701,7 +1751,9 @@ const PlayersSection = ({
 
         toggleSomeoneIsWounded(characters.some(char => char.wounded));
         changeCharacter(nextChar);
-
+        updateXpCounter(
+          calculateXpBar(nextChar.experience, highestXp.xp, device.current)
+        );
         checkIfCharHasDualEffect([...nextChar.inHand]);
         setCanOpenDoor(openDoors);
         toggleCanCombine(charCanCombineItems);
@@ -1712,22 +1764,6 @@ const PlayersSection = ({
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [charIndex, characters]);
-
-  useEffect(() => {
-    if (character.experience >= 0) {
-      const charClone = cloneDeep(character);
-      const newXpBar = calculateXpBar(
-        charClone.experience,
-        highestXp.xp,
-        device.current
-      );
-      const updatedChar = advancingLevel(charClone.experience, charClone);
-
-      updateXpCounter(newXpBar);
-      updateData(updatedChar);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [character.experience, updateXpCounter]);
 
   useEffect(() => {
     if (zombiesArePlaying && extraActivation) {
@@ -1895,7 +1931,12 @@ const PlayersSection = ({
               )}
               {character.wounded !== KILLED && (
                 <>
-                  <CharacterName>{character.name}</CharacterName>
+                  <CharacterName>
+                    {device.current === DESKTOP && character.nickname
+                      ? `"${character.nickname}"`
+                      : ''}{' '}
+                    {character.name}
+                  </CharacterName>
                   <PlayerTag>{character.player}</PlayerTag>
                 </>
               )}
@@ -1925,16 +1966,29 @@ const PlayersSection = ({
                             />
                           )}
 
-                          {!!generalActions &&
-                            context.rules.winGame &&
-                            round >= 5 && (
+                          {context.rules.winGame && round >= 5 && (
+                            <ActionButton
+                              actionType={WIN_GAME}
+                              callback={onClickWin}
+                              changeActionLabel={changeActionLabel}
+                              isMobile={device.current === MOBILE}
+                              label={WIN_GAME}
+                              manyButtons={character.location === CAR}
+                            />
+                          )}
+
+                          {hasKilledZombie &&
+                            character.abilities.includes(
+                              ALL_ABILITIES.BLITZ.name
+                            ) && (
                               <ActionButton
-                                actionType={WIN_GAME}
-                                callback={onClickWin}
+                                actionType={BLITZ_ACTION}
+                                callback={onUsePostKillSkill}
                                 changeActionLabel={changeActionLabel}
                                 isMobile={device.current === MOBILE}
-                                label={WIN_GAME}
+                                label={BLITZ_LABEL}
                                 manyButtons={context.rules.cars}
+                                type={character.movement}
                               />
                             )}
 
@@ -1948,8 +2002,23 @@ const PlayersSection = ({
                               manyButtons={context.rules.cars}
                             />
                           )}
+                          {hasKilledZombie &&
+                            character.abilities.includes(
+                              ALL_ABILITIES.HIT_N_RUN.name
+                            ) && (
+                              <ActionButton
+                                actionType={HIT_N_RUN_ACTION}
+                                callback={onUsePostKillSkill}
+                                changeActionLabel={changeActionLabel}
+                                isMobile={device.current === MOBILE}
+                                label={HIT_N_RUN}
+                                manyButtons={context.rules.cars}
+                                type={character.movement}
+                              />
+                            )}
 
                           {!!generalActions &&
+                            canSearch &&
                             character.abilities.includes(
                               ABILITIES_S1.HOLD_YOUR_NOSE.name
                             ) &&
@@ -2048,6 +2117,17 @@ const PlayersSection = ({
                                 manyButtons={context.rules.cars}
                               />
                             )}
+
+                          {!!generalActions && context.rules.explosion && (
+                            <ActionButton
+                              actionType={EXPLOSION_ACTION}
+                              callback={onExplode}
+                              changeActionLabel={changeActionLabel}
+                              isMobile={device.current === MOBILE}
+                              label={EXPLODE}
+                              manyButtons={character.location === CAR}
+                            />
+                          )}
 
                           {!finishedTurn &&
                             context.rules.objectives &&
@@ -2259,7 +2339,7 @@ const PlayersSection = ({
                               ...character.inHand,
                               ...character.inReserve
                             ])}
-                            bonusDices={character.bonusDices}
+                            bonusDice={character.bonusDice}
                             canAttack={canAttack}
                             canBeDeflected={
                               (character.abilities.includes(
@@ -2292,6 +2372,7 @@ const PlayersSection = ({
                                   inHandItem === ALL_ITEMS.PoliceRiotShield.name
                               )
                             }
+                            charName={character.name}
                             charVoice={character.voice}
                             damageMode={damageMode}
                             device={device.current}
@@ -2559,8 +2640,16 @@ const PlayersSection = ({
                           character.abilities[0] ===
                             character.promotions.blue.name
                         }
+                        textLength={character.promotions.blue.name.length}
                       >
-                        <LevelIndicator level={0} />
+                        <LevelIndicator
+                          active={
+                            character.abilities &&
+                            character.abilities[0] ===
+                              character.promotions.blue.name
+                          }
+                          level={0}
+                        />
                         {character.promotions.blue.name}
                       </PromoWrapper>
                     </AbilitiesInnerSeparator>
@@ -2571,8 +2660,16 @@ const PlayersSection = ({
                           character.abilities[1] ===
                             character.promotions.yellow.name
                         }
+                        textLength={character.promotions.yellow.name.length}
                       >
-                        <LevelIndicator level={1} />
+                        <LevelIndicator
+                          active={
+                            character.abilities &&
+                            character.abilities[1] ===
+                              character.promotions.yellow.name
+                          }
+                          level={1}
+                        />
                         {character.promotions.yellow.name}
                       </PromoWrapper>
                     </AbilitiesInnerSeparator>
@@ -2584,8 +2681,15 @@ const PlayersSection = ({
                             character.abilities[2] === promo.name
                           }
                           key={`promo-orange-${promo.name.replace(' ', '-')}`}
+                          textLength={promo.name.length}
                         >
-                          <LevelIndicator level={2} />
+                          <LevelIndicator
+                            active={
+                              character.abilities &&
+                              character.abilities[2] === promo.name
+                            }
+                            level={2}
+                          />
                           {promo.name}
                         </PromoWrapper>
                       ))}
@@ -2598,8 +2702,15 @@ const PlayersSection = ({
                             character.abilities[3] === promo.name
                           }
                           key={`promo-orange-${promo.name.replace(' ', '-')}`}
+                          textLength={promo.name.length}
                         >
-                          <LevelIndicator level={3} />
+                          <LevelIndicator
+                            active={
+                              character.abilities &&
+                              character.abilities[3] === promo.name
+                            }
+                            level={3}
+                          />
                           {promo.name}
                         </PromoWrapper>
                       ))}

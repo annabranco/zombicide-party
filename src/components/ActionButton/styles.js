@@ -1,6 +1,7 @@
 import styled from '@emotion/styled';
 import { css } from '@emotion/core';
 import {
+  BLITZ_ACTION,
   CAR_ATTACK_ACTION,
   CAR_ENTER_ACTION,
   CAR_EXIT_ACTION,
@@ -9,6 +10,7 @@ import {
   END_TURN_ACTION,
   EXPLOSION_ACTION,
   GIVE_ORDERS_ACTION,
+  HIT_N_RUN_ACTION,
   LEAVE_GAME_ACTION,
   MOVE_ACTION,
   OBJECTIVE_ACTION,
@@ -342,6 +344,19 @@ export const PrimaryIcon = styled.i`
         transform: rotateY(180deg);
       `;
     }
+    if (actionType === BLITZ_ACTION) {
+      return css`
+        font-size: 1.5rem;
+        color: gray;
+      `;
+    }
+    if (actionType === HIT_N_RUN_ACTION) {
+      return css`
+        font-size: 2.2rem;
+        margin-left: -2px;
+        transform: rotateY(180deg);
+      `;
+    }
     return null;
   }}
 
@@ -394,6 +409,18 @@ export const SecondaryIcon = styled.i`
       return css`
         transform: rotateY(180deg);
         margin-left: -2px;
+      `;
+    }
+    if (actionType === BLITZ_ACTION) {
+      return css`
+        font-size: 2.2rem;
+        margin-left: -2px;
+      `;
+    }
+    if (actionType === HIT_N_RUN_ACTION) {
+      return css`
+        font-size: 1.3rem;
+        color: maroon;
       `;
     }
     return null;

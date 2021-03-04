@@ -7,14 +7,18 @@ import {
   ACTIVATE,
   ACTIVATIONS,
   ATTACK,
+  ATTACK_MELEE,
+  ATTACK_RANGED,
+  ATTACK_SURVIVOR,
   COMBINE_ACTION,
-  IN_RESERVE,
   IN_HAND,
+  IN_RESERVE,
   ITEMS,
   KILL,
+  MELEE,
+  RANGED,
   WEAPONS,
-  WOUND,
-  ATTACK_SURVIVOR
+  WOUND
 } from '../../constants';
 import {
   Action,
@@ -22,6 +26,7 @@ import {
   ZombieImageForMobile
 } from '../Sections/ZombiesSection/styles';
 import { Block, PlayImageButton, PlayIcon, PlayText, ItemIcon } from './styles';
+import { ALL_WEAPONS } from '../../setup/weapons';
 
 const SoundBlock = ({
   activateKillButtons,
@@ -30,6 +35,7 @@ const SoundBlock = ({
   canBeDeflected,
   canCombine,
   charCanDeflect,
+  charName,
   combineItemSelected,
   combinePair,
   damageMode,
@@ -129,7 +135,11 @@ const SoundBlock = ({
         quickAttackDebounce.current = false;
       }, 1000);
       activateKillButtons();
-      callback(ATTACK);
+      if (ALL_WEAPONS[name].attack === MELEE) {
+        callback(ATTACK_MELEE);
+      } else if (ALL_WEAPONS[name].attack === RANGED) {
+        callback(ATTACK_RANGED);
+      }
     }
 
     if (filename && type === WEAPONS && canAttack && useAlternativeSound) {
@@ -173,6 +183,7 @@ const SoundBlock = ({
       }, 4000);
     }
   };
+
   useEffect(() => {
     if (!sound.current || currentRound.current !== round) {
       sound.current = new Audio(
@@ -186,12 +197,17 @@ const SoundBlock = ({
   }, [filename, differentSounds, round, toggleAlternativeSound]);
 
   useEffect(() => {
+    clearTimeout(activateTimeout.current);
+    clearTimeout(attackButtonsTimeout.current);
+    clearTimeout(quickAttackDebounceTimeout.current);
+    activate(false);
     return () => {
       clearTimeout(activateTimeout.current);
       clearTimeout(attackButtonsTimeout.current);
       clearTimeout(quickAttackDebounceTimeout.current);
+      activate(false);
     };
-  }, []);
+  }, [activate, charName]);
 
   return (
     <Block
@@ -254,6 +270,7 @@ SoundBlock.propTypes = {
   canBeDeflected: bool,
   canCombine: bool,
   charCanDeflect: bool,
+  charName: string,
   combineItemSelected: bool,
   combinePair: bool,
   damageMode: oneOfType([string, bool]),
@@ -292,6 +309,7 @@ SoundBlock.defaultProps = {
   canBeDeflected: false,
   canCombine: false,
   charCanDeflect: false,
+  charName: null,
   combineItemSelected: false,
   combinePair: false,
   damageMode: false,

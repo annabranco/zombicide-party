@@ -3,6 +3,7 @@ import { bool, func, string } from 'prop-types';
 import { checkForNoiseOpeningDoor, useStateWithLabel } from '../../utils';
 import { SOUNDS } from '../../assets/sounds';
 import {
+  BLITZ_ACTION,
   CANNOT_BE_USED,
   CAR_ATTACK_ACTION,
   CAR_ENTER_ACTION,
@@ -13,6 +14,7 @@ import {
   EXPLOSION_ACTION,
   GIVE_ORDERS_ACTION,
   HEAL_ACTION,
+  HIT_N_RUN_ACTION,
   LEAVE_GAME_ACTION,
   LOCK_ACTION,
   MAKE_NOISE_ACTION,
@@ -118,6 +120,11 @@ const ActionButton = ({
 
   useEffect(() => {
     switch (actionType) {
+      case BLITZ_ACTION:
+        setIconType2('fas fa-skull-crossbones');
+        setIconType('fas fa-running');
+        sound.current = new Audio(SOUNDS[`move-${type}`]);
+        break;
       case CAR_ATTACK_ACTION:
         setIconSize('medium');
         setIconType('fas fa-child');
@@ -158,6 +165,12 @@ const ActionButton = ({
       case HEAL_ACTION:
         setIconType('fas fa-hand-holding-medical');
         break;
+      case HIT_N_RUN_ACTION:
+        setIconType('fas fa-skull-crossbones');
+        setIconType2('fas fa-running');
+        sound.current = new Audio(SOUNDS[`move-${type}`]);
+        break;
+
       case LEAVE_GAME_ACTION:
         setIconType2('fas fa-running');
         setIconType('fas fa-sign-out-alt');
