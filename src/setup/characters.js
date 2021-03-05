@@ -6,12 +6,16 @@ import BillCash from '../assets/images/survivors/billcash.png';
 import Bob from '../assets/images/survivors/bob.png';
 import Clara from '../assets/images/survivors/clara.png';
 import Debra from '../assets/images/survivors/debra.png';
+import Derek from '../assets/images/survivors/derek.png';
 import Doug from '../assets/images/survivors/doug.png';
+import Elsa from '../assets/images/survivors/elsa.png';
 import Josh from '../assets/images/survivors/josh.png';
 import Krys from '../assets/images/survivors/krys.png';
 import Mary from '../assets/images/survivors/mary.png';
 import Ned from '../assets/images/survivors/ned.png';
+import Neema from '../assets/images/survivors/neema.png';
 import Phil from '../assets/images/survivors/phil.png';
+import Raoul from '../assets/images/survivors/raoul.png';
 import Ruiz from '../assets/images/survivors/ruiz.png';
 import Sternkova from '../assets/images/survivors/sternkova.png';
 import Wanda from '../assets/images/survivors/wanda.png';
@@ -23,12 +27,16 @@ import BillCashFace from '../assets/images/survivors/faces/billcash-face.png';
 import BobFace from '../assets/images/survivors/faces/bob-face.png';
 import ClaraFace from '../assets/images/survivors/faces/clara-face.png';
 import DebraFace from '../assets/images/survivors/faces/debra-face.png';
+import DerekFace from '../assets/images/survivors/faces/derek-face.png';
 import DougFace from '../assets/images/survivors/faces/doug-face.png';
+import ElsaFace from '../assets/images/survivors/faces/elsa-face.png';
 import JoshFace from '../assets/images/survivors/faces/josh-face.png';
 import KrysFace from '../assets/images/survivors/faces/krys-face.png';
 import MaryFace from '../assets/images/survivors/faces/mary-face.png';
 import NedFace from '../assets/images/survivors/faces/ned-face.png';
+import NeemaFace from '../assets/images/survivors/faces/neema-face.png';
 import PhilFace from '../assets/images/survivors/faces/phil-face.png';
+import RaoulFace from '../assets/images/survivors/faces/raoul-face.png';
 import RuizFace from '../assets/images/survivors/faces/ruiz-face.png';
 import SternkovaFace from '../assets/images/survivors/faces/sternkova-face.png';
 import WandaFace from '../assets/images/survivors/faces/wanda-face.png';
@@ -40,12 +48,16 @@ import SelectorBillCash from '../assets/images/survivors/selectors/selector-bill
 import SelectorBob from '../assets/images/survivors/selectors/selector-bob.png';
 import SelectorClara from '../assets/images/survivors/selectors/selector-clara.png';
 import SelectorDebra from '../assets/images/survivors/selectors/selector-debra.png';
+import SelectorDerek from '../assets/images/survivors/selectors/selector-derek.png';
 import SelectorDoug from '../assets/images/survivors/selectors/selector-doug.png';
+import SelectorElsa from '../assets/images/survivors/selectors/selector-elsa.png';
 import SelectorJosh from '../assets/images/survivors/selectors/selector-josh.png';
 import SelectorKrys from '../assets/images/survivors/selectors/selector-krys.png';
 import SelectorMary from '../assets/images/survivors/selectors/selector-mary.png';
 import SelectorNed from '../assets/images/survivors/selectors/selector-ned.png';
+import SelectorNeema from '../assets/images/survivors/selectors/selector-neema.png';
 import SelectorPhil from '../assets/images/survivors/selectors/selector-phil.png';
+import SelectorRaoul from '../assets/images/survivors/selectors/selector-raoul.png';
 import SelectorRuiz from '../assets/images/survivors/selectors/selector-ruiz.png';
 import SelectorSternkova from '../assets/images/survivors/selectors/selector-sternkova.png';
 import SelectorWanda from '../assets/images/survivors/selectors/selector-wanda.png';
@@ -296,6 +308,117 @@ export const CHARACTERS_S1 = {
     },
     selector: SelectorWanda,
     voice: FEMALE,
+    wounded: false
+  }
+};
+
+export const CHARACTERS_TOXIC_MALL = {
+  Derek: {
+    abilities: [],
+    abilitiesUsed: [],
+    actions: [3, 0, [0, 0, 0], 0, 0],
+    actionsLeft: [3, 0, [0, 0, 0], 0, 0],
+    bonusDice: { combat: 0, melee: 0, ranged: 0 },
+    color: '#a015a3',
+    experience: 0,
+    face: DerekFace,
+    img: Derek,
+    inReserve: [null, null, null],
+    inHand: [null, null],
+    location: null,
+    movement: 'quick',
+    name: 'Derek',
+    noise: 0,
+    player: null,
+    promotions: {
+      blue: MAX_RANGE,
+      yellow: ACTION,
+      orange: [ACTION_MELEE, TOXIC_IMMUNITY],
+      red: [MOVE_ACTION, DICE_ROLL_COMBAT, SLIPPERY]
+    },
+    selector: SelectorDerek,
+    voice: MALE,
+    wounded: false
+  },
+  Elsa: {
+    abilities: [],
+    abilitiesUsed: [],
+    actions: [3, 0, [0, 0, 0], 0, 0],
+    actionsLeft: [3, 0, [0, 0, 0], 0, 0],
+    bonusDice: { combat: 0, melee: 0, ranged: 0 },
+    color: '#3566c6',
+    experience: 0,
+    face: ElsaFace,
+    img: Elsa,
+    inReserve: [null, null, null],
+    inHand: [null, null],
+    location: null,
+    movement: 'furtive',
+    name: 'Elsa',
+    noise: 0,
+    player: null,
+    promotions: {
+      blue: BREAK_IN,
+      yellow: ACTION,
+      orange: [SLIPPERY, ACTION_RANGED],
+      red: [COMBAT_ACTION, MOVE_ACTION, TWO_ZONES_MOVE]
+    },
+    selector: SelectorElsa,
+    voice: FEMALE,
+    wounded: false
+  },
+  Neema: {
+    abilities: [],
+    abilitiesUsed: [],
+    actions: [3, 0, [0, 0, 0], 0, 0],
+    actionsLeft: [3, 0, [0, 0, 0], 0, 0],
+    bonusDice: { combat: 0, melee: 0, ranged: 0 },
+    color: '#ba761d',
+    experience: 0,
+    face: NeemaFace,
+    img: Neema,
+    inReserve: [null, null, null],
+    inHand: [null, null],
+    location: null,
+    movement: 'confident',
+    name: 'Neema',
+    noise: 0,
+    player: null,
+    promotions: {
+      blue: BORN_LEADER,
+      yellow: ACTION,
+      orange: [COMBAT_ACTION, ALL_YOUVE_GOT],
+      red: [ACTION_MELEE, ACTION_RANGED, DICE_ROLL_RANGED]
+    },
+    selector: SelectorNeema,
+    voice: FEMALE,
+    wounded: false
+  },
+  Raoul: {
+    abilities: [],
+    abilitiesUsed: [],
+    actions: [3, 0, [0, 0, 0], 0, 0],
+    actionsLeft: [3, 0, [0, 0, 0], 0, 0],
+    bonusDice: { combat: 0, melee: 0, ranged: 0 },
+    color: '#b52929',
+    experience: 0,
+    face: RaoulFace,
+    img: Raoul,
+    inReserve: [null, null, null],
+    inHand: [null, null],
+    location: null,
+    movement: 'normal',
+    name: 'Raoul',
+    noise: 0,
+    player: null,
+    promotions: {
+      blue: WEBBING,
+      yellow: ACTION,
+      orange: [HOARD, MEDIC],
+      red: [ACTION_MELEE, ACTION_RANGED, DICE_ROLL_RANGED]
+    },
+    selector: SelectorRaoul,
+    voice: MALE,
     wounded: false
   }
 };

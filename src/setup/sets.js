@@ -2,10 +2,13 @@ import Season1 from '../assets/images/sets/season1.png';
 import DogZ from '../assets/images/sets/dogZ.png';
 import Kopinski from '../assets/images/sets/kopinski.png';
 import NightShift from '../assets/images/sets/nightShift.png';
+import ToxicMall from '../assets/images/sets/toxicMall.png';
+
 import {
   CHARACTERS_KOPINSKI,
   CHARACTERS_NIGHT_SHIFT,
-  CHARACTERS_S1
+  CHARACTERS_S1,
+  CHARACTERS_TOXIC_MALL
 } from './characters';
 import { WEAPONS_S1, WEAPONS_NIGHT_SHIFT } from './weapons';
 import { DOGZ, ZOMBIES_S1 } from './zombies';
@@ -40,6 +43,16 @@ export const EXPANSIONS = {
     deselectable: true,
     label: 'Special Guest: Karl Kopinski',
     name: 'kopinski'
+  },
+  toxicMall: {
+    characters: CHARACTERS_TOXIC_MALL,
+    cover: ToxicMall,
+    coverSize: 'small',
+    deselectable: true,
+    // items: ITEMS_NIGHT_SHIFT,
+    label: 'Toxic City Mall',
+    name: 'toxicCity'
+    // weapons: WEAPONS_NIGHT_SHIFT
   },
   nightShift: {
     characters: CHARACTERS_NIGHT_SHIFT,
