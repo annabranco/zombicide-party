@@ -421,12 +421,13 @@ export const WEAPONS_NIGHT_SHIFT = {
     type: WEAPONS,
     useOnce: true
   },
-  M4Cqb: {
+  M4CQB: {
     attack: RANGED,
     dice: 3,
     img: M4Cqb,
     name: 'M4 CQB',
     noise: true,
+    sound: 'M4',
     type: WEAPONS
   },
   Minigun: {

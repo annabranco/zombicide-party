@@ -19,10 +19,12 @@ import Handgun from './weapons/Handgun.mp3';
 import JacknJill from './weapons/JacknJill.mp3';
 import Katana from './weapons/Katana.mp3';
 import Knife from './weapons/Knife.mp3';
+import M4 from './weapons/M4.mp3';
 import Machete from './weapons/Machete.mp3';
 import Magnum44 from './weapons/Magnum44.mp3';
 import Magnum44Alt from './weapons/Magnum44Alt.mp3';
 import MasShotgun from './weapons/MasShotgun.mp3';
+import Minigun from './weapons/Minigun.mp3';
 import Molotov from './weapons/Molotov.mp3';
 import Mp5 from './weapons/Mp5.mp3';
 import NedsAtomicFlashlight from './weapons/NedsAtomicFlashlight.mp3';
@@ -32,6 +34,7 @@ import PasGun from './weapons/PasGun.mp3';
 import PasGunAlt from './weapons/PasGunAlt.mp3';
 import Pistol from './weapons/Pistol.mp3';
 import Rifle from './weapons/Rifle.mp3';
+import RocketLauncher from './weapons/RocketLauncher.mp3';
 import SamuraiEdge from './weapons/SamuraiEdge.mp3';
 import SawedOff from './weapons/SawedOff.mp3';
 import Shotgun from './weapons/Shotgun.mp3';
@@ -40,6 +43,7 @@ import Special911 from './weapons/Special911.mp3';
 import SubMG from './weapons/SubMG.mp3';
 import SweetSisters from './weapons/SweetSisters.mp3';
 import TaserGun from './weapons/TaserGun.mp3';
+import VikingAxe from './weapons/VikingAxe.mp3';
 
 import CarAttack from './actions/car-attack.mp3';
 import CarEnterStart from './actions/car-enter-start.mp3';
@@ -185,10 +189,12 @@ export const SOUNDS = {
   JacknJill,
   Katana,
   Knife,
+  M4,
   Machete,
   Magnum44,
   Magnum44Alt,
   MasShotgun,
+  Minigun,
   Molotov,
   Mp5,
   NedsAtomicFlashlight,
@@ -198,6 +204,7 @@ export const SOUNDS = {
   PasGunAlt,
   Pistol,
   Rifle,
+  RocketLauncher,
   SamuraiEdge,
   SawedOff,
   Shotgun,
@@ -206,6 +213,7 @@ export const SOUNDS = {
   SubMG,
   SweetSisters,
   TaserGun,
+  VikingAxe,
   'car-attack': CarAttack,
   'car-enter-start': CarEnterStart,
   'car-enter': CarEnter,
