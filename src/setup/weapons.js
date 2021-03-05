@@ -2,24 +2,31 @@ import AssaultRifle from '../assets/images/weapons/assault-rifle.jpg';
 import AutomaticShotgun from '../assets/images/weapons/automatic-shotgun.jpg';
 import BaseballBat from '../assets/images/weapons/baseball-bat.jpg';
 import BatteringRam from '../assets/images/weapons/battering-ram.jpg';
+import Betty from '../assets/images/weapons/betty.jpg';
 import Chainsaw from '../assets/images/weapons/chainsaw.jpg';
 import ColtPython from '../assets/images/weapons/colt-python.jpg';
 import Crowbar from '../assets/images/weapons/crowbar.jpg';
 import DesertEagle from '../assets/images/weapons/desert-eagle.jpg';
 import DoubleBarrel from '../assets/images/weapons/double-barreled-shotgun.jpg';
+import DougsDream from '../assets/images/weapons/dougs-dream.jpg';
 import EntryShotgun from '../assets/images/weapons/entry-shotgun.jpg';
 import EvilTwins from '../assets/images/weapons/evil-twins.jpg';
 import ExpandableBaton from '../assets/images/weapons/expandable-baton.jpg';
 import ExpandableBatonClosed from '../assets/images/weapons/expandable-baton-closed.jpg';
 import FireAxe from '../assets/images/weapons/fire-axe.jpg';
+import Flamethrower from '../assets/images/weapons/flamethrower.jpg';
 import Flashbang from '../assets/images/weapons/flashbang.jpg';
+import JacknJill from '../assets/images/weapons/jack-and-jill.jpg';
 import Katana from '../assets/images/weapons/katana.jpg';
 import Machete from '../assets/images/weapons/machete.jpg';
+import Magnum44 from '../assets/images/weapons/magnum44.jpg';
 import MasShotgun from '../assets/images/weapons/mas-shotgun.jpg';
 import Molotov from '../assets/images/weapons/molotov.jpg';
 import Mp5 from '../assets/images/weapons/mp5.jpg';
+import NedsAtomicFlashlight from '../assets/images/weapons/neds-atomic-flashlight.jpg';
 import NightStick from '../assets/images/weapons/night-stick.jpg';
 import Pan from '../assets/images/weapons/pan.jpg';
+import PasGun from '../assets/images/weapons/pas-gun.jpg';
 import Pistol from '../assets/images/weapons/pistol.jpg';
 import Rifle from '../assets/images/weapons/rifle.jpg';
 import SamuraiEdge from '../assets/images/weapons/samurai-edge.jpg';
@@ -27,6 +34,8 @@ import SawedOff from '../assets/images/weapons/sawed-off.jpg';
 import Shotgun from '../assets/images/weapons/shotgun.jpg';
 import SmokeGrenade from '../assets/images/weapons/smoke-grenade.jpg';
 import SniperRifle from '../assets/images/weapons/sniper-rifle.jpg';
+import Special911 from '../assets/images/weapons/special911.jpg';
+import SweetSisters from '../assets/images/weapons/sweet-sisters.jpg';
 import SubMG from '../assets/images/weapons/sub-mg.jpg';
 import TaserGun from '../assets/images/weapons/taser-gun.jpg';
 
@@ -116,7 +125,7 @@ export const WEAPONS_S1 = {
     dice: SPECIAL,
     img: Molotov,
     name: 'Molotov',
-    noise: false,
+    noise: true,
     type: WEAPONS,
     useOnce: true
   },
@@ -185,7 +194,24 @@ export const WEAPONS_S1 = {
   }
 };
 
-export const WEAPONS_MALL = {
+export const WEAPONS_TOXIC_MALL = {
+  Magnum44: {
+    attack: RANGED,
+    dice: 1,
+    img: Magnum44,
+    name: '.44 Magnum',
+    noise: true,
+    type: WEAPONS
+  },
+  Special911: {
+    attack: RANGED,
+    dice: 5,
+    img: Special911,
+    name: '911 Special',
+    noise: true,
+    type: WEAPONS,
+    ultraRed: true
+  },
   AssaultRifle: {
     attack: RANGED,
     dice: 3,
@@ -193,6 +219,77 @@ export const WEAPONS_MALL = {
     name: 'Assault Rifle',
     noise: true,
     type: WEAPONS
+  },
+  Betty: {
+    attack: RANGED,
+    canOpenDoor: NOISY,
+    dice: 7,
+    img: Betty,
+    name: 'Betty',
+    noise: true,
+    type: WEAPONS,
+    ultraRed: true
+  },
+  DougsDream: {
+    attack: RANGED,
+    dice: 8,
+    img: DougsDream,
+    name: "Doug's Dream",
+    noise: true,
+    type: WEAPONS,
+    ultraRed: true
+  },
+  Flamethrower: {
+    attack: SPECIAL,
+    dice: SPECIAL,
+    img: Flamethrower,
+    name: 'Flamethrower',
+    noise: true,
+    type: WEAPONS
+  },
+  JacknJill: {
+    attack: RANGED,
+    dice: 6,
+    img: JacknJill,
+    name: 'Jack & Jill',
+    needsReloading: true,
+    noise: true,
+    type: WEAPONS,
+    ultraRed: true
+  },
+  NedsAtomicFlashlight: {
+    attack: MELEE,
+    dice: 5,
+    img: NedsAtomicFlashlight,
+    name: "Ned's Atomic Flashlight",
+    noise: true,
+    type: WEAPONS,
+    ultraRed: true
+  },
+  Pan: {
+    attack: MELEE,
+    dice: 1,
+    img: Pan,
+    name: 'Pan',
+    noise: false,
+    type: WEAPONS
+  },
+  PasGun: {
+    attack: RANGED,
+    dice: 1,
+    img: PasGun,
+    name: "Pa's Gun",
+    noise: true,
+    type: WEAPONS
+  },
+  SweetSisters: {
+    attack: MELEE_RANGED,
+    dice: 6,
+    img: SweetSisters,
+    name: 'Sweet Sisters',
+    noise: true,
+    type: WEAPONS,
+    ultraRed: true
   }
 };
 
@@ -373,7 +470,7 @@ export const WEAPONS_NIGHT_SHIFT = {
 
 export const ALL_WEAPONS = {
   ...WEAPONS_S1,
-  ...WEAPONS_MALL,
+  ...WEAPONS_TOXIC_MALL,
   ...WEAPONS_S2,
   ...WEAPONS_S3,
   ...WEAPONS_OTHERS,
