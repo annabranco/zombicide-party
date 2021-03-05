@@ -205,6 +205,7 @@ export const WEAPONS_TOXIC_MALL = {
     img: Magnum44,
     name: 'Magnum 44',
     noise: true,
+    secondarySound: true,
     type: WEAPONS
   },
   Special911: {
@@ -231,6 +232,7 @@ export const WEAPONS_TOXIC_MALL = {
     img: Betty,
     name: 'Betty',
     noise: true,
+    sound: 'Chainsaw',
     type: WEAPONS,
     ultraRed: true
   },

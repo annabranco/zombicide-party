@@ -8,27 +8,37 @@ import ColtPythonAlt from './weapons/ColtPythonAlt.mp3';
 import Crowbar from './weapons/Crowbar.mp3';
 import DesertEagle from './weapons/DesertEagle.mp3';
 import DoubleBarrel from './weapons/DoubleBarrel.mp3';
-import EvilTwins from './weapons/EvilTwins.mp3';
+import DougsDream from './weapons/DougsDream.mp3';
 import EntryShotgun from './weapons/EntryShotgun.mp3';
+import EvilTwins from './weapons/EvilTwins.mp3';
 import ExpandableBaton from './weapons/ExpandableBaton.mp3';
 import FireAxe from './weapons/FireAxe.mp3';
+import Flamethrower from './weapons/FlameThrower.mp3';
 import Flashbang from './weapons/Flashbang.mp3';
 import Handgun from './weapons/Handgun.mp3';
+import JacknJill from './weapons/JacknJill.mp3';
 import Katana from './weapons/Katana.mp3';
 import Knife from './weapons/Knife.mp3';
 import Machete from './weapons/Machete.mp3';
+import Magnum44 from './weapons/Magnum44.mp3';
+import Magnum44Alt from './weapons/Magnum44Alt.mp3';
 import MasShotgun from './weapons/MasShotgun.mp3';
 import Molotov from './weapons/Molotov.mp3';
 import Mp5 from './weapons/Mp5.mp3';
+import NedsAtomicFlashlight from './weapons/NedsAtomicFlashlight.mp3';
 import NightStick from './weapons/NightStick.mp3';
 import Pan from './weapons/Pan.mp3';
+import PasGun from './weapons/PasGun.mp3';
+import PasGunAlt from './weapons/PasGunAlt.mp3';
 import Pistol from './weapons/Pistol.mp3';
 import Rifle from './weapons/Rifle.mp3';
 import SamuraiEdge from './weapons/SamuraiEdge.mp3';
 import SawedOff from './weapons/SawedOff.mp3';
 import Shotgun from './weapons/Shotgun.mp3';
 import SmokeGrenade from './weapons/SmokeGrenade.mp3';
+import Special911 from './weapons/Special911.mp3';
 import SubMG from './weapons/SubMG.mp3';
+import SweetSisters from './weapons/SweetSisters.mp3';
 import TaserGun from './weapons/TaserGun.mp3';
 
 import CarAttack from './actions/car-attack.mp3';
@@ -164,27 +174,37 @@ export const SOUNDS = {
   Crowbar,
   DesertEagle,
   DoubleBarrel,
+  DougsDream,
   EntryShotgun,
   EvilTwins,
   ExpandableBaton,
   FireAxe,
+  Flamethrower,
   Flashbang,
   Handgun,
+  JacknJill,
   Katana,
   Knife,
   Machete,
+  Magnum44,
+  Magnum44Alt,
   MasShotgun,
   Molotov,
   Mp5,
+  NedsAtomicFlashlight,
   NightStick,
   Pan,
+  PasGun,
+  PasGunAlt,
   Pistol,
   Rifle,
   SamuraiEdge,
   SawedOff,
   Shotgun,
   SmokeGrenade,
+  Special911,
   SubMG,
+  SweetSisters,
   TaserGun,
   'car-attack': CarAttack,
   'car-enter-start': CarEnterStart,

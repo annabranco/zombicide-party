@@ -2122,7 +2122,7 @@ const PlayersSection = ({
                               />
                             )}
 
-                          {!!generalActions && context.rules.explosion && (
+                          {/* {!!generalActions && context.rules.explosion && (
                             <ActionButton
                               actionType={EXPLOSION_ACTION}
                               callback={onExplode}
@@ -2131,7 +2131,7 @@ const PlayersSection = ({
                               label={EXPLODE}
                               manyButtons={character.location === CAR}
                             />
-                          )}
+                          )} */}
 
                           {!finishedTurn &&
                             context.rules.objectives &&
