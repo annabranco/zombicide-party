@@ -11,7 +11,15 @@ import { SELECTION } from '../../../constants';
 const SelectionItem = ({ img, label, name, onHover, onSelect, type }) => {
   return (
     <Block>
-      <PlayImageButton onClick={() => onSelect(name)} slotType={SELECTION}>
+      <PlayImageButton
+        onClick={() => {
+          onSelect(name.replace(/[\s']/g, ''));
+
+          console.log('$$$ name', name);
+          console.log("$$$ name.replace(' ', '')", name.replace(/[\s']/g, ''));
+        }}
+        slotType={SELECTION}
+      >
         {img ? (
           <PlayIcon
             onMouseOut={() => onHover()}

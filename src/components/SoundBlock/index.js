@@ -89,7 +89,7 @@ const SoundBlock = ({
     slotType !== IN_RESERVE &&
     type !== ITEMS &&
     type !== WOUND &&
-    (specificSound || name.replace(' ', ''));
+    (specificSound || name.replace(/[\s']/g, ''));
 
   const getImage = () => {
     if (((trade && isMobile) || isMobile) && type !== ACTIVATIONS) {
@@ -296,7 +296,7 @@ SoundBlock.propTypes = {
   specificSound: string,
   spendAmmo: func,
   trade: bool,
-  type: string.isRequired,
+  type: string,
   unloaded: bool,
   wounded: bool,
   zombieAttack: func
@@ -333,6 +333,7 @@ SoundBlock.defaultProps = {
   specificSound: null,
   spendAmmo: () => null,
   trade: false,
+  type: null,
   unloaded: false,
   wounded: false,
   zombieAttack: () => null

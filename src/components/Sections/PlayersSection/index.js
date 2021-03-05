@@ -740,13 +740,15 @@ const PlayersSection = ({
     ]);
     newItems[currentSlot] = name;
 
-    if (name === ALL_WEAPONS.ExpandableBaton.name.replace(' ', '')) {
+    if (name === ALL_WEAPONS.ExpandableBaton.name.replace(/[\s']/g, '')) {
       newItems.push(null);
     }
 
     if (
-      oldItems.includes(ALL_WEAPONS.ExpandableBaton.name.replace(' ', '')) &&
-      !newItems.includes(ALL_WEAPONS.ExpandableBaton.name.replace(' ', ''))
+      oldItems.includes(
+        ALL_WEAPONS.ExpandableBaton.name.replace(/[\s']/g, '')
+      ) &&
+      !newItems.includes(ALL_WEAPONS.ExpandableBaton.name.replace(/[\s']/g, ''))
     ) {
       newItems.splice(currentSlot, 1);
     }
@@ -803,7 +805,7 @@ const PlayersSection = ({
   };
 
   const spendSingleUseWeapon = (weaponSlot, weapon) => {
-    const weaponName = weapon.replace(' ', '');
+    const weaponName = weapon.replace(/[\s']/g, '');
     if (context.weapons[weaponName].useOnce) {
       const updatedCharacter = cloneDeep(character);
       updatedCharacter.inHand[weaponSlot] = '';
@@ -1129,6 +1131,8 @@ const PlayersSection = ({
   };
 
   const onFindingItem = slotType => (item, currentSlot = slot - 1) => {
+    console.log('$$$ item', item);
+
     const updChar = cloneDeep(character);
     const findingSlot = slotType === IN_HAND ? slot - 1 : slot - 3;
     const hasFlashlight = checkIfCharacterHasFlashlight([
@@ -2330,7 +2334,7 @@ const PlayersSection = ({
                   <CharItems slotType={IN_HAND}>
                     {character.inHand &&
                       character.inHand.map((item, index) => {
-                        const itemName = item && item.replace(' ', '');
+                        const itemName = item && item.replace(/[\s']/g, '');
                         return (
                           <ItemsArea
                             actionsLeft={generalActions}
@@ -2413,7 +2417,7 @@ const PlayersSection = ({
                   >
                     {character.inReserve &&
                       character.inReserve.map((item, index) => {
-                        const itemName = item && item.replace(' ', '');
+                        const itemName = item && item.replace(/[\s']/g, '');
                         return (
                           <ItemsArea
                             actionsLeft={generalActions}
@@ -2680,7 +2684,10 @@ const PlayersSection = ({
                             character.abilities &&
                             character.abilities[2] === promo.name
                           }
-                          key={`promo-orange-${promo.name.replace(' ', '-')}`}
+                          key={`promo-orange-${promo.name.replace(
+                            /[\s']/g,
+                            ''
+                          )}`}
                           textLength={promo.name.length}
                         >
                           <LevelIndicator
@@ -2701,7 +2708,10 @@ const PlayersSection = ({
                             character.abilities &&
                             character.abilities[3] === promo.name
                           }
-                          key={`promo-orange-${promo.name.replace(' ', '-')}`}
+                          key={`promo-orange-${promo.name.replace(
+                            /[\s']/g,
+                            ''
+                          )}`}
                           textLength={promo.name.length}
                         >
                           <LevelIndicator

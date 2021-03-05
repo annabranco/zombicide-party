@@ -100,7 +100,9 @@ const ItemsSelectorModal = ({
                 img={items[name].img}
                 key={items[name].name}
                 name={items[name].name}
-                onSelect={() => onSelect(items[name].name.replace(' ', ''))}
+                onSelect={() =>
+                  onSelect(items[name].name.replace(/[\s']/g, ''))
+                }
                 type={items[name].type}
               />
             ))}

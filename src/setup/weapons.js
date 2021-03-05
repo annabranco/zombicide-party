@@ -203,7 +203,7 @@ export const WEAPONS_TOXIC_MALL = {
     attack: RANGED,
     dice: 1,
     img: Magnum44,
-    name: '.44 Magnum',
+    name: 'Magnum 44',
     noise: true,
     type: WEAPONS
   },
@@ -211,7 +211,7 @@ export const WEAPONS_TOXIC_MALL = {
     attack: RANGED,
     dice: 5,
     img: Special911,
-    name: '911 Special',
+    name: 'Special 911',
     noise: true,
     type: WEAPONS,
     ultraRed: true
@@ -256,7 +256,7 @@ export const WEAPONS_TOXIC_MALL = {
     attack: RANGED,
     dice: 6,
     img: JacknJill,
-    name: 'Jack & Jill',
+    name: "Jack 'n Jill",
     needsReloading: true,
     noise: true,
     type: WEAPONS,

@@ -109,7 +109,7 @@ const TradeArea = ({
             ? selectedItem1.slot - 1
             : selectedItem1.slot - 3;
         const index2 = slot <= 2 ? slot - 1 : slot - 3;
-        const expBaton = ALL_WEAPONS.ExpandableBaton.name.replace(' ', '');
+        const expBaton = ALL_WEAPONS.ExpandableBaton.name.replace(/[\s']/g, '');
         let updPartn;
 
         if (tradePartner) {
