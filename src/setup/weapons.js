@@ -489,25 +489,6 @@ export const WEAPONS_NIGHT_SHIFT = {
   }
 };
 
-// const selectedSets = [
-//   WEAPONS_S1,
-//   WEAPONS_MALL,
-//   WEAPONS_S2,
-//   WEAPONS_S3,
-//   WEAPONS_OTHERS,
-//   WEAPONS_NIGHT_SHIFT
-// ];
-
-// export const setupWeapons = sets => {
-//   let allWeapons = {};
-//   sets.forEach(set => {
-//     allWeapons = { ...allWeapons, ...set };
-//   });
-//   return allWeapons;
-// };
-
-// export const ALL_WEAPONS = setupWeapons(selectedSets);
-
 export const ALL_WEAPONS = {
   ...WEAPONS_S1,
   ...WEAPONS_TOXIC_MALL,

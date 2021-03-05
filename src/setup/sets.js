@@ -12,7 +12,7 @@ import {
 } from './characters';
 import { WEAPONS_S1, WEAPONS_NIGHT_SHIFT, WEAPONS_TOXIC_MALL } from './weapons';
 import { DOGZ, ZOMBIES_S1 } from './zombies';
-import { ITEMS_S1, ITEMS_NIGHT_SHIFT } from './items';
+import { ITEMS_S1, ITEMS_NIGHT_SHIFT, ITEMS_TOXIC_MALL } from './items';
 
 export const SETS = {
   season1: {
@@ -49,7 +49,7 @@ export const EXPANSIONS = {
     cover: ToxicMall,
     coverSize: 'small',
     deselectable: true,
-    // items: ITEMS_NIGHT_SHIFT,
+    items: ITEMS_TOXIC_MALL,
     label: 'Toxic City Mall',
     name: 'toxicCity',
     weapons: WEAPONS_TOXIC_MALL

@@ -1,11 +1,13 @@
 import BagOfRice from '../assets/images/items/bag-of-rice.jpg';
 import CannedFood from '../assets/images/items/canned-food.jpg';
+import Cookies from '../assets/images/items/cookies.jpg';
 import Flashlight from '../assets/images/items/flashlight.jpg';
 import GasMask from '../assets/images/items/gas-mask.jpg';
 import Gasoline from '../assets/images/items/gasoline.jpg';
 import GlassBottle from '../assets/images/items/glass-bottle.jpg';
 import GoalieMask from '../assets/images/items/goalie-mask.jpg';
 import HandheldTransceiver from '../assets/images/items/handheld-transceiver.jpg';
+import HollowPointRounds from '../assets/images/items/hollow-point-rounds.jpg';
 import InfraredGoggles from '../assets/images/items/infrared-goggles.jpg';
 import LaserPointer from '../assets/images/items/laser-pointer.jpg';
 import PlentyOfAmmo from '../assets/images/items/plenty-of-ammo.jpg';
@@ -14,6 +16,7 @@ import PoliceRiotHelmet from '../assets/images/items/police-riot-helmet.jpg';
 import PoliceRiotShield from '../assets/images/items/police-riot-shield.jpg';
 import ReinforcedVest from '../assets/images/items/reinforced-vest.jpg';
 import Scope from '../assets/images/items/scope.jpg';
+import SpareChange from '../assets/images/items/spare-change.jpg';
 import Suppressor from '../assets/images/items/suppressor.jpg';
 import Water from '../assets/images/items/water.jpg';
 import { ITEMS } from '../constants';
@@ -74,15 +77,30 @@ export const ITEMS_S1 = {
   }
 };
 
-export const ITEMS_MALL = {
+export const ITEMS_TOXIC_MALL = {
+  Cookies: {
+    img: Cookies,
+    name: 'Cookies',
+    type: ITEMS
+  },
   GasMask: {
     img: GasMask,
     name: 'GasMask',
     type: ITEMS
   },
+  HollowPointRounds: {
+    img: HollowPointRounds,
+    name: 'Hollow Point Rounds',
+    type: ITEMS
+  },
   LaserPointer: {
     img: LaserPointer,
     name: 'LaserPointer',
+    type: ITEMS
+  },
+  SpareChange: {
+    img: SpareChange,
+    name: 'Spare Change',
     type: ITEMS
   }
 };
@@ -130,18 +148,8 @@ export const ITEMS_NIGHT_SHIFT = {
   }
 };
 
-// const selectedSets = [ITEMS_S1, ITEMS_MALL, ITEMS_NIGHT_SHIFT];
-
-// export const setupItems = sets => {
-//   let allItems = {};
-//   sets.forEach(set => {
-//     allItems = { ...allItems, ...set };
-//   });
-//   return allItems;
-// };
-
 export const ALL_ITEMS = {
   ...ITEMS_S1,
-  ...ITEMS_MALL,
+  ...ITEMS_TOXIC_MALL,
   ...ITEMS_NIGHT_SHIFT
 };
