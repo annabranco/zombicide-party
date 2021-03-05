@@ -19,8 +19,10 @@ import Flashbang from '../assets/images/weapons/flashbang.jpg';
 import JacknJill from '../assets/images/weapons/jack-and-jill.jpg';
 import Katana from '../assets/images/weapons/katana.jpg';
 import Machete from '../assets/images/weapons/machete.jpg';
+import M4Cqb from '../assets/images/weapons/m4-cqb.jpg';
 import Magnum44 from '../assets/images/weapons/magnum44.jpg';
 import MasShotgun from '../assets/images/weapons/mas-shotgun.jpg';
+import Minigun from '../assets/images/weapons/minigun.jpg';
 import Molotov from '../assets/images/weapons/molotov.jpg';
 import Mp5 from '../assets/images/weapons/mp5.jpg';
 import NedsAtomicFlashlight from '../assets/images/weapons/neds-atomic-flashlight.jpg';
@@ -29,6 +31,7 @@ import Pan from '../assets/images/weapons/pan.jpg';
 import PasGun from '../assets/images/weapons/pas-gun.jpg';
 import Pistol from '../assets/images/weapons/pistol.jpg';
 import Rifle from '../assets/images/weapons/rifle.jpg';
+import RocketLauncher from '../assets/images/weapons/rocket-launcher.jpg';
 import SamuraiEdge from '../assets/images/weapons/samurai-edge.jpg';
 import SawedOff from '../assets/images/weapons/sawed-off.jpg';
 import Shotgun from '../assets/images/weapons/shotgun.jpg';
@@ -38,6 +41,7 @@ import Special911 from '../assets/images/weapons/special911.jpg';
 import SweetSisters from '../assets/images/weapons/sweet-sisters.jpg';
 import SubMG from '../assets/images/weapons/sub-mg.jpg';
 import TaserGun from '../assets/images/weapons/taser-gun.jpg';
+import VikingAxe from '../assets/images/weapons/viking-axe.jpg';
 
 import {
   SPECIAL,
@@ -245,6 +249,7 @@ export const WEAPONS_TOXIC_MALL = {
     img: Flamethrower,
     name: 'Flamethrower',
     noise: true,
+    requires: 'Gasoline',
     type: WEAPONS
   },
   JacknJill: {
@@ -414,6 +419,22 @@ export const WEAPONS_NIGHT_SHIFT = {
     type: WEAPONS,
     useOnce: true
   },
+  M4Cqb: {
+    attack: RANGED,
+    dice: 3,
+    img: M4Cqb,
+    name: 'M4 CQB',
+    noise: true,
+    type: WEAPONS
+  },
+  Minigun: {
+    attack: RANGED,
+    dice: 12,
+    img: Minigun,
+    name: 'Minigun',
+    noise: 3,
+    type: WEAPONS
+  },
   Mp5: {
     attack: RANGED,
     dice: 3,
@@ -422,9 +443,19 @@ export const WEAPONS_NIGHT_SHIFT = {
     noise: true,
     type: WEAPONS
   },
+  RocketLauncher: {
+    attack: SPECIAL,
+    combined: true,
+    dice: SPECIAL,
+    img: RocketLauncher,
+    name: 'Rocket Launcher',
+    noise: true,
+    requires: 'Rocket',
+    type: WEAPONS
+  },
   SamuraiEdge: {
     attack: RANGED,
-    dice: 1,
+    dice: 2,
     img: SamuraiEdge,
     name: 'Samurai Edge',
     noise: true,
@@ -444,6 +475,15 @@ export const WEAPONS_NIGHT_SHIFT = {
     dice: 0,
     img: TaserGun,
     name: 'Taser Gun',
+    noise: false,
+    type: WEAPONS
+  },
+  VikingAxe: {
+    attack: RANGED,
+    dice: 2,
+    dual: true,
+    img: VikingAxe,
+    name: 'Viking Axe',
     noise: false,
     type: WEAPONS
   }
