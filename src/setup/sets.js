@@ -2,7 +2,11 @@ import Season1 from '../assets/images/sets/season1.png';
 import DogZ from '../assets/images/sets/dogZ.png';
 import Kopinski from '../assets/images/sets/kopinski.png';
 import NightShift from '../assets/images/sets/nightShift.png';
-import { CHARACTERS_KOPINSKI, CHARACTERS_S1 } from './characters';
+import {
+  CHARACTERS_KOPINSKI,
+  CHARACTERS_NIGHT_SHIFT,
+  CHARACTERS_S1
+} from './characters';
 import { WEAPONS_S1, WEAPONS_NIGHT_SHIFT } from './weapons';
 import { DOGZ, ZOMBIES_S1 } from './zombies';
 import { ITEMS_S1, ITEMS_NIGHT_SHIFT } from './items';
@@ -38,6 +42,7 @@ export const EXPANSIONS = {
     name: 'kopinski'
   },
   nightShift: {
+    characters: CHARACTERS_NIGHT_SHIFT,
     cover: NightShift,
     coverSize: 'small',
     deselectable: true,

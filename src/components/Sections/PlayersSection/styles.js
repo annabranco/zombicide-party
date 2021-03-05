@@ -1238,6 +1238,12 @@ export const LevelIndicator = styled.div`
     }
   }};
 
+  ${({ active }) =>
+    !active &&
+    css`
+      opacity: 0.3;
+    `}
+
   @media all and (min-width: 1200px) {
     margin: 0 10px 0 0;
     transform: translate(0, -2px);
@@ -1374,9 +1380,11 @@ export const MovementIcon = styled.div`
   background: ${({ color }) => color};
   color: ${({ type }) => (typeof type === 'number' ? 'white' : 'black')};
   font-weight: 700;
-  line-height: 1.1;
-  font-size: 0.7rem;
-  font-family: 'Cairo', sans-serif;
+  line-height: 1.3;
+  letter-spacing: 0.001rem;
+  font-size: 0.8rem;
+  font-family: 'Grandstander', cursive;
+  text-transform: uppercase;
 
   &:not(:first-of-type) {
     margin-left: 15px;
@@ -1684,6 +1692,12 @@ export const PromoWrapper = styled.div`
   font-weight: 300;
   letter-spacing: 0.1rem;
   font-size: 0.9rem;
+
+  ${({ textLength }) =>
+    textLength > 15 &&
+    css`
+      letter-spacing: 0.01rem;
+    `}
 
   ${({ active }) =>
     active &&
