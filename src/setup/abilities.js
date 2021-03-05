@@ -124,11 +124,11 @@ export const ABILITIES_S1 = {
   GUNSLINGER: {
     name: 'Gunslinger',
     description:
-      ' The Survivor treats all Ranged weapons as if they had the Dual symbol'
+      'The Survivor treats all Ranged weapons as if they had the Dual symbol'
   },
   HOARD: {
     name: 'Hoard',
-    description: ' The Survivor can carry one extra Equipment card in reserve',
+    description: 'The Survivor can carry one extra Equipment card in reserve',
     effect: itemsInReserve => [...itemsInReserve, null]
   },
   HOLD_YOUR_NOSE: {
@@ -170,12 +170,12 @@ export const ABILITIES_S1 = {
   NINJA: {
     name: 'Ninja',
     description:
-      ' The Survivor makes no Noise. At all. His miniature does not count as a Noise token, and his use of Equipment or weapons produces no  Noise tokens either! The Survivor may choose not to use this Skill at any time, if he wishes to be noisy.'
+      'The Survivor makes no Noise. At all. His miniature does not count as a Noise token, and his use of Equipment or weapons produces no  Noise tokens either! The Survivor may choose not to use this Skill at any time, if he wishes to be noisy.'
   },
   SLIPPERY: {
     name: 'Slippery',
     description:
-      ' The Survivor does not spend extra Actions when he performs a Move Action through a Zone where there are Zombies'
+      'The Survivor does not spend extra Actions when he performs a Move Action through a Zone where there are Zombies'
   },
   SNIPER: {
     name: 'Sniper',
@@ -185,7 +185,7 @@ export const ABILITIES_S1 = {
   STARTS_WITH: equipment => ({
     name: `Starts with ${equipment}`,
     description:
-      ' The Survivor begins the game with the indicated Equipment; its card is automatically assigned to him before the beginning of the game.',
+      'The Survivor begins the game with the indicated Equipment; its card is automatically assigned to him before the beginning of the game.',
     effect: () => equipment
   }),
   SWORDMASTER: {
@@ -206,6 +206,23 @@ export const ABILITIES_S1 = {
 };
 
 export const ABILITIES_MALL = {
+  MORE_DAMAGE_WITH: equipment => ({
+    name: `+1 damage with ${equipment}`,
+    description:
+      'The Survivor gets a +1 Damage bonus with the specified Equipment.'
+  }),
+  MORE_DAMAGE_COMBAT: {
+    name: '+1 Damage: Combat',
+    description: 'The Survivor gets a +1 Damage bonus with Combat Actions.'
+  },
+  MORE_DAMAGE_RANGED: {
+    name: '+1 Damage: Raged',
+    description: 'The Survivor gets a +1 Damage bonus with Combat Actions.'
+  },
+  MORE_DAMAGE_MELEE: {
+    name: '+1 Damage: Melee',
+    description: 'The Survivor gets a +1 Damage bonus with Combat Actions.'
+  },
   ACTION_MELEE: {
     name: '+1 free Melee Action',
     description:
@@ -230,15 +247,54 @@ export const ABILITIES_MALL = {
       bon
     ]
   },
+  BREAK_IN: {
+    name: 'Break-in',
+    description:
+      'The Survivor doesn’t need any Equipment to open doors. He doesn’t make Noise while using this Skill. However, other prerequisites are still mandatory (such as taking a designated Objective) Moreover, the Survivor has one extra, free Door opening Action. This Action can only be used to open doors.'
+  },
+  CAN_START_AT: level => ({
+    name: `Can start at ${level} Level`,
+    description:
+      'The Survivor can begin the game at the indicated Danger Level (first experience point of the indicated Danger Level). All players have to agree'
+  }),
+  COLLECTOR: zombieType => ({
+    name: `Collector: ${zombieType}`,
+    description:
+      'The Survivor doubles the experience gained each time he kills a Zombie of the specified type.'
+  }),
+  DEATH_GRASP: {
+    name: 'Death grasp',
+    description:
+      'Don’t discard an Equipment card when the Survivor receives a Wounded card. This Skill is ignored if there’s no space left in the Inventory to receive the Wounded card.'
+  },
+
   LOW_PROFILE: {
     name: 'Low Profile',
     description:
       'The Survivor can’t be targeted by Survivors’ Ranged Attacks and can’t be hit by car attacks (in both case, even by rival Survivors’ Attacks). Ignore him when shooting in or driving through the Zone he stands in. Weapons that kill everything in the targeted Zone, like the Molotov, still kill him, though.'
   },
+  REGENERATION: {
+    name: 'Regeneration',
+    description:
+      'At the end of each game round, discard all Wounds the Survivor received. Regeneration doesn’t work if the Survivor has been eliminated.'
+  },
+  ROLL6: type => ({
+    name: `Roll 6: +1 die ${type}`,
+    description: `You may roll an additional die for each “6” rolled on any ${type} action. Keep on rolling additional dice as long as you keep getting “6”. Game effects that allow re-rolls (the “1 re-roll per turn” Skill or the “Plenty of ammo” Equipment card, for example) must be used before rolling any additional dice for this Skill.`
+  }),
+  ROTTEN: {
+    name: 'Rotten',
+    description:
+      'At the end of his turn, if the Survivor has not taken a Combat Action, driven a car, and has not produced a Noise token, place a Rotten token next to his base. As long as he has this token, he is totally ignored by any and all types of Zombies (except Zombivors) and is not considered a Noise token. Zombies don’t attack him and will even walk past him. The Survivor loses his Rotten token if he takes any Combat Action or makes noise. Even with the Rotten token, the Survivor still has to spend extra Actions to move out of a Zone crowded with Zombies.'
+  },
   SUPER_STRENGTH: {
     name: 'Super strength',
     description:
       'Consider the Damage value of Melee weapons used by the Survivor to be 3.'
+  },
+  TOXIC_IMMUNITY: {
+    name: 'Toxic Immunity',
+    description: 'The Survivor is immune to Toxic Blood Spray.'
   },
   WEBBING: {
     name: 'Webbing',
