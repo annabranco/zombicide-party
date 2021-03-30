@@ -3,6 +3,9 @@ import { useHistory } from 'react-router-dom';
 import { cloneDeep, isEqual } from 'lodash';
 import { arrayOf, bool, func, number, oneOfType, string } from 'prop-types';
 import { ABILITIES_S1, ALL_ABILITIES } from '../../../setup/abilities';
+import { ALL_ITEMS } from '../../../setup/items';
+import { AppContext } from '../../../setup/rules';
+import { ALL_WEAPONS } from '../../../setup/weapons';
 import {
   blueThreatThresold,
   calculateXpBar,
@@ -27,20 +30,20 @@ import {
   yellowThreatThresold,
   totalActions
 } from '../../../utils';
-import ActionsModal from '../../ActionsModal';
-import { SOUNDS } from '../../../assets/sounds';
-import ActionButton from '../../ActionButton';
-import EndGame from '../../EndGame';
-import CharacterFace from '../../CharacterFace';
-import FogEffect from '../../Fog';
-import ItemsArea from '../../Items/ItemsArea';
-import ItemsSelectorModal from '../../Items/ItemsSelectorModal';
-import NewGame from '../../NewGame';
-import TradeArea from '../../TradeArea';
+import NewGame from '../../mainSections/NewGame';
+import EndGame from '../../gameScreens/EndGame';
+import ActionsModal from '../../gameScreens/ActionsModal';
+import TradeArea from '../../gameScreens/TradeArea';
+import ActionButton from '../../elements/ActionButton';
+import CharacterFace from '../../elements/CharacterFace';
+import FogEffect from '../../elements/Fog';
+import ItemsArea from '../../elements/Items/ItemsArea';
+import ItemsSelectorModal from '../../elements/Items/ItemsSelectorModal';
 import Blood from '../../../assets/images/blood.png';
 import FirstPlayer from '../../../assets/images/firstPlayer.jpg';
 import Noise from '../../../assets/images/noise.png';
 import ZombieFace from '../../../assets/images/zombieFace.png';
+import { SOUNDS } from '../../../assets/sounds';
 import {
   ACHIEVE_OBJECTIVES,
   ADD_CHARACTER,
@@ -219,9 +222,6 @@ import {
   WoundedWrapper,
   XpIcon
 } from './styles';
-import { AppContext } from '../../../setup/rules';
-import { ALL_WEAPONS } from '../../../setup/weapons';
-import { ALL_ITEMS } from '../../../setup/items';
 
 const PlayersSection = ({
   damageMode,

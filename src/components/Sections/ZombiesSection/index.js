@@ -1,7 +1,8 @@
 import React, { useContext, useEffect, useRef } from 'react';
 import { bool, func } from 'prop-types';
+import { AppContext } from '../../../setup/rules';
 import { getMediaQuery, logger, useStateWithLabel } from '../../../utils';
-import SoundBlock from '../../SoundBlock';
+import SoundBlock from '../../elements/SoundBlock';
 import {
   ACTIVATIONS,
   END,
@@ -12,7 +13,7 @@ import {
   END_ZOMBIE_ROUND,
   ZOMBIE_ATTACK
 } from '../../../constants';
-import { SelectorArea } from '../../SoundBlock/styles';
+import { SelectorArea } from '../../elements/SoundBlock/styles';
 import {
   ConfirmAttackButton,
   NoSelectOverlay,
@@ -22,7 +23,6 @@ import {
   ZombiesArea,
   ZombiesRoundSign
 } from './styles';
-import { AppContext } from '../../../setup/rules';
 
 const ZombiesSection = ({
   damageMode,

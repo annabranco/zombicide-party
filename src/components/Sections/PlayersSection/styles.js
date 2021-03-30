@@ -275,6 +275,8 @@ export const ArrowSign = styled.i`
   line-height: 1;
   color: white;
   cursor: pointer;
+  min-height: 40px;
+  min-width: 40px;
 
   &:hover {
     color: yellow;
