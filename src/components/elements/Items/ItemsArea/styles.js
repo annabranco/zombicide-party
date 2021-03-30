@@ -5,6 +5,7 @@ import { AppButton } from '../../../sections/PlayersSection/styles';
 import IconRanged from '../../../../assets/images/ranged-icon.png';
 import IconMelee from '../../../../assets/images/melee-icon.png';
 import IconBlood from '../../../../assets/images/bloodSplash.png';
+import { TITLE_FONT } from '../../../../styles';
 
 export const ActionButtonIcon = styled.i`
   label: ActionButtonIcon;
@@ -153,7 +154,7 @@ export const ItemBlank = styled.div`
   height: 100px;
   /* width: 70px; */
   background: rgba(255, 255, 255, 0.25);
-  font-family: 'Grandstander', cursive;
+  font-family: ${TITLE_FONT};
   font-size: 0.9rem;
   font-weight: 500;
   text-transform: uppercase;

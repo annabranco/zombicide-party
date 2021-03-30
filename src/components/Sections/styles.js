@@ -1,4 +1,5 @@
 import styled from '@emotion/styled';
+import { TEXT_FONT } from '../../styles';
 
 export const OpenButton = styled.button`
   label: OpenButton;
@@ -50,7 +51,7 @@ export const Title = styled.h2`
   font-weight: 700;
   line-height: 1.4;
   color: black;
-  font-family: 'Cairo', sans-serif;
+  font-family: ${TEXT_FONT};
   text-shadow: 0 0 2px white;
   text-transform: uppercase;
 `;

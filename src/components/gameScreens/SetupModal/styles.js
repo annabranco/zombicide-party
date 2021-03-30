@@ -1,6 +1,7 @@
 import styled from '@emotion/styled';
 import { css } from '@emotion/core';
 import { SelectionButton } from '../../mainSections/MainMenu/styles';
+import { MAIN_FONT, TEXT_FONT, TITLE_FONT } from '../../../styles';
 
 export const ButtonsArea = styled.div`
   label: ButtonsArea;
@@ -37,7 +38,7 @@ export const ModalButton = styled(SelectionButton)`
   font-size: 1.1rem;
   font-weight: 700;
   color: black;
-  font-family: 'Grandstander', cursive;
+  font-family: ${TITLE_FONT};
   box-shadow: 0 1px 10px 0 rgba(0, 0, 0, 0.6),
     inset 1px 1px 3px rgba(255, 0, 0, 0.5);
 
@@ -62,7 +63,7 @@ export const ModalButton = styled(SelectionButton)`
         min-height: 50px;
         background: lightgray;
         font-size: 1.15rem;
-        font-family: 'Grandstander', cursive;
+        font-family: ${TITLE_FONT};
 
         &: hover {
           color: purple;
@@ -169,7 +170,7 @@ export const ModalMessage = styled.p`
   text-shadow: 0 0 2px white;
   text-align: center;
   line-height: 2;
-  font-family: 'Cairo', sans-serif;
+  font-family: ${TEXT_FONT};
   white-space: auto;
   width: 100%;
 
@@ -247,7 +248,7 @@ export const ModalTitle = styled.h1`
   text-align: center;
   font-size: 3rem;
   color: red;
-  font-family: Crackhouse, 'Grandstander', cursive;
+  font-family: ${MAIN_FONT};
   text-transform: uppercase;
 
   @media all and (min-width: 768px) {
@@ -327,7 +328,7 @@ export const Player = styled.div`
   padding: 5px 10px;
   background: green;
   cursor: pointer;
-  font-family: 'Grandstander', cursive;
+  font-family: ${TITLE_FONT};
   text-align: center;
   font-size: 2rem;
   line-height: 1.1;
@@ -379,7 +380,7 @@ export const PlayerNew = styled.div`
   border: 1px solid black;
   border-radius: 50%;
   background: #0099ff;
-  font-family: 'Grandstander', cursive;
+  font-family: ${TITLE_FONT};
   text-align: center;
   font-size: 2rem;
   line-height: 1.1;
@@ -406,7 +407,7 @@ export const PlayerNewInput = styled.input`
   width: 150px;
   border: 1px solid gray;
   background: white;
-  font-family: 'Grandstander', cursive;
+  font-family: ${TITLE_FONT};
   text-align: center;
   font-size: 1rem;
   line-height: 1.1;
@@ -451,7 +452,7 @@ export const PlayerRemove = styled.div`
   border: 1px solid black;
   border-radius: 50%;
   background: #ff0000;
-  font-family: 'Cairo', sans-serif;
+  font-family: ${TEXT_FONT};
   text-align: center;
   font-size: 1.2rem;
   line-height: 1.1;

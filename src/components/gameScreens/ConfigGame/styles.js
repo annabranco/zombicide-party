@@ -2,6 +2,7 @@ import styled from '@emotion/styled';
 import { css } from '@emotion/core';
 import { withStyles } from '@material-ui/core/styles';
 import Switch from '@material-ui/core/Switch';
+import { TEXT_FONT, TITLE_FONT } from '../../../styles';
 
 export const ConfigWrapper = styled.div`
   label: ConfigWrapper;
@@ -74,7 +75,7 @@ export const ConfigTitle = styled.h2`
   font-size: 1rem;
   text-align: center;
   text-transform: uppercase;
-  font-family: 'Grandstander', cursive;
+  font-family: ${TITLE_FONT};
 
   @media all and (min-width: 768px) {
     font-size: 2rem;
@@ -135,7 +136,7 @@ export const CoverLabel = styled.p`
   color: white;
   font-size: 1.3rem;
   text-align: center;
-  font-family: 'Cairo', sans-serif;
+  font-family: ${TEXT_FONT};
 
   @media all and (min-width: 768px) {
     bottom: 5px;
@@ -184,7 +185,7 @@ export const RulesWrapper = styled.div`
   justify-content: center;
   flex-wrap: wrap;
   color: white;
-  font-family: 'Grandstander', cursive;
+  font-family: ${TITLE_FONT};
   overflow-y: auto;
   padding-left: 10px;
 

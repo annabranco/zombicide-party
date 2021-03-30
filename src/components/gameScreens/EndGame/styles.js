@@ -1,6 +1,6 @@
 import styled from '@emotion/styled';
 import { css, keyframes } from '@emotion/core';
-import { Appear } from '../../../styles';
+import { Appear, MAIN_FONT, TITLE_FONT } from '../../../styles';
 import { VICTORY } from '../../../constants';
 
 /**
@@ -223,7 +223,7 @@ export const EndGameText = styled.div`
   left: 50%;
   transform: translate(-50%, -50%);
   background: none;
-  font-family: Crackhouse, 'Grandstander', cursive;
+  font-family: ${MAIN_FONT};
   text-transform: uppercase;
   font-size: 6rem;
   width: 40%;
@@ -289,7 +289,7 @@ export const GameInfo = styled.p`
   animation-delay: ${({ delay }) => (delay ? `${delay * 2 + 5}s` : '5s')};
   animation-iteration-count: 1;
   animation-fill-mode: forwards;
-  font-family: 'Grandstander', cursive;
+  font-family: ${TITLE_FONT};
   font-size: 1.5rem;
   color: white;
 `;

@@ -1,6 +1,7 @@
 import { css } from '@emotion/core';
 import styled from '@emotion/styled';
 import { ACTIVATE, ATTACK, KILL } from '../../../constants';
+import { MAIN_FONT, TITLE_FONT } from '../../../styles';
 import { SelectionButton } from '../../mainSections/MainMenu/styles';
 
 export const Action = styled.p`
@@ -19,7 +20,7 @@ export const Action = styled.p`
   text-align: center;
   opacity: 1;
   text-transform: uppercase;
-  font-family: 'Grandstander', cursive;
+  font-family: ${TITLE_FONT};
   box-shadow: 0 1px 10px 0 rgba(0, 0, 0, 0.6),
     inset 1px 1px 3px rgba(255, 255, 255, 0.5);
 
@@ -84,7 +85,7 @@ export const AttackInstructions = styled.p`
   text-shadow: 0 0 2px black;
   text-align: center;
   text-transform: uppercase;
-  font-family: 'Grandstander', cursive;
+  font-family: ${TITLE_FONT};
 `;
 AttackInstructions.displayName = 'AttackInstructions';
 
@@ -124,7 +125,7 @@ export const ConfirmAttackButton = styled(CancelAttackButton)`
   line-height: 0.5;
   font-weight: 700;
   text-transform: uppercase;
-  font-family: 'Grandstander', cursive;
+  font-family: ${TITLE_FONT};
 
   &:hover {
     color: crimson;
@@ -312,7 +313,7 @@ export const ZombiesRoundSign = styled(AttackInstructions)`
   left: 50%;
   transform: translate(-50%, 0);
   background: none;
-  font-family: Crackhouse, 'Grandstander', cursive;
+  font-family: ${MAIN_FONT};
   font-size: 5rem;
   opacity: 0.7;
 

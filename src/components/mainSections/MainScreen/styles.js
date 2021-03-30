@@ -1,4 +1,5 @@
 import styled from '@emotion/styled';
+import { TITLE_FONT } from '../../../styles';
 
 export const MainArea = styled.main`
   label: MainArea;
@@ -20,7 +21,7 @@ export const RoundTag = styled.p`
   transform: translate(-50%, 0);
   color: white;
   text-transform: uppercase;
-  font-family: 'Grandstander', cursive;
+  font-family: ${TITLE_FONT};
   font-size: 2rem;
 `;
 RoundTag.displayName = 'RoundTag';

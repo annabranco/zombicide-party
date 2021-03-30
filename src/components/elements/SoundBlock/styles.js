@@ -1,6 +1,6 @@
 import styled from '@emotion/styled';
 import { css } from '@emotion/core';
-import { inactiveZombie, activeZombie } from '../../../styles';
+import { inactiveZombie, activeZombie, TITLE_FONT } from '../../../styles';
 import {
   IN_HAND,
   ITEMS,
@@ -428,7 +428,7 @@ export const PlayText = styled.p`
   color: white;
   text-shadow: 1px 1px 4px gray;
   text-transform: uppercase;
-  font-family: 'Grandstander', cursive;
+  font-family: ${TITLE_FONT};
   font-size: 2rem;
   text-align: center;
 `;

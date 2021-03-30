@@ -2,13 +2,13 @@ import styled from '@emotion/styled';
 import { css } from '@emotion/core';
 import { rgba } from 'emotion-rgba';
 import { AttackInstructions } from '../ZombiesSection/styles';
-import { Shadow } from '../../../styles';
+import { MAIN_FONT, Shadow, TEXT_FONT, TITLE_FONT } from '../../../styles';
 import { IN_RESERVE, MOBILE } from '../../../constants';
 import Background from '../../../assets/images/background/background.jpg';
 
 export const Abilities = styled.p`
   label: Abilities;
-  font-family: 'Grandstander', cursive;
+  font-family: ${TITLE_FONT};
   text-transform: uppercase;
   font-weight: 500;
   color: rgba(255, 255, 0, 0.6);
@@ -146,7 +146,7 @@ export const ActionsLabelWrapper = styled.div`
   justify-content: center;
   height: 20px;
   width: 100%;
-  font-family: 'Grandstander', cursive;
+  font-family: ${TITLE_FONT};
   font-size: 0.9rem;
   letter-spacing: 0.2rem;
   color: rgba(255, 255, 180, 0.6);
@@ -213,7 +213,7 @@ export const AppButton = styled.button`
   border-radius: 5px;
   padding: 2px 10px;
   background: rgba(0, 0, 0, 0.7);
-  font-family: 'Cairo', sans-serif;
+  font-family: ${TEXT_FONT};
   color: rgba(255, 255, 255, 0.7);
   font-weight: 700;
   font-size: 0.7rem;
@@ -314,7 +314,7 @@ export const CardsActions = styled.div`
   width: 80px;
   transform: rotate(270deg);
   transform-origin: top left;
-  font-family: 'Grandstander', cursive;
+  font-family: ${TITLE_FONT};
   padding: 2px 10px;
   color: white;
   opacity: 1;
@@ -1133,7 +1133,7 @@ export const HighestXpTag = styled.span`
   top: 10px;
   left: 50%;
   transform: translate(-50%, 0);
-  font-family: 'Cairo', sans-serif;
+  font-family: ${TEXT_FONT};
   text-transform: uppercase;
   font-size: 0.5rem;
   color: black;
@@ -1263,7 +1263,7 @@ export const MainButton = styled(AppButton)`
   width: 50%;
   line-height: 0.9;
   text-align: center;
-  font-family: 'Cairo', sans-serif;
+  font-family: ${TEXT_FONT};
   font-size: 0.9rem;
   cursor: pointer;
   border: 1px solid black;
@@ -1356,7 +1356,7 @@ export const ModalSignText = styled.p`
   opacity: 0.9;
   white-space: pre;
   font-size: 3rem;
-  font-family: Crackhouse, 'Grandstander', cursive;
+  font-family: ${MAIN_FONT};
   text-align: center;
   font-size: 3rem;
   font-weight: 900;
@@ -1385,7 +1385,7 @@ export const MovementIcon = styled.div`
   line-height: 1.3;
   letter-spacing: 0.001rem;
   font-size: 0.8rem;
-  font-family: 'Grandstander', cursive;
+  font-family: ${TITLE_FONT};
   text-transform: uppercase;
 
   &:not(:first-of-type) {
@@ -1606,7 +1606,7 @@ export const PlayerTag = styled.div`
   height: 15px;
   width: 30%;
   padding: 5px 20px;
-  font-family: 'Grandstander', cursive;
+  font-family: ${TITLE_FONT};
   text-align: center;
   font-size: 1.1rem;
   text-shadow: 0 0 2px black;
@@ -1688,7 +1688,7 @@ export const PromoWrapper = styled.div`
   flex-direction: row;
   align-items: center;
   justify-content: flex-start;
-  font-family: 'Grandstander', cursive;
+  font-family: ${TITLE_FONT};
   text-transform: uppercase;
   color: gray;
   font-weight: 300;

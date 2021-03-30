@@ -1,5 +1,9 @@
 import { css, keyframes } from '@emotion/core';
 
+export const MAIN_FONT = "Crackhouse, 'Grandstander', sans-serif";
+export const TITLE_FONT = "'Grandstander', sans-serif";
+export const TEXT_FONT = "'Cairo', serif";
+
 export const globalStyles = css`
   html,
   body,
@@ -108,10 +112,10 @@ export const globalStyles = css`
   h2,
   h3,
   h4 {
-    font-family: Crackhouse, 'Grandstander', cursive;
+    font-family: ${MAIN_FONT};
   }
   p. label {
-    font-family: 'Cairo', sans-serif;
+    font-family: ${TEXT_FONT};
   }
   &::-webkit-scrollbar {
     width: 10px;

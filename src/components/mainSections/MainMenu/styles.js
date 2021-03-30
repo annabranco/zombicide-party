@@ -1,7 +1,7 @@
 import styled from '@emotion/styled';
 import { css, keyframes } from '@emotion/core';
 import { Link } from 'react-router-dom';
-import { Appear, Shadow } from '../../../styles';
+import { Appear, MAIN_FONT, Shadow, TITLE_FONT } from '../../../styles';
 import { DEFEAT, VICTORY } from '../../../constants';
 
 const ThunderFlash = keyframes`
@@ -140,7 +140,7 @@ export const MainTitle = styled.h1`
   font-size: 2rem;
   color: white;
   text-shadow: 0 0 2px black;
-  font-family: Crackhouse;
+  font-family: ${MAIN_FONT};
   text-shadow: 0 0 2px red;
 
   ${({ blockedScreen }) =>
@@ -209,7 +209,7 @@ export const SelectionButton = styled.button`
   margin: 10px auto;
   width: 250px;
   padding: 2px 25px;
-  font-family: Crackhouse, 'Grandstander', cursive;
+  font-family: ${MAIN_FONT};
   font-size: 2rem;
   border-radius: 20px;
   background: linear-gradient(red, tomato, maroon);
@@ -264,7 +264,7 @@ export const TestButton = styled(SelectionButton)`
   width: 120px;
   border-radius: 10px;
   line-height: 0.5;
-  font-family: 'Grandstander', cursive;
+  font-family: ${TITLE_FONT};
   box-shadow: 0 1px 10px 0 rgba(0, 0, 0, 0.6),
     inset 1px 1px 3px rgba(255, 0, 0, 0.5);
 

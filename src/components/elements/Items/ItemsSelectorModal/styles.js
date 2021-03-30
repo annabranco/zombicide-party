@@ -1,5 +1,6 @@
 import styled from '@emotion/styled';
 import { css } from '@emotion/core';
+import { TITLE_FONT } from '../../../../styles';
 
 export const SelectorButton = styled.div`
   label: SelectorButton;
@@ -81,7 +82,7 @@ export const SubSectionTitle = styled.h3`
   width: 50%;
   line-height: 1.5;
   text-align: center;
-  font-family: 'Grandstander', cursive;
+  font-family: ${TITLE_FONT};
 
   color: ${({ opened = true }) => (opened ? 'white' : 'gray')};
   cursor: pointer;

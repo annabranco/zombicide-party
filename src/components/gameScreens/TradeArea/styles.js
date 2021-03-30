@@ -1,6 +1,7 @@
 import styled from '@emotion/styled';
 import { css } from '@emotion/core';
 import { CharacterName } from '../../sections/PlayersSection/styles';
+import { TITLE_FONT } from '../../../styles';
 
 export const ButtonsWrapper = styled.div`
   label: ButtonsWrapper;
@@ -75,7 +76,7 @@ export const ConfirmButton = styled.button`
   border: 1px solid black;
   border-radius: 10px;
   font-weight: 700;
-  font-family: 'Grandstander', cursive;
+  font-family: ${TITLE_FONT};
   cursor: pointer;
   font-size: 1rem;
   outline: none;
@@ -170,7 +171,7 @@ export const CurrentCharacterTag = styled.p`
   bottom: 10px;
   left: 20px;
   font-weight: 700;
-  font-family: 'Grandstander', cursive;
+  font-family: ${TITLE_FONT};
   font-size: 1.3rem;
   color: rgba(255, 255, 255, 0.7);
 `;
@@ -251,7 +252,7 @@ export const PlayerName = styled.p`
   top: 110px;
   width: 50px;
   font-weight: 500;
-  font-family: 'Grandstander', cursive;
+  font-family: ${TITLE_FONT};
   font-size: 1.3rem;
   color: ${({ color }) => color};
 

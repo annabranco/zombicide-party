@@ -1,7 +1,7 @@
 import styled from '@emotion/styled';
 import { css } from '@emotion/core';
 import { SelectionButton } from '../MainMenu/styles';
-import { activeImage, inactiveImage } from '../../../styles';
+import { activeImage, inactiveImage, TITLE_FONT } from '../../../styles';
 
 export const CharacterArea = styled.div`
   label: CharacterArea;
@@ -197,7 +197,7 @@ export const PlayerTag = styled.div`
   padding: 2px 10px;
   background: ${({ color }) => color || 'black'};
   /* cursor: pointer; */
-  font-family: 'Grandstander', cursive;
+  font-family: ${TITLE_FONT};
   text-align: center;
   font-size: 1rem;
   line-height: 1.1;
@@ -233,7 +233,7 @@ export const SelectorButton = styled(SelectionButton)`
   margin: 30px auto;
   width: 200px;
   padding: 5px 15px;
-  font-family: 'Grandstander', cursive;
+  font-family: ${TITLE_FONT};
   font-size: 1.3rem;
 
   ${({ active }) =>

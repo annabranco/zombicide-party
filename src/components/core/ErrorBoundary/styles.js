@@ -1,5 +1,6 @@
 import styled from '@emotion/styled';
 import { css } from '@emotion/core';
+import { TEXT_FONT, TITLE_FONT } from '../../../styles';
 
 export const DetailsText = styled.p`
   label: DetailsText;
@@ -94,7 +95,7 @@ export const NotifyButtonText = styled.p`
   font-size: 1.3rem;
   line-height: 0.2;
   color: black;
-  font-family: 'Grandstander', cursive;
+  font-family: ${TITLE_FONT};
   text-transform: uppercase;
   vertical-align: sub;
 `;
@@ -108,6 +109,6 @@ export const SorryText = styled.p`
   line-height: 1.5;
   color: white;
   text-align: center;
-  font-family: 'Cairo', sans-serif;
+  font-family: ${TEXT_FONT};
 `;
 SorryText.displayName = 'SorryText';
