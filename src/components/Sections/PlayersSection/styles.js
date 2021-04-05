@@ -1126,35 +1126,6 @@ export const FirstPlayerWrapper = styled.div`
 `;
 FirstPlayerWrapper.displayName = 'FirstPlayerWrapper';
 
-export const HighestXpTag = styled.span`
-  label: HighestXpTag;
-  z-index: 15;
-  position: absolute;
-  top: 10px;
-  left: 50%;
-  transform: translate(-50%, 0);
-  font-family: ${TEXT_FONT};
-  text-transform: uppercase;
-  font-size: 0.5rem;
-  color: black;
-  font-weight: 900;
-  user-select: none;
-
-  @media all and (min-width: 701px) {
-    top: 20px;
-    font-size: 0.7rem;
-    color: white;
-
-    ${({ xp }) =>
-      xp <= 4 &&
-      css`
-        font-size: 0.5rem;
-        top: -8px;
-      `}
-  }
-`;
-HighestXpTag.displayName = 'HighestXpTag';
-
 export const IndicatorsWrapper = styled.div`
   label: IndicatorsWrapper;
   z-index: 10;
@@ -1371,49 +1342,6 @@ export const ModalSignText = styled.p`
   }
 `;
 ModalSignText.displayName = 'ModalSignText';
-
-export const MovementIcon = styled.div`
-  label: MovementIcon;
-  position: relative;
-  left: 0.75em;
-  width: ${({ type }) => (typeof type === 'number' ? '20px' : '70px')};
-  height: 14px;
-  text-align: center;
-  background: ${({ color }) => color};
-  color: ${({ type }) => (typeof type === 'number' ? 'white' : 'black')};
-  font-weight: 700;
-  line-height: 1.3;
-  letter-spacing: 0.001rem;
-  font-size: 0.8rem;
-  font-family: ${TITLE_FONT};
-  text-transform: uppercase;
-
-  &:not(:first-of-type) {
-    margin-left: 15px;
-  }
-
-  &:after {
-    content: '';
-    position: absolute;
-    left: 100%;
-    width: 10px;
-    height: 14px;
-    clip-path: polygon(50% 50%, -50% -50%, 0 100%);
-    background: ${({ color }) => color};
-  }
-  &:before {
-    content: '';
-    position: absolute;
-    left: 1px;
-    top: 0;
-    width: 10px;
-    height: 14px;
-    clip-path: polygon(100% 0, 100% 100%, 0% 100%, 50% 50%, 0% 0%);
-    transform: translateX(-100%);
-    background: ${({ color }) => color};
-  }
-`;
-MovementIcon.displayName = 'MovementIcon';
 
 export const NavIcons = styled.img`
   label: NavIcons;
@@ -1772,80 +1700,3 @@ export const WoundedWrapper = styled.div`
   overflow: hidden;
 `;
 WoundedWrapper.displayName = 'WoundedWrapper';
-
-export const XpIcon = styled(MovementIcon)`
-  label: XpIcon;
-  width: 25px;
-  left: 0;
-  user-select: none;
-  /* color: black; */
-  color: black;
-  font-size: ${({ currentXp, device, highestXp }) => {
-    if (device === MOBILE) {
-      if (currentXp) {
-        return '1.1rem';
-      }
-      if (highestXp) {
-        return '0.6rem';
-      }
-    } else if (currentXp || highestXp) {
-      return '1.1rem';
-    }
-    return null;
-  }};
-  line-height: ${({ currentXp, highestXp }) =>
-    currentXp || highestXp ? '1' : '1.2'};
-
-  background: ${({ activeColor }) => activeColor && activeColor};
-  opacity: ${({ activeColor }) => activeColor && 1};
-  height: ${({ currentXp, highestXp }) =>
-    currentXp || highestXp ? '18px' : '14px'};
-  width: ${({ currentXp, highestXp, size }) =>
-    currentXp || highestXp
-      ? `calc(100% / ${size} + 10px) `
-      : `calc(100% / ${size} )`};
-
-  &:not(:first-of-type) {
-    margin-left: 8px;
-  }
-
-  &:after {
-    content: '';
-    position: absolute;
-    left: 100%;
-    width: 6px;
-    height: ${({ currentXp, highestXp }) =>
-      currentXp || highestXp ? '18px' : '14px'};
-    clip-path: polygon(50% 50%, -50% -50%, 0 100%);
-    background: ${({ activeColor }) => activeColor && activeColor};
-  }
-  &:before {
-    content: '';
-    position: absolute;
-    /* left: 10px; */
-    top: 0;
-    width: 6px;
-    height: ${({ currentXp, highestXp }) =>
-      currentXp || highestXp ? '18px' : '14px'};
-    clip-path: polygon(100% 0, 100% 100%, 0% 100%, 50% 50%, 0% 0%);
-    transform: translateX(-100%);
-    background: ${({ activeColor }) => activeColor && activeColor};
-  }
-
-  &:first-of-type:before {
-    clip-path: none;
-  }
-  &:last-of-type:after {
-    clip-path: none;
-  }
-
-  ${({ setupMode }) =>
-    setupMode &&
-    css`
-      cursor: pointer;
-    `}
-
-  @media all and (min-width: 701px) {
-  }
-`;
-XpIcon.displayName = 'XPIcon';

@@ -7,8 +7,8 @@ import {
   logger,
   useStateWithLabel
 } from '../../../../utils';
-import ActionButton from '../../../elements/ActionButton';
-import SoundBlock from '../../../elements/SoundBlock';
+import ActionButton from '../../ActionButton';
+import SoundBlock from '../../SoundBlock';
 import ZombieFace from '../../../../assets/images/zombieFace.png';
 import {
   DROP,

@@ -201,7 +201,6 @@ import {
   ExtraActivationImage,
   FirstPlayerToken,
   FirstPlayerWrapper,
-  HighestXpTag,
   IndicatorsWrapper,
   LevelIndicator,
   MainButton,
@@ -219,9 +218,10 @@ import {
   SelectButton,
   TopActionsLabelWrapper,
   WoundedSign,
-  WoundedWrapper,
-  XpIcon
+  WoundedWrapper
 } from './styles';
+import XpBar from '../../elements/XpBar';
+import MovementsBar from '../../elements/MovementsBar';
 
 const PlayersSection = ({
   damageMode,
@@ -1811,61 +1811,27 @@ const PlayersSection = ({
       {character.name && (
         <>
           {/* ----- XP BAR ----- */}
-          {!trade && character.wounded !== KILLED && !objectivesAchieved && (
-            <IndicatorsWrapper header>
-              {xpCounter &&
-                xpCounter.map((level, index) => (
-                  <XpIcon
-                    activeColor={
-                      (level <= character.experience ||
-                        xpCounter[index - 1] < character.experience) &&
-                      getXpColor(level, xpCounter[index - 1], true)
-                    }
-                    color={getXpColor(level, xpCounter[index - 1])}
-                    currentXp={character.experience === level}
-                    device={device.current}
-                    highestXp={highestXp.xp === level}
-                    key={`xp-${level}-${xpCounter[index - 1]}`}
-                    onClick={
-                      setupMode
-                        ? () =>
-                            setCustomXp(
-                              level,
-                              xpCounter[index - 1],
-                              xpCounter[index + 1]
-                            )
-                        : () => null
-                    }
-                    setupMode={setupMode}
-                    size={xpCounter.length}
-                    type={level}
-                  >
-                    {level}
-                    {highestXp.xp === level &&
-                      highestXp.name !== character.name && (
-                        <HighestXpTag xp={highestXp.xp}>
-                          {highestXp.name}
-                        </HighestXpTag>
-                      )}
-                  </XpIcon>
-                ))}
-            </IndicatorsWrapper>
-          )}
+          <XpBar
+            currentXp={character.xp}
+            charIsAlive={character.wounded !== KILLED}
+            device={device.current}
+            gameHasEnded={gameOver}
+            setupMode={setupMode}
+            xpCounter={xpCounter}
+            tradeModeActive={trade}
+            setCustomXp={setCustomXp}
+            highestXp={highestXp}
+            characterName={character.name}
+          />
 
           {/* ----- MOVEMENTS BAR ----- */}
-          {!trade && character.wounded !== KILLED && !objectivesAchieved && (
-            <IndicatorsWrapper>
-              {actionsCount.map((action, index) => (
-                <MovementIcon
-                  color={getActionColor(action)}
-                  key={`${action}-${index}`} // eslint-disable-line react/no-array-index-key
-                  type={action}
-                >
-                  {action}
-                </MovementIcon>
-              ))}
-            </IndicatorsWrapper>
-          )}
+          <MovementsBar
+            actionsCount={actionsCount}
+            charIsAlive={character.wounded !== KILLED}
+            gameHasEnded={gameOver}
+            setupMode={setupMode}
+            tradeModeActive={trade}
+          />
 
           {/* ----- MAIN SECTION ----- */}
           {trade ? (

@@ -37,3 +37,8 @@ export const BonusDiceType = shape({
   melee: number.isRequired,
   ranged: number.isRequired
 });
+
+export const HighestXpType = shape({
+  name: string.isRequired,
+  xp: number.isRequired
+});
