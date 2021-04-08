@@ -1,7 +1,7 @@
 {
   "files": {
-    "main.js": "/zombicide-party/static/js/main.a4d6b2bc.chunk.js",
-    "main.js.map": "/zombicide-party/static/js/main.a4d6b2bc.chunk.js.map",
+    "main.js": "/zombicide-party/static/js/main.b1af3ff5.chunk.js",
+    "main.js.map": "/zombicide-party/static/js/main.b1af3ff5.chunk.js.map",
     "runtime-main.js": "/zombicide-party/static/js/runtime-main.09054635.js",
     "runtime-main.js.map": "/zombicide-party/static/js/runtime-main.09054635.js.map",
     "static/js/2.1de065a5.chunk.js": "/zombicide-party/static/js/2.1de065a5.chunk.js",
@@ -274,6 +274,6 @@
   "entrypoints": [
     "static/js/runtime-main.09054635.js",
     "static/js/2.1de065a5.chunk.js",
-    "static/js/main.a4d6b2bc.chunk.js"
+    "static/js/main.b1af3ff5.chunk.js"
   ]
 }
