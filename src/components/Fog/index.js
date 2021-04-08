@@ -11,7 +11,7 @@ import FogImage from '../../assets/images/fog.png';
 
 const FogEffect = ({ inChar }) => {
   const CanvasElement = useRef();
-  const fogAnimationTimer = useRef();
+  // const fogAnimationTimer = useRef();
 
   const canvasHeight = 200;
   const pCollection = [];
@@ -117,16 +117,16 @@ const FogEffect = ({ inChar }) => {
       draw(new Date().getTime(), 3000);
     };
 
-    fogAnimationTimer.current = setInterval(() => {
-      startAnimation();
-    }, 60000);
+    // fogAnimationTimer.current = setInterval(() => {
+    //   startAnimation();
+    // }, 60000);
     startAnimation();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [inChar]);
 
-  useEffect(() => {
-    return () => clearInterval(fogAnimationTimer.current);
-  }, []);
+  // useEffect(() => {
+  //   return () => clearInterval(fogAnimationTimer.current);
+  // }, []);
 
   return <Fog ref={CanvasElement} height="200" width="800" inChar={inChar} />;
 };

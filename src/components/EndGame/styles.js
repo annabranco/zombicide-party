@@ -153,7 +153,7 @@ export const EndingCharacterImage = styled.img`
   opacity: 0;
   animation-name: ${ComeIn};
   margin: 0 -7px;
-  max-width: 300px;
+  max-width: 100px;
 
   ${({ number }) =>
     number &&
@@ -193,6 +193,7 @@ export const EndingCharacterImage = styled.img`
 
   @media all and (min-width: 701px) {
     margin: 0 -45px;
+    max-width: 300px;
   }
 `;
 EndingCharacterImage.displayName = 'EndingCharacterImage';
@@ -225,8 +226,8 @@ export const EndGameText = styled.div`
   background: none;
   font-family: Crackhouse, 'Grandstander', cursive;
   text-transform: uppercase;
-  font-size: 6rem;
-  width: 40%;
+  font-size: 4rem;
+  width: 80%;
   text-align: center;
   color: crimson;
   text-shadow: -2px -2px 2px rgba(255, 255, 255, 0.9),
@@ -240,8 +241,20 @@ export const EndGameText = styled.div`
   ${({ type }) =>
     type === VICTORY &&
     css`
-      top: 55%;
+      top: 40%;
     `}
+
+  @media all and (min-width: 768px) {
+    top: 40%;
+    font-size: 6rem;
+    width: 40%;
+
+    ${({ type }) =>
+      type === VICTORY &&
+      css`
+        top: 55%;
+      `}
+  }
 `;
 EndGameText.displayName = 'EndGameText';
 
@@ -279,9 +292,10 @@ export const GameInfo = styled.p`
   label: GameInfo;
   z-index: 20;
   position: absolute;
-  bottom: 20px;
-  right: 50px;
-  text-align: right;
+  bottom: 60px;
+  right: 50%;
+  transform: translate(50%, 0);
+  text-align: center;
   -webkit-text-stroke: 1px black;
   opacity: 0;
   animation-name: ${Appear};
@@ -292,5 +306,12 @@ export const GameInfo = styled.p`
   font-family: 'Grandstander', cursive;
   font-size: 1.5rem;
   color: white;
+
+  @media all and (min-width: 768px) {
+    bottom: 20px;
+    right: 50px;
+    transform: none;
+    text-align: right;
+  }
 `;
 GameInfo.displayName = 'GameInfo';

@@ -34,6 +34,7 @@ const SoundBlock = ({
   combinePair,
   damageMode,
   differentSounds,
+  displayCombineButton,
   img,
   isMobile,
   isSelected,
@@ -212,15 +213,16 @@ const SoundBlock = ({
         trade={trade}
         type={type}
       >
-        {checkIfItemCanBeCombined(name) && canCombine && (
-          <ActionButton
-            actionType={COMBINE_ACTION}
-            callback={event => onClickCombine([name, slot], event)}
-            combineItemSelected={combineItemSelected}
-            combinePair={combinePair}
-            isMobile={isMobile}
-          />
-        )}
+        {displayCombineButton ||
+          (checkIfItemCanBeCombined(name) && canCombine && (
+            <ActionButton
+              actionType={COMBINE_ACTION}
+              callback={event => onClickCombine([name, slot], event)}
+              combineItemSelected={combineItemSelected}
+              combinePair={combinePair}
+              isMobile={isMobile}
+            />
+          ))}
         {type === ACTIVATIONS &&
           ((isMobile && displayZombieAttackButtonsForMobile) || !isMobile) && (
             <ZombieActions>
@@ -258,6 +260,7 @@ SoundBlock.propTypes = {
   combinePair: bool,
   damageMode: oneOfType([string, bool]),
   differentSounds: number,
+  displayCombineButton: bool,
   img: string,
   isMobile: bool.isRequired,
   isSelected: bool,
@@ -296,6 +299,7 @@ SoundBlock.defaultProps = {
   combinePair: false,
   damageMode: false,
   differentSounds: null,
+  displayCombineButton: false,
   img: null,
   isSelected: false,
   isTablet: false,
