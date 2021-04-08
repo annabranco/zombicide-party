@@ -2,6 +2,7 @@ import React, { useEffect, useRef } from 'react';
 import { bool, func, number, string, oneOfType, arrayOf } from 'prop-types';
 import { ALL_WEAPONS } from '../../../setup/weapons';
 import {
+  checkIfItemCanBeCombined,
   getItemPhoto,
   getItemType,
   logger,
@@ -29,7 +30,8 @@ import {
   WEAPONS,
   LOG_TYPE_EXTENDED,
   SLOT_SELECTED,
-  BURNEM_ALL
+  BURNEM_ALL,
+  DESKTOP
 } from '../../../constants';
 import {
   ActionButtonIcon,
@@ -87,6 +89,11 @@ const ItemsArea = ({
     false,
     'displaySplash'
   );
+  const [displayCombineButton, toggleDisplayCombineButton] = useStateWithLabel(
+    false,
+    'displayCombineButton'
+  );
+
   const [isActive, toggleActive] = useStateWithLabel(false, 'isActive');
   const [killButtons, changeKillButtons] = useStateWithLabel([], 'killButtons');
   const [needReload, toggleNeedReload] = useStateWithLabel(false, 'needReload');
@@ -166,7 +173,10 @@ const ItemsArea = ({
 
   const onClickCard = () => {
     const slot = getSlotNumber(index);
-    if (damageMode) {
+
+    if (setupMode) {
+      onClickEmptyCard();
+    } else if (damageMode) {
       causeDamage(slot);
     } else if (trade) {
       if (itemSelected) {
@@ -174,12 +184,21 @@ const ItemsArea = ({
       } else {
         tradeItem({ item, slot, charTrading: charName });
       }
+    } else if (
+      checkIfItemCanBeCombined(item) &&
+      canCombine &&
+      device !== DESKTOP
+    ) {
+      toggleDisplayCombineButton(true);
+      setTimeout(() => {
+        toggleDisplayCombineButton(false);
+      }, 3000);
     } else {
-      onClickChange();
+      changeSlot();
     }
   };
 
-  const onClickChange = () => {
+  const changeSlot = () => {
     toggleActive(false);
     logger(
       LOG_TYPE_EXTENDED,
@@ -275,20 +294,21 @@ const ItemsArea = ({
             combineItemSelected={combineItemSelected}
             combinePair={combinePair}
             damageMode={damageMode}
+            displayCombineButton={displayCombineButton}
             img={getItemPhoto(item, slotType)}
             isMobile={device === MOBILE}
             isSelected={itemSelected}
             makeNoise={makeNoise}
             name={item}
             needsToBeReloaded={checkIfReloadIsNeeded()}
-            onClickCard={setupMode ? onClickEmptyCard : onClickCard}
+            onClickCard={onClickCard}
             onClickCombine={onClickCombine}
             round={round}
             secondarySound={secondarySound}
             setupMode={setupMode}
             slot={getSlotNumber(index)}
             slotType={slotType}
-            specificSound={ALL_WEAPONS[item].sound}
+            specificSound={ALL_WEAPONS[item] && ALL_WEAPONS[item].sound}
             spendAmmo={spendAmmo}
             trade={trade}
             type={itemsType}

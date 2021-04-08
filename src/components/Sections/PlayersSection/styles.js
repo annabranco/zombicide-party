@@ -6,7 +6,7 @@ import { Shadow } from '../../../styles';
 import { IN_RESERVE, MOBILE } from '../../../constants';
 import Background from '../../../assets/images/background/background.jpg';
 
-export const Abilities = styled.p`
+export const Abilities = styled.div`
   label: Abilities;
   font-family: 'Grandstander', cursive;
   text-transform: uppercase;

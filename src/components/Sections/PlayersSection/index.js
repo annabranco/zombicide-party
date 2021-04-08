@@ -1849,7 +1849,7 @@ const PlayersSection = ({
                 <CharacterOverlayImage src={character.img} />
                 <CharacterOverlayImageShadow src={character.img} />
               </CharacterOverlay>
-              {/* <FogEffect inChar /> */}
+
               {/* ----- TOP BAR ----- */}
               {!damageMode &&
                 !objectivesAchieved &&
@@ -2732,7 +2732,7 @@ const PlayersSection = ({
           )}
         </>
       )}
-      <FogEffect inChar />
+      {device.current === DESKTOP && <FogEffect inChar />}
     </CharacterSheet>
   );
 };
