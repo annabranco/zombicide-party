@@ -25,7 +25,7 @@ import {
   Action,
   ZombieActions,
   ZombieImageForMobile
-} from '../../sections/ZombiesSection/styles';
+} from '../../Sections/ZombiesSection/styles';
 import { Block, PlayImageButton, PlayIcon, PlayText, ItemIcon } from './styles';
 
 const SoundBlock = ({

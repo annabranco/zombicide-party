@@ -2,7 +2,7 @@ import React from 'react';
 import { string, func, bool, oneOfType, number, arrayOf } from 'prop-types';
 import { getXpColor } from '../../../utils';
 import { HighestXpType } from '../../../interfaces/types';
-import { IndicatorsWrapper } from '../../sections/PlayersSection/styles';
+import { IndicatorsWrapper } from '../../Sections/PlayersSection/styles';
 import { HighestXpTag, XpIcon } from './styles';
 
 const XpBar = ({

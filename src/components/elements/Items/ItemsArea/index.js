@@ -30,7 +30,7 @@ import {
   BURNEM_ALL
 } from '../../../../constants';
 import { BonusDiceType } from '../../../../interfaces/types';
-import { AppButton } from '../../../sections/PlayersSection/styles';
+import { AppButton } from '../../../Sections/PlayersSection/styles';
 import {
   ActionButtonIcon,
   ActionButtonsWrapper,

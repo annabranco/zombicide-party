@@ -1,8 +1,8 @@
 import React, { useEffect, useRef } from 'react';
 import { arrayOf, bool, func, oneOfType, string } from 'prop-types';
 import { logger, useStateWithLabel } from '../../../utils';
-import PlayersSection from '../../sections/PlayersSection';
-import ZombiesSection from '../../sections/ZombiesSection';
+import PlayersSection from '../../Sections/PlayersSection';
+import ZombiesSection from '../../Sections/ZombiesSection';
 import {
   GAME_TIME,
   LESS_THAN_1_MIN,

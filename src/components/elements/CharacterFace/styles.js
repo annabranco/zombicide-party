@@ -1,6 +1,6 @@
 import styled from '@emotion/styled';
 import { css } from '@emotion/core';
-import { NavIcons } from '../../sections/PlayersSection/styles';
+import { NavIcons } from '../../Sections/PlayersSection/styles';
 
 export const CharFace = styled(NavIcons)`
   label: CharFace;

@@ -1,7 +1,7 @@
 import React from 'react';
 import { string, bool, number, arrayOf } from 'prop-types';
 import { getActionColor } from '../../../utils';
-import { IndicatorsWrapper } from '../../sections/PlayersSection/styles';
+import { IndicatorsWrapper } from '../../Sections/PlayersSection/styles';
 import { MovementIcon } from './styles';
 
 const MovementsBar = ({

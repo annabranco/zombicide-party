@@ -1,7 +1,7 @@
 import styled from '@emotion/styled';
 import { css } from '@emotion/core';
 import { IN_RESERVE, WOUND } from '../../../../constants';
-import { AppButton } from '../../../sections/PlayersSection/styles';
+import { AppButton } from '../../../Sections/PlayersSection/styles';
 import IconRanged from '../../../../assets/images/ranged-icon.png';
 import IconMelee from '../../../../assets/images/melee-icon.png';
 import IconBlood from '../../../../assets/images/bloodSplash.png';

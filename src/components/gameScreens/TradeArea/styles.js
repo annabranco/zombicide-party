@@ -1,6 +1,6 @@
 import styled from '@emotion/styled';
 import { css } from '@emotion/core';
-import { CharacterName } from '../../sections/PlayersSection/styles';
+import { CharacterName } from '../../Sections/PlayersSection/styles';
 import { TITLE_FONT } from '../../../styles';
 
 export const ButtonsWrapper = styled.div`

@@ -18,7 +18,7 @@ import {
   TRADE
 } from '../../../constants';
 import { CharacterType } from '../../../interfaces/types';
-import { ArrowSign, CharItems } from '../../sections/PlayersSection/styles';
+import { ArrowSign, CharItems } from '../../Sections/PlayersSection/styles';
 import {
   ButtonsWrapper,
   CancelButton,
