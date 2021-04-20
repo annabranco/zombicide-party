@@ -85,6 +85,14 @@ const ConfigGame = ({ toggleConfig }) => {
   const onClickExpansion = expansion => {
     const updRules = { ...rules };
     updRules[expansion] = !updRules[expansion];
+
+    if (expansion === 'nightShift') {
+      updRules.season2 = updRules[expansion];
+      updRules.season3 = updRules[expansion];
+      updRules.angryNeighbors = updRules[expansion];
+      updRules.others = updRules[expansion];
+    }
+
     changeRules(updRules);
   };
 
@@ -135,12 +143,17 @@ const ConfigGame = ({ toggleConfig }) => {
             <CoversWrapper>
               {Object.values(SETS).map(set => (
                 <Cover
-                  active
+                  active={rules[set.name]}
+                  alt={set.label}
                   key={`Set-${set.name}`}
                   src={set.cover}
-                  onMouseOver={() => changeSetLabel(set.name)}
+                  onMouseOver={() => changeSetLabel(set.label)}
                   onMouseOut={() => changeSetLabel()}
-                  onClick={() => changeSetLabel(CANT_DESELECT)}
+                  onClick={() =>
+                    set.deselectable
+                      ? onClickExpansion(set.name)
+                      : changeSetLabel(CANT_DESELECT)
+                  }
                 />
               ))}
               <CoverLabel>{setLabel}</CoverLabel>
@@ -154,12 +167,17 @@ const ConfigGame = ({ toggleConfig }) => {
               {Object.values(EXPANSIONS).map(expansion => (
                 <Cover
                   active={rules[expansion.name]}
+                  alt={expansion.label}
                   key={`Expansion-${expansion.name}`}
                   small
                   src={expansion.cover}
                   onMouseOver={() => changeExpansionLabel(expansion.label)}
                   onMouseOut={() => changeExpansionLabel()}
-                  onClick={() => onClickExpansion(expansion.name)}
+                  onClick={() =>
+                    expansion.deselectable
+                      ? onClickExpansion(expansion.name)
+                      : changeExpansionLabel(CANT_DESELECT)
+                  }
                 />
               ))}
               <CoverLabel>{expansionLabel}</CoverLabel>

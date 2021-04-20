@@ -16,19 +16,16 @@ import {
   checkIfCharacterCanOpenDoors,
   checkIfCharacterHasFlashlight,
   checkIfHasAnyActionLeft,
-  getActionColor,
   getCharacterColor,
   getCombiningReference,
   getMediaQuery,
-  getXpColor,
   handlePromotionEffects,
   loadSavedGame,
   logger,
   orangeThreatThresold,
   useStateWithLabel,
   useTurnsCounter,
-  yellowThreatThresold,
-  totalActions
+  yellowThreatThresold
 } from '../../../utils';
 import NewGame from '../../mainSections/NewGame';
 import EndGame from '../../gameScreens/EndGame';
@@ -201,13 +198,11 @@ import {
   ExtraActivationImage,
   FirstPlayerToken,
   FirstPlayerWrapper,
-  IndicatorsWrapper,
   LevelIndicator,
   MainButton,
   MidScreenTag,
   ModalSign,
   ModalSignText,
-  MovementIcon,
   NavIconsWrapper,
   NextButton,
   NoiseIcon,
@@ -1131,8 +1126,6 @@ const PlayersSection = ({
   };
 
   const onFindingItem = slotType => (item, currentSlot = slot - 1) => {
-    console.log('$$$ item', item);
-
     const updChar = cloneDeep(character);
     const findingSlot = slotType === IN_HAND ? slot - 1 : slot - 3;
     const hasFlashlight = checkIfCharacterHasFlashlight([
@@ -1688,9 +1681,9 @@ const PlayersSection = ({
   }, [
     generalActions,
     extraMovementActions,
-    extraAttackActions[0],
-    extraAttackActions[1],
-    extraAttackActions[2],
+    extraAttackActions[0], // eslint-disable-line react-hooks/exhaustive-deps
+    extraAttackActions[1], // eslint-disable-line react-hooks/exhaustive-deps
+    extraAttackActions[2], // eslint-disable-line react-hooks/exhaustive-deps
     searchActions,
     bonusActions
   ]);

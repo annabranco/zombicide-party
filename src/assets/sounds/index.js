@@ -1,10 +1,14 @@
+import AK47 from './weapons/AK47.mp3';
 import AssaultRifle from './weapons/AssaultRifle.mp3';
 import AutomaticShotgun from './weapons/AutomaticShotgun.mp3';
 import BaseballBat from './weapons/BaseballBat.mp3';
 import BatteringRam from './weapons/BatteringRam.mp3';
+import Bow from './weapons/Bow.mp3';
 import Chainsaw from './weapons/Chainsaw.mp3';
 import ColtPython from './weapons/ColtPython.mp3';
 import ColtPythonAlt from './weapons/ColtPythonAlt.mp3';
+import ConcreteSaw from './weapons/ConcreteSaw.mp3';
+import Crossbow from './weapons/Crossbow.mp3';
 import Crowbar from './weapons/Crowbar.mp3';
 import DesertEagle from './weapons/DesertEagle.mp3';
 import DoubleBarrel from './weapons/DoubleBarrel.mp3';
@@ -15,18 +19,26 @@ import ExpandableBaton from './weapons/ExpandableBaton.mp3';
 import FireAxe from './weapons/FireAxe.mp3';
 import Flamethrower from './weapons/FlameThrower.mp3';
 import Flashbang from './weapons/Flashbang.mp3';
+import Handcannon from './weapons/Handcannon.mp3';
 import Handgun from './weapons/Handgun.mp3';
+import Hatchet from './weapons/Hatchet.mp3';
 import JacknJill from './weapons/JacknJill.mp3';
 import Katana from './weapons/Katana.mp3';
 import Knife from './weapons/Knife.mp3';
+import Kukri from './weapons/Kukri.mp3';
+import LaGuillotine from './weapons/LaGuillotine.mp3';
 import M4 from './weapons/M4.mp3';
+import M4CQB from './weapons/M4-CQB.mp3';
+import Mac10 from './weapons/Mac10.mp3';
 import Machete from './weapons/Machete.mp3';
 import Magnum44 from './weapons/Magnum44.mp3';
 import Magnum44Alt from './weapons/Magnum44Alt.mp3';
 import MasShotgun from './weapons/MasShotgun.mp3';
+import MeatCleaver from './weapons/MeatCleaver.mp3';
 import Minigun from './weapons/Minigun.mp3';
 import Molotov from './weapons/Molotov.mp3';
 import Mp5 from './weapons/Mp5.mp3';
+import Nailbat from './weapons/Nailbat.mp3';
 import NedsAtomicFlashlight from './weapons/NedsAtomicFlashlight.mp3';
 import NightStick from './weapons/NightStick.mp3';
 import Pan from './weapons/Pan.mp3';
@@ -35,15 +47,22 @@ import PasGunAlt from './weapons/PasGunAlt.mp3';
 import Pistol from './weapons/Pistol.mp3';
 import Rifle from './weapons/Rifle.mp3';
 import RocketLauncher from './weapons/RocketLauncher.mp3';
+import Saber from './weapons/Saber.mp3';
 import SamuraiEdge from './weapons/SamuraiEdge.mp3';
 import SawedOff from './weapons/SawedOff.mp3';
+import SBF from './weapons/SBF.mp3';
 import Shotgun from './weapons/Shotgun.mp3';
 import SmokeGrenade from './weapons/SmokeGrenade.mp3';
+import SPAS12 from './weapons/SPAS12.mp3';
 import Special911 from './weapons/Special911.mp3';
 import SubMG from './weapons/SubMG.mp3';
 import SweetSisters from './weapons/SweetSisters.mp3';
 import TaserGun from './weapons/TaserGun.mp3';
+import Thompson from './weapons/Thompson.mp3';
 import VikingAxe from './weapons/VikingAxe.mp3';
+import Wakizashi from './weapons/Wakizashi.mp3';
+import Winchester from './weapons/Winchester.mp3';
+import ZombKnuckles from './weapons/ZombKnuckles.mp3';
 
 import CarAttack from './actions/car-attack.mp3';
 import CarEnterStart from './actions/car-enter-start.mp3';
@@ -168,13 +187,17 @@ import Rain from './intro/rain.mp3';
 import Thunder from './intro/thunder.mp3';
 
 export const SOUNDS = {
+  AK47,
   AssaultRifle,
   AutomaticShotgun,
   BaseballBat,
   BatteringRam,
+  Bow,
   Chainsaw,
   ColtPython,
   ColtPythonAlt,
+  ConcreteSaw,
+  Crossbow,
   Crowbar,
   DesertEagle,
   DoubleBarrel,
@@ -185,18 +208,26 @@ export const SOUNDS = {
   FireAxe,
   Flamethrower,
   Flashbang,
+  Handcannon,
   Handgun,
+  Hatchet,
   JacknJill,
   Katana,
   Knife,
+  Kukri,
+  LaGuillotine,
   M4,
+  M4CQB,
+  Mac10,
   Machete,
   Magnum44,
   Magnum44Alt,
   MasShotgun,
+  MeatCleaver,
   Minigun,
   Molotov,
   Mp5,
+  Nailbat,
   NedsAtomicFlashlight,
   NightStick,
   Pan,
@@ -205,6 +236,9 @@ export const SOUNDS = {
   Pistol,
   Rifle,
   RocketLauncher,
+  SBF,
+  SPAS12,
+  Saber,
   SamuraiEdge,
   SawedOff,
   Shotgun,
@@ -213,7 +247,11 @@ export const SOUNDS = {
   SubMG,
   SweetSisters,
   TaserGun,
+  Thompson,
   VikingAxe,
+  Wakizashi,
+  Winchester,
+  ZombKnuckles,
   'car-attack': CarAttack,
   'car-enter-start': CarEnterStart,
   'car-enter': CarEnter,

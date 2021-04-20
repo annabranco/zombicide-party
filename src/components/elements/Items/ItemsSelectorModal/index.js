@@ -13,7 +13,10 @@ import {
   TABLET,
   WEAPONS
 } from '../../../../constants';
-import { ButtonsWrapper, CancelButton } from '../../../gameScreens/TradeArea/styles';
+import {
+  ButtonsWrapper,
+  CancelButton
+} from '../../../gameScreens/TradeArea/styles';
 import { SelectorArea } from '../../SoundBlock/styles';
 import {
   SelectorButton,
