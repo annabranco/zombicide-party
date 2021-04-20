@@ -10,7 +10,15 @@ import {
   CHARACTERS_S1,
   CHARACTERS_TOXIC_MALL
 } from './characters';
-import { WEAPONS_S1, WEAPONS_NIGHT_SHIFT, WEAPONS_TOXIC_MALL } from './weapons';
+import {
+  WEAPONS_S1,
+  WEAPONS_S2,
+  WEAPONS_S3,
+  WEAPONS_NIGHT_SHIFT,
+  WEAPONS_TOXIC_MALL,
+  WEAPONS_ANGRY_NEIGHBORS,
+  WEAPONS_OTHERS
+} from './weapons';
 import { DOGZ, ZOMBIES_S1 } from './zombies';
 import { ITEMS_S1, ITEMS_NIGHT_SHIFT, ITEMS_TOXIC_MALL } from './items';
 
@@ -18,12 +26,30 @@ export const SETS = {
   season1: {
     characters: CHARACTERS_S1,
     cover: Season1,
+    defaultSelected: true,
     deselectable: false,
     items: ITEMS_S1,
     label: 'Season 1',
     name: 'season1',
     weapons: WEAPONS_S1,
     zombies: ZOMBIES_S1
+  },
+  season2: {
+    cover: NightShift,
+    coverSize: 'small',
+    deselectable: false,
+    label: 'Season 2: Prison Outbreak',
+    name: 'season2',
+    weapons: WEAPONS_S2
+  },
+  season3: {
+    characters: CHARACTERS_NIGHT_SHIFT,
+    cover: NightShift,
+    coverSize: 'small',
+    deselectable: false,
+    label: 'Season 3: Rue Morgue',
+    name: 'season3',
+    weapons: WEAPONS_S3
   }
 };
 
@@ -63,5 +89,23 @@ export const EXPANSIONS = {
     label: 'Night Shift Campaign (beta)',
     name: 'nightShift',
     weapons: WEAPONS_NIGHT_SHIFT
+  },
+  angryNeighbors: {
+    characters: CHARACTERS_NIGHT_SHIFT,
+    cover: NightShift,
+    coverSize: 'small',
+    deselectable: false,
+    label: 'Angry Neighbors',
+    name: 'angryNeighbors',
+    weapons: WEAPONS_ANGRY_NEIGHBORS
+  },
+  others: {
+    characters: CHARACTERS_NIGHT_SHIFT,
+    cover: NightShift,
+    coverSize: 'small',
+    deselectable: false,
+    label: 'Kickstarters & Others',
+    name: 'others',
+    weapons: WEAPONS_OTHERS
   }
 };
