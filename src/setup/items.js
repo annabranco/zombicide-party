@@ -1,5 +1,5 @@
-import BagofRice from '../assets/images/items/bag-of-rice.jpg';
 import Antibiotics from '../assets/images/items/antibiotics.jpg';
+import BagofRice from '../assets/images/items/bag-of-rice.jpg';
 import CannedFood from '../assets/images/items/canned-food.jpg';
 import CelticShield from '../assets/images/items/celtic-shield.jpg';
 import Cookies from '../assets/images/items/cookies.jpg';
@@ -19,17 +19,21 @@ import HollowPointRounds from '../assets/images/items/hollow-point-rounds.jpg';
 import InfraredGoggles from '../assets/images/items/infrared-goggles.jpg';
 import LaserPointer from '../assets/images/items/laser-pointer.jpg';
 import LockpickSet from '../assets/images/items/lockpick-set.jpg';
+import Nails from '../assets/images/items/nails.jpg';
 import PileOfCash from '../assets/images/items/pile-of-cash.jpg';
 import PlentyOfAmmo from '../assets/images/items/plenty-of-ammo.jpg';
 import PlentyofAmmoforShotgun from '../assets/images/items/plenty-of-ammo-shotgun.jpg';
 import PoliceRiotHelmet from '../assets/images/items/police-riot-helmet.jpg';
 import PoliceRiotShield from '../assets/images/items/police-riot-shield.jpg';
 import ReinforcedVest from '../assets/images/items/reinforced-vest.jpg';
+import RiotShield from '../assets/images/items/riot-shield.jpg';
 import Scope from '../assets/images/items/scope.jpg';
 import SpareChange from '../assets/images/items/spare-change.jpg';
 import Suppressor from '../assets/images/items/suppressor.jpg';
 import Timebomb from '../assets/images/items/timebomb.jpg';
+import UberShield from '../assets/images/items/uber-shield.jpg';
 import Water from '../assets/images/items/water.jpg';
+
 import { ITEMS } from '../constants';
 
 export const ITEMS_S1 = {
@@ -112,6 +116,27 @@ export const ITEMS_TOXIC_MALL = {
   SpareChange: {
     img: SpareChange,
     name: 'Spare Change',
+    type: ITEMS
+  }
+};
+
+export const ITEMS_S2 = {
+  Nails: {
+    img: Nails,
+    name: 'Nails',
+    type: ITEMS
+  },
+  RiotShield: {
+    img: RiotShield,
+    name: 'Riot Shield',
+    type: ITEMS
+  }
+};
+
+export const ITEMS_ANGRY_NEIGHBORS = {
+  UberShield: {
+    img: UberShield,
+    name: 'Uber Shield',
     type: ITEMS
   }
 };
@@ -211,6 +236,8 @@ export const ITEMS_NIGHT_SHIFT = {
 
 export const ALL_ITEMS = {
   ...ITEMS_S1,
+  ...ITEMS_S2,
   ...ITEMS_TOXIC_MALL,
+  ...ITEMS_ANGRY_NEIGHBORS,
   ...ITEMS_NIGHT_SHIFT
 };

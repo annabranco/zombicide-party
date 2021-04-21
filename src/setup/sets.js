@@ -1,8 +1,12 @@
 import Season1 from '../assets/images/sets/season1.png';
+import Season2 from '../assets/images/sets/season2.png';
+import Season3 from '../assets/images/sets/season3.png';
 import DogZ from '../assets/images/sets/dogZ.png';
 import Kopinski from '../assets/images/sets/kopinski.png';
 import NightShift from '../assets/images/sets/nightShift.png';
+import AngryNeighbors from '../assets/images/sets/angryNeighbors.png';
 import ToxicMall from '../assets/images/sets/toxicMall.png';
+import Others from '../assets/images/sets/others.png';
 
 import {
   CHARACTERS_KOPINSKI,
@@ -14,13 +18,19 @@ import {
   WEAPONS_S1,
   WEAPONS_S2,
   WEAPONS_S3,
-  WEAPONS_NIGHT_SHIFT,
   WEAPONS_TOXIC_MALL,
   WEAPONS_ANGRY_NEIGHBORS,
-  WEAPONS_OTHERS
+  WEAPONS_OTHERS,
+  WEAPONS_NIGHT_SHIFT
 } from './weapons';
 import { DOGZ, ZOMBIES_S1 } from './zombies';
-import { ITEMS_S1, ITEMS_NIGHT_SHIFT, ITEMS_TOXIC_MALL } from './items';
+import {
+  ITEMS_S1,
+  ITEMS_S2,
+  ITEMS_TOXIC_MALL,
+  ITEMS_ANGRY_NEIGHBORS,
+  ITEMS_NIGHT_SHIFT
+} from './items';
 
 export const SETS = {
   season1: {
@@ -35,16 +45,17 @@ export const SETS = {
     zombies: ZOMBIES_S1
   },
   season2: {
-    cover: NightShift,
+    cover: Season2,
     coverSize: 'small',
     deselectable: false,
+    items: ITEMS_S2,
     label: 'Season 2: Prison Outbreak',
     name: 'season2',
     weapons: WEAPONS_S2
   },
   season3: {
     characters: CHARACTERS_NIGHT_SHIFT,
-    cover: NightShift,
+    cover: Season3,
     coverSize: 'small',
     deselectable: false,
     label: 'Season 3: Rue Morgue',
@@ -91,17 +102,16 @@ export const EXPANSIONS = {
     weapons: WEAPONS_NIGHT_SHIFT
   },
   angryNeighbors: {
-    characters: CHARACTERS_NIGHT_SHIFT,
-    cover: NightShift,
+    cover: AngryNeighbors,
     coverSize: 'small',
     deselectable: false,
+    items: ITEMS_ANGRY_NEIGHBORS,
     label: 'Angry Neighbors',
     name: 'angryNeighbors',
     weapons: WEAPONS_ANGRY_NEIGHBORS
   },
   others: {
-    characters: CHARACTERS_NIGHT_SHIFT,
-    cover: NightShift,
+    cover: Others,
     coverSize: 'small',
     deselectable: false,
     label: 'Kickstarters & Others',
