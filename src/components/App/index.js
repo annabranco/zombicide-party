@@ -21,8 +21,10 @@ import {
   LOG_TYPE_INFO
 } from '../../constants';
 import { globalStyles } from '../../styles';
-import { AppContext } from '../../setup/rules';
+import { AppContext } from '../../setup/context';
 import { setupGame } from '../../setup/config';
+import NotificationsLayer from '../Notifications/layer';
+import { STEPS } from '../Tour';
 
 window.addEventListener('orientationchange', () => {
   window.location.reload();
@@ -36,6 +38,19 @@ const App = () => {
   const [damageMode, toggleDamageMode] = useStateWithLabel(false, 'damageMode');
   const [loadedGame, loadGame] = useStateWithLabel(null, 'loadedGame');
   const [context, updateContext] = useStateWithLabel({}, 'context');
+  const [tourMode, changeTourModeStep] = useStateWithLabel(null, 'tourMode');
+
+  const goToNextTourStep = next => {
+    const nextStep = next || STEPS[tourMode].step + 1;
+
+    if (tourMode < STEPS.length - 1) {
+      changeTourModeStep(nextStep);
+    } else {
+      changeTourModeStep(null);
+    }
+  };
+
+  window.step = goToNextTourStep;
 
   useEffect(() => {
     const game = loadSavedGame();
@@ -46,7 +61,8 @@ const App = () => {
     if (rules) {
       const detailedRules = setupGame(rules);
       window.gameRules = detailedRules;
-      updateContext(detailedRules);
+
+      updateContext({ ...context, ...detailedRules });
     }
 
     if (game && game.length !== 0) {
@@ -58,13 +74,18 @@ const App = () => {
       localStorage.removeItem(LOCAL_STORAGE_KEY);
     }
     window.gameDebug = 'extended';
-  }, [loadGame, updateContext]);
+  }, [loadGame]);
 
   return (
     <HashRouter basename="/">
       <Global styles={globalStyles} />
       <ErrorBoundary>
         <AppContext.Provider value={{ context, updateContext }}>
+          <NotificationsLayer
+            changeTourModeStep={changeTourModeStep}
+            goToNextTourStep={goToNextTourStep}
+            tourMode={tourMode}
+          />
           <ControllerLayer />
           <Switch>
             <Route
@@ -72,8 +93,10 @@ const App = () => {
               path="/"
               render={() => (
                 <MainMenu
+                  goToNextTourStep={goToNextTourStep}
                   loadedGame={loadedGame}
                   setInitialCharacters={setInitialCharacters}
+                  tourMode={tourMode}
                 />
               )}
             />
@@ -82,8 +105,10 @@ const App = () => {
               path="/new"
               render={() => (
                 <NewGame
+                  goToNextTourStep={goToNextTourStep}
                   loadedGame={Boolean(loadedGame)}
                   setInitialCharacters={setInitialCharacters}
+                  tourMode={tourMode}
                 />
               )}
             />
@@ -94,9 +119,11 @@ const App = () => {
                 <MainScreen
                   damageMode={damageMode}
                   initialCharacters={initialCharacters}
+                  goToNextTourStep={goToNextTourStep}
                   loadGame={loadGame}
                   loadedGame={loadedGame}
                   toggleDamageMode={toggleDamageMode}
+                  tourMode={tourMode}
                 />
               )}
             />

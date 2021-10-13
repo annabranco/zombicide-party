@@ -43,7 +43,16 @@ import {
   GameInfo
 } from './styles';
 
-const EndGame = ({ characters, details, loadGame, round, time, type }) => {
+const EndGame = ({
+  characters,
+  details,
+  goToNextTourStep,
+  loadGame,
+  round,
+  time,
+  tourMode,
+  type
+}) => {
   const ambience = useRef();
   const history = useHistory();
 
@@ -90,6 +99,14 @@ const EndGame = ({ characters, details, loadGame, round, time, type }) => {
     };
   }, [type, details]);
 
+  useEffect(() => {
+    if (tourMode === 72) {
+      setTimeout(() => {
+        goToNextTourStep();
+      }, 6000);
+    }
+  }, [goToNextTourStep, tourMode]);
+
   return (
     <MenuScreen img={BG} dynamic type={type}>
       <FogEffect inChar />
@@ -131,14 +148,17 @@ const EndGame = ({ characters, details, loadGame, round, time, type }) => {
 EndGame.propTypes = {
   characters: arrayOf(CharacterType),
   details: string.isRequired,
+  goToNextTourStep: func.isRequired,
   loadGame: func.isRequired,
   round: number.isRequired,
   time: string.isRequired,
+  tourMode: number,
   type: string.isRequired
 };
 
 EndGame.defaultProps = {
-  characters: null
+  characters: null,
+  tourMode: null
 };
 
 export default EndGame;

@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from 'react';
-import { bool, func, string } from 'prop-types';
+import { bool, func, number, string } from 'prop-types';
 import { checkForNoiseOpeningDoor, useStateWithLabel } from '../../utils';
 import { SOUNDS } from '../../assets/sounds';
 import {
@@ -40,6 +40,7 @@ const ActionButton = ({
   combineItemSelected,
   combinePair,
   disabled,
+  goToNextTourStep,
   interactWithCar,
   isMobile,
   label,
@@ -47,6 +48,7 @@ const ActionButton = ({
   setNoise,
   startCar,
   toggleExtraActivation,
+  tourMode,
   type,
   type2
 }) => {
@@ -73,6 +75,25 @@ const ActionButton = ({
   };
 
   const onClickIcon = event => {
+    if (
+      tourMode === 23 ||
+      tourMode === 25 ||
+      tourMode === 28 ||
+      tourMode === 32 ||
+      tourMode === 40 ||
+      tourMode === 42 ||
+      tourMode === 43 ||
+      tourMode === 45 ||
+      tourMode === 49 ||
+      tourMode === 54 ||
+      tourMode === 57 ||
+      tourMode === 58 ||
+      tourMode === 61 ||
+      tourMode === 71
+    ) {
+      goToNextTourStep();
+    }
+
     if (!disabled) {
       activate(true);
 
@@ -282,6 +303,7 @@ ActionButton.propTypes = {
   combineItemSelected: bool,
   combinePair: bool,
   disabled: bool,
+  goToNextTourStep: func,
   interactWithCar: func,
   isMobile: bool,
   label: string,
@@ -289,8 +311,9 @@ ActionButton.propTypes = {
   setNoise: func,
   startCar: func,
   toggleExtraActivation: func,
-  type: string,
-  type2: string
+  tourMode: number,
+  type2: string,
+  type: string
 };
 
 ActionButton.defaultProps = {
@@ -300,6 +323,7 @@ ActionButton.defaultProps = {
   combineItemSelected: false,
   combinePair: false,
   disabled: false,
+  goToNextTourStep: () => null,
   interactWithCar: () => null,
   isMobile: null,
   label: null,
@@ -307,8 +331,9 @@ ActionButton.defaultProps = {
   setNoise: () => null,
   startCar: null,
   toggleExtraActivation: () => null,
-  type: null,
-  type2: null
+  tourMode: null,
+  type2: null,
+  type: null
 };
 
 export default ActionButton;

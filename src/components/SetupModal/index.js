@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
-import { bool, func, instanceOf, string } from 'prop-types';
+import { bool, func, instanceOf, number, string } from 'prop-types';
 import { useStateWithLabel } from '../../utils';
 import {
   CANCEL,
@@ -38,9 +38,11 @@ const SetupModal = ({
   activePlayers,
   addPlayer,
   dynamic,
+  goToNextTourStep,
   loadedGame,
   playIntro,
   setActivePlayers,
+  tourMode,
   type
 }) => {
   const [message, setMessage] = useStateWithLabel({ buttons: [] }, 'message');
@@ -63,7 +65,7 @@ const SetupModal = ({
   const history = useHistory();
 
   useEffect(() => {
-    if (loadedGame) {
+    if (loadedGame && !tourMode) {
       setMessage({
         title: WARNING,
         text: NEW_GAME_WARNING,
@@ -81,12 +83,12 @@ const SetupModal = ({
         ]
       });
       toggleVisible(true);
-    } else {
+    } else if (!tourMode || tourMode <= 5) {
       openPlayerWindow();
     }
     toggleInput(false);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [history, loadedGame]);
+  }, [history, loadedGame, tourMode]);
 
   const openPlayerWindow = () => {
     setMessage({
@@ -110,9 +112,14 @@ const SetupModal = ({
       LOCAL_STORAGE_PLAYERS_KEY,
       JSON.stringify([...players])
     );
+
     toggleVisible(false);
+
     if (playIntro) {
       playIntro();
+    }
+    if (tourMode === 5) {
+      goToNextTourStep();
     }
   };
 
@@ -130,6 +137,9 @@ const SetupModal = ({
       playersSet.add(selectedPlayer);
     }
     setActivePlayers(playersSet);
+    if (tourMode === 4 && playersSet.size > 1) {
+      goToNextTourStep();
+    }
   };
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -149,6 +159,9 @@ const SetupModal = ({
       }
       toggleInput(false);
       updateNewPlayerName('');
+      if (tourMode === 3) {
+        goToNextTourStep();
+      }
     }
   };
 
@@ -168,6 +181,9 @@ const SetupModal = ({
   };
 
   const onClickName = (player, event) => {
+    if (tourMode === 3 || tourMode === 5) {
+      return;
+    }
     if (dynamic) {
       addPlayer(player);
       toggleVisible(false);
@@ -203,6 +219,7 @@ const SetupModal = ({
                   name={player}
                   onClick={event => onClickName(player, event)}
                   showRemovePlayer={showRemovePlayer}
+                  tourMode={tourMode === 4 && (index === 0 || index === 1)}
                 >
                   {player}
                   {[...activePlayers].includes(player) && (
@@ -234,8 +251,12 @@ const SetupModal = ({
             </PlayerNewInputWrapper>
           ) : (
             <PlayerActionButtonsArea>
-              <PlayerNew onClick={onAddPlayer}>+</PlayerNew>
-              {players.size > 0 && !dynamic && (
+              {(!tourMode || tourMode !== 5) && (
+                <PlayerNew onClick={onAddPlayer} tourMode={tourMode === 3}>
+                  +
+                </PlayerNew>
+              )}
+              {players.size > 0 && !dynamic && !tourMode && (
                 <PlayerRemoveToggle
                   active={showRemovePlayer}
                   onClick={() => toggleRemovePlayer(!showRemovePlayer)}
@@ -252,7 +273,8 @@ const SetupModal = ({
           <ModalButton
             disabled={
               (button.type === 'accept' && activePlayers.size === 0) ||
-              showInput
+              showInput ||
+              tourMode === 4
             }
             inactive={
               (button.type === 'accept' && activePlayers.size === 0) ||
@@ -260,6 +282,7 @@ const SetupModal = ({
             }
             key={`modal_button_${button.type}`}
             onClick={button.onClick}
+            tourMode={tourMode === 5}
             type={button.type}
           >
             {button.text}
@@ -274,17 +297,21 @@ SetupModal.propTypes = {
   addPlayer: func,
   activePlayers: instanceOf(Set).isRequired,
   dynamic: bool,
+  goToNextTourStep: func,
   loadedGame: bool,
   playIntro: func,
   setActivePlayers: func.isRequired,
+  tourMode: number,
   type: string
 };
 
 SetupModal.defaultProps = {
   addPlayer: () => null,
   dynamic: false,
+  goToNextTourStep: () => null,
   loadedGame: null,
   playIntro: null,
+  tourMode: null,
   type: null
 };
 

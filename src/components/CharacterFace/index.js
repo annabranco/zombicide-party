@@ -1,22 +1,31 @@
 import React, { useRef } from 'react';
-import { string, func, bool, oneOfType } from 'prop-types';
+import { string, func, bool, number, oneOfType } from 'prop-types';
 import Blood from '../../assets/images/blood.png';
 import { CharacterFaceWrapper, Wound, CharFace, FaceWrapper } from './styles';
 
 const CharacterFace = ({
   big,
+  charName,
   currentChar,
   damageMode,
+  disabled,
   onClick,
   played,
   src,
+  tourMode,
   wounded
 }) => {
   const variation = useRef(`${Math.floor(Math.random() * 45)}deg`);
 
   return (
-    <CharacterFaceWrapper big={big}>
-      <FaceWrapper onClick={onClick}>
+    <CharacterFaceWrapper
+      big={big}
+      tourMode={
+        (tourMode === 16 && charName === 'Doug') ||
+        (tourMode === 19 && charName === 'Wanda')
+      }
+    >
+      <FaceWrapper onClick={disabled ? () => null : onClick}>
         <CharFace
           big={big}
           currentChar={currentChar}
@@ -32,11 +41,14 @@ const CharacterFace = ({
 
 CharacterFace.propTypes = {
   big: bool,
+  charName: string.isRequired,
   currentChar: bool,
   damageMode: oneOfType([string, bool]),
+  disabled: bool,
   onClick: func.isRequired,
   played: bool,
   src: string.isRequired,
+  tourMode: number,
   wounded: bool.isRequired
 };
 
@@ -44,7 +56,9 @@ CharacterFace.defaultProps = {
   big: false,
   currentChar: false,
   damageMode: false,
-  played: null
+  disabled: false,
+  played: null,
+  tourMode: null
 };
 
 export default CharacterFace;

@@ -2,7 +2,7 @@ import styled from '@emotion/styled';
 import { css } from '@emotion/core';
 import { rgba } from 'emotion-rgba';
 import { AttackInstructions } from '../ZombiesSection/styles';
-import { Shadow } from '../../../styles';
+import { Shadow, TourHighlight } from '../../../styles';
 import { IN_RESERVE, MOBILE } from '../../../constants';
 import Background from '../../../assets/images/background/background.jpg';
 
@@ -549,6 +549,12 @@ export const CardsActions = styled.div`
         bottom: 200px;
       `}
   }
+
+  ${({ tourMode }) =>
+    tourMode &&
+    css`
+      ${TourHighlight};
+    `}
 `;
 CardsActions.displayName = 'CardsActions';
 
@@ -1039,6 +1045,12 @@ export const ExtraActivationButton = styled.div`
 
   @media all and (min-width: 1400px) {
   }
+
+  ${({ tourMode }) =>
+    tourMode &&
+    css`
+      ${TourHighlight};
+    `}
 `;
 ExtraActivationButton.displayName = 'ExtraActivationButton';
 
@@ -1308,6 +1320,12 @@ export const MainButton = styled(AppButton)`
     height: 30px;
     width: 200px;
   }
+
+  ${({ tourMode }) =>
+    tourMode &&
+    css`
+      ${TourHighlight};
+    `}
 `;
 MainButton.displayName = 'MainButton';
 

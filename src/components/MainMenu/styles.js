@@ -1,7 +1,7 @@
 import styled from '@emotion/styled';
 import { css, keyframes } from '@emotion/core';
 import { Link } from 'react-router-dom';
-import { Appear, Shadow } from '../../styles';
+import { Appear, Shadow, TourHighlight } from '../../styles';
 import { DEFEAT, VICTORY } from '../../constants';
 
 const ThunderFlash = keyframes`
@@ -167,7 +167,7 @@ export const MenuScreen = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: flex-end;
-  height: ${`${window.innerHeight}px`};
+  height: ${`${window.innerHeight - 1}px`};
   width: 100%;
   background: #232222;
   overflow: hidden;
@@ -245,6 +245,12 @@ export const SelectionButton = styled.button`
         filter: none;
       }
     `}
+
+  ${({ tourMode }) =>
+    tourMode &&
+    css`
+      ${TourHighlight};
+    `}
 `;
 SelectionButton.displayName = 'SelectionButton';
 
@@ -271,6 +277,12 @@ export const TestButton = styled(SelectionButton)`
   &:hover {
     color: green;
   }
+
+  ${({ tourMode }) =>
+    tourMode &&
+    css`
+      ${TourHighlight};
+    `}
 
   @media all and (min-width: 768px) {
     width: 180px;

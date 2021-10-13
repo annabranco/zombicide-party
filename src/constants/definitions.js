@@ -12,6 +12,7 @@ export const MALE = 'male';
 export const MELEE = 'melee';
 export const MELEE_RANGED = 'melee&ranged';
 export const NOISY = 'noisy';
+export const NO_BINARY = 'no binary';
 export const OBJECTIVE = 'objective';
 export const RANGED = 'ranged';
 export const SELECTION = 'selection';

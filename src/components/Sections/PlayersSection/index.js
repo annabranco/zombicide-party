@@ -212,12 +212,13 @@ import {
   WoundedWrapper,
   XpIcon
 } from './styles';
-import { AppContext } from '../../../setup/rules';
+import { AppContext } from '../../../setup/context';
 import { ALL_WEAPONS } from '../../../setup/weapons';
 import { ALL_ITEMS } from '../../../setup/items';
 
 const PlayersSection = ({
   damageMode,
+  goToNextTourStep,
   initialCharacters,
   loadGame,
   loadedGame,
@@ -227,9 +228,12 @@ const PlayersSection = ({
   time,
   toggleDamageMode,
   toggleZombiesArePlaying,
+  toggleZombiesShouldAct,
+  tourMode,
   visible,
   zombiesArePlaying,
-  zombiesRound
+  zombiesRound,
+  zombiesShouldAct
 }) => {
   /* ------- COMPONENT STATES ------- */
   const [actionsCount, updateActionsCount] = useStateWithLabel(
@@ -330,10 +334,8 @@ const PlayersSection = ({
     '',
     'topActionsLabel'
   );
-  const [zombiesShouldAct, toggleZombiesShouldAct] = useStateWithLabel(
-    false,
-    'zombiesShouldAct'
-  );
+
+  window.setup = () => toggleSetupMode(!setupMode);
 
   /* --- */
 
@@ -1077,6 +1079,16 @@ const PlayersSection = ({
         changeCharIndex(nextFirstPlayer);
       }
     }
+
+    if (
+      tourMode === 22 ||
+      tourMode === 46 ||
+      tourMode === 48 ||
+      tourMode === 62 ||
+      tourMode === 68
+    ) {
+      goToNextTourStep();
+    }
   };
 
   const onClickObjective = () => {
@@ -1167,6 +1179,15 @@ const PlayersSection = ({
     }
 
     toggleFreeReorder(true);
+
+    if (
+      tourMode === 15 ||
+      tourMode === 18 ||
+      tourMode === 21 ||
+      tourMode === 34
+    ) {
+      goToNextTourStep();
+    }
   };
 
   const onGiveOrders = () => {
@@ -1401,7 +1422,7 @@ const PlayersSection = ({
         }, 2000);
         changeCharacter(woundedCharacter);
         toggleDamageMode(attacker);
-        return null;
+        return;
       } else if (characterCanBlock) {
         toggleResistedAttack(BLOCKED_ONE);
         logger(LOG_TYPE_EXTENDED, BLOCKED_ONE, woundedCharacter, damageMode);
@@ -1412,7 +1433,7 @@ const PlayersSection = ({
         }, 2000);
         changeCharacter(woundedCharacter);
         toggleDamageMode(attacker);
-        return null;
+        return;
       } else {
         remainingCharacters = characters.filter(
           char => char.name !== woundedCharacter.name
@@ -1550,7 +1571,7 @@ const PlayersSection = ({
 
     if (woundedCharacter.wounded === KILLED) {
       if (remainingCharacters.length === 0 || endGame) {
-        return null;
+        return;
       }
       setTimeout(
         () => {
@@ -1575,7 +1596,11 @@ const PlayersSection = ({
       },
       someoneIsKilled ? 5000 : 2000
     );
-    return null;
+    if (tourMode === 65 || tourMode === 67) {
+      setTimeout(() => {
+        goToNextTourStep();
+      }, 3000);
+    }
   };
   /* --- */
 
@@ -1725,6 +1750,15 @@ const PlayersSection = ({
 
       updateXpCounter(newXpBar);
       updateData(updatedChar);
+
+      if (
+        tourMode &&
+        ((charClone.name === 'Doug' && charClone.experience > 6) ||
+          (charClone.name === 'Wanda' && charClone.experience > 6) ||
+          (charClone.name === 'Amy' && charClone.experience > 6))
+      ) {
+        goToNextTourStep();
+      }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [character.experience, updateXpCounter]);
@@ -1787,6 +1821,7 @@ const PlayersSection = ({
                     highestXp={highestXp.xp === level}
                     key={`xp-${level}-${xpCounter[index - 1]}`}
                     onClick={
+                      // setupMode && !tourMode
                       setupMode
                         ? () =>
                             setCustomXp(
@@ -1835,10 +1870,13 @@ const PlayersSection = ({
               checkIfCharHasDualEffect={checkIfCharHasDualEffect}
               confirmTrade={confirmTrade}
               device={device.current}
+              goToNextTourStep={goToNextTourStep}
+              onClickEndTurn={onClickEndTurn}
               reorder={trade === REORDER}
               setupMode={setupMode}
               spendAction={spendAction}
               startTrade={startTrade}
+              tourMode={tourMode}
             />
           ) : (
             <>
@@ -1908,22 +1946,29 @@ const PlayersSection = ({
                     {!damageMode && !setupMode && !slot && (
                       <>
                         <ActionsWrapper>
-                          {canMove && context.rules.exit && round >= 3 && (
-                            <ActionButton
-                              actionType={LEAVE_GAME_ACTION}
-                              callback={onLeaveGame}
-                              changeActionLabel={changeActionLabel}
-                              isMobile={device.current === MOBILE}
-                              label={LEAVE_GAME}
-                              manyButtons={context.rules.cars}
-                              type={character.name}
-                              type2={
-                                character.location === CAR
-                                  ? CAR_MOVE_ACTION
-                                  : `move-${character.movement}`
-                              }
-                            />
-                          )}
+                          {canMove &&
+                            context.rules.exit &&
+                            (round >= 3 || tourMode) && (
+                              <ActionButton
+                                actionType={LEAVE_GAME_ACTION}
+                                callback={onLeaveGame}
+                                changeActionLabel={changeActionLabel}
+                                disabled={
+                                  tourMode && tourMode !== 58 && tourMode !== 72
+                                }
+                                goToNextTourStep={goToNextTourStep}
+                                isMobile={device.current === MOBILE}
+                                label={LEAVE_GAME}
+                                manyButtons={context.rules.cars}
+                                tourMode={tourMode}
+                                type={character.name}
+                                type2={
+                                  character.location === CAR
+                                    ? CAR_MOVE_ACTION
+                                    : `move-${character.movement}`
+                                }
+                              />
+                            )}
 
                           {!!generalActions &&
                             context.rules.winGame &&
@@ -1943,9 +1988,12 @@ const PlayersSection = ({
                               actionType={EXPLOSION_ACTION}
                               callback={onExplode}
                               changeActionLabel={changeActionLabel}
+                              disabled={tourMode && tourMode !== 49}
+                              manyButtons={context.rules.cars}
+                              goToNextTourStep={goToNextTourStep}
                               isMobile={device.current === MOBILE}
                               label={EXPLODE}
-                              manyButtons={context.rules.cars}
+                              tourMode={tourMode}
                             />
                           )}
 
@@ -2056,11 +2104,15 @@ const PlayersSection = ({
                                 actionType={OBJECTIVE_ACTION}
                                 callback={onClickObjective}
                                 changeActionLabel={changeActionLabel}
+                                disabled={tourMode && tourMode !== 43}
+                                goToNextTourStep={goToNextTourStep}
                                 isMobile={device.current === MOBILE}
                                 label={GET_OBJECTIVE}
                                 manyButtons={context.rules.cars}
+                                tourMode={tourMode}
                               />
                             )}
+
                           {canMove && context.rules.cars && (
                             <ActionButton
                               actionType={
@@ -2116,9 +2168,20 @@ const PlayersSection = ({
                               actionType={MOVE_ACTION}
                               callback={() => spendAction(MOVE)}
                               changeActionLabel={changeActionLabel}
+                              disabled={
+                                tourMode &&
+                                tourMode !== 23 &&
+                                tourMode !== 28 &&
+                                tourMode !== 32 &&
+                                tourMode !== 42 &&
+                                tourMode !== 57 &&
+                                tourMode !== 71
+                              }
+                              goToNextTourStep={goToNextTourStep}
                               isMobile={device.current === MOBILE}
                               label={MOVE}
                               manyButtons={context.rules.cars}
+                              tourMode={tourMode}
                               type={character.movement}
                             />
                           )}
@@ -2128,6 +2191,8 @@ const PlayersSection = ({
                               actionType={OPEN_DOOR_ACTION}
                               callback={() => spendAction(OPEN_DOOR)}
                               changeActionLabel={changeActionLabel}
+                              disabled={tourMode !== 25}
+                              goToNextTourStep={goToNextTourStep}
                               isMobile={device.current === MOBILE}
                               label={
                                 context.weapons[canOpenDoor] &&
@@ -2145,6 +2210,7 @@ const PlayersSection = ({
                                   : setNoise
                               }
                               toggleExtraActivation={toggleExtraActivation}
+                              tourMode={tourMode}
                               type={canOpenDoor}
                             />
                           )}
@@ -2153,9 +2219,18 @@ const PlayersSection = ({
                               actionType={END_TURN_ACTION}
                               callback={onClickEndTurn}
                               changeActionLabel={changeActionLabel}
+                              disabled={
+                                tourMode &&
+                                tourMode !== 40 &&
+                                tourMode !== 45 &&
+                                tourMode !== 54 &&
+                                tourMode !== 61
+                              }
+                              goToNextTourStep={goToNextTourStep}
                               isMobile={device.current === MOBILE}
                               label={END_CHAR_TURN(character.name)}
                               manyButtons={context.rules.cars}
+                              tourMode={tourMode}
                             />
                           )}
                         </ActionsWrapper>
@@ -2201,9 +2276,9 @@ const PlayersSection = ({
               {resistedAttack && <MidScreenTag>{resistedAttack}</MidScreenTag>}
 
               {extraActivation && (
-                <ExtraActivationButton>
+                <ExtraActivationButton tourMode={tourMode === 27}>
                   <ExtraActivationImage
-                    onClick={onClickExtraActivation}
+                    onClick={tourMode ? () => null : onClickExtraActivation}
                     src={ZombieFace}
                   />
                 </ExtraActivationButton>
@@ -2228,8 +2303,16 @@ const PlayersSection = ({
                     !dropMode &&
                     characters.length > 1 &&
                     character.actionsLeft &&
-                    checkIfHasAnyActionLeft(character.actionsLeft) && (
-                      <CardsActions>
+                    checkIfHasAnyActionLeft(character.actionsLeft) &&
+                    (!tourMode ||
+                      tourMode === 52 ||
+                      tourMode === 53 ||
+                      tourMode === 56) && (
+                      <CardsActions
+                        tourMode={
+                          tourMode === 52 || tourMode === 53 || tourMode === 56
+                        }
+                      >
                         <CardsActionsText onClick={() => startTrade(true)}>
                           {TRADE}
                         </CardsActionsText>
@@ -2240,8 +2323,9 @@ const PlayersSection = ({
                     ...character.inReserve
                   ]) &&
                     !slot &&
-                    (freeReorder || setupMode) && (
-                      <CardsActions reOrder>
+                    (freeReorder || setupMode) &&
+                    (!tourMode || tourMode === 36) && (
+                      <CardsActions reOrder tourMode={tourMode === 36}>
                         <CardsActionsText onClick={() => startTrade(REORDER)}>
                           {REORDER}
                         </CardsActionsText>
@@ -2304,6 +2388,7 @@ const PlayersSection = ({
                             forcedKillButtons={forcedKillButtons}
                             gainCustomXp={gainCustomXp}
                             gainXp={gainXp}
+                            goToNextTourStep={goToNextTourStep}
                             index={index}
                             item={itemName}
                             key={`${itemName}-${index + 1}`}
@@ -2321,6 +2406,7 @@ const PlayersSection = ({
                             spendAction={spendAction}
                             spendSingleUseWeapon={spendSingleUseWeapon}
                             startTrade={startTrade}
+                            tourMode={tourMode}
                             wounded={character.wounded}
                           />
                         );
@@ -2384,6 +2470,7 @@ const PlayersSection = ({
                             setupMode={setupMode}
                             slotType={IN_RESERVE}
                             startTrade={startTrade}
+                            tourMode={tourMode}
                             wounded={character.wounded}
                           />
                         );
@@ -2395,7 +2482,8 @@ const PlayersSection = ({
                     !checkIfCharHasNoItems([
                       ...character.inHand,
                       ...character.inReserve
-                    ]) && (
+                    ]) &&
+                    !tourMode && (
                       <CardsActions drop dropMode={dropMode}>
                         <CardsActionsText
                           onClick={() => toggleDropMode(!dropMode)}
@@ -2413,12 +2501,25 @@ const PlayersSection = ({
                 !damageMode &&
                 !zombiesArePlaying &&
                 !gameOver &&
-                !objectivesAchieved && (
+                !objectivesAchieved &&
+                (!tourMode ||
+                  tourMode === 22 ||
+                  tourMode === 46 ||
+                  tourMode === 48 ||
+                  tourMode === 62 ||
+                  tourMode === 68) && (
                   <MainButton
                     noOverlay
                     onClick={onClickMainButton}
                     roundEnded={roundEnded}
                     setupMode={setupMode}
+                    tourMode={
+                      tourMode === 22 ||
+                      tourMode === 46 ||
+                      tourMode === 48 ||
+                      tourMode === 62 ||
+                      tourMode === 68
+                    }
                     zombiesRound={zombiesShouldAct}
                   >
                     {getMainButtonText()}
@@ -2442,8 +2543,20 @@ const PlayersSection = ({
                         return (
                           <CharacterFace
                             alt={`${CHANGE_CHARACTER(char.name)}`}
+                            charName={char.name}
                             currentChar={character.name === char.name}
                             damageMode={damageMode}
+                            disabled={
+                              tourMode &&
+                              ((tourMode === 16 && char.name !== 'Doug') ||
+                                tourMode !== 16) &&
+                              ((tourMode === 19 && char.name !== 'Wanda') ||
+                                tourMode !== 19) &&
+                              ((tourMode === 32 && char.name !== 'Doug') ||
+                                tourMode !== 32) &&
+                              tourMode !== 65 &&
+                              tourMode !== 67
+                            }
                             key={`charNav-${char.name}`}
                             onClick={() => {
                               toggleChangedCharManually(true);
@@ -2452,9 +2565,13 @@ const PlayersSection = ({
                                 2000
                               );
                               changeCharIndex(char.index);
+                              if (tourMode === 16 || tourMode === 19) {
+                                goToNextTourStep();
+                              }
                             }}
                             played={charIfCharHasPlayed(char.name)}
                             src={char.face}
+                            tourMode={tourMode}
                             wounded={characters.some(
                               charac =>
                                 charac.name === char.name && charac.wounded
@@ -2471,7 +2588,8 @@ const PlayersSection = ({
                 !objectivesAchieved &&
                 (characters.length > 1 || prevCharIndex.current === null)) ||
                 (device.current === MOBILE && !dropMode)) &&
-                !startedZombieAttack && (
+                !startedZombieAttack &&
+                !tourMode && (
                   <>
                     <PreviousButton
                       damageMode={damageMode}
@@ -2516,11 +2634,13 @@ const PlayersSection = ({
                   {device.current === DESKTOP && (
                     <AttackInstructions>{SELECT_DAMAGE}</AttackInstructions>
                   )}
-                  <AttackBurronsWrapper>
-                    <CancelAttackButton onClick={cancelZombieAttack}>
-                      {CANCEL}
-                    </CancelAttackButton>
-                  </AttackBurronsWrapper>
+                  {(!tourMode || (tourMode !== 65 && tourMode !== 67)) && (
+                    <AttackBurronsWrapper>
+                      <CancelAttackButton onClick={cancelZombieAttack}>
+                        {CANCEL}
+                      </CancelAttackButton>
+                    </AttackBurronsWrapper>
+                  )}
                 </>
               )}
 
@@ -2619,6 +2739,7 @@ const PlayersSection = ({
               selectSlot={selectSlot}
               setupMode={setupMode}
               slotType={IN_HAND}
+              tourMode={tourMode}
             />
           )}
           {slot && slot >= 3 && (
@@ -2724,9 +2845,11 @@ const PlayersSection = ({
             <EndGame
               characters={charsSaved.length > 0 ? charsSaved : characters}
               details={gameOver.details}
+              goToNextTourStep={goToNextTourStep}
               loadGame={loadGame}
               round={round}
               time={time}
+              tourMode={tourMode}
               type={displayEndGameScreen}
             />
           )}
@@ -2740,6 +2863,7 @@ const PlayersSection = ({
 PlayersSection.propTypes = {
   damageMode: oneOfType([string, bool]).isRequired,
   initialCharacters: arrayOf(CharacterType),
+  goToNextTourStep: func.isRequired,
   loadGame: func.isRequired,
   loadedGame: arrayOf(CharacterType),
   nextGameRound: func.isRequired,
@@ -2748,14 +2872,18 @@ PlayersSection.propTypes = {
   time: string.isRequired,
   toggleDamageMode: func.isRequired,
   toggleZombiesArePlaying: func.isRequired,
+  toggleZombiesShouldAct: func.isRequired,
+  tourMode: number,
   visible: bool.isRequired,
   zombiesArePlaying: bool,
-  zombiesRound: bool.isRequired
+  zombiesRound: bool.isRequired,
+  zombiesShouldAct: bool.isRequired
 };
 
 PlayersSection.defaultProps = {
   initialCharacters: null,
   loadedGame: null,
+  tourMode: null,
   zombiesArePlaying: false
 };
 
