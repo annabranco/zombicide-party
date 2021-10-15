@@ -3,6 +3,7 @@ import { css } from '@emotion/core';
 import { WARNING } from '../../constants';
 
 export const NotificationsArea = styled.div`
+  label: NotificationsArea;
   z-index: 9999;
   position: fixed;
   display: flex;
@@ -38,6 +39,7 @@ export const NotificationsArea = styled.div`
 NotificationsArea.displayName = 'NotificationsArea';
 
 export const ButtonsArea = styled.div`
+  label: ButtonsArea;
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -48,6 +50,7 @@ export const ButtonsArea = styled.div`
 ButtonsArea.displayName = 'ButtonsArea';
 
 export const ModalBody = styled.div`
+  label: ModalBody;
   display: flex;
   flex-direction: column;
   align-items: center;

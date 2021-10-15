@@ -799,6 +799,20 @@ const PlayersSection = ({
     }
   };
 
+  const unloadWeapon = weapon => {
+    const updatedCharacter = cloneDeep(character);
+    updatedCharacter.unloaded.push(weapon.replace(' ', ''));
+    updateData(updatedCharacter);
+  };
+
+  const reloadWeapon = ({ reloadedWeapon }) => {
+    const updatedCharacter = cloneDeep(character);
+    updatedCharacter.unloaded = updatedCharacter.unloaded.filter(
+      weapon => weapon !== reloadedWeapon
+    );
+    updateData(updatedCharacter);
+  };
+
   const gainCustomXp = xp => {
     toggleActionsModal(xp);
   };
@@ -1032,10 +1046,9 @@ const PlayersSection = ({
       logger(LOG_TYPE_EXTENDED, START_ZOMBIE_ROUND);
       setZombiesRound(true);
       toggleZombiesArePlaying(true);
-      toggleZombiesShouldAct();
+      toggleZombiesShouldAct(false);
     } else {
       const updatedCharacters = cloneDeep(characters);
-      // if (roundEnded) {
       let nextFirstPlayer;
 
       logger(LOG_TYPE_EXTENDED, START_NEXT_ROUND);
@@ -1043,6 +1056,7 @@ const PlayersSection = ({
         const restingBonusActions = char.actionsLeft[4];
 
         char.abilitiesUsed = []; // eslint-disable-line no-param-reassign
+        char.unloaded = []; // eslint-disable-line no-param-reassign
         char.noise = 0; // eslint-disable-line no-param-reassign
 
         if (restingBonusActions && !checkIfHasAnyActionLeft(char.actionsLeft)) {
@@ -2191,7 +2205,7 @@ const PlayersSection = ({
                               actionType={OPEN_DOOR_ACTION}
                               callback={() => spendAction(OPEN_DOOR)}
                               changeActionLabel={changeActionLabel}
-                              disabled={tourMode !== 25}
+                              disabled={tourMode && tourMode !== 25}
                               goToNextTourStep={goToNextTourStep}
                               isMobile={device.current === MOBILE}
                               label={
@@ -2395,6 +2409,7 @@ const PlayersSection = ({
                             makeNoise={makeNoise}
                             onClickCombine={onClickCombine}
                             onClickDrop={changeInHand}
+                            reloadWeapon={reloadWeapon}
                             round={round}
                             secondarySound={
                               context.weapons[itemName] &&
@@ -2407,6 +2422,8 @@ const PlayersSection = ({
                             spendSingleUseWeapon={spendSingleUseWeapon}
                             startTrade={startTrade}
                             tourMode={tourMode}
+                            unloadedWeapons={character.unloaded}
+                            unloadWeapon={unloadWeapon}
                             wounded={character.wounded}
                           />
                         );

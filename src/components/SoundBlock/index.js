@@ -1,5 +1,6 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useContext, useEffect, useRef } from 'react';
 import { bool, func, number, oneOfType, string } from 'prop-types';
+import { AppContext } from '../../setup/context';
 import { checkIfItemCanBeCombined, useStateWithLabel } from '../../utils';
 import ActionButton from '../ActionButton';
 import { SOUNDS } from '../../assets/sounds';
@@ -13,6 +14,9 @@ import {
   IN_RESERVE,
   ITEMS,
   KILL,
+  MELEE,
+  MELEE_RANGED,
+  RANGED,
   WEAPONS,
   WOUND
 } from '../../constants';
@@ -21,7 +25,15 @@ import {
   ZombieActions,
   ZombieImageForMobile
 } from '../Sections/ZombiesSection/styles';
-import { Block, PlayImageButton, PlayIcon, PlayText, ItemIcon } from './styles';
+import {
+  Block,
+  MixedWeaponText,
+  PlayImageButton,
+  PlayIcon,
+  PlayText,
+  ItemIcon,
+  MixedWeaponActionWrapper
+} from './styles';
 
 const SoundBlock = ({
   activateKillButtons,
@@ -76,15 +88,25 @@ const SoundBlock = ({
     false,
     'hasBeenClickedOnce'
   );
+  const [
+    displayWeaponInformation,
+    toggleDisplayWeaponInformation
+  ] = useStateWithLabel(false, 'displayWeaponInformation');
+  const { context } = useContext(AppContext);
+
   const activateTimeout = useRef();
   const attackButtonsTimeout = useRef();
   const currentRound = useRef();
   const quickAttackDebounce = useRef();
   const quickAttackDebounceTimeout = useRef();
+  const displayWeaponInformationTimeout = useRef();
   const sound = useRef();
 
+  const isMixedWeapon =
+    type === WEAPONS && context.weapons[name]?.attack === MELEE_RANGED;
+
   const randomNumber = max => Math.ceil(Math.random() * max);
-  const filename =
+  let filename =
     !noAudio &&
     slotType !== IN_RESERVE &&
     type !== ITEMS &&
@@ -123,8 +145,7 @@ const SoundBlock = ({
     return <PlayText>{label || name}</PlayText>;
   };
 
-  const play = () => {
-    console.log('$$$ tourMode', tourMode);
+  const play = ({ mixedType }) => {
     if (
       (tourMode &&
         tourMode !== 29 &&
@@ -139,7 +160,9 @@ const SoundBlock = ({
         tourMode !== 69 &&
         tourMode !== 70) ||
       (tourMode === 55 && hasBeenClickedOnce) ||
-      (tourMode === 69 && hasBeenClickedOnce)
+      (tourMode === 69 && hasBeenClickedOnce) ||
+      (isMixedWeapon && !mixedType) ||
+      (isMixedWeapon && mixedType.type === RANGED && unloaded)
     ) {
       return;
     }
@@ -153,13 +176,22 @@ const SoundBlock = ({
       quickAttackDebounce.current = true;
       quickAttackDebounceTimeout.current = setTimeout(() => {
         quickAttackDebounce.current = false;
-      }, 1000);
-      activateKillButtons();
+      }, 500);
+      activateKillButtons(mixedType);
       callback(ATTACK);
     }
 
     if (filename && type === WEAPONS && canAttack && useAlternativeSound) {
       sound.current = new Audio(SOUNDS[`${filename}Alt`]);
+    }
+
+    if (isMixedWeapon) {
+      filename = mixedType.sound;
+      sound.current = new Audio(
+        SOUNDS[
+          `${filename}${differentSounds ? randomNumber(differentSounds) : ''}`
+        ]
+      );
     }
 
     if (filename && ((type === WEAPONS && canAttack) || type !== WEAPONS)) {
@@ -179,11 +211,11 @@ const SoundBlock = ({
       sound.current.play();
 
       if (makeNoise) {
-        makeNoise(name);
+        makeNoise(filename);
       }
 
-      if (needsToBeReloaded) {
-        spendAmmo();
+      if (mixedType?.needsReloading || needsToBeReloaded) {
+        spendAmmo(name);
       }
 
       if (secondarySound && !useAlternativeSound) {
@@ -214,6 +246,11 @@ const SoundBlock = ({
     }
   };
 
+  const attackWithMixedWeapon = typeOfAttack => {
+    const attackInfo = context.weapons[name].mixed[typeOfAttack];
+    play({ mixedType: attackInfo });
+  };
+
   useEffect(() => {
     if (!sound.current || currentRound.current !== round) {
       sound.current = new Audio(
@@ -227,10 +264,19 @@ const SoundBlock = ({
   }, [filename, differentSounds, round, toggleAlternativeSound]);
 
   useEffect(() => {
+    if (displayWeaponInformation) {
+      displayWeaponInformationTimeout.current = setTimeout(() => {
+        toggleDisplayWeaponInformation(false);
+      }, 5000);
+    }
+  }, [displayWeaponInformation, toggleDisplayWeaponInformation]);
+
+  useEffect(() => {
     return () => {
       clearTimeout(activateTimeout.current);
       clearTimeout(attackButtonsTimeout.current);
       clearTimeout(quickAttackDebounceTimeout.current);
+      clearTimeout(displayWeaponInformationTimeout.current);
     };
   }, []);
 
@@ -239,10 +285,23 @@ const SoundBlock = ({
       canBeDeflected={canBeDeflected}
       charCanDeflect={charCanDeflect}
       damageMode={damageMode}
+      onMouseOver={
+        isMixedWeapon ? () => toggleDisplayWeaponInformation(true) : () => null
+      }
       tourMode={tourMode === 15 || tourMode === 18}
       type={type}
       wounded={wounded}
     >
+      {isMixedWeapon && displayWeaponInformation && !trade && (
+        <MixedWeaponActionWrapper>
+          <MixedWeaponText onClick={() => attackWithMixedWeapon(MELEE)}>
+            {MELEE}
+          </MixedWeaponText>
+          <MixedWeaponText onClick={() => attackWithMixedWeapon(RANGED)}>
+            {RANGED}
+          </MixedWeaponText>
+        </MixedWeaponActionWrapper>
+      )}
       <PlayImageButton
         canAttack={canAttack}
         isActive={isActive}

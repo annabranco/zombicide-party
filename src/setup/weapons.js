@@ -96,6 +96,21 @@ export const WEAPONS_S1 = {
     attack: MELEE_RANGED,
     dice: 2,
     img: MasShotgun,
+    mixed: {
+      melee: {
+        dice: 1,
+        noise: false,
+        sound: 'Machete',
+        type: MELEE
+      },
+      ranged: {
+        dice: 2,
+        needsReloading: true,
+        noise: true,
+        sound: 'MasShotgun',
+        type: RANGED
+      }
+    },
     name: 'Mas Shotgun',
     noise: SPECIAL,
     type: WEAPONS,
@@ -351,25 +366,6 @@ export const WEAPONS_NIGHT_SHIFT = {
     type: WEAPONS
   }
 };
-
-// const selectedSets = [
-//   WEAPONS_S1,
-//   WEAPONS_MALL,
-//   WEAPONS_S2,
-//   WEAPONS_S3,
-//   WEAPONS_OTHERS,
-//   WEAPONS_NIGHT_SHIFT
-// ];
-
-// export const setupWeapons = sets => {
-//   let allWeapons = {};
-//   sets.forEach(set => {
-//     allWeapons = { ...allWeapons, ...set };
-//   });
-//   return allWeapons;
-// };
-
-// export const ALL_WEAPONS = setupWeapons(selectedSets);
 
 export const ALL_WEAPONS = {
   ...WEAPONS_S1,
