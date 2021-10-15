@@ -1,12 +1,12 @@
 import React from 'react';
 import { bool, func, number, string } from 'prop-types';
+import { SELECTION } from '../../../constants';
 import {
   Block,
   PlayIcon,
   PlayImageButton,
   PlayText
 } from '../../SoundBlock/styles';
-import { SELECTION } from '../../../constants';
 
 const SelectionItem = ({
   disabled,

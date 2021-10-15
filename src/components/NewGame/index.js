@@ -2,6 +2,8 @@ import React, { useContext, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { arrayOf, bool, func, number } from 'prop-types';
 import { cloneDeep } from 'lodash';
+import ConfigGame from '../ConfigGame';
+import { AppContext } from '../../setup/context';
 import {
   getCharacterColor,
   getMediaQuery,
@@ -38,8 +40,6 @@ import {
   SelectorButton,
   SelectorTitle
 } from './styles';
-import ConfigGame from '../ConfigGame';
-import { AppContext } from '../../setup/context';
 
 const NewGame = ({
   currentChars,

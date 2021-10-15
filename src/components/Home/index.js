@@ -8,7 +8,10 @@ import {
   FIRST_TIME_MODAL,
   TOUR_WARNING_MODAL
 } from '../Notifications/notifications';
+import { InstructionsWrapper } from '../Tour/styles';
 import NightShiftIntro from './NighShift';
+import SupportMeButton from '../SupportMe/button';
+import TakeATourButton from '../Tour/button';
 import FogEffect from '../Fog';
 import { SOUNDS } from '../../assets/sounds';
 import BG from '../../assets/images/background/background2.jpg';
@@ -50,10 +53,6 @@ import {
   ZombieImage,
   ZombieImageShadow
 } from './styles';
-import SupportMeButton from '../SupportMe/button';
-import TakeATourButton from '../Tour/button';
-import { InstructionsWrapper } from '../Tour/styles';
-import { ModalButton, ModalMessage } from '../SetupModal/styles';
 
 const Home = ({
   loadedGame,

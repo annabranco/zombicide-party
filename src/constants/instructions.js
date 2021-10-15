@@ -9,4 +9,4 @@ export const TOUR_WARNING =
   'Starting a Tour right now will make you loose your saved game. Please, do not continue if you want to preserve your saved game.';
 export const WANNA_LEARN =
   'If you want to learn how to use Zombicide Party, click on TAKE A TOUR button below. Otherwise, just go on and have fun! ;)';
-export const WARNING = 'Warning!';
+export const WARNING_TITLE = 'Warning!';

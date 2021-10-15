@@ -2,13 +2,17 @@ import React, { useEffect } from 'react';
 import { HashRouter, Switch, Route } from 'react-router-dom';
 import { Global } from '@emotion/core';
 import { cloneDeep } from 'lodash';
+import { setupGame } from '../../setup/config';
+import { AppContext } from '../../setup/context';
 import { loadSavedGame, logger, useStateWithLabel } from '../../utils';
-import Home from '../Home';
-import NewGame from '../NewGame';
-import MainScreen from '../MainScreen';
 import ControllerLayer from '../ControllerLayer';
 import ErrorBoundary from '../ErrorBoundary';
 import ErrorComponent from '../ErrorBoundary/ErrorComponent';
+import Home from '../Home';
+import MainScreen from '../MainScreen';
+import NewGame from '../NewGame';
+import NotificationsLayer from '../Notifications/layer';
+import { STEPS } from '../Tour';
 import {
   CLEAR_LS,
   ERROR_TEXTS_404,
@@ -21,10 +25,6 @@ import {
   LOG_TYPE_INFO
 } from '../../constants';
 import { globalStyles } from '../../styles';
-import { AppContext } from '../../setup/context';
-import { setupGame } from '../../setup/config';
-import NotificationsLayer from '../Notifications/layer';
-import { STEPS } from '../Tour';
 
 window.addEventListener('orientationchange', () => {
   window.location.reload();
