@@ -1,8 +1,8 @@
 import React from 'react';
 import { number } from 'prop-types';
-import { InstructionsArrow, InstructionsWrapper, TourText } from './styles';
-import { BOTTOM, CENTER, LEFT, RIGHT, TOP } from '../../constants';
 import SupportMe from '../SupportMe';
+import { BOTTOM, CENTER, LEFT, RIGHT, TOP } from '../../constants';
+import { InstructionsArrow, InstructionsWrapper, TourText } from './styles';
 
 export const STEPS = [
   {

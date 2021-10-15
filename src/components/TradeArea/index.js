@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useRef } from 'react';
 import { cloneDeep } from 'lodash';
 import { arrayOf, bool, func, number, oneOfType, string } from 'prop-types';
+import { AppContext } from '../../setup/context';
 import { ALL_WEAPONS } from '../../setup/weapons';
 import { getCharacterColor, logger, useStateWithLabel } from '../../utils';
 import ItemsArea from '../Items/ItemsArea';
@@ -33,7 +34,6 @@ import {
   PlayerName,
   TradeWrapper
 } from './styles';
-import { AppContext } from '../../setup/context';
 
 const TradeArea = ({
   character,

@@ -1,10 +1,10 @@
 import React, { useContext, useEffect } from 'react';
-import { bool, func, number } from 'prop-types';
+import { func, number } from 'prop-types';
 import { MODAL, START_TOUR } from '../../constants';
 import { AppContext } from '../../setup/context';
 import { useStateWithLabel } from '../../utils';
 import { ModalButton, ModalMessage, ModalTitle } from '../SetupModal/styles';
-import Tour, { STEPS } from '../Tour';
+import Tour from '../Tour';
 import { ButtonsArea, ModalBody, NotificationsArea } from './styles';
 
 const NotificationsLayer = ({

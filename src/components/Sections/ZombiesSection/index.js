@@ -1,5 +1,6 @@
 import React, { useContext, useEffect, useRef } from 'react';
 import { bool, func, number } from 'prop-types';
+import { AppContext } from '../../../setup/context';
 import { getMediaQuery, logger, useStateWithLabel } from '../../../utils';
 import SoundBlock from '../../SoundBlock';
 import {
@@ -22,7 +23,6 @@ import {
   ZombiesArea,
   ZombiesRoundSign
 } from './styles';
-import { AppContext } from '../../../setup/context';
 
 const ZombiesSection = ({
   damageMode,

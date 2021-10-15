@@ -1,7 +1,7 @@
 import React from 'react';
 import { func } from 'prop-types';
-import { TourButton, TourButtonIcon } from './styles';
 import ZombieFace from '../../assets/images/zombieFace.png';
+import { TourButton, TourButtonIcon } from './styles';
 
 const TakeATourButton = ({ onClickTakeATour }) => {
   return (

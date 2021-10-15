@@ -2,6 +2,9 @@ import React, { useContext, useEffect } from 'react';
 import FormGroup from '@material-ui/core/FormGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import { func, number } from 'prop-types';
+import { AppContext } from '../../setup/context';
+import { GAME_RULES } from '../../setup/rules';
+import { setupGame } from '../../setup/config';
 import { EXPANSIONS, SETS } from '../../setup/sets';
 import { getMediaQuery, logger, useStateWithLabel } from '../../utils';
 import {
@@ -38,9 +41,6 @@ import {
   RuleSwitch,
   RulesWrapper
 } from './styles';
-import { AppContext } from '../../setup/context';
-import { GAME_RULES } from '../../setup/rules';
-import { setupGame } from '../../setup/config';
 
 const ConfigGame = ({ goToNextTourStep, toggleConfig, tourMode }) => {
   const [activeSection, changeActiveSection] = useStateWithLabel(
