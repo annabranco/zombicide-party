@@ -2,7 +2,7 @@ import styled from '@emotion/styled';
 
 export const MainArea = styled.main`
   label: MainArea;
-  height: ${`${window.innerHeight}px`};
+  height: ${`${window.innerHeight - 1}px`};
   width: 100vw;
   background: black;
   display: flex;

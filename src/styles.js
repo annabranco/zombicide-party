@@ -166,3 +166,20 @@ export const Shadow = css`
   filter: grayscale(1) brightness(0) opacity(0.2);
   transform: skew(42deg, -7deg) rotate(7deg) scaleY(0.5) scaleX(0.85);
 `;
+
+const Shine = keyframes`
+  0% {
+    box-shadow: 0 1px 10px 0 rgba(0, 0, 0, 0.6),
+    inset 1px 1px 3px rgba(255, 0, 0, 0.5);
+  }
+  50% {
+    box-shadow: 0 0 10px 10px yellow,
+    inset 1px 1px 3px gold;
+  }
+`;
+
+export const TourHighlight = css`
+  animation-name: ${Shine};
+  animation-duration: 1s;
+  animation-iteration-count: infinite;
+`;

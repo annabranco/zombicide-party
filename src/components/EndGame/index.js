@@ -4,7 +4,7 @@ import { arrayOf, func, number, string } from 'prop-types';
 import { getMediaQuery, logger } from '../../utils';
 import FogEffect from '../Fog';
 import BG from '../../assets/images/background/background2.jpg';
-import { MenuScreen } from '../MainMenu/styles';
+import { MenuScreen } from '../Home/styles';
 import Defeat from '../../assets/sounds/music/FuneralProcession.mp3';
 import PartialVictory from '../../assets/sounds/music/FlashInThePan.mp3';
 import Victory from '../../assets/sounds/music/HearsePileup-Grindstone.mp3';
@@ -43,7 +43,16 @@ import {
   GameInfo
 } from './styles';
 
-const EndGame = ({ characters, details, loadGame, round, time, type }) => {
+const EndGame = ({
+  characters,
+  details,
+  goToNextTourStep,
+  loadGame,
+  round,
+  time,
+  tourMode,
+  type
+}) => {
   const ambience = useRef();
   const history = useHistory();
 
@@ -90,6 +99,14 @@ const EndGame = ({ characters, details, loadGame, round, time, type }) => {
     };
   }, [type, details]);
 
+  useEffect(() => {
+    if (tourMode === 72) {
+      setTimeout(() => {
+        goToNextTourStep();
+      }, 6000);
+    }
+  }, [goToNextTourStep, tourMode]);
+
   return (
     <MenuScreen img={BG} dynamic type={type}>
       <FogEffect inChar />
@@ -131,14 +148,17 @@ const EndGame = ({ characters, details, loadGame, round, time, type }) => {
 EndGame.propTypes = {
   characters: arrayOf(CharacterType),
   details: string.isRequired,
+  goToNextTourStep: func.isRequired,
   loadGame: func.isRequired,
   round: number.isRequired,
   time: string.isRequired,
+  tourMode: number,
   type: string.isRequired
 };
 
 EndGame.defaultProps = {
-  characters: null
+  characters: null,
+  tourMode: null
 };
 
 export default EndGame;

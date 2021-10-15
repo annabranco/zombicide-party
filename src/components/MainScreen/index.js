@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from 'react';
-import { arrayOf, bool, func, oneOfType, string } from 'prop-types';
+import { arrayOf, bool, func, number, oneOfType, string } from 'prop-types';
 import { logger, useStateWithLabel } from '../../utils';
 import PlayersSection from '../Sections/PlayersSection';
 import ZombiesSection from '../Sections/ZombiesSection';
@@ -17,10 +17,12 @@ import { MainArea, RoundTag } from './styles';
 
 const MainScreen = ({
   damageMode,
+  goToNextTourStep,
   initialCharacters,
   loadGame,
   loadedGame,
-  toggleDamageMode
+  toggleDamageMode,
+  tourMode
 }) => {
   const [rounds, updateRounds] = useStateWithLabel([], 'round');
   const [displayRounds, toggleDisplayRounds] = useStateWithLabel(
@@ -35,6 +37,11 @@ const MainScreen = ({
     false,
     'zombiesArePlaying'
   );
+  const [zombiesShouldAct, toggleZombiesShouldAct] = useStateWithLabel(
+    false,
+    'zombiesShouldAct'
+  );
+
   const gameTime = useRef(0);
   const formatedGameTime = useRef(LESS_THAN_1_MIN);
 
@@ -96,10 +103,17 @@ const MainScreen = ({
     };
   }, [updateRounds]);
 
+  useEffect(() => {
+    if (tourMode === 9) {
+      goToNextTourStep();
+    }
+  }, [goToNextTourStep, tourMode]);
+
   return (
     <MainArea>
       <PlayersSection
         damageMode={damageMode}
+        goToNextTourStep={goToNextTourStep}
         initialCharacters={initialCharacters}
         loadGame={loadGame}
         loadedGame={loadedGame}
@@ -111,16 +125,24 @@ const MainScreen = ({
         time={formatedGameTime.current}
         toggleDamageMode={toggleDamageMode}
         toggleZombiesArePlaying={toggleZombiesArePlaying}
+        toggleZombiesShouldAct={toggleZombiesShouldAct}
+        tourMode={tourMode}
         visible={activeSide === PLAYERS}
         zombiesArePlaying={zombiesArePlaying}
         zombiesRound={activeSide === ZOMBIES}
+        zombiesShouldAct={zombiesShouldAct}
       />
       {activeSide === ZOMBIES && (
         <ZombiesSection
           damageMode={damageMode}
-          setPlayersRound={() => changeActiveSide(PLAYERS)}
+          goToNextTourStep={goToNextTourStep}
+          setPlayersRound={() => {
+            changeActiveSide(PLAYERS);
+            toggleZombiesShouldAct(false);
+          }}
           toggleDamageMode={toggleDamageMode}
           toggleZombiesArePlaying={toggleZombiesArePlaying}
+          tourMode={tourMode}
           zombiesRound={activeSide === ZOMBIES}
         />
       )}
@@ -132,14 +154,18 @@ const MainScreen = ({
 MainScreen.propTypes = {
   damageMode: oneOfType([string, bool]).isRequired,
   initialCharacters: arrayOf(CharacterType),
+  goToNextTourStep: func,
   loadGame: func.isRequired,
   loadedGame: arrayOf(CharacterType),
-  toggleDamageMode: func.isRequired
+  toggleDamageMode: func.isRequired,
+  tourMode: number
 };
 
 MainScreen.defaultProps = {
   initialCharacters: null,
-  loadedGame: null
+  goToNextTourStep: () => null,
+  loadedGame: null,
+  tourMode: null
 };
 
 export default MainScreen;

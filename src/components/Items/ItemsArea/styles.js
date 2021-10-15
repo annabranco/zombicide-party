@@ -5,6 +5,7 @@ import { AppButton } from '../../Sections/PlayersSection/styles';
 import IconRanged from '../../../assets/images/ranged-icon.png';
 import IconMelee from '../../../assets/images/melee-icon.png';
 import IconBlood from '../../../assets/images/bloodSplash.png';
+import { TourHighlight } from '../../../styles';
 
 export const ActionButtonIcon = styled.i`
   label: ActionButtonIcon;
@@ -335,6 +336,11 @@ export const ItemWrapper = styled.div`
         margin: 50px 20px 0;
       `}
   }
+  ${({ tourMode }) =>
+    tourMode &&
+    css`
+      ${TourHighlight};
+    `}
 `;
 ItemWrapper.displayName = 'ItemWrapper';
 
@@ -367,6 +373,12 @@ export const KillButton = styled(AppButton)`
   @media all and (min-width: 701px) {
     position: initial;
   }
+
+  ${({ tourMode }) =>
+    tourMode &&
+    css`
+      ${TourHighlight};
+    `}
 `;
 KillButton.displayName = 'KillButton';
 

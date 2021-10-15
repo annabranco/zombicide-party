@@ -1,7 +1,7 @@
 import styled from '@emotion/styled';
 import { css } from '@emotion/core';
-import { SelectionButton } from '../MainMenu/styles';
-import { activeImage, inactiveImage } from '../../styles';
+import { SelectionButton } from '../Home/styles';
+import { activeImage, inactiveImage, TourHighlight } from '../../styles';
 
 export const CharacterArea = styled.div`
   label: CharacterArea;
@@ -192,6 +192,12 @@ export const Selector = styled.div`
   @media all and (min-width: 701px) {
     margin: 0 -25px;
   }
+
+  ${({ tourMode }) =>
+    tourMode &&
+    css`
+      ${TourHighlight};
+    `}
 `;
 Selector.displayName = 'Selector';
 
@@ -209,6 +215,12 @@ export const SelectorButton = styled(SelectionButton)`
       background: gray;
       color: silver;
       cursor: not-allowed;
+    `}
+
+  ${({ tourMode }) =>
+    tourMode &&
+    css`
+      ${TourHighlight};
     `}
 `;
 SelectorButton.displayName = 'SelectorButton';

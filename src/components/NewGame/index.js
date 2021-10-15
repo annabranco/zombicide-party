@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
-import { arrayOf, bool, func } from 'prop-types';
+import { arrayOf, bool, func, number } from 'prop-types';
 import { cloneDeep } from 'lodash';
 import {
   getCharacterColor,
@@ -28,7 +28,7 @@ import {
   LOCAL_STORAGE_ROUNDS_KEY
 } from '../../constants';
 import { CharacterType } from '../../interfaces/types';
-import { MenuScreen } from '../MainMenu/styles';
+import { MenuScreen } from '../Home/styles';
 import {
   CharacterImage,
   CharacterName,
@@ -39,14 +39,16 @@ import {
   SelectorTitle
 } from './styles';
 import ConfigGame from '../ConfigGame';
-import { AppContext } from '../../setup/rules';
+import { AppContext } from '../../setup/context';
 
 const NewGame = ({
   currentChars,
   dynamic,
+  goToNextTourStep,
   loadedGame,
   setInitialCharacters,
-  setNewChar
+  setNewChar,
+  tourMode
 }) => {
   const [activePlayers, setActivePlayers] = useStateWithLabel(
     new Set(),
@@ -117,7 +119,11 @@ const NewGame = ({
     logger(LOG_TYPE_INFO, PLAYER_NAMES, [...activePlayers].toString());
     stopIntro();
     setInitialCharacters(newgameCharacters);
+    if (tourMode === 9) {
+      goToNextTourStep();
+    }
   };
+
   const onSelect = event => {
     if (dynamic) {
       const character = event.currentTarget.getAttribute('name');
@@ -149,6 +155,10 @@ const NewGame = ({
       }
       updateSelectedCharacters(updatedChars);
       orderCharacters(updatedChars);
+
+      if (tourMode === 6 || tourMode === 7 || tourMode === 8) {
+        goToNextTourStep();
+      }
     }
   };
 
@@ -196,19 +206,35 @@ const NewGame = ({
   }, [currentChars]);
 
   useEffect(() => {
+    if (tourMode === 1) {
+      setTimeout(() => {
+        goToNextTourStep();
+      }, 1000);
+    }
+  }, [goToNextTourStep, tourMode]);
+
+  useEffect(() => {
     logger(LOG_TYPE_EXTENDED, CLICK_NEW_GAME);
   }, []);
 
   return (
     <MenuScreen dynamic={dynamic} img={BG} type="newChar">
-      {config && <ConfigGame toggleConfig={toggleConfig} />}
+      {config && (
+        <ConfigGame
+          goToNextTourStep={goToNextTourStep}
+          toggleConfig={toggleConfig}
+          tourMode={tourMode}
+        />
+      )}
       <SetupModal
         activePlayers={activePlayers}
         addPlayer={addPlayer}
         dynamic={dynamic}
+        goToNextTourStep={goToNextTourStep}
         loadedGame={loadedGame}
         playIntro={playIntro}
         setActivePlayers={setActivePlayers}
+        tourMode={tourMode}
         type="newChar"
       />
       <SelectorTitle dynamic={dynamic}>
@@ -221,7 +247,19 @@ const NewGame = ({
               key={char.name}
               name={char.name}
               number={characters.length}
-              onClick={onSelect}
+              onClick={
+                (tourMode === 6 && char.name !== 'Amy') ||
+                (tourMode === 7 && char.name !== 'Doug') ||
+                (tourMode === 8 && char.name !== 'Wanda') ||
+                tourMode === 9
+                  ? () => null
+                  : onSelect
+              }
+              tourMode={
+                (tourMode === 6 && char.name === 'Amy') ||
+                (tourMode === 7 && char.name === 'Doug') ||
+                (tourMode === 8 && char.name === 'Wanda')
+              }
             >
               <CharacterImage
                 active={charactersSelected.has(char.name)}
@@ -249,8 +287,12 @@ const NewGame = ({
         <Link to={charactersSelected.size > 0 ? '/play' : ''}>
           <SelectorButton
             active={charactersSelected.size > 0}
-            disabled={charactersSelected.size === 0}
+            disabled={
+              charactersSelected.size === 0 ||
+              (tourMode && charactersSelected.size !== 3)
+            }
             onClick={onClickConfirm}
+            tourMode={tourMode === 9}
           >
             Confirm
           </SelectorButton>
@@ -263,17 +305,21 @@ const NewGame = ({
 NewGame.propTypes = {
   currentChars: arrayOf(CharacterType),
   dynamic: bool,
+  goToNextTourStep: func,
   loadedGame: bool,
   setInitialCharacters: func,
-  setNewChar: func
+  setNewChar: func,
+  tourMode: number
 };
 
 NewGame.defaultProps = {
   currentChars: null,
   dynamic: false,
+  goToNextTourStep: () => null,
   loadedGame: null,
   setInitialCharacters: () => null,
-  setNewChar: () => null
+  setNewChar: () => null,
+  tourMode: null
 };
 
 export default NewGame;

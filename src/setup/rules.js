@@ -1,7 +1,3 @@
-import { createContext } from 'react';
-
-export const AppContext = createContext();
-
 export const GAME_RULES = [
   {
     label: 'Mission has cars',
@@ -19,7 +15,7 @@ export const GAME_RULES = [
     label: 'Allow editing in-game',
     name: 'editInGame',
     order: 3,
-    selected: true
+    selected: false
   },
   {
     label: 'Has EXIT area',
@@ -31,13 +27,13 @@ export const GAME_RULES = [
     label: 'Allow new characters in-game',
     name: 'addChars',
     order: 5,
-    selected: true
+    selected: false
   },
   {
     label: 'Enable Win Game button',
     name: 'winGame',
     order: 6,
-    selected: true
+    selected: false
   },
   {
     label: 'All characters have to live',
@@ -61,7 +57,7 @@ export const GAME_RULES = [
     label: 'Enable explosion sound button',
     name: 'explosion',
     order: 10,
-    selected: false
+    selected: true
   },
   {
     disabled: true,

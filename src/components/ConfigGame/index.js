@@ -1,7 +1,7 @@
 import React, { useContext, useEffect } from 'react';
 import FormGroup from '@material-ui/core/FormGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
-import { func } from 'prop-types';
+import { func, number } from 'prop-types';
 import { EXPANSIONS, SETS } from '../../setup/sets';
 import { getMediaQuery, logger, useStateWithLabel } from '../../utils';
 import {
@@ -27,7 +27,7 @@ import {
   ModalTitle,
   ModalWindow
 } from '../SetupModal/styles';
-import { ButtonsArea } from '../MainMenu/styles';
+import { ButtonsArea } from '../Home/styles';
 import {
   ConfigSection,
   ConfigTitle,
@@ -38,10 +38,11 @@ import {
   RuleSwitch,
   RulesWrapper
 } from './styles';
-import { AppContext, GAME_RULES } from '../../setup/rules';
+import { AppContext } from '../../setup/context';
+import { GAME_RULES } from '../../setup/rules';
 import { setupGame } from '../../setup/config';
 
-const ConfigGame = ({ toggleConfig }) => {
+const ConfigGame = ({ goToNextTourStep, toggleConfig, tourMode }) => {
   const [activeSection, changeActiveSection] = useStateWithLabel(
     CONFIG_RULES,
     'rules'
@@ -53,7 +54,7 @@ const ConfigGame = ({ toggleConfig }) => {
   const [rules, changeRules] = useStateWithLabel({}, 'rules');
   const [setLabel, changeSetLabel] = useStateWithLabel(null, 'setLabel');
 
-  const { updateContext } = useContext(AppContext);
+  const { context, updateContext } = useContext(AppContext);
 
   const confirmConfig = () => {
     const detailedRules = setupGame(rules);
@@ -65,7 +66,7 @@ const ConfigGame = ({ toggleConfig }) => {
     });
     toggleConfig(false);
     window.gameRules = { rules, ...detailedRules };
-    updateContext({ rules, ...detailedRules });
+    updateContext({ ...context, rules, ...detailedRules });
   };
 
   const handleChange = event => {
@@ -80,6 +81,9 @@ const ConfigGame = ({ toggleConfig }) => {
     } else {
       confirmConfig();
     }
+    if (tourMode === 2) {
+      goToNextTourStep();
+    }
   };
 
   const onClickExpansion = expansion => {
@@ -89,10 +93,10 @@ const ConfigGame = ({ toggleConfig }) => {
   };
 
   useEffect(() => {
-    const savedConfig = JSON.parse(
-      localStorage.getItem(LOCAL_STORAGE_CONFIG_KEY)
-    );
+    const savedConfig =
+      !tourMode && JSON.parse(localStorage.getItem(LOCAL_STORAGE_CONFIG_KEY));
     const rulesObj = {};
+
     GAME_RULES.forEach(rule => {
       if (!rule.disabled) {
         rulesObj[rule.name] = rule.selected;
@@ -185,7 +189,7 @@ const ConfigGame = ({ toggleConfig }) => {
                                   name={rule.name}
                                 />
                               }
-                              disabled={rule.disabled}
+                              disabled={rule.disabled || tourMode === 2}
                               key={`rule-${rule.name}`}
                               label={rule.label}
                             />
@@ -203,7 +207,7 @@ const ConfigGame = ({ toggleConfig }) => {
                                   name={rule.name}
                                 />
                               }
-                              disabled={rule.disabled}
+                              disabled={rule.disabled || tourMode === 2}
                               key={`rule-${rule.name}`}
                               label={rule.label}
                             />
@@ -224,7 +228,7 @@ const ConfigGame = ({ toggleConfig }) => {
                               name={rule.name}
                             />
                           }
-                          disabled={rule.disabled}
+                          disabled={rule.disabled || tourMode === 2}
                           key={`rule-${rule.name}`}
                           label={rule.label}
                         />
@@ -242,6 +246,7 @@ const ConfigGame = ({ toggleConfig }) => {
           disabled={false}
           inactive={false}
           onClick={onClickButton}
+          tourMode={tourMode === 2}
           type="accept"
         >
           {activeSection === ALL || activeSection === CONFIG_RULES
@@ -254,15 +259,14 @@ const ConfigGame = ({ toggleConfig }) => {
 };
 
 ConfigGame.propTypes = {
-  toggleConfig: func.isRequired
+  goToNextTourStep: func,
+  toggleConfig: func.isRequired,
+  tourMode: number
 };
 
-// ConfigGame.defaultProps = {
-//   addPlayer: () => null,
-//   dynamic: false,
-//   loadedGame: null,
-//   playIntro: null,
-//   type: null
-// };
+ConfigGame.defaultProps = {
+  goToNextTourStep: () => null,
+  tourMode: null
+};
 
 export default ConfigGame;
