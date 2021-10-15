@@ -1,5 +1,5 @@
 import React, { useContext, useEffect } from 'react';
-import { func, number } from 'prop-types';
+import { bool, func, number } from 'prop-types';
 import { MODAL, START_TOUR } from '../../constants';
 import { AppContext } from '../../setup/context';
 import { useStateWithLabel } from '../../utils';
@@ -62,7 +62,8 @@ const NotificationsLayer = ({
       tourMode === 73 ||
       tourMode === 74 ||
       tourMode === 75 ||
-      tourMode === 76
+      tourMode === 76 ||
+      tourMode === 77
     ) {
       goToNextTourStep();
     } else if (tourMode || tourMode === 0) {
@@ -79,24 +80,43 @@ const NotificationsLayer = ({
 
   useEffect(() => {
     toggleHideInstructions(false);
-  }, [toggleHideInstructions, tourMode]);
+    if ((tourMode || tourMode === 0) && activeMode !== START_TOUR) {
+      setActiveMode(START_TOUR);
+    }
+  }, [activeMode, setActiveMode, toggleHideInstructions, tourMode]);
 
   return (
     <>
       {activeMode && content && (
-        <NotificationsArea blockingLayer={activeMode === MODAL}>
-          <ModalBody>
+        <NotificationsArea
+          blockingLayer={activeMode === MODAL}
+          onClick={content.closeWhenClickOutside && closeActiveNotification}
+          type={notification.type}
+        >
+          <ModalBody type={notification.type}>
             <ModalTitle noBg uppercase>
               {content.title}
             </ModalTitle>
-            <ModalMessage type="dark">{content.message}</ModalMessage>
+            <ModalMessage span={content.messageSpan} type="dark">
+              {content.message}
+            </ModalMessage>
             <ButtonsArea>
-              <ModalButton type="cancel" onClick={onClickSecondaryButton}>
-                {content.secondaryButton}
-              </ModalButton>
-              <ModalButton type="confirm" onClick={onClickPrimaryButton}>
-                {content.primaryButton}
-              </ModalButton>
+              {content.secondaryButton && (
+                <ModalButton
+                  type={content.secondaryButtonType || 'cancel'}
+                  onClick={onClickSecondaryButton}
+                >
+                  {content.secondaryButton}
+                </ModalButton>
+              )}
+              {content.primaryButton && (
+                <ModalButton
+                  type={content.primaryButtonType || 'confirm'}
+                  onClick={onClickPrimaryButton}
+                >
+                  {content.primaryButton}
+                </ModalButton>
+              )}
             </ButtonsArea>
           </ModalBody>
         </NotificationsArea>

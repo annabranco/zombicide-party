@@ -1,5 +1,5 @@
 import styled from '@emotion/styled';
-import { css } from '@emotion/core';
+import { css, keyframes } from '@emotion/core';
 
 export const DymanicSupportMeWrapper = styled.div`
   z-index: 10000;
@@ -56,6 +56,15 @@ export const SupportMeText = styled.p`
 `;
 SupportMeText.displayName = 'SupportMeText';
 
+const Beat = keyframes`
+  0%, 40%, 60%, 80% {
+      transform: scale(1);
+  }
+  50%, 70% {
+      transform: scale(1.1);
+  }
+`;
+
 export const SupportButton = styled.div`
   z-index: 10000;
   position: fixed;
@@ -77,6 +86,12 @@ export const SupportButton = styled.div`
 
   &:hover {
     color: yellow;
+
+    & img {
+      animation-name: ${Beat};
+      animation-duration: 1s;
+      animation-iteration-count: infinite;
+    }
   }
 
   @media all and (min-width: 768px) {

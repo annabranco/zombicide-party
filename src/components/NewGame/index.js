@@ -287,7 +287,10 @@ const NewGame = ({
         <Link to={charactersSelected.size > 0 ? '/play' : ''}>
           <SelectorButton
             active={charactersSelected.size > 0}
-            disabled={charactersSelected.size === 0}
+            disabled={
+              charactersSelected.size === 0 ||
+              (tourMode && charactersSelected.size !== 3)
+            }
             onClick={onClickConfirm}
             tourMode={tourMode === 9}
           >

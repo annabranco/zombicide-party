@@ -1145,21 +1145,24 @@ export const HighestXpTag = styled.span`
   transform: translate(-50%, 0);
   font-family: 'Cairo', sans-serif;
   text-transform: uppercase;
-  font-size: 0.5rem;
-  color: black;
+  font-size: 0.8rem;
+  color: white;
   font-weight: 900;
   user-select: none;
+  -webkit-text-stroke: 1px black;
+  text-shadow: 0px 1px 3px black;
 
   @media all and (min-width: 701px) {
-    top: 20px;
-    font-size: 0.7rem;
-    color: white;
+    top: 18px;
 
     ${({ xp }) =>
       xp <= 4 &&
       css`
-        font-size: 0.5rem;
-        top: -8px;
+        font-size: 0.6rem;
+        top: 8px;
+        text-shadow: 0px 1px 5px black;
+        background: rgba(0, 0, 0, 0.5);
+        border-radius: 50%;
       `}
   }
 `;
@@ -1200,18 +1203,18 @@ export const IndicatorsWrapper = styled.div`
     `}
 
   @media all and (min-width: 701px) {
-    height: 20px;
+    height: 12px;
     position: absolute;
-    top: 26px;
+    top: 29px;
     background: none;
 
     ${({ header }) =>
       header &&
       css`
         z-index: 11;
-        top: 3px;
+        top: 4px;
         left: 0;
-        height: 26px;
+        height: 16px;
         width: 100%;
 
         justify-content: space-around;
@@ -1596,7 +1599,7 @@ export const NoiseWrapper = styled.div`
   }
 
   @media all and (min-width: 1400px) {
-    top: 175px;
+    top: 168px;
   }
 
   @media all and (min-width: 1600px) {
@@ -1798,7 +1801,7 @@ export const XpIcon = styled(MovementIcon)`
   line-height: ${({ currentXp, highestXp }) =>
     currentXp || highestXp ? '1' : '1.2'};
 
-  background: ${({ activeColor }) => activeColor && activeColor};
+  background: ${({ activeColor }) => activeColor};
   opacity: ${({ activeColor }) => activeColor && 1};
   height: ${({ currentXp, highestXp }) =>
     currentXp || highestXp ? '18px' : '14px'};
@@ -1819,7 +1822,8 @@ export const XpIcon = styled(MovementIcon)`
     height: ${({ currentXp, highestXp }) =>
       currentXp || highestXp ? '18px' : '14px'};
     clip-path: polygon(50% 50%, -50% -50%, 0 100%);
-    background: ${({ activeColor }) => activeColor && activeColor};
+    background: ${({ activeColor, currentXp }) =>
+      currentXp ? 'black' : activeColor};
   }
   &:before {
     content: '';
@@ -1831,7 +1835,8 @@ export const XpIcon = styled(MovementIcon)`
       currentXp || highestXp ? '18px' : '14px'};
     clip-path: polygon(100% 0, 100% 100%, 0% 100%, 50% 50%, 0% 0%);
     transform: translateX(-100%);
-    background: ${({ activeColor }) => activeColor && activeColor};
+    background: ${({ activeColor, currentXp }) =>
+      currentXp ? 'black' : activeColor};
   }
 
   &:first-of-type:before {
@@ -1846,6 +1851,15 @@ export const XpIcon = styled(MovementIcon)`
     css`
       cursor: pointer;
     `}
+
+  ${({ currentXp, activeColor }) =>
+    currentXp &&
+    css`
+      color: ${activeColor};
+      background: black;
+      font-weigth: 900;
+    `}
+
 
   @media all and (min-width: 701px) {
   }

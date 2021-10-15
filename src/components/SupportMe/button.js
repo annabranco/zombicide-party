@@ -29,6 +29,15 @@ const SupportMeButton = () => {
     }, 400);
   };
 
+  const onClickSupportButton = () => {
+    if (isSupportFrameVisible) {
+      toggleSupportFrame(false);
+      toggleHasEnteredSupportFrame(false);
+    } else {
+      toggleSupportFrame(true);
+    }
+  };
+
   useEffect(() => {
     if (hasEnteredSupportFrame) {
       clearTimeout(closeTimeout.current);
@@ -48,15 +57,11 @@ const SupportMeButton = () => {
           {'If you like this application,\nplease consider supporting it.'}
         </SupportMeText>
       )}
-      <SupportButton
-        onClick={() => toggleSupportFrame(true)}
-        onMouseOut={onBlurButton}
-      >
+      <SupportButton onClick={onClickSupportButton} onMouseOut={onBlurButton}>
         <SupportButtonIcon src={KofiLogo} /> Support this app
       </SupportButton>
       <DymanicSupportMeWrapper
         isOpen={isSupportFrameVisible}
-        onMouseOut={() => toggleSupportFrame(false)}
         onMouseOver={() => toggleHasEnteredSupportFrame(true)}
       >
         <SupportMe mode="dynamic" />

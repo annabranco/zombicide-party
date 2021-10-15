@@ -108,6 +108,8 @@ const ItemsArea = ({
 
   const itemsType = getItemType(item);
 
+  const notAvailableOnTourMode = tourMode && tourMode >= 23 && tourMode <= 70;
+
   const activateKillButtons = () => {
     spendSingleUseWeapon(index, item);
     if (ALL_WEAPONS[item].dice === SPECIAL) {
@@ -361,7 +363,7 @@ const ItemsArea = ({
         ) : (
           <ItemBlank
             allSlotsAreEmpty={allSlotsAreEmpty}
-            canSearch={canSearch}
+            canSearch={notAvailableOnTourMode || canSearch}
             damageMode={damageMode}
             isSelected={itemSelected}
             onClick={onClickEmptyCard}
@@ -374,13 +376,16 @@ const ItemsArea = ({
               ) : (
                 <p>{ITEM_IN_RESERVE}</p>
               ))}
-            {canSearch && !damageMode && !setupMode && (
-              <ActionButton
-                actionType={SEARCH_ACTION}
-                callback={onClickEmptyCard}
-                type={charVoice}
-              />
-            )}
+            {!notAvailableOnTourMode &&
+              canSearch &&
+              !damageMode &&
+              !setupMode && (
+                <ActionButton
+                  actionType={SEARCH_ACTION}
+                  callback={onClickEmptyCard}
+                  type={charVoice}
+                />
+              )}
           </ItemBlank>
         )}
       </Item>

@@ -180,6 +180,12 @@ export const CurrentCharacterTag = styled.p`
   font-family: 'Grandstander', cursive;
   font-size: 1.3rem;
   color: rgba(255, 255, 255, 0.7);
+
+  ${({ tourMode }) =>
+    tourMode &&
+    css`
+      ${TourHighlight};
+    `}
 `;
 CurrentCharacterTag.displayName = 'CurrentCharacterTag';
 

@@ -2634,7 +2634,7 @@ const PlayersSection = ({
                   {device.current === DESKTOP && (
                     <AttackInstructions>{SELECT_DAMAGE}</AttackInstructions>
                   )}
-                  {(!tourMode || (tourMode !== 65 && tourMode !== 67)) && (
+                  {!tourMode && (
                     <AttackBurronsWrapper>
                       <CancelAttackButton onClick={cancelZombieAttack}>
                         {CANCEL}

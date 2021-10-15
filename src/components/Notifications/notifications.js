@@ -4,7 +4,10 @@ import {
   NO_THANKS,
   START_TOUR,
   TAKE_A_TOUR,
-  WANNA_LEARN
+  TAKE_IT_ANYWAY,
+  TOUR_WARNING,
+  WANNA_LEARN,
+  WARNING
 } from '../../constants';
 
 export const FIRST_TIME_MODAL = {
@@ -19,3 +22,13 @@ export const FIRST_TIME_MODAL = {
   onClickSecondary: () =>
     localStorage.setItem(LOCAL_STORAGE_TOUR_KEY, NO_THANKS)
 };
+
+export const TOUR_WARNING_MODAL = onClick => ({
+  title: WARNING,
+  message: TOUR_WARNING,
+  messageSpan: 80,
+  primaryButton: TAKE_IT_ANYWAY,
+  primaryButtonType: 'go-on',
+  onClickPrimary: onClick,
+  closeWhenClickOutside: true
+});

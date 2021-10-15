@@ -1,6 +1,7 @@
 import { css } from '@emotion/core';
 import styled from '@emotion/styled';
 import { ACTIVATE, ATTACK, KILL } from '../../../constants';
+import { TourHighlight } from '../../../styles';
 import { SelectionButton } from '../../Home/styles';
 
 export const Action = styled.p`
@@ -46,6 +47,12 @@ export const Action = styled.p`
     color: yellow;
     -webkit-text-stroke: 1px black;
   }
+
+  ${({ tourMode }) =>
+    tourMode &&
+    css`
+      ${TourHighlight};
+    `}
 `;
 Action.displayName = 'Action';
 
@@ -129,6 +136,12 @@ export const ConfirmAttackButton = styled(CancelAttackButton)`
   &:hover {
     color: crimson;
   }
+
+  ${({ tourMode }) =>
+    tourMode &&
+    css`
+      ${TourHighlight};
+    `}
 `;
 ConfirmAttackButton.displayName = 'ConfirmAttackButton';
 

@@ -14,7 +14,9 @@ import {
   SELECT_TRADE_PARTNER,
   TRADING_WITH,
   WOUNDED,
-  TRADE
+  TRADE,
+  TOUR_WEAPONS_TO_WANDA,
+  TOUR_WEAPONS_TO_AMY
 } from '../../constants';
 import { CharacterType } from '../../interfaces/types';
 import { ArrowSign, CharItems } from '../Sections/PlayersSection/styles';
@@ -67,6 +69,16 @@ const TradeArea = ({
   const [tradePartner, updatePartner] = useStateWithLabel(null, 'tradePartner');
 
   const { context } = useContext(AppContext);
+
+  const initialTradingMessage = () => {
+    if (tourMode === 53) {
+      return TOUR_WEAPONS_TO_WANDA;
+    }
+    if (tourMode === 56) {
+      return TOUR_WEAPONS_TO_AMY;
+    }
+    return SELECT_TRADE_PARTNER;
+  };
 
   const changeToNextPlayer = () => {
     const nextPlayerIndex =
@@ -556,10 +568,15 @@ const TradeArea = ({
             </NavButtonsWrapper>
           )}
 
-          <CurrentPartnerTag>
+          <CurrentPartnerTag
+            tourMode={
+              (tourMode === 53 && tradePartner.name !== 'Wanda') ||
+              (tourMode === 56 && tradePartner.name !== 'Amy')
+            }
+          >
             {tradeEstablished
               ? TRADING_WITH(tradePartner.name)
-              : SELECT_TRADE_PARTNER}
+              : initialTradingMessage()}
           </CurrentPartnerTag>
         </CharacterTrading>
       )}

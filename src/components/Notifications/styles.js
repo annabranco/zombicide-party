@@ -1,5 +1,6 @@
 import styled from '@emotion/styled';
 import { css } from '@emotion/core';
+import { WARNING } from '../../constants';
 
 export const NotificationsArea = styled.div`
   z-index: 9999;
@@ -13,13 +14,13 @@ export const NotificationsArea = styled.div`
   height: 100vh;
   width: 100vw;
 
-  ${({ blockingLayer }) => {
+  ${({ blockingLayer, type }) => {
     if (blockingLayer === 'light') {
       return css`
         background: rgba(0, 0, 0, 0.35);
       `;
     }
-    if (blockingLayer) {
+    if (blockingLayer || type === WARNING) {
       return css`
         background: rgba(0, 0, 0, 0.85);
       `;

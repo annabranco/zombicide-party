@@ -100,6 +100,7 @@ const ZombiesSection = ({
                     : null
                 }
                 special={context.zombies[zombie].special}
+                tourMode={tourMode}
                 type={ACTIVATIONS}
                 zombieAttack={zombieAttack}
               />
@@ -114,7 +115,11 @@ const ZombiesSection = ({
         )}
         {isHighlighted && <ZombieLabel>{isHighlighted}</ZombieLabel>}
       </SubSectionWrapper>
-      <ConfirmAttackButton type="button" onClick={endZombiesRound}>
+      <ConfirmAttackButton
+        onClick={endZombiesRound}
+        tourMode={tourMode === 68}
+        type="button"
+      >
         {END}
       </ConfirmAttackButton>
     </ZombiesArea>

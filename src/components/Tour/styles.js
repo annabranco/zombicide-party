@@ -1,5 +1,5 @@
 import styled from '@emotion/styled';
-import { css } from '@emotion/core';
+import { css, keyframes } from '@emotion/core';
 import { BOTTOM, CENTER, LEFT, RIGHT, TOP } from '../../constants';
 import { ModalMessage } from '../SetupModal/styles';
 
@@ -206,6 +206,18 @@ export const InstructionsWrapper = styled.div`
 `;
 InstructionsWrapper.displayName = 'InstructionsWrapper';
 
+const Grrrr = keyframes`
+  0%, 70%, 100%, {
+    transform: none;
+  }
+  40%, 50%, 60% {
+    transform: rotate(-8deg);
+  }
+  45%, 55%, 65% {
+    transform: rotate(8deg);
+  }
+`;
+
 export const TourButton = styled.div`
   z-index: 10000;
   position: fixed;
@@ -226,6 +238,12 @@ export const TourButton = styled.div`
 
   &:hover {
     color: yellow;
+
+    & img {
+      animation-name: ${Grrrr};
+      animation-duration: 1s;
+      animation-iteration-count: infinite;
+    }
   }
 
   @media all and (min-width: 1200px) {

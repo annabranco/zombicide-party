@@ -224,6 +224,12 @@ export const ModalMessage = styled.p`
       top: 90px;
     `}
 
+    ${({ span }) =>
+    span &&
+    css`
+      width: ${`${span}%`};
+    `}
+
   @media all and (min-width: 768px) {
     width: 60%;
 
@@ -232,6 +238,12 @@ export const ModalMessage = styled.p`
       css`
         position: absolute;
         top: 120px;
+      `}
+
+    ${({ span }) =>
+      span &&
+      css`
+        width: ${`${span}%`};
       `}
   }
 
@@ -243,6 +255,12 @@ export const ModalMessage = styled.p`
       small &&
       css`
         position: initial;
+      `}
+
+    ${({ span }) =>
+      span &&
+      css`
+        width: ${`${span}%`};
       `}
   }
 `;

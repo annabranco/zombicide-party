@@ -124,13 +124,18 @@ const SoundBlock = ({
   };
 
   const play = () => {
+    console.log('$$$ tourMode', tourMode);
     if (
       (tourMode &&
         tourMode !== 29 &&
         tourMode !== 37 &&
+        tourMode !== 48 &&
         tourMode !== 51 &&
         tourMode !== 55 &&
         tourMode !== 59 &&
+        tourMode !== 60 &&
+        tourMode !== 64 &&
+        tourMode !== 66 &&
         tourMode !== 69 &&
         tourMode !== 70) ||
       (tourMode === 55 && hasBeenClickedOnce) ||
@@ -260,19 +265,31 @@ const SoundBlock = ({
             />
           ))}
         {type === ACTIVATIONS &&
-          (!tourMode || tourMode === 100) &&
           ((isMobile && displayZombieAttackButtonsForMobile) || !isMobile) && (
             <ZombieActions>
               {!isMobile && !isTablet && (
                 <Action action={ACTIVATE}>{ACTIVATE}</Action>
               )}
-              <Action action={ATTACK} onClick={() => zombieAttack(name)}>
+              <Action
+                action={ATTACK}
+                onClick={
+                  !tourMode || (tourMode === 64 && name === 'Walker')
+                    ? () => zombieAttack(name)
+                    : () => null
+                }
+                tourMode={tourMode === 64 && name === 'Walker'}
+              >
                 {ATTACK_SURVIVOR}
               </Action>
               {special && (
                 <Action
                   action={KILL}
-                  onClick={() => zombieAttack(`${name}-instant`)}
+                  onClick={
+                    !tourMode || (tourMode === 66 && name === 'Runner')
+                      ? () => zombieAttack(`${name}-instant`)
+                      : () => null
+                  }
+                  tourMode={tourMode === 66 && name === 'Runner'}
                 >
                   {special}
                 </Action>

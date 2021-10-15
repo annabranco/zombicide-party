@@ -76,20 +76,20 @@ const ActionButton = ({
 
   const onClickIcon = event => {
     if (
-      tourMode === 23 ||
-      tourMode === 25 ||
-      tourMode === 28 ||
-      tourMode === 32 ||
-      tourMode === 40 ||
-      tourMode === 42 ||
-      tourMode === 43 ||
-      tourMode === 45 ||
-      tourMode === 49 ||
-      tourMode === 54 ||
-      tourMode === 57 ||
-      tourMode === 58 ||
-      tourMode === 61 ||
-      tourMode === 71
+      (tourMode === 23 && actionType === 'move') ||
+      (tourMode === 25 && actionType === 'open-door') ||
+      (tourMode === 28 && actionType === 'move') ||
+      (tourMode === 32 && actionType === 'move') ||
+      (tourMode === 40 && actionType === 'endTurn') ||
+      (tourMode === 42 && actionType === 'move') ||
+      (tourMode === 43 && actionType === 'objective') ||
+      (tourMode === 45 && actionType === 'endTurn') ||
+      (tourMode === 49 && actionType === 'explosion') ||
+      (tourMode === 54 && actionType === 'endTurn') ||
+      (tourMode === 57 && actionType === 'move') ||
+      (tourMode === 58 && actionType === 'leave-game') ||
+      (tourMode === 61 && actionType === 'endTurn') ||
+      (tourMode === 71 && actionType === 'move')
     ) {
       goToNextTourStep();
     }

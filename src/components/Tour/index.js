@@ -495,9 +495,8 @@ export const STEPS = [
     step: 66,
     positionX: CENTER,
     positionY: CENTER,
-    arrow: [BOTTOM, LEFT],
     message:
-      "What a nightmare! <br>The Runners also receive an extra activation and the runner on the same zone of our heroes can attack twice. No matter which hero he attacks, he's going to kill somebody. <br>Click on INSTANT KILL."
+      "What a nightmare! <br>The Runners also receive an extra activation and the runner on the same zone of our heroes can attack twice. No matter which hero he attacks, he's going to kill somebody. <br>Click on INSTANT KILL on the Runner."
   },
   {
     step: 67,

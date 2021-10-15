@@ -4,7 +4,10 @@ import appInfo from '../../../package.json';
 import { AppContext } from '../../setup/context';
 import { ZOMBIES_S1 } from '../../setup/zombies';
 import { getMediaQuery, logger, useStateWithLabel } from '../../utils';
-import { FIRST_TIME_MODAL } from '../Notifications/notifications';
+import {
+  FIRST_TIME_MODAL,
+  TOUR_WARNING_MODAL
+} from '../Notifications/notifications';
 import NightShiftIntro from './NighShift';
 import FogEffect from '../Fog';
 import { SOUNDS } from '../../assets/sounds';
@@ -25,7 +28,10 @@ import {
   MODAL,
   NEW_GAME,
   STOP_SOUND,
-  TEST_SOUND
+  TAKE_IT_ANYWAY,
+  TEST_SOUND,
+  TOUR_WARNING,
+  WARNING
 } from '../../constants';
 import { CharacterType } from '../../interfaces/types';
 import {
@@ -66,18 +72,25 @@ const Home = ({
   const APP_VERSION = appInfo.version;
   const { context, updateContext } = useContext(AppContext);
 
-  const onClickTakeATour = () => {
-    const savedGameExists = !!localStorage.getItem(LOCAL_STORAGE_KEY);
-    if (savedGameExists) {
-      toggleDisplayTourWarning(true);
-    } else {
-      goToNextTourStep(0);
-    }
-  };
-
   const onConfirmTakeATour = () => {
     toggleDisplayTourWarning(false);
     goToNextTourStep(0);
+  };
+
+  const onClickTakeATour = () => {
+    const savedGameExists = !!localStorage.getItem(LOCAL_STORAGE_KEY);
+    if (savedGameExists) {
+      updateContext({
+        ...context,
+        notification: {
+          type: WARNING,
+          info: WARNING,
+          content: TOUR_WARNING_MODAL(onConfirmTakeATour)
+        }
+      });
+    } else {
+      goToNextTourStep(0);
+    }
   };
 
   useEffect(() => {
@@ -163,7 +176,7 @@ const Home = ({
             {NEW_GAME}
           </SelectionButton>
         </StyledLink>
-        {loadedGame && (
+        {loadedGame && typeof tourMode !== 'number' && (
           <StyledLink
             to="/play"
             onClick={() => setInitialCharacters(loadedGame)}
@@ -184,18 +197,15 @@ const Home = ({
         </TestButton>
       )}
       <Version>{APP_VERSION}</Version>
-
-      <TakeATourButton onClickTakeATour={onClickTakeATour} />
+      {typeof tourMode !== 'number' && (
+        <TakeATourButton onClickTakeATour={onClickTakeATour} />
+      )}
 
       {displayTourWarning && (
         <InstructionsWrapper positionX={CENTER} positionY={CENTER}>
-          <WarningMessage>
-            Warning! Starting a Tour right now will make you loose your saved
-            gamed. Please, do not continue if you want to preserve your saved
-            game.
-          </WarningMessage>
+          <WarningMessage>{TOUR_WARNING}</WarningMessage>
           <WarningButton onClick={onConfirmTakeATour}>
-            Taker the tour anyway
+            {TAKE_IT_ANYWAY}
           </WarningButton>
         </InstructionsWrapper>
       )}
