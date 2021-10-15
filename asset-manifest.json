@@ -1,13 +1,13 @@
 {
   "files": {
-    "main.js": "/zombicide-party/static/js/main.b1af3ff5.chunk.js",
-    "main.js.map": "/zombicide-party/static/js/main.b1af3ff5.chunk.js.map",
+    "main.js": "/zombicide-party/static/js/main.22356a79.chunk.js",
+    "main.js.map": "/zombicide-party/static/js/main.22356a79.chunk.js.map",
     "runtime-main.js": "/zombicide-party/static/js/runtime-main.09054635.js",
     "runtime-main.js.map": "/zombicide-party/static/js/runtime-main.09054635.js.map",
-    "static/js/2.1de065a5.chunk.js": "/zombicide-party/static/js/2.1de065a5.chunk.js",
-    "static/js/2.1de065a5.chunk.js.map": "/zombicide-party/static/js/2.1de065a5.chunk.js.map",
+    "static/js/2.e2ed715f.chunk.js": "/zombicide-party/static/js/2.e2ed715f.chunk.js",
+    "static/js/2.e2ed715f.chunk.js.map": "/zombicide-party/static/js/2.e2ed715f.chunk.js.map",
     "index.html": "/zombicide-party/index.html",
-    "static/js/2.1de065a5.chunk.js.LICENSE.txt": "/zombicide-party/static/js/2.1de065a5.chunk.js.LICENSE.txt",
+    "static/js/2.e2ed715f.chunk.js.LICENSE.txt": "/zombicide-party/static/js/2.e2ed715f.chunk.js.LICENSE.txt",
     "static/media/Abomination.7468aef7.png": "/zombicide-party/static/media/Abomination.7468aef7.png",
     "static/media/Abomination1.6ae71f09.mp3": "/zombicide-party/static/media/Abomination1.6ae71f09.mp3",
     "static/media/Abomination2.532b7333.mp3": "/zombicide-party/static/media/Abomination2.532b7333.mp3",
@@ -177,6 +177,7 @@
     "static/media/josh-face.c0401c2d.png": "/zombicide-party/static/media/josh-face.c0401c2d.png",
     "static/media/josh.08e14fbc.png": "/zombicide-party/static/media/josh.08e14fbc.png",
     "static/media/katana.c512f1e1.jpg": "/zombicide-party/static/media/katana.c512f1e1.jpg",
+    "static/media/kofi-logo.bf3927c8.png": "/zombicide-party/static/media/kofi-logo.bf3927c8.png",
     "static/media/kopinski.70b10d55.png": "/zombicide-party/static/media/kopinski.70b10d55.png",
     "static/media/laser-pointer.420339d4.jpg": "/zombicide-party/static/media/laser-pointer.420339d4.jpg",
     "static/media/lock.ad30b328.mp3": "/zombicide-party/static/media/lock.ad30b328.mp3",
@@ -273,7 +274,7 @@
   },
   "entrypoints": [
     "static/js/runtime-main.09054635.js",
-    "static/js/2.1de065a5.chunk.js",
-    "static/js/main.b1af3ff5.chunk.js"
+    "static/js/2.e2ed715f.chunk.js",
+    "static/js/main.22356a79.chunk.js"
   ]
 }
