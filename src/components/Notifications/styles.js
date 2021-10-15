@@ -64,12 +64,16 @@ export const ModalBody = styled.div`
   );
   box-shadow: 0 0 10px 10px black;
   height: auto;
-  width: 60%;
+  width: 80%;
 
   ${({ tour }) =>
     tour &&
     css`
       background: rgba(255, 255, 255, 0.65);
     `}
+
+  @media all and (min-width: 1200px) {
+    width: 60%;
+  }
 `;
 ModalBody.displayName = 'ModalBody';

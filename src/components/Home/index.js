@@ -12,12 +12,14 @@ import BG from '../../assets/images/background/background2.jpg';
 import ZombieCop from '../../assets/images/zombies/ZombieCop.png';
 import Logo from '../../assets/images/logo.png';
 import {
+  CENTER,
   CLICK_SOUND_TEST,
   CONTINUE,
   DESKTOP,
   FIRST_TIME,
   INTRO_IMG_LOADED,
   INTRO_NS_LOADED,
+  LOCAL_STORAGE_KEY,
   LOCAL_STORAGE_TOUR_KEY,
   LOG_TYPE_EXTENDED,
   MODAL,
@@ -36,25 +38,47 @@ import {
   TestButton,
   ThunderOverlay,
   Version,
+  WarningButton,
+  WarningMessage,
   ZombicideLogo,
   ZombieImage,
   ZombieImageShadow
 } from './styles';
 import SupportMeButton from '../SupportMe/button';
 import TakeATourButton from '../Tour/button';
+import { InstructionsWrapper } from '../Tour/styles';
+import { ModalButton, ModalMessage } from '../SetupModal/styles';
 
-const MainMenu = ({
+const Home = ({
   loadedGame,
   goToNextTourStep,
   setInitialCharacters,
   tourMode
 }) => {
+  const [displayTourWarning, toggleDisplayTourWarning] = useStateWithLabel(
+    false,
+    'displayTourWarning'
+  );
   const [nightShift, toggleNightShift] = useStateWithLabel(false, 'nightShift');
   const [testSound, toggleTestSound] = useStateWithLabel(false, 'testSound');
   const [zombieImage, changeZombieImage] = useState();
 
   const APP_VERSION = appInfo.version;
   const { context, updateContext } = useContext(AppContext);
+
+  const onClickTakeATour = () => {
+    const savedGameExists = !!localStorage.getItem(LOCAL_STORAGE_KEY);
+    if (savedGameExists) {
+      toggleDisplayTourWarning(true);
+    } else {
+      goToNextTourStep(0);
+    }
+  };
+
+  const onConfirmTakeATour = () => {
+    toggleDisplayTourWarning(false);
+    goToNextTourStep(0);
+  };
 
   useEffect(() => {
     const storm = new Audio(SOUNDS.intro);
@@ -160,21 +184,35 @@ const MainMenu = ({
         </TestButton>
       )}
       <Version>{APP_VERSION}</Version>
-      <TakeATourButton goToNextTourStep={goToNextTourStep} />
+
+      <TakeATourButton onClickTakeATour={onClickTakeATour} />
+
+      {displayTourWarning && (
+        <InstructionsWrapper positionX={CENTER} positionY={CENTER}>
+          <WarningMessage>
+            Warning! Starting a Tour right now will make you loose your saved
+            gamed. Please, do not continue if you want to preserve your saved
+            game.
+          </WarningMessage>
+          <WarningButton onClick={onConfirmTakeATour}>
+            Taker the tour anyway
+          </WarningButton>
+        </InstructionsWrapper>
+      )}
     </MenuScreen>
   );
 };
 
-MainMenu.propTypes = {
+Home.propTypes = {
   goToNextTourStep: func.isRequired,
   loadedGame: arrayOf(CharacterType),
   setInitialCharacters: func.isRequired,
   tourMode: number
 };
 
-MainMenu.defaultProps = {
+Home.defaultProps = {
   loadedGame: null,
   tourMode: null
 };
 
-export default MainMenu;
+export default Home;

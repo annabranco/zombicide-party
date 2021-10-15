@@ -11,7 +11,7 @@ export const STEPS = [
     positionY: BOTTOM,
     arrow: [BOTTOM, CENTER],
     message:
-      'To start it would be a good idea to test your sound, as the sounds are maybe the most important aspects of Zombicide Party. <br>Click on TEST SOUND below and adjust your volume.'
+      'To start the TOUR, it would be a good idea to test your sound, as the sounds are maybe the most important aspects of Zombicide Party. <br>Click on TEST SOUND below and adjust your volume.'
   },
   {
     step: 1,

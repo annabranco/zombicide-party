@@ -59,8 +59,9 @@ SupportMeText.displayName = 'SupportMeText';
 export const SupportButton = styled.div`
   z-index: 10000;
   position: fixed;
-  left: 20px;
-  bottom: 15px;
+  left: 50%;
+  transform: translate(-50%, 0);
+  bottom: 70px;
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -76,6 +77,12 @@ export const SupportButton = styled.div`
 
   &:hover {
     color: yellow;
+  }
+
+  @media all and (min-width: 768px) {
+    left: 20px;
+    bottom: 15px;
+    transform: none;
   }
 `;
 SupportButton.displayName = 'SupportButton';

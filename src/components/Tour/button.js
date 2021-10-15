@@ -3,16 +3,16 @@ import { func } from 'prop-types';
 import { TourButton, TourButtonIcon } from './styles';
 import ZombieFace from '../../assets/images/zombieFace.png';
 
-const TakeATourButton = ({ goToNextTourStep }) => {
+const TakeATourButton = ({ onClickTakeATour }) => {
   return (
-    <TourButton onClick={() => goToNextTourStep(0)}>
+    <TourButton onClick={onClickTakeATour}>
       <TourButtonIcon src={ZombieFace} /> Take A Tour
     </TourButton>
   );
 };
 
 TakeATourButton.propTypes = {
-  goToNextTourStep: func.isRequired
+  onClickTakeATour: func.isRequired
 };
 
 export default TakeATourButton;

@@ -325,6 +325,49 @@ export const Version = styled.p`
 `;
 Version.displayName = 'Version';
 
+export const WarningButton = styled.div`
+  label: WarningButton;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin: 10px 10px;
+  min-height: 40px;
+  width: 60%;
+  background: gray;
+  padding: 5px 15px;
+  background: red;
+  box-shadow: 0 1px 10px 0 rgba(0, 0, 0, 0.6),
+    inset 1px 1px 3px rgba(255, 0, 0, 0.5);
+  text-transform: uppercase;
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: black;
+  font-family: 'Grandstander', cursive;
+  transition: all ease 0.2s;
+  cursor: pointer;
+
+  &: hover {
+    color: yellow;
+    filter: brightness(1.2);
+  }
+`;
+WarningButton.displayName = 'WarningButton';
+
+export const WarningMessage = styled.p`
+  label: WarningMessage;
+  width: 100%;
+  margin-bottom: 30px;
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: black;
+  text-shadow: 0 0 2px white;
+  text-align: center;
+  line-height: 2;
+  font-family: 'Cairo', sans-serif;
+`;
+WarningMessage.displayName = 'WarningMessage';
+
 export const ZombicideLogo = styled.img`
   label: ZombicideLogo;
   width: 100%;

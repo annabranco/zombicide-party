@@ -149,6 +149,7 @@ export const InstructionsArrow = styled.div`
 InstructionsArrow.displayName = 'InstructionsArrow';
 
 export const InstructionsWrapper = styled.div`
+  z-index: 50;
   position: absolute;
   display: flex;
   flex-direction: column;
@@ -208,9 +209,9 @@ InstructionsWrapper.displayName = 'InstructionsWrapper';
 export const TourButton = styled.div`
   z-index: 10000;
   position: fixed;
-  right: 20px;
-  bottom: 15px;
-  display: flex;
+  right: 5px;
+  bottom: 80px;
+  display: none;
   flex-direction: row;
   align-items: center;
   justify-content: center;
@@ -225,6 +226,12 @@ export const TourButton = styled.div`
 
   &:hover {
     color: yellow;
+  }
+
+  @media all and (min-width: 1200px) {
+    display: flex;
+    right: 20px;
+    bottom: 15px;
   }
 `;
 TourButton.displayName = 'TourButton';
