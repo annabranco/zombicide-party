@@ -99,6 +99,7 @@ const SoundBlock = ({
   const currentRound = useRef();
   const quickAttackDebounce = useRef();
   const quickAttackDebounceTimeout = useRef();
+  const displayWeaponInformationTimeout = useRef();
   const sound = useRef();
 
   const isMixedWeapon =
@@ -264,7 +265,7 @@ const SoundBlock = ({
 
   useEffect(() => {
     if (displayWeaponInformation) {
-      setTimeout(() => {
+      displayWeaponInformationTimeout.current = setTimeout(() => {
         toggleDisplayWeaponInformation(false);
       }, 5000);
     }
@@ -275,6 +276,7 @@ const SoundBlock = ({
       clearTimeout(activateTimeout.current);
       clearTimeout(attackButtonsTimeout.current);
       clearTimeout(quickAttackDebounceTimeout.current);
+      clearTimeout(displayWeaponInformationTimeout.current);
     };
   }, []);
 

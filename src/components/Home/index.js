@@ -70,6 +70,7 @@ const Home = ({
 
   const APP_VERSION = appInfo.version;
   const { context, updateContext } = useContext(AppContext);
+  const isDesktop = getMediaQuery() === DESKTOP;
 
   const onConfirmTakeATour = () => {
     toggleDisplayTourWarning(false);
@@ -146,7 +147,7 @@ const Home = ({
   useEffect(() => {
     const displayTour = !localStorage.getItem(LOCAL_STORAGE_TOUR_KEY);
 
-    if (displayTour && !context.notification) {
+    if (isDesktop && displayTour && !context.notification) {
       updateContext({
         ...context,
         notification: {
@@ -156,7 +157,7 @@ const Home = ({
         }
       });
     }
-  }, [context, updateContext]);
+  }, [context, isDesktop, updateContext]);
 
   return (
     <MenuScreen img={BG} type="main">
@@ -185,9 +186,9 @@ const Home = ({
         )}
       </ButtonsArea>
       <div style={{ marginLeft: '100px' }}>
-        <SupportMeButton />
+        <SupportMeButton isDesktop={isDesktop} />
       </div>
-      {getMediaQuery() === DESKTOP && (
+      {isDesktop && (
         <TestButton
           onClick={() => toggleTestSound(!testSound)}
           tourMode={tourMode === 0}

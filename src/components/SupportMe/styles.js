@@ -2,6 +2,7 @@ import styled from '@emotion/styled';
 import { css, keyframes } from '@emotion/core';
 
 export const DymanicSupportMeWrapper = styled.div`
+  label: DymanicSupportMeWrapper;
   z-index: 10000;
   position: fixed;
   left: 20px;
@@ -26,6 +27,7 @@ export const DymanicSupportMeWrapper = styled.div`
 DymanicSupportMeWrapper.displayName = 'DymanicSupportMeWrapper';
 
 export const SupportMeFrame = styled.iframe`
+  label: SupportMeFrame;
   border: none;
   height: 500px;
   width: 60%;
@@ -46,6 +48,7 @@ export const SupportMeFrame = styled.iframe`
 SupportMeFrame.displayName = 'SupportMeFrame';
 
 export const SupportMeText = styled.p`
+  label: SupportMeText;
   position: fixed;
   left: 20px;
   bottom: 75px;
@@ -66,6 +69,7 @@ const Beat = keyframes`
 `;
 
 export const SupportButton = styled.div`
+  label: SupportButton;
   z-index: 10000;
   position: fixed;
   left: 50%;
@@ -103,6 +107,7 @@ export const SupportButton = styled.div`
 SupportButton.displayName = 'SupportButton';
 
 export const SupportButtonIcon = styled.img`
+  label: SupportButtonIcon;
   width: 25%;
   margin: 0 10px 0 -10px;
 `;

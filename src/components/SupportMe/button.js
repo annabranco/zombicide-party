@@ -1,4 +1,5 @@
 import React, { useEffect, useRef } from 'react';
+import { bool } from 'prop-types';
 import { LOCAL_STORAGE_KEY } from '../../constants';
 import KofiLogo from '../../assets/images/kofi-logo.png';
 import { useStateWithLabel } from '../../utils';
@@ -10,7 +11,7 @@ import {
   SupportMeText
 } from './styles';
 
-const SupportMeButton = () => {
+const SupportMeButton = ({ isDesktop }) => {
   const [isSupportFrameVisible, toggleSupportFrame] = useStateWithLabel(
     false,
     'isSupportFrameVisible'
@@ -52,7 +53,7 @@ const SupportMeButton = () => {
 
   return (
     <>
-      {displayText && (
+      {isDesktop && displayText && (
         <SupportMeText>
           {'If you like this application,\nplease consider supporting it.'}
         </SupportMeText>
@@ -68,6 +69,10 @@ const SupportMeButton = () => {
       </DymanicSupportMeWrapper>
     </>
   );
+};
+
+SupportMeButton.propTypes = {
+  isDesktop: bool.isRequired
 };
 
 export default SupportMeButton;

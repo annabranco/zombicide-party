@@ -805,7 +805,7 @@ const PlayersSection = ({
     updateData(updatedCharacter);
   };
 
-  const reloadWeapon = reloadedWeapon => {
+  const reloadWeapon = ({ reloadedWeapon }) => {
     const updatedCharacter = cloneDeep(character);
     updatedCharacter.unloaded = updatedCharacter.unloaded.filter(
       weapon => weapon !== reloadedWeapon
@@ -1046,7 +1046,7 @@ const PlayersSection = ({
       logger(LOG_TYPE_EXTENDED, START_ZOMBIE_ROUND);
       setZombiesRound(true);
       toggleZombiesArePlaying(true);
-      toggleZombiesShouldAct();
+      toggleZombiesShouldAct(false);
     } else {
       const updatedCharacters = cloneDeep(characters);
       let nextFirstPlayer;
@@ -2205,7 +2205,7 @@ const PlayersSection = ({
                               actionType={OPEN_DOOR_ACTION}
                               callback={() => spendAction(OPEN_DOOR)}
                               changeActionLabel={changeActionLabel}
-                              disabled={tourMode !== 25}
+                              disabled={tourMode && tourMode !== 25}
                               goToNextTourStep={goToNextTourStep}
                               isMobile={device.current === MOBILE}
                               label={

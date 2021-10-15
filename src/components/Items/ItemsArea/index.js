@@ -298,7 +298,7 @@ const ItemsArea = ({
     if (needsReload) {
       spendAction(RELOAD);
       toggleNeedsReload(false);
-      reloadWeapon(weapon);
+      reloadWeapon({ reloadedWeapon: weapon });
     }
   };
 
