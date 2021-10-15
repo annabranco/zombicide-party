@@ -17,7 +17,7 @@ import {
   NotifyButtonText,
   SorryText
 } from './styles';
-import { MenuScreen } from '../MainMenu/styles';
+import { MenuScreen } from '../Home/styles';
 
 const REPORT_ISSUE_PAGE = `${appInfo.bugs.url}/new`;
 

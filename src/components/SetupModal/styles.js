@@ -1,6 +1,6 @@
 import styled from '@emotion/styled';
 import { css } from '@emotion/core';
-import { SelectionButton } from '../MainMenu/styles';
+import { SelectionButton } from '../Home/styles';
 import { TourHighlight } from '../../styles';
 
 export const ButtonsArea = styled.div`

@@ -3,7 +3,7 @@ import { HashRouter, Switch, Route } from 'react-router-dom';
 import { Global } from '@emotion/core';
 import { cloneDeep } from 'lodash';
 import { loadSavedGame, logger, useStateWithLabel } from '../../utils';
-import MainMenu from '../MainMenu';
+import Home from '../Home';
 import NewGame from '../NewGame';
 import MainScreen from '../MainScreen';
 import ControllerLayer from '../ControllerLayer';
@@ -41,7 +41,7 @@ const App = () => {
   const [tourMode, changeTourModeStep] = useStateWithLabel(null, 'tourMode');
 
   const goToNextTourStep = next => {
-    const nextStep = next || STEPS[tourMode].step + 1;
+    const nextStep = next || next === 0 ? next : STEPS[tourMode].step + 1;
 
     if (tourMode < STEPS.length - 1) {
       changeTourModeStep(nextStep);
@@ -92,7 +92,7 @@ const App = () => {
               exact
               path="/"
               render={() => (
-                <MainMenu
+                <Home
                   goToNextTourStep={goToNextTourStep}
                   loadedGame={loadedGame}
                   setInitialCharacters={setInitialCharacters}

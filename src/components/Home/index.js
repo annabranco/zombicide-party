@@ -40,6 +40,8 @@ import {
   ZombieImage,
   ZombieImageShadow
 } from './styles';
+import SupportMeButton from '../SupportMe/button';
+import TakeATourButton from '../Tour/button';
 
 const MainMenu = ({
   loadedGame,
@@ -146,7 +148,9 @@ const MainMenu = ({
           </StyledLink>
         )}
       </ButtonsArea>
-
+      <div style={{ marginLeft: '100px' }}>
+        <SupportMeButton />
+      </div>
       {getMediaQuery() === DESKTOP && (
         <TestButton
           onClick={() => toggleTestSound(!testSound)}
@@ -156,6 +160,7 @@ const MainMenu = ({
         </TestButton>
       )}
       <Version>{APP_VERSION}</Version>
+      <TakeATourButton goToNextTourStep={goToNextTourStep} />
     </MenuScreen>
   );
 };

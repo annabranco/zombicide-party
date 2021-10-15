@@ -28,7 +28,7 @@ import {
   LOCAL_STORAGE_ROUNDS_KEY
 } from '../../constants';
 import { CharacterType } from '../../interfaces/types';
-import { MenuScreen } from '../MainMenu/styles';
+import { MenuScreen } from '../Home/styles';
 import {
   CharacterImage,
   CharacterName,

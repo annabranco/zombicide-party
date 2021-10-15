@@ -27,7 +27,7 @@ import {
   ModalTitle,
   ModalWindow
 } from '../SetupModal/styles';
-import { ButtonsArea } from '../MainMenu/styles';
+import { ButtonsArea } from '../Home/styles';
 import {
   ConfigSection,
   ConfigTitle,

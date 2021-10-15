@@ -312,12 +312,15 @@ export const Version = styled.p`
   position: absolute;
   bottom: 10px;
   right: 10px;
+  font-family: 'Grandstander', cursive;
   font-size: 0.9rem;
   color: white;
 
   @media all and (min-width: 768px) {
-    bottom: 20px;
-    right: 40px;
+    bottom: 55px;
+    right: unset;
+    left: 50%;
+    transform: translate(-50%, 0);
   }
 `;
 Version.displayName = 'Version';

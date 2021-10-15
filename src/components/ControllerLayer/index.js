@@ -1,6 +1,6 @@
 import React from 'react';
 import Logo from '../../assets/images/logo.png';
-import { MainTitle, ZombicideLogo } from '../MainMenu/styles';
+import { MainTitle, ZombicideLogo } from '../Home/styles';
 import { Screen } from './styles';
 
 const ControllerLayer = () => (

@@ -195,8 +195,45 @@ export const InstructionsWrapper = styled.div`
       bottom: ${positionY === BOTTOM ? '15%' : 'unset'};
     `;
   }};
+
+  ${({ large }) =>
+    large &&
+    css`
+      min-width: 50vw;
+      max-height: 100vh;
+    `}
 `;
 InstructionsWrapper.displayName = 'InstructionsWrapper';
+
+export const TourButton = styled.div`
+  z-index: 10000;
+  position: fixed;
+  right: 20px;
+  bottom: 15px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  border-radius: 30px;
+  height: 46px;
+  width: 220px;
+  color: white;
+  font-weight: 700;
+  font-family: 'Grandstander', cursive;
+  background: #80858c;
+  cursor: pointer;
+
+  &:hover {
+    color: yellow;
+  }
+`;
+TourButton.displayName = 'TourButton';
+
+export const TourButtonIcon = styled.img`
+  width: 16%;
+  margin: 0 10px 0 -10px;
+`;
+TourButtonIcon.displayName = 'TourButtonIcon';
 
 export const TourText = styled(ModalMessage)`
   width: auto;

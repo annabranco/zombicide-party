@@ -1,7 +1,7 @@
 import { css } from '@emotion/core';
 import styled from '@emotion/styled';
 import { ACTIVATE, ATTACK, KILL } from '../../../constants';
-import { SelectionButton } from '../../MainMenu/styles';
+import { SelectionButton } from '../../Home/styles';
 
 export const Action = styled.p`
   label: Action;

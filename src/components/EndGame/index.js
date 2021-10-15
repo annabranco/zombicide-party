@@ -4,7 +4,7 @@ import { arrayOf, func, number, string } from 'prop-types';
 import { getMediaQuery, logger } from '../../utils';
 import FogEffect from '../Fog';
 import BG from '../../assets/images/background/background2.jpg';
-import { MenuScreen } from '../MainMenu/styles';
+import { MenuScreen } from '../Home/styles';
 import Defeat from '../../assets/sounds/music/FuneralProcession.mp3';
 import PartialVictory from '../../assets/sounds/music/FlashInThePan.mp3';
 import Victory from '../../assets/sounds/music/HearsePileup-Grindstone.mp3';

@@ -13,7 +13,7 @@ import {
   ModalMessageWrapper,
   FacesWrapper
 } from '../SetupModal/styles';
-import { ButtonsArea } from '../MainMenu/styles';
+import { ButtonsArea } from '../Home/styles';
 import { ModalSelect, XpSlider } from './styles';
 
 const ActionsModal = ({
