@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from 'react';
-import { bool, func, number, string, oneOfType, arrayOf } from 'prop-types';
+import { arrayOf, bool, func, number, oneOfType, string } from 'prop-types';
 import { ALL_WEAPONS } from '../../../setup/weapons';
 import {
   checkIfItemCanBeCombined,
@@ -14,10 +14,14 @@ import ZombieFace from '../../../assets/images/zombieFace.png';
 import { BonusDicesType } from '../../../interfaces/types';
 import { AppButton } from '../../Sections/PlayersSection/styles';
 import {
+  BURNEM_ALL,
+  DESKTOP,
   DROP,
   IN_HAND,
-  ITEM_IN_RESERVE,
+  IN_RESERVE,
   ITEM_IN_HAND,
+  ITEM_IN_RESERVE,
+  LOG_TYPE_EXTENDED,
   MELEE,
   MELEE_RANGED,
   MOBILE,
@@ -26,13 +30,9 @@ import {
   RELOAD,
   RELOAD_ACTION,
   SEARCH_ACTION,
-  SPECIAL,
-  WEAPONS,
-  LOG_TYPE_EXTENDED,
   SLOT_SELECTED,
-  BURNEM_ALL,
-  DESKTOP,
-  IN_RESERVE
+  SPECIAL,
+  WEAPONS
 } from '../../../constants';
 import {
   ActionButtonIcon,

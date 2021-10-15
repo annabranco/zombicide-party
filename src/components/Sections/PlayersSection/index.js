@@ -3,6 +3,9 @@ import { useHistory } from 'react-router-dom';
 import { cloneDeep, isEqual } from 'lodash';
 import { arrayOf, bool, func, number, oneOfType, string } from 'prop-types';
 import { ABILITIES_S1 } from '../../../setup/abilities';
+import { AppContext } from '../../../setup/context';
+import { ALL_WEAPONS } from '../../../setup/weapons';
+import { ALL_ITEMS } from '../../../setup/items';
 import {
   blueThreatThresold,
   calculateXpBar,
@@ -212,9 +215,6 @@ import {
   WoundedWrapper,
   XpIcon
 } from './styles';
-import { AppContext } from '../../../setup/context';
-import { ALL_WEAPONS } from '../../../setup/weapons';
-import { ALL_ITEMS } from '../../../setup/items';
 
 const PlayersSection = ({
   damageMode,

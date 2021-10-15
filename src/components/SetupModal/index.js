@@ -4,16 +4,16 @@ import { bool, func, instanceOf, number, string } from 'prop-types';
 import { useStateWithLabel } from '../../utils';
 import {
   CANCEL,
-  GO_ON,
-  NEW_GAME_WARNING,
-  MANAGE_PLAYERS,
-  CHOOSE_PLAYER_DYNAMIC,
   CHOOSE_PLAYER,
+  CHOOSE_PLAYER_DYNAMIC,
+  GENERAL,
+  GO_ON,
+  LOCAL_STORAGE_PLAYERS_KEY,
+  MANAGE_PLAYERS,
+  NEW_GAME_WARNING,
   OK,
   PLAYERS_DB_EMPTY,
-  WARNING,
-  LOCAL_STORAGE_PLAYERS_KEY,
-  GENERAL
+  WARNING
 } from '../../constants';
 import {
   ButtonsArea,

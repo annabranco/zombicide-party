@@ -7,14 +7,14 @@ import {
   ACTIVATE,
   ACTIVATIONS,
   ATTACK,
+  ATTACK_SURVIVOR,
   COMBINE_ACTION,
-  IN_RESERVE,
   IN_HAND,
+  IN_RESERVE,
   ITEMS,
   KILL,
   WEAPONS,
-  WOUND,
-  ATTACK_SURVIVOR
+  WOUND
 } from '../../constants';
 import {
   Action,

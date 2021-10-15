@@ -1,7 +1,7 @@
 import React, { useRef } from 'react';
 import { string, func, bool, number, oneOfType } from 'prop-types';
 import Blood from '../../assets/images/blood.png';
-import { CharacterFaceWrapper, Wound, CharFace, FaceWrapper } from './styles';
+import { CharFace, CharacterFaceWrapper, FaceWrapper, Wound } from './styles';
 
 const CharacterFace = ({
   big,
