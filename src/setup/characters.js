@@ -93,6 +93,7 @@ export const CHARACTERS_S1 = {
     },
     selector: SelectorAmy,
     voice: FEMALE,
+    unloaded: [],
     wounded: false
   },
   Doug: {
@@ -120,6 +121,7 @@ export const CHARACTERS_S1 = {
     },
     selector: SelectorDoug,
     voice: MALE,
+    unloaded: [],
     wounded: false
   },
   Josh: {
@@ -147,6 +149,7 @@ export const CHARACTERS_S1 = {
     },
     selector: SelectorJosh,
     voice: MALE,
+    unloaded: [],
     wounded: false
   },
   Ned: {
@@ -174,6 +177,7 @@ export const CHARACTERS_S1 = {
     },
     selector: SelectorNed,
     voice: MALE,
+    unloaded: [],
     wounded: false
   },
   Phil: {
@@ -200,6 +204,7 @@ export const CHARACTERS_S1 = {
       red: [DIE_RANGED, BORN_LEADER, SNIPER]
     },
     voice: MALE,
+    unloaded: [],
     wounded: false
   },
   Wanda: {
@@ -227,6 +232,7 @@ export const CHARACTERS_S1 = {
     },
     selector: SelectorWanda,
     voice: FEMALE,
+    unloaded: [],
     wounded: false
   }
 };
@@ -257,6 +263,7 @@ export const CHARACTERS_KOPINSKI = {
     },
     selector: SelectorBen,
     voice: MALE,
+    unloaded: [],
     wounded: false
   },
   Mary: {
@@ -284,6 +291,7 @@ export const CHARACTERS_KOPINSKI = {
     },
     selector: SelectorMary,
     voice: FEMALE,
+    unloaded: [],
     wounded: false
   }
 };

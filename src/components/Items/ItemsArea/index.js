@@ -77,6 +77,7 @@ const ItemsArea = ({
   numItems,
   onClickCombine,
   onClickDrop,
+  reloadWeapon,
   round,
   secondarySound,
   selectSlot,
@@ -87,6 +88,8 @@ const ItemsArea = ({
   trade,
   tradeItem,
   tourMode,
+  unloadedWeapons,
+  unloadWeapon,
   wounded
 }) => {
   const [displaySplash, toggleDisplaySplash] = useStateWithLabel(
@@ -100,7 +103,10 @@ const ItemsArea = ({
 
   const [isActive, toggleActive] = useStateWithLabel(false, 'isActive');
   const [killButtons, changeKillButtons] = useStateWithLabel([], 'killButtons');
-  const [needReload, toggleNeedReload] = useStateWithLabel(false, 'needReload');
+  const [needsReload, toggleNeedsReload] = useStateWithLabel(
+    false,
+    'needsReload'
+  );
   const [firedDual, toggleFiredDual] = useStateWithLabel(false, 'firedDual');
   const [tourKills, updateTourKills] = useStateWithLabel(0, 'tourKills');
   const { context } = useContext(AppContext);
@@ -289,19 +295,21 @@ const ItemsArea = ({
   };
 
   const reload = weapon => {
-    if (needReload) {
+    if (needsReload) {
       spendAction(RELOAD);
-      toggleNeedReload(false);
+      toggleNeedsReload(false);
+      reloadWeapon(weapon);
     }
   };
 
-  const spendAmmo = () => {
-    toggleNeedReload(true);
+  const spendAmmo = weapon => {
+    toggleNeedsReload(true);
+    unloadWeapon(weapon);
   };
 
   useEffect(() => {
-    toggleNeedReload(false);
-  }, [charName, toggleNeedReload]);
+    toggleNeedsReload(false);
+  }, [charName, toggleNeedsReload]);
 
   useEffect(() => {
     if (forcedKillButtons > 0) {
@@ -309,6 +317,14 @@ const ItemsArea = ({
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [forcedKillButtons]);
+
+  useEffect(() => {
+    if (unloadedWeapons.includes(item)) {
+      toggleNeedsReload(true);
+    } else if (needsReload) {
+      toggleNeedsReload(false);
+    }
+  }, [item, needsReload, toggleNeedsReload, unloadedWeapons]);
 
   useEffect(() => {
     return () => {
@@ -367,7 +383,7 @@ const ItemsArea = ({
             tourMode={tourMode}
             trade={trade}
             type={itemsType}
-            unloaded={needReload}
+            unloaded={needsReload}
             wounded={wounded}
           />
         ) : (
@@ -414,10 +430,10 @@ const ItemsArea = ({
           </AppButton>
         )}
       </ActionButtonsWrapper>
-      {needReload && (
+      {needsReload && (
         <ActionButton
           actionType={RELOAD_ACTION}
-          callback={reload}
+          callback={() => reload(item)}
           isMobile={device === MOBILE}
           type="center"
         />
@@ -474,6 +490,7 @@ ItemsArea.propTypes = {
   numItems: number,
   onClickCombine: func,
   onClickDrop: func.isRequired,
+  reloadWeapon: func,
   round: number,
   secondarySound: bool,
   selectSlot: func,
@@ -484,6 +501,8 @@ ItemsArea.propTypes = {
   tourMode: number,
   trade: bool,
   tradeItem: func,
+  unloadedWeapons: arrayOf(string),
+  unloadWeapon: func,
   wounded: bool.isRequired
 };
 
@@ -515,6 +534,7 @@ ItemsArea.defaultProps = {
   makeNoise: () => null,
   numItems: null,
   onClickCombine: () => null,
+  reloadWeapon: () => null,
   round: null,
   secondarySound: false,
   selectSlot: () => null,
@@ -523,7 +543,9 @@ ItemsArea.defaultProps = {
   spendSingleUseWeapon: () => null,
   tourMode: null,
   trade: false,
-  tradeItem: () => null
+  tradeItem: () => null,
+  unloadedWeapons: [],
+  unloadWeapon: () => null
 };
 
 export default ItemsArea;

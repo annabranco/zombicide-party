@@ -214,7 +214,7 @@ const SoundBlock = ({
       }
 
       if (mixedType?.needsReloading || needsToBeReloaded) {
-        spendAmmo();
+        spendAmmo(name);
       }
 
       if (secondarySound && !useAlternativeSound) {
