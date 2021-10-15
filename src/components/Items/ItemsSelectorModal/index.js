@@ -1,7 +1,7 @@
 import React, { useContext, useEffect } from 'react';
-import { bool, func, oneOfType, string } from 'prop-types';
+import { bool, func, number, oneOfType, string } from 'prop-types';
 import { pickBy } from 'lodash';
-import { AppContext } from '../../../setup/rules';
+import { AppContext } from '../../../setup/context';
 import { useStateWithLabel } from '../../../utils';
 import SelectionItem from '../ItemSelector';
 import { SelectorArea } from '../../SoundBlock/styles';
@@ -27,7 +27,8 @@ const ItemsSelectorModal = ({
   onSelect,
   selectSlot,
   setupMode,
-  slotType
+  slotType,
+  tourMode
 }) => {
   const [items, changeItems] = useStateWithLabel({}, ITEMS);
   const [itemsType, changeItemsType] = useStateWithLabel(ITEMS, 'itemsType');
@@ -97,16 +98,26 @@ const ItemsSelectorModal = ({
             .sort()
             .map(name => (
               <SelectionItem
+                disabled={
+                  (tourMode && tourMode === 15 && name !== 'Crowbar') ||
+                  (tourMode && tourMode === 18 && name !== 'FireAxe') ||
+                  (tourMode && tourMode === 21 && name !== 'Pistol') ||
+                  (tourMode && tourMode === 34 && name !== 'SubMG')
+                }
                 img={items[name].img}
                 key={items[name].name}
                 name={items[name].name}
                 onSelect={() => onSelect(items[name].name.replace(' ', ''))}
+                tourMode={tourMode}
                 type={items[name].type}
               />
             ))}
         </SelectorArea>
         <ButtonsWrapper itemSelector>
-          <CancelButton type="button" onClick={() => selectSlot()}>
+          <CancelButton
+            type="button"
+            onClick={tourMode ? () => null : () => selectSlot()}
+          >
             CANCEL
           </CancelButton>
         </ButtonsWrapper>
@@ -120,7 +131,11 @@ ItemsSelectorModal.propTypes = {
   onSelect: func.isRequired,
   selectSlot: func.isRequired,
   setupMode: oneOfType([bool, string]).isRequired,
-  slotType: string.isRequired
+  slotType: string.isRequired,
+  tourMode: number
 };
 
+ItemsSelectorModal.defaultProps = {
+  tourMode: null
+};
 export default ItemsSelectorModal;

@@ -1,9 +1,13 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { func, arrayOf } from 'prop-types';
+import { arrayOf, func, number } from 'prop-types';
 import appInfo from '../../../package.json';
-import { AppContext } from '../../setup/rules';
+import { AppContext } from '../../setup/context';
 import { ZOMBIES_S1 } from '../../setup/zombies';
 import { getMediaQuery, logger, useStateWithLabel } from '../../utils';
+import {
+  FIRST_TIME_MODAL,
+  TOUR_WARNING_MODAL
+} from '../Notifications/notifications';
 import NightShiftIntro from './NighShift';
 import FogEffect from '../Fog';
 import { SOUNDS } from '../../assets/sounds';
@@ -11,15 +15,23 @@ import BG from '../../assets/images/background/background2.jpg';
 import ZombieCop from '../../assets/images/zombies/ZombieCop.png';
 import Logo from '../../assets/images/logo.png';
 import {
+  CENTER,
   CLICK_SOUND_TEST,
   CONTINUE,
   DESKTOP,
+  FIRST_TIME,
   INTRO_IMG_LOADED,
   INTRO_NS_LOADED,
+  LOCAL_STORAGE_KEY,
+  LOCAL_STORAGE_TOUR_KEY,
   LOG_TYPE_EXTENDED,
+  MODAL,
   NEW_GAME,
   STOP_SOUND,
-  TEST_SOUND
+  TAKE_IT_ANYWAY,
+  TEST_SOUND,
+  TOUR_WARNING,
+  WARNING
 } from '../../constants';
 import { CharacterType } from '../../interfaces/types';
 import {
@@ -32,18 +44,54 @@ import {
   TestButton,
   ThunderOverlay,
   Version,
+  WarningButton,
+  WarningMessage,
   ZombicideLogo,
   ZombieImage,
   ZombieImageShadow
 } from './styles';
+import SupportMeButton from '../SupportMe/button';
+import TakeATourButton from '../Tour/button';
+import { InstructionsWrapper } from '../Tour/styles';
+import { ModalButton, ModalMessage } from '../SetupModal/styles';
 
-const MainMenu = ({ loadedGame, setInitialCharacters }) => {
+const Home = ({
+  loadedGame,
+  goToNextTourStep,
+  setInitialCharacters,
+  tourMode
+}) => {
+  const [displayTourWarning, toggleDisplayTourWarning] = useStateWithLabel(
+    false,
+    'displayTourWarning'
+  );
   const [nightShift, toggleNightShift] = useStateWithLabel(false, 'nightShift');
   const [testSound, toggleTestSound] = useStateWithLabel(false, 'testSound');
   const [zombieImage, changeZombieImage] = useState();
 
   const APP_VERSION = appInfo.version;
-  const { context } = useContext(AppContext);
+  const { context, updateContext } = useContext(AppContext);
+
+  const onConfirmTakeATour = () => {
+    toggleDisplayTourWarning(false);
+    goToNextTourStep(0);
+  };
+
+  const onClickTakeATour = () => {
+    const savedGameExists = !!localStorage.getItem(LOCAL_STORAGE_KEY);
+    if (savedGameExists) {
+      updateContext({
+        ...context,
+        notification: {
+          type: WARNING,
+          info: WARNING,
+          content: TOUR_WARNING_MODAL(onConfirmTakeATour)
+        }
+      });
+    } else {
+      goToNextTourStep(0);
+    }
+  };
 
   useEffect(() => {
     const storm = new Audio(SOUNDS.intro);
@@ -59,12 +107,17 @@ const MainMenu = ({ loadedGame, setInitialCharacters }) => {
 
       storm.play();
       horde.play();
+      if (tourMode === 0) {
+        setTimeout(() => {
+          goToNextTourStep();
+        }, 200);
+      }
     }
     return () => {
       storm.pause();
       horde.pause();
     };
-  }, [testSound]);
+  }, [goToNextTourStep, testSound, tourMode]);
 
   useEffect(() => {
     const zombiesImages = [];
@@ -91,6 +144,21 @@ const MainMenu = ({ loadedGame, setInitialCharacters }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [context]);
 
+  useEffect(() => {
+    const displayTour = !localStorage.getItem(LOCAL_STORAGE_TOUR_KEY);
+
+    if (displayTour && !context.notification) {
+      updateContext({
+        ...context,
+        notification: {
+          type: MODAL,
+          info: FIRST_TIME,
+          content: FIRST_TIME_MODAL
+        }
+      });
+    }
+  }, [context, updateContext]);
+
   return (
     <MenuScreen img={BG} type="main">
       <ThunderOverlay testSound={testSound} />
@@ -104,9 +172,11 @@ const MainMenu = ({ loadedGame, setInitialCharacters }) => {
       <ZombieImageShadow nightShift={nightShift} src={zombieImage} />
       <ButtonsArea delay>
         <StyledLink to="/new">
-          <SelectionButton>{NEW_GAME}</SelectionButton>
+          <SelectionButton tourMode={tourMode === 1}>
+            {NEW_GAME}
+          </SelectionButton>
         </StyledLink>
-        {loadedGame && (
+        {loadedGame && typeof tourMode !== 'number' && (
           <StyledLink
             to="/play"
             onClick={() => setInitialCharacters(loadedGame)}
@@ -115,24 +185,44 @@ const MainMenu = ({ loadedGame, setInitialCharacters }) => {
           </StyledLink>
         )}
       </ButtonsArea>
-
+      <div style={{ marginLeft: '100px' }}>
+        <SupportMeButton />
+      </div>
       {getMediaQuery() === DESKTOP && (
-        <TestButton onClick={() => toggleTestSound(!testSound)}>
+        <TestButton
+          onClick={() => toggleTestSound(!testSound)}
+          tourMode={tourMode === 0}
+        >
           {testSound ? STOP_SOUND : TEST_SOUND}
         </TestButton>
       )}
       <Version>{APP_VERSION}</Version>
+      {typeof tourMode !== 'number' && (
+        <TakeATourButton onClickTakeATour={onClickTakeATour} />
+      )}
+
+      {displayTourWarning && (
+        <InstructionsWrapper positionX={CENTER} positionY={CENTER}>
+          <WarningMessage>{TOUR_WARNING}</WarningMessage>
+          <WarningButton onClick={onConfirmTakeATour}>
+            {TAKE_IT_ANYWAY}
+          </WarningButton>
+        </InstructionsWrapper>
+      )}
     </MenuScreen>
   );
 };
 
-MainMenu.propTypes = {
+Home.propTypes = {
+  goToNextTourStep: func.isRequired,
   loadedGame: arrayOf(CharacterType),
-  setInitialCharacters: func.isRequired
+  setInitialCharacters: func.isRequired,
+  tourMode: number
 };
 
-MainMenu.defaultProps = {
-  loadedGame: null
+Home.defaultProps = {
+  loadedGame: null,
+  tourMode: null
 };
 
-export default MainMenu;
+export default Home;

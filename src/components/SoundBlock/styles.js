@@ -1,6 +1,6 @@
 import styled from '@emotion/styled';
 import { css } from '@emotion/core';
-import { inactiveZombie, activeZombie } from '../../styles';
+import { inactiveZombie, activeZombie, TourHighlight } from '../../styles';
 import {
   IN_HAND,
   ITEMS,
@@ -17,7 +17,7 @@ export const Block = styled.div`
   justify-content: center;
   border-radius: 5px;
   box-shadow: 0 0 5px 0 black;
-  height: 100%;
+  height: ${({ type }) => (type ? '100%' : 'auto')};
   display: ${({
     canBeDeflected,
     charCanDeflect,
@@ -36,6 +36,12 @@ export const Block = styled.div`
     }
     return 'flex';
   }};
+
+  ${({ tourMode }) =>
+    tourMode &&
+    css`
+      ${TourHighlight};
+    `}
 `;
 Block.displayName = 'Block';
 
@@ -415,6 +421,12 @@ export const PlayImageButton = styled.button`
     type === ACTIVATIONS &&
     css`
       background: none;
+    `}
+
+  ${({ disabled }) =>
+    disabled &&
+    css`
+      filter: saturate(0.2);
     `}
 `;
 PlayImageButton.displayName = 'PlayImageButton';

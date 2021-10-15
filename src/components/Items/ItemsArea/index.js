@@ -31,7 +31,8 @@ import {
   LOG_TYPE_EXTENDED,
   SLOT_SELECTED,
   BURNEM_ALL,
-  DESKTOP
+  DESKTOP,
+  IN_RESERVE
 } from '../../../constants';
 import {
   ActionButtonIcon,
@@ -67,6 +68,7 @@ const ItemsArea = ({
   forcedKillButtons,
   gainCustomXp,
   gainXp,
+  goToNextTourStep,
   index,
   item,
   itemSelected,
@@ -83,6 +85,7 @@ const ItemsArea = ({
   spendSingleUseWeapon,
   trade,
   tradeItem,
+  tourMode,
   wounded
 }) => {
   const [displaySplash, toggleDisplaySplash] = useStateWithLabel(
@@ -98,11 +101,14 @@ const ItemsArea = ({
   const [killButtons, changeKillButtons] = useStateWithLabel([], 'killButtons');
   const [needReload, toggleNeedReload] = useStateWithLabel(false, 'needReload');
   const [firedDual, toggleFiredDual] = useStateWithLabel(false, 'firedDual');
+  const [tourKills, updateTourKills] = useStateWithLabel(0, 'tourKills');
 
   const killButtonsTimer = useRef();
   const dualTimer = useRef();
 
   const itemsType = getItemType(item);
+
+  const notAvailableOnTourMode = tourMode && tourMode >= 23 && tourMode <= 70;
 
   const activateKillButtons = () => {
     spendSingleUseWeapon(index, item);
@@ -127,9 +133,14 @@ const ItemsArea = ({
       dualTimer.current = setTimeout(() => {
         toggleFiredDual();
       }, 2000);
+
       killButtonsTimer.current = setTimeout(() => {
         changeKillButtons([]);
       }, 10000);
+
+      if (tourMode === 29 || tourMode === 37) {
+        clearTimeout(killButtonsTimer.current);
+      }
     }
   };
 
@@ -160,6 +171,11 @@ const ItemsArea = ({
 
       clearTimeout(killButtonsTimer.current);
       changeKillButtons([...killButtons, ...newArray]);
+
+      if (tourMode === 38) {
+        return;
+      }
+
       killButtonsTimer.current = setTimeout(() => {
         changeKillButtons([]);
       }, 10000);
@@ -173,7 +189,6 @@ const ItemsArea = ({
 
   const onClickCard = () => {
     const slot = getSlotNumber(index);
-
     if (setupMode) {
       onClickEmptyCard();
     } else if (damageMode) {
@@ -210,6 +225,19 @@ const ItemsArea = ({
 
   const onClickEmptyCard = () => {
     const slot = getSlotNumber(index);
+
+    if (tourMode && slotType === IN_RESERVE) {
+      return;
+    }
+    if (
+      tourMode &&
+      (tourMode === 13 || tourMode === 17 || tourMode === 20 || tourMode === 33)
+    ) {
+      goToNextTourStep();
+    } else if (tourMode) {
+      return;
+    }
+
     if (damageMode) {
       if (allSlotsAreEmpty) {
         causeDamage(slot);
@@ -237,10 +265,17 @@ const ItemsArea = ({
     clearTimeout(killButtonsTimer.current);
     killButtonsTimer.current = setTimeout(() => {
       changeKillButtons([]);
-    }, 3000);
+    }, 7000);
     updatedKillButtons[pressedButton] = `${pressedButton}`;
     changeKillButtons(updatedKillButtons);
     gainXp(1);
+
+    if (tourMode === 30 || (tourMode === 38 && tourKills === 2)) {
+      goToNextTourStep();
+      updateTourKills(0);
+    } else if (tourMode === 37 || tourMode === 38) {
+      updateTourKills(tourKills + 1);
+    }
   };
 
   const reload = weapon => {
@@ -280,6 +315,14 @@ const ItemsArea = ({
       onMouseOut={!device === MOBILE ? () => toggleActive(false) : null}
       onMouseOver={!device === MOBILE ? () => toggleActive(true) : null}
       slotType={slotType}
+      tourMode={
+        tourMode &&
+        slotType === IN_HAND &&
+        (tourMode === 13 ||
+          tourMode === 17 ||
+          tourMode === 20 ||
+          (tourMode === 33 && !item))
+      }
       type={itemsType}
     >
       <Item damageMode={damageMode} trade={trade}>
@@ -295,6 +338,7 @@ const ItemsArea = ({
             combinePair={combinePair}
             damageMode={damageMode}
             displayCombineButton={displayCombineButton}
+            goToNextTourStep={goToNextTourStep}
             img={getItemPhoto(item, slotType)}
             isMobile={device === MOBILE}
             isSelected={itemSelected}
@@ -310,6 +354,7 @@ const ItemsArea = ({
             slotType={slotType}
             specificSound={ALL_WEAPONS[item] && ALL_WEAPONS[item].sound}
             spendAmmo={spendAmmo}
+            tourMode={tourMode}
             trade={trade}
             type={itemsType}
             unloaded={needReload}
@@ -318,7 +363,7 @@ const ItemsArea = ({
         ) : (
           <ItemBlank
             allSlotsAreEmpty={allSlotsAreEmpty}
-            canSearch={canSearch}
+            canSearch={notAvailableOnTourMode || canSearch}
             damageMode={damageMode}
             isSelected={itemSelected}
             onClick={onClickEmptyCard}
@@ -331,13 +376,16 @@ const ItemsArea = ({
               ) : (
                 <p>{ITEM_IN_RESERVE}</p>
               ))}
-            {canSearch && !damageMode && !setupMode && (
-              <ActionButton
-                actionType={SEARCH_ACTION}
-                callback={onClickEmptyCard}
-                type={charVoice}
-              />
-            )}
+            {!notAvailableOnTourMode &&
+              canSearch &&
+              !damageMode &&
+              !setupMode && (
+                <ActionButton
+                  actionType={SEARCH_ACTION}
+                  callback={onClickEmptyCard}
+                  type={charVoice}
+                />
+              )}
           </ItemBlank>
         )}
       </Item>
@@ -371,6 +419,7 @@ const ItemsArea = ({
               attack={ALL_WEAPONS[item] && ALL_WEAPONS[item].attack}
               key={`kill-${item}-${key}`}
               onClick={() => killOneZombie(key)}
+              tourMode={tourMode === 30}
               type="button"
               trade
               visible={typeof key === 'number'}
@@ -407,6 +456,7 @@ ItemsArea.propTypes = {
   forcedKillButtons: number,
   gainCustomXp: func,
   gainXp: func,
+  goToNextTourStep: func,
   index: number.isRequired,
   item: string,
   itemSelected: bool,
@@ -421,6 +471,7 @@ ItemsArea.propTypes = {
   slotType: string.isRequired,
   spendAction: func,
   spendSingleUseWeapon: func,
+  tourMode: number,
   trade: bool,
   tradeItem: func,
   wounded: bool.isRequired
@@ -448,6 +499,7 @@ ItemsArea.defaultProps = {
   forcedKillButtons: null,
   gainCustomXp: () => null,
   gainXp: () => null,
+  goToNextTourStep: () => null,
   item: null,
   itemSelected: false,
   makeNoise: () => null,
@@ -459,6 +511,7 @@ ItemsArea.defaultProps = {
   setupMode: null,
   spendAction: () => null,
   spendSingleUseWeapon: () => null,
+  tourMode: null,
   trade: false,
   tradeItem: () => null
 };

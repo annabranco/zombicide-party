@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useRef } from 'react';
 import { cloneDeep } from 'lodash';
-import { arrayOf, bool, func, oneOfType, string } from 'prop-types';
+import { arrayOf, bool, func, number, oneOfType, string } from 'prop-types';
 import { ALL_WEAPONS } from '../../setup/weapons';
 import { getCharacterColor, logger, useStateWithLabel } from '../../utils';
 import ItemsArea from '../Items/ItemsArea';
@@ -14,7 +14,9 @@ import {
   SELECT_TRADE_PARTNER,
   TRADING_WITH,
   WOUNDED,
-  TRADE
+  TRADE,
+  TOUR_WEAPONS_TO_WANDA,
+  TOUR_WEAPONS_TO_AMY
 } from '../../constants';
 import { CharacterType } from '../../interfaces/types';
 import { ArrowSign, CharItems } from '../Sections/PlayersSection/styles';
@@ -31,7 +33,7 @@ import {
   PlayerName,
   TradeWrapper
 } from './styles';
-import { AppContext } from '../../setup/rules';
+import { AppContext } from '../../setup/context';
 
 const TradeArea = ({
   character,
@@ -39,10 +41,13 @@ const TradeArea = ({
   checkIfCharHasDualEffect,
   confirmTrade,
   device,
+  goToNextTourStep,
+  onClickEndTurn,
   reorder,
   setupMode,
   spendAction,
-  startTrade
+  startTrade,
+  tourMode
 }) => {
   const [partnerIndex, changePartnerIndex] = useStateWithLabel(
     0,
@@ -65,6 +70,16 @@ const TradeArea = ({
 
   const { context } = useContext(AppContext);
 
+  const initialTradingMessage = () => {
+    if (tourMode === 53) {
+      return TOUR_WEAPONS_TO_WANDA;
+    }
+    if (tourMode === 56) {
+      return TOUR_WEAPONS_TO_AMY;
+    }
+    return SELECT_TRADE_PARTNER;
+  };
+
   const changeToNextPlayer = () => {
     const nextPlayerIndex =
       partnerIndex + 1 >= updatedCharacters.length ? 0 : partnerIndex + 1;
@@ -74,11 +89,12 @@ const TradeArea = ({
   const changeToPreviousPlayer = () => {
     const nextPlayerIndex =
       partnerIndex - 1 < 0 ? updatedCharacters.length - 1 : partnerIndex - 1;
-    updateCharacters(updatedCharacters);
+    // updateCharacters(updatedCharacters);
     changePartnerIndex(nextPlayerIndex);
   };
 
   const prevPartnerIndex = useRef();
+
   const onClickConfirm = () => {
     const updCharsAfterTrade = cloneDeep(characters);
     updCharsAfterTrade.forEach((char, index) => {
@@ -93,6 +109,10 @@ const TradeArea = ({
     establishTrade(false);
     if (!reorder && !setupMode) {
       spendAction(TRADE);
+    }
+
+    if (tourMode === 36 || tourMode === 53 || tourMode === 56) {
+      goToNextTourStep();
     }
   };
 
@@ -342,6 +362,46 @@ const TradeArea = ({
     }
   };
 
+  const checkIfConfirmButtonIsDisabled = () => {
+    if (!tourMode) {
+      if (updatedCharacter) {
+        return false;
+      }
+      return true;
+    }
+    if (!tradePartner) {
+      if (
+        updatedCharacter &&
+        updatedCharacter.inHand[0] === 'SubMG' &&
+        updatedCharacter.inHand[1] === 'SubMG'
+      ) {
+        return false;
+      }
+      return true;
+    }
+    if (tourMode === 53) {
+      if (
+        tradePartner.name === 'Wanda' &&
+        tradePartner.inHand[0] === 'SubMG' &&
+        tradePartner.inHand[1] === 'SubMG'
+      ) {
+        return false;
+      }
+      return true;
+    }
+    if (tourMode === 56) {
+      if (
+        tradePartner.name === 'Amy' &&
+        tradePartner.inHand[0] === 'SubMG' &&
+        tradePartner.inHand[1] === 'SubMG'
+      ) {
+        return false;
+      }
+      return true;
+    }
+    return true;
+  };
+
   useEffect(() => {
     const mainChar = cloneDeep(character);
     updateCharacter(mainChar);
@@ -367,6 +427,12 @@ const TradeArea = ({
       prevPartnerIndex.current = partnerIndex;
     }
   }, [partnerIndex, updatedCharacters, updatePartner]);
+
+  useEffect(() => {
+    if (tourMode === 52) {
+      goToNextTourStep();
+    }
+  }, [goToNextTourStep, tourMode]);
 
   return (
     <TradeWrapper>
@@ -502,18 +568,48 @@ const TradeArea = ({
             </NavButtonsWrapper>
           )}
 
-          <CurrentPartnerTag>
+          <CurrentPartnerTag
+            tourMode={
+              (tourMode === 53 && tradePartner.name !== 'Wanda') ||
+              (tourMode === 56 && tradePartner.name !== 'Amy')
+            }
+          >
             {tradeEstablished
               ? TRADING_WITH(tradePartner.name)
-              : SELECT_TRADE_PARTNER}
+              : initialTradingMessage()}
           </CurrentPartnerTag>
         </CharacterTrading>
       )}
       <ButtonsWrapper>
-        <CancelButton type="button" onClick={() => startTrade(false)}>
+        <CancelButton
+          disabled={tourMode && tourMode !== 53 && tourMode !== 56}
+          type="button"
+          onClick={() => startTrade(false)}
+        >
           CANCEL
         </CancelButton>
-        <ConfirmButton type="button" onClick={onClickConfirm}>
+        <ConfirmButton
+          disabled={checkIfConfirmButtonIsDisabled()}
+          tourMode={
+            tourMode &&
+            updatedCharacter &&
+            ((!tradePartner &&
+              updatedCharacter.inHand[0] === 'SubMG' &&
+              updatedCharacter.inHand[1] === 'SubMG') ||
+              (tradePartner &&
+                tourMode === 53 &&
+                tradePartner.name === 'Wanda' &&
+                tradePartner.inHand[0] === 'SubMG' &&
+                tradePartner.inHand[1] === 'SubMG') ||
+              (tradePartner &&
+                tourMode === 56 &&
+                tradePartner.name === 'Amy' &&
+                tradePartner.inHand[0] === 'SubMG' &&
+                tradePartner.inHand[1] === 'SubMG'))
+          }
+          type="button"
+          onClick={onClickConfirm}
+        >
           CONFIRM
         </ConfirmButton>
       </ButtonsWrapper>
@@ -527,10 +623,19 @@ TradeArea.propTypes = {
   checkIfCharHasDualEffect: func.isRequired,
   confirmTrade: func.isRequired,
   device: string.isRequired,
+  goToNextTourStep: func,
+  onClickEndTurn: func,
   reorder: bool.isRequired,
   setupMode: oneOfType([bool, string]).isRequired,
   spendAction: func.isRequired,
-  startTrade: func.isRequired
+  startTrade: func.isRequired,
+  tourMode: number
+};
+
+TradeArea.defaultProps = {
+  goToNextTourStep: () => null,
+  onClickEndTurn: () => null,
+  tourMode: null
 };
 
 export default TradeArea;

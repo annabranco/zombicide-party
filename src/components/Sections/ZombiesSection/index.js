@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useRef } from 'react';
-import { bool, func } from 'prop-types';
+import { bool, func, number } from 'prop-types';
 import { getMediaQuery, logger, useStateWithLabel } from '../../../utils';
 import SoundBlock from '../../SoundBlock';
 import {
@@ -22,13 +22,15 @@ import {
   ZombiesArea,
   ZombiesRoundSign
 } from './styles';
-import { AppContext } from '../../../setup/rules';
+import { AppContext } from '../../../setup/context';
 
 const ZombiesSection = ({
   damageMode,
+  goToNextTourStep,
   setPlayersRound,
   toggleDamageMode,
   toggleZombiesArePlaying,
+  tourMode,
   zombiesRound
 }) => {
   const [isHighlighted, highlight] = useStateWithLabel(false, 'isHighlighted');
@@ -49,6 +51,9 @@ const ZombiesSection = ({
     logger(LOG_TYPE_EXTENDED, ZOMBIE_ATTACK);
     setPlayersRound();
     toggleDamageMode(zombie);
+    if (tourMode && (tourMode === 64 || tourMode === 66)) {
+      goToNextTourStep();
+    }
   };
 
   useEffect(() => {
@@ -95,6 +100,7 @@ const ZombiesSection = ({
                     : null
                 }
                 special={context.zombies[zombie].special}
+                tourMode={tourMode}
                 type={ACTIVATIONS}
                 zombieAttack={zombieAttack}
               />
@@ -109,7 +115,11 @@ const ZombiesSection = ({
         )}
         {isHighlighted && <ZombieLabel>{isHighlighted}</ZombieLabel>}
       </SubSectionWrapper>
-      <ConfirmAttackButton type="button" onClick={endZombiesRound}>
+      <ConfirmAttackButton
+        onClick={endZombiesRound}
+        tourMode={tourMode === 68}
+        type="button"
+      >
         {END}
       </ConfirmAttackButton>
     </ZombiesArea>
@@ -118,10 +128,16 @@ const ZombiesSection = ({
 
 ZombiesSection.propTypes = {
   damageMode: bool.isRequired,
+  goToNextTourStep: func.isRequired,
   setPlayersRound: func.isRequired,
   toggleDamageMode: func.isRequired,
   toggleZombiesArePlaying: func.isRequired,
-  zombiesRound: bool.isRequired
+  zombiesRound: bool.isRequired,
+  tourMode: number
+};
+
+ZombiesSection.defaultProps = {
+  tourMode: null
 };
 
 export default ZombiesSection;

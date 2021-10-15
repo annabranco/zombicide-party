@@ -1,6 +1,7 @@
 import styled from '@emotion/styled';
 import { css } from '@emotion/core';
 import { CharacterName } from '../Sections/PlayersSection/styles';
+import { TourHighlight } from '../../styles';
 
 export const ButtonsWrapper = styled.div`
   label: ButtonsWrapper;
@@ -83,6 +84,12 @@ export const ConfirmButton = styled.button`
   @media all and (min-width: 701px) {
     height: 25px;
   }
+
+  ${({ tourMode }) =>
+    tourMode &&
+    css`
+      ${TourHighlight};
+    `}
 `;
 ConfirmButton.displayName = 'ConfirmButton';
 
@@ -173,6 +180,12 @@ export const CurrentCharacterTag = styled.p`
   font-family: 'Grandstander', cursive;
   font-size: 1.3rem;
   color: rgba(255, 255, 255, 0.7);
+
+  ${({ tourMode }) =>
+    tourMode &&
+    css`
+      ${TourHighlight};
+    `}
 `;
 CurrentCharacterTag.displayName = 'CurrentCharacterTag';
 

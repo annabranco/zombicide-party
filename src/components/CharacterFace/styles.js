@@ -1,6 +1,7 @@
 import styled from '@emotion/styled';
 import { css } from '@emotion/core';
 import { NavIcons } from '../Sections/PlayersSection/styles';
+import { TourHighlight } from '../../styles';
 
 export const CharFace = styled(NavIcons)`
   label: CharFace;
@@ -60,6 +61,12 @@ export const CharacterFaceWrapper = styled.div`
         margin: 0 30px;
       `}
   }
+
+  ${({ tourMode }) =>
+    tourMode &&
+    css`
+      ${TourHighlight};
+    `}
 `;
 CharacterFaceWrapper.displayName = 'CharacterFaceWrapper';
 

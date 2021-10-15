@@ -1,6 +1,7 @@
 import styled from '@emotion/styled';
 import { css } from '@emotion/core';
-import { SelectionButton } from '../MainMenu/styles';
+import { SelectionButton } from '../Home/styles';
+import { TourHighlight } from '../../styles';
 
 export const ButtonsArea = styled.div`
   label: ButtonsArea;
@@ -40,6 +41,7 @@ export const ModalButton = styled(SelectionButton)`
   font-family: 'Grandstander', cursive;
   box-shadow: 0 1px 10px 0 rgba(0, 0, 0, 0.6),
     inset 1px 1px 3px rgba(255, 0, 0, 0.5);
+  transition: all ease 0.2s;
 
   &: hover {
     color: yellow;
@@ -55,6 +57,25 @@ export const ModalButton = styled(SelectionButton)`
     if (type === 'confirm') {
       return css`
         background: lightgreen;
+
+        &: hover {
+          color: darkgreen;
+          font-size: 1.35rem;
+          filter: brightness(1.2);
+          transition: all ease 0.2s;
+        }
+      `;
+    }
+    if (type === 'cancel') {
+      return css`
+        background: lightgray;
+
+        &: hover {
+          color: crimson;
+          font-size: 1.35rem;
+          filter: brightness(1.2);
+          transition: all ease 0.2s;
+        }
       `;
     }
     if (type === 'option') {
@@ -137,6 +158,11 @@ export const ModalButton = styled(SelectionButton)`
       return null;
     }}
   }
+  ${({ tourMode }) =>
+    tourMode &&
+    css`
+      ${TourHighlight};
+    `}
 `;
 ModalButton.displayName = 'ModalButton';
 
@@ -173,20 +199,35 @@ export const ModalMessage = styled.p`
   white-space: auto;
   width: 100%;
 
-  ${({ type }) =>
-    type === 'option' &&
-    css`
-      height: 160px;
-      white-space: normal;
-      font-size: 1.3rem;
-      color: yellow;
-    `}
+  ${({ type }) => {
+    if (type === 'option') {
+      return css`
+        height: 160px;
+        white-space: normal;
+        font-size: 1.3rem;
+        color: yellow;
+      `;
+    }
+    if (type === 'dark') {
+      return css`
+        color: black;
+        font-weight: 700;
+      `;
+    }
+    return null;
+  }}
 
   ${({ small }) =>
     small &&
     css`
       position: absolute;
       top: 90px;
+    `}
+
+    ${({ span }) =>
+    span &&
+    css`
+      width: ${`${span}%`};
     `}
 
   @media all and (min-width: 768px) {
@@ -198,6 +239,12 @@ export const ModalMessage = styled.p`
         position: absolute;
         top: 120px;
       `}
+
+    ${({ span }) =>
+      span &&
+      css`
+        width: ${`${span}%`};
+      `}
   }
 
   @media all and (min-width: 1400px) {
@@ -208,6 +255,12 @@ export const ModalMessage = styled.p`
       small &&
       css`
         position: initial;
+      `}
+
+    ${({ span }) =>
+      span &&
+      css`
+        width: ${`${span}%`};
       `}
   }
 `;
@@ -264,6 +317,13 @@ export const ModalTitle = styled.h1`
     type === 'Warning' &&
     css`
       font-size: 5rem;
+    `}
+
+  ${({ noBg }) =>
+    noBg &&
+    css`
+      background: none;
+      -webkit-text-stroke: 2px black;
     `}
 
         @media all and (min-width: 701px) {
@@ -360,6 +420,12 @@ export const Player = styled.div`
       background: red;
       color: #707070;
     `}
+
+  ${({ tourMode }) =>
+    tourMode &&
+    css`
+      ${TourHighlight};
+    `}
 `;
 Player.displayName = 'Player';
 
@@ -385,6 +451,12 @@ export const PlayerNew = styled.div`
   line-height: 1.1;
   color: white;
   cursor: pointer;
+
+  ${({ tourMode }) =>
+    tourMode &&
+    css`
+      ${TourHighlight};
+    `}
 `;
 PlayerNew.displayName = 'PlayerNew';
 

@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from 'react';
-import { bool, func, string } from 'prop-types';
+import { bool, func, number, string } from 'prop-types';
 import { checkForNoiseOpeningDoor, useStateWithLabel } from '../../utils';
 import { SOUNDS } from '../../assets/sounds';
 import {
@@ -40,6 +40,7 @@ const ActionButton = ({
   combineItemSelected,
   combinePair,
   disabled,
+  goToNextTourStep,
   interactWithCar,
   isMobile,
   label,
@@ -47,6 +48,7 @@ const ActionButton = ({
   setNoise,
   startCar,
   toggleExtraActivation,
+  tourMode,
   type,
   type2
 }) => {
@@ -73,6 +75,25 @@ const ActionButton = ({
   };
 
   const onClickIcon = event => {
+    if (
+      (tourMode === 23 && actionType === 'move') ||
+      (tourMode === 25 && actionType === 'open-door') ||
+      (tourMode === 28 && actionType === 'move') ||
+      (tourMode === 32 && actionType === 'move') ||
+      (tourMode === 40 && actionType === 'endTurn') ||
+      (tourMode === 42 && actionType === 'move') ||
+      (tourMode === 43 && actionType === 'objective') ||
+      (tourMode === 45 && actionType === 'endTurn') ||
+      (tourMode === 49 && actionType === 'explosion') ||
+      (tourMode === 54 && actionType === 'endTurn') ||
+      (tourMode === 57 && actionType === 'move') ||
+      (tourMode === 58 && actionType === 'leave-game') ||
+      (tourMode === 61 && actionType === 'endTurn') ||
+      (tourMode === 71 && actionType === 'move')
+    ) {
+      goToNextTourStep();
+    }
+
     if (!disabled) {
       activate(true);
 
@@ -282,6 +303,7 @@ ActionButton.propTypes = {
   combineItemSelected: bool,
   combinePair: bool,
   disabled: bool,
+  goToNextTourStep: func,
   interactWithCar: func,
   isMobile: bool,
   label: string,
@@ -289,8 +311,9 @@ ActionButton.propTypes = {
   setNoise: func,
   startCar: func,
   toggleExtraActivation: func,
-  type: string,
-  type2: string
+  tourMode: number,
+  type2: string,
+  type: string
 };
 
 ActionButton.defaultProps = {
@@ -300,6 +323,7 @@ ActionButton.defaultProps = {
   combineItemSelected: false,
   combinePair: false,
   disabled: false,
+  goToNextTourStep: () => null,
   interactWithCar: () => null,
   isMobile: null,
   label: null,
@@ -307,8 +331,9 @@ ActionButton.defaultProps = {
   setNoise: () => null,
   startCar: null,
   toggleExtraActivation: () => null,
-  type: null,
-  type2: null
+  tourMode: null,
+  type2: null,
+  type: null
 };
 
 export default ActionButton;

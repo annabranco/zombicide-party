@@ -35,6 +35,7 @@ const SoundBlock = ({
   damageMode,
   differentSounds,
   displayCombineButton,
+  goToNextTourStep,
   img,
   isMobile,
   isSelected,
@@ -57,6 +58,7 @@ const SoundBlock = ({
   spendAmmo,
   trade,
   type,
+  tourMode,
   unloaded,
   wounded,
   zombieAttack
@@ -70,7 +72,10 @@ const SoundBlock = ({
     false,
     'useAlternativeSound'
   );
-
+  const [hasBeenClickedOnce, toggleHasBeenClickedOnce] = useStateWithLabel(
+    false,
+    'hasBeenClickedOnce'
+  );
   const activateTimeout = useRef();
   const attackButtonsTimeout = useRef();
   const currentRound = useRef();
@@ -119,6 +124,26 @@ const SoundBlock = ({
   };
 
   const play = () => {
+    console.log('$$$ tourMode', tourMode);
+    if (
+      (tourMode &&
+        tourMode !== 29 &&
+        tourMode !== 37 &&
+        tourMode !== 48 &&
+        tourMode !== 51 &&
+        tourMode !== 55 &&
+        tourMode !== 59 &&
+        tourMode !== 60 &&
+        tourMode !== 64 &&
+        tourMode !== 66 &&
+        tourMode !== 69 &&
+        tourMode !== 70) ||
+      (tourMode === 55 && hasBeenClickedOnce) ||
+      (tourMode === 69 && hasBeenClickedOnce)
+    ) {
+      return;
+    }
+
     if (
       type === WEAPONS &&
       slotType === IN_HAND &&
@@ -173,7 +198,22 @@ const SoundBlock = ({
         toggleZombieAttackButtons(false);
       }, 4000);
     }
+    if (
+      tourMode === 29 ||
+      tourMode === 37 ||
+      (tourMode === 59 && hasBeenClickedOnce)
+    ) {
+      goToNextTourStep();
+    } else if (
+      tourMode === 55 ||
+      tourMode === 59 ||
+      tourMode === 69 ||
+      tourMode === 70
+    ) {
+      toggleHasBeenClickedOnce(true);
+    }
   };
+
   useEffect(() => {
     if (!sound.current || currentRound.current !== round) {
       sound.current = new Audio(
@@ -199,6 +239,7 @@ const SoundBlock = ({
       canBeDeflected={canBeDeflected}
       charCanDeflect={charCanDeflect}
       damageMode={damageMode}
+      tourMode={tourMode === 15 || tourMode === 18}
       type={type}
       wounded={wounded}
     >
@@ -229,13 +270,26 @@ const SoundBlock = ({
               {!isMobile && !isTablet && (
                 <Action action={ACTIVATE}>{ACTIVATE}</Action>
               )}
-              <Action action={ATTACK} onClick={() => zombieAttack(name)}>
+              <Action
+                action={ATTACK}
+                onClick={
+                  !tourMode || (tourMode === 64 && name === 'Walker')
+                    ? () => zombieAttack(name)
+                    : () => null
+                }
+                tourMode={tourMode === 64 && name === 'Walker'}
+              >
                 {ATTACK_SURVIVOR}
               </Action>
               {special && (
                 <Action
                   action={KILL}
-                  onClick={() => zombieAttack(`${name}-instant`)}
+                  onClick={
+                    !tourMode || (tourMode === 66 && name === 'Runner')
+                      ? () => zombieAttack(`${name}-instant`)
+                      : () => null
+                  }
+                  tourMode={tourMode === 66 && name === 'Runner'}
                 >
                   {special}
                 </Action>
@@ -261,6 +315,7 @@ SoundBlock.propTypes = {
   damageMode: oneOfType([string, bool]),
   differentSounds: number,
   displayCombineButton: bool,
+  goToNextTourStep: func,
   img: string,
   isMobile: bool.isRequired,
   isSelected: bool,
@@ -281,6 +336,7 @@ SoundBlock.propTypes = {
   special: string,
   specificSound: string,
   spendAmmo: func,
+  tourMode: number,
   trade: bool,
   type: string.isRequired,
   unloaded: bool,
@@ -300,6 +356,7 @@ SoundBlock.defaultProps = {
   damageMode: false,
   differentSounds: null,
   displayCombineButton: false,
+  goToNextTourStep: () => null,
   img: null,
   isSelected: false,
   isTablet: false,
@@ -318,6 +375,7 @@ SoundBlock.defaultProps = {
   special: null,
   specificSound: null,
   spendAmmo: () => null,
+  tourMode: null,
   trade: false,
   unloaded: false,
   wounded: false,

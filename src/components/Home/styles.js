@@ -1,7 +1,7 @@
 import styled from '@emotion/styled';
 import { css, keyframes } from '@emotion/core';
 import { Link } from 'react-router-dom';
-import { Appear, Shadow } from '../../styles';
+import { Appear, Shadow, TourHighlight } from '../../styles';
 import { DEFEAT, VICTORY } from '../../constants';
 
 const ThunderFlash = keyframes`
@@ -167,7 +167,7 @@ export const MenuScreen = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: flex-end;
-  height: ${`${window.innerHeight}px`};
+  height: ${`${window.innerHeight - 1}px`};
   width: 100%;
   background: #232222;
   overflow: hidden;
@@ -245,6 +245,12 @@ export const SelectionButton = styled.button`
         filter: none;
       }
     `}
+
+  ${({ tourMode }) =>
+    tourMode &&
+    css`
+      ${TourHighlight};
+    `}
 `;
 SelectionButton.displayName = 'SelectionButton';
 
@@ -271,6 +277,12 @@ export const TestButton = styled(SelectionButton)`
   &:hover {
     color: green;
   }
+
+  ${({ tourMode }) =>
+    tourMode &&
+    css`
+      ${TourHighlight};
+    `}
 
   @media all and (min-width: 768px) {
     width: 180px;
@@ -300,15 +312,61 @@ export const Version = styled.p`
   position: absolute;
   bottom: 10px;
   right: 10px;
+  font-family: 'Grandstander', cursive;
   font-size: 0.9rem;
   color: white;
 
   @media all and (min-width: 768px) {
-    bottom: 20px;
-    right: 40px;
+    bottom: 55px;
+    right: unset;
+    left: 50%;
+    transform: translate(-50%, 0);
   }
 `;
 Version.displayName = 'Version';
+
+export const WarningButton = styled.div`
+  label: WarningButton;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin: 10px 10px;
+  min-height: 40px;
+  width: 60%;
+  background: gray;
+  padding: 5px 15px;
+  background: red;
+  box-shadow: 0 1px 10px 0 rgba(0, 0, 0, 0.6),
+    inset 1px 1px 3px rgba(255, 0, 0, 0.5);
+  text-transform: uppercase;
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: black;
+  font-family: 'Grandstander', cursive;
+  transition: all ease 0.2s;
+  cursor: pointer;
+
+  &: hover {
+    color: yellow;
+    filter: brightness(1.2);
+  }
+`;
+WarningButton.displayName = 'WarningButton';
+
+export const WarningMessage = styled.p`
+  label: WarningMessage;
+  width: 100%;
+  margin-bottom: 30px;
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: black;
+  text-shadow: 0 0 2px white;
+  text-align: center;
+  line-height: 2;
+  font-family: 'Cairo', sans-serif;
+`;
+WarningMessage.displayName = 'WarningMessage';
 
 export const ZombicideLogo = styled.img`
   label: ZombicideLogo;
