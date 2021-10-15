@@ -39,6 +39,7 @@ const App = () => {
   const [loadedGame, loadGame] = useStateWithLabel(null, 'loadedGame');
   const [context, updateContext] = useStateWithLabel({}, 'context');
   const [tourMode, changeTourModeStep] = useStateWithLabel(null, 'tourMode');
+  window.gameContext = context;
 
   const goToNextTourStep = next => {
     const nextStep = next || next === 0 ? next : STEPS[tourMode].step + 1;

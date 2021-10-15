@@ -95,7 +95,7 @@ const ActionsModal = ({
               aria-labelledby="discrete-slider-always"
               valueLabelDisplay="on"
               step={1}
-              min={1}
+              min={0}
               max={modalMessage.data.maxXp}
               currentXp={modalMessage.data.currentXp}
               onChange={(event, value) => {

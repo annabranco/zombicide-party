@@ -16,6 +16,7 @@ export const OpenButton = styled.button`
     box-shadow: inset 0 2px 5px 1px rgba(black, 0.4);
   }
 `;
+OpenButton.displayName = 'OpenButton';
 
 export const SectionWrapper = styled.section`
   label: SectionWrapper;
@@ -32,6 +33,7 @@ export const SectionWrapper = styled.section`
     width: 90%;
   }
 `;
+SectionWrapper.displayName = 'SectionWrapper';
 
 export const TitleBar = styled.div`
   label: TitleBar;
@@ -43,6 +45,7 @@ export const TitleBar = styled.div`
   text-align: center;
   color: white;
 `;
+TitleBar.displayName = 'TitleBar';
 
 export const Title = styled.h2`
   label: Title;
@@ -54,3 +57,4 @@ export const Title = styled.h2`
   text-shadow: 0 0 2px white;
   text-transform: uppercase;
 `;
+Title.displayName = 'Title';

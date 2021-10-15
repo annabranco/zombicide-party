@@ -230,6 +230,37 @@ export const ItemIcon = styled.div`
 `;
 ItemIcon.displayName = 'ItemIcon';
 
+export const MixedWeaponActionWrapper = styled.div`
+  label: MixedWeaponActionWrapper;
+  z-index: 50;
+  position: absolute;
+  top: 100px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-around;
+  width: 100%;
+`;
+MixedWeaponActionWrapper.displayName = 'MixedWeaponActionWrapper';
+
+export const MixedWeaponText = styled.p`
+  label: MixedWeaponText;
+  color: white;
+  font-family: 'Grandstander', cursive;
+  -webkit-text-stroke: 1px black;
+  font-size: 1.5rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all linear 0.1s;
+
+  &:hover {
+    color: yellow;
+    font-size: 1.8rem;
+    transition: all linear 0.2s;
+  }
+`;
+MixedWeaponText.displayName = 'MixedWeaponText';
+
 export const PlayIcon = styled.img`
   label: PlayIcon;
   max-height: 100%;

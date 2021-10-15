@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useContext, useEffect, useRef } from 'react';
 import { arrayOf, bool, func, number, oneOfType, string } from 'prop-types';
 import { ALL_WEAPONS } from '../../../setup/weapons';
 import {
@@ -44,6 +44,7 @@ import {
   KillButtonIcon,
   KillButtonsWrapper
 } from './styles';
+import { AppContext } from '../../../setup/context';
 
 const ItemsArea = ({
   actionsLeft,
@@ -76,6 +77,7 @@ const ItemsArea = ({
   numItems,
   onClickCombine,
   onClickDrop,
+  reloadWeapon,
   round,
   secondarySound,
   selectSlot,
@@ -86,6 +88,8 @@ const ItemsArea = ({
   trade,
   tradeItem,
   tourMode,
+  unloadedWeapons,
+  unloadWeapon,
   wounded
 }) => {
   const [displaySplash, toggleDisplaySplash] = useStateWithLabel(
@@ -99,9 +103,13 @@ const ItemsArea = ({
 
   const [isActive, toggleActive] = useStateWithLabel(false, 'isActive');
   const [killButtons, changeKillButtons] = useStateWithLabel([], 'killButtons');
-  const [needReload, toggleNeedReload] = useStateWithLabel(false, 'needReload');
+  const [needsReload, toggleNeedsReload] = useStateWithLabel(
+    false,
+    'needsReload'
+  );
   const [firedDual, toggleFiredDual] = useStateWithLabel(false, 'firedDual');
   const [tourKills, updateTourKills] = useStateWithLabel(0, 'tourKills');
+  const { context } = useContext(AppContext);
 
   const killButtonsTimer = useRef();
   const dualTimer = useRef();
@@ -110,12 +118,13 @@ const ItemsArea = ({
 
   const notAvailableOnTourMode = tourMode && tourMode >= 23 && tourMode <= 70;
 
-  const activateKillButtons = () => {
+  const activateKillButtons = mixedAttackInfo => {
     spendSingleUseWeapon(index, item);
-    if (ALL_WEAPONS[item].dice === SPECIAL) {
+
+    if (context.weapons[item].dice === SPECIAL) {
       gainCustomXp(BURNEM_ALL);
     } else {
-      const totalDices = calculateTotalDices();
+      const totalDices = calculateTotalDices(mixedAttackInfo?.type);
       const currentPool = killButtons.length;
       const newArray = [...Array(totalDices).keys()].map(
         value => value + currentPool
@@ -144,23 +153,30 @@ const ItemsArea = ({
     }
   };
 
-  const calculateTotalDices = () => {
+  const calculateTotalDices = attackType => {
     const { combat, melee, ranged } = bonusDices;
-    let totalDices;
+    let totalDice;
+    let weaponDice;
 
-    totalDices = dice + combat;
-
-    if (ALL_WEAPONS[item].attack === MELEE) {
-      totalDices += melee;
-    } else if (ALL_WEAPONS[item].attack === RANGED) {
-      totalDices += ranged;
-    } else if (ALL_WEAPONS[item].attack === MELEE_RANGED) {
-      totalDices = totalDices + ranged + melee;
+    if (context.weapons[item].attack === MELEE_RANGED && attackType) {
+      weaponDice = context.weapons[item].mixed[attackType].dice;
+    } else {
+      weaponDice = dice;
     }
-    return totalDices;
+
+    totalDice = weaponDice + combat;
+
+    if (context.weapons[item].attack === MELEE) {
+      totalDice += melee;
+    } else if (context.weapons[item].attack === RANGED) {
+      totalDice += ranged;
+    } else if (context.weapons[item].attack === MELEE_RANGED) {
+      totalDice += bonusDices[attackType];
+    }
+    return totalDice;
   };
   const checkIfReloadIsNeeded = () =>
-    ALL_WEAPONS[item] && ALL_WEAPONS[item].needsReloading;
+    context.weapons[item] && context.weapons[item].needsReloading;
 
   const forceActivateKillButtons = fkbuttons => {
     if (!firedDual) {
@@ -279,19 +295,21 @@ const ItemsArea = ({
   };
 
   const reload = weapon => {
-    if (needReload) {
+    if (needsReload) {
       spendAction(RELOAD);
-      toggleNeedReload(false);
+      toggleNeedsReload(false);
+      reloadWeapon({ reloadedWeapon: weapon });
     }
   };
 
-  const spendAmmo = () => {
-    toggleNeedReload(true);
+  const spendAmmo = weapon => {
+    toggleNeedsReload(true);
+    unloadWeapon(weapon);
   };
 
   useEffect(() => {
-    toggleNeedReload(false);
-  }, [charName, toggleNeedReload]);
+    toggleNeedsReload(false);
+  }, [charName, toggleNeedsReload]);
 
   useEffect(() => {
     if (forcedKillButtons > 0) {
@@ -299,6 +317,14 @@ const ItemsArea = ({
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [forcedKillButtons]);
+
+  useEffect(() => {
+    if (unloadedWeapons.includes(item)) {
+      toggleNeedsReload(true);
+    } else if (needsReload) {
+      toggleNeedsReload(false);
+    }
+  }, [item, needsReload, toggleNeedsReload, unloadedWeapons]);
 
   useEffect(() => {
     return () => {
@@ -352,12 +378,12 @@ const ItemsArea = ({
             setupMode={setupMode}
             slot={getSlotNumber(index)}
             slotType={slotType}
-            specificSound={ALL_WEAPONS[item] && ALL_WEAPONS[item].sound}
+            specificSound={context.weapons[item] && context.weapons[item].sound}
             spendAmmo={spendAmmo}
             tourMode={tourMode}
             trade={trade}
             type={itemsType}
-            unloaded={needReload}
+            unloaded={needsReload}
             wounded={wounded}
           />
         ) : (
@@ -404,10 +430,10 @@ const ItemsArea = ({
           </AppButton>
         )}
       </ActionButtonsWrapper>
-      {needReload && (
+      {needsReload && (
         <ActionButton
           actionType={RELOAD_ACTION}
-          callback={reload}
+          callback={() => reload(item)}
           isMobile={device === MOBILE}
           type="center"
         />
@@ -416,7 +442,7 @@ const ItemsArea = ({
         <KillButtonsWrapper displaySplash={displaySplash}>
           {killButtons.map(key => (
             <KillButton
-              attack={ALL_WEAPONS[item] && ALL_WEAPONS[item].attack}
+              attack={context.weapons[item] && context.weapons[item].attack}
               key={`kill-${item}-${key}`}
               onClick={() => killOneZombie(key)}
               tourMode={tourMode === 30}
@@ -464,6 +490,7 @@ ItemsArea.propTypes = {
   numItems: number,
   onClickCombine: func,
   onClickDrop: func.isRequired,
+  reloadWeapon: func,
   round: number,
   secondarySound: bool,
   selectSlot: func,
@@ -474,6 +501,8 @@ ItemsArea.propTypes = {
   tourMode: number,
   trade: bool,
   tradeItem: func,
+  unloadedWeapons: arrayOf(string),
+  unloadWeapon: func,
   wounded: bool.isRequired
 };
 
@@ -505,6 +534,7 @@ ItemsArea.defaultProps = {
   makeNoise: () => null,
   numItems: null,
   onClickCombine: () => null,
+  reloadWeapon: () => null,
   round: null,
   secondarySound: false,
   selectSlot: () => null,
@@ -513,7 +543,9 @@ ItemsArea.defaultProps = {
   spendSingleUseWeapon: () => null,
   tourMode: null,
   trade: false,
-  tradeItem: () => null
+  tradeItem: () => null,
+  unloadedWeapons: [],
+  unloadWeapon: () => null
 };
 
 export default ItemsArea;

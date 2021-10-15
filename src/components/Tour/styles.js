@@ -4,6 +4,7 @@ import { BOTTOM, CENTER, LEFT, RIGHT, TOP } from '../../constants';
 import { ModalMessage } from '../SetupModal/styles';
 
 export const InstructionsArrow = styled.div`
+  label: InstructionsArrow;
   position: absolute;
   height: 100%;
   width: 100%;
@@ -149,6 +150,7 @@ export const InstructionsArrow = styled.div`
 InstructionsArrow.displayName = 'InstructionsArrow';
 
 export const InstructionsWrapper = styled.div`
+  label: InstructionsWrapper;
   z-index: 50;
   position: absolute;
   display: flex;
@@ -219,6 +221,7 @@ const Grrrr = keyframes`
 `;
 
 export const TourButton = styled.div`
+  label: TourButton;
   z-index: 10000;
   position: fixed;
   right: 5px;
@@ -255,12 +258,14 @@ export const TourButton = styled.div`
 TourButton.displayName = 'TourButton';
 
 export const TourButtonIcon = styled.img`
+  label: TourButtonIcon;
   width: 16%;
   margin: 0 10px 0 -10px;
 `;
 TourButtonIcon.displayName = 'TourButtonIcon';
 
 export const TourText = styled(ModalMessage)`
+  label: TourText;
   width: auto;
   @media all and (min-width: 768px) {
     width: auto;
